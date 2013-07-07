@@ -13,8 +13,8 @@
 	*/
 
 	// Debug stuff
-	//error_reporting(-1);
-	if (!function_exists('Show')) { function Show($Data) { echo '<pre>'; print_r($Data); echo '</pre>'; }}
+	# error_reporting(-1);
+	# function show($Data) { echo '<pre>'; print_r($Data); echo '</pre>'; }
 
 	/*	LodestoneAPI
 	 *	------------
@@ -152,6 +152,7 @@
 				}
 				else
 				{
+					Show("Did not find");
 					$this->Search['total'] = 0;
 					$this->Search['results'] = NULL;	
 				}
@@ -534,6 +535,7 @@
 				
 				// Loop through data
 				$i = 0;
+				$Main;
 				foreach($A as $Line)
 				{
 					// Item Icon
@@ -541,7 +543,7 @@
 					if (stripos($Line, 'item_name') !== false) { $Data = trim(str_ireplace(array('>', '"'), NULL, strip_tags(html_entity_decode($A[$i + 2])))); $Temp['name'] = htmlspecialchars_decode(trim($Data), ENT_QUOTES); }
 					if (stripos($Line, 'item_name') !== false) { 
 						$Data = htmlspecialchars_decode(trim(html_entity_decode($A[$i + 3])), ENT_QUOTES);
-						if (strpos($Data, " Arm") !== false || strpos($Data, " Tool") !== false) { $Data = 'Main'; }
+						if (strpos($Data, " Arm") !== false || strpos($Data, " Tool") !== false) { $Main = $Data; $Data = 'Main'; }
 						$Temp['slot'] = strtolower($Data);
 					}
 					
@@ -562,7 +564,7 @@
 			$this->Gear['equipped'] = $GearArray;
 			
 			// Set Active Class
-			$classjob = explode("&#39;", $this->Gear[0]['slot'])[0];
+			$classjob = explode("'", $Main)[0];
 			$this->Stats['active']['class'] = $classjob;
 			if (isset($this->Gear['soul crystal'])) { $this->Stats['active']['job'] = str_ireplace("Soul of the ", NULL, $this->Gear['soul crystal']['name']); }
 		}
@@ -926,13 +928,14 @@
 	
 	# --------------------------------------
 
-/*
+
 	// Setup API
 	$API = new LodestoneAPI();
 	
-	# Set character object (echo portrait for example)
-	$Character = $API->get("Premium Virtue", "Gungnir");
-	echo '<img src="'. $Character->getPortrait() .'" />';
+	// Set character object (echo portrait for example)
+	$Character = $API->get("P'r'e'm'i'u'm V'i't'", "Hyperion");
+	Show($Character);
+	#echo '<img src="'. $Character->getPortrait() .'" />';
 	
 	// Search by Name + Server
 	# $API->searchCharacter("Premium Virtue", "Gungnir", true);
@@ -949,6 +952,6 @@
 
 	// Print source code (for debugging)
 	# $API->printSourceArray();
-*/
+
 	
 ?>
