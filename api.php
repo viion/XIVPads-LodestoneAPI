@@ -403,8 +403,8 @@
 			// If free company
 			if (isset($FreeCompany))
 			{
-				$FreeCompanyImg		= trim(filter_var(explode('&quot;', $FreeCompany)[1], FILTER_SANITIZE_NUMBER_INT));
-				$this->FreeCompany 	= array("name" => trim(strip_tags(html_entity_decode($FreeCompany))), "url" => trim($FreeCompanyImg));
+				$FreeCompanyID		= trim(filter_var(explode('&quot;', $FreeCompany)[1], FILTER_SANITIZE_NUMBER_INT));
+				$this->FreeCompany 	= array("name" => trim(strip_tags(html_entity_decode($FreeCompany))), "id" => $FreeCompanyID);
 			}
 		}
 		public function getNameday() 		{ return $this->Nameday; }
@@ -926,6 +926,7 @@
 	
 	# --------------------------------------
 
+/*
 	// Setup API
 	$API = new LodestoneAPI();
 	
@@ -948,6 +949,6 @@
 
 	// Print source code (for debugging)
 	# $API->printSourceArray();
-
+*/
 	
 ?>
