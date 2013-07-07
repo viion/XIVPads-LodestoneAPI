@@ -137,17 +137,17 @@ getNameday()
 getGuardian()
 getCompanyName()
 getCompanyRank()
-getFreeCompany()
+getFreeCompany() // Returns array with 'name' and 'id'
 getCity()
 getBiography()
 getStat(type, attribute) // (List below)
-getGear() // Returns list containing 'name', 'icon', 'slot'
+getGear() // Returns array containing 'name', 'icon', 'slot'
 getEquipped(type) // List by 'numbers', or list by 'slots'
 getSlot() // (List below)
 getActiveClass()
 getActiveJob()
 getActiveLevel()
-getMinions() // Returns list containing 'Name' and 'Icon'
+getMinions() // Returns array containing 'Name' and 'Icon'
 getClassJob(class) // Get level/exp info of a class
 isValid() // Wheather character data is valid or not (WIP)
 getErrors() // List of errors found during validation
