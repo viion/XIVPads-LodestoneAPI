@@ -1,42 +1,23 @@
 <?
-  /*
+	/*
 		XIVPads.com (v4) - Lodestone Query API
 		--------------------------------------------------
 		Author: 	Josh Freeman (Premium Virtue)
 		Support:	http://xivpads.com/?Portal
 		Version:	4.0
+		PHP:		5.4
 		
-		Always ensure you download this API from the official
-		website: XIVPads.com/?API, check for updates often.
+		Always ensure you download from the github
+		https://github.com/viion/XIVPads-LodestoneAPI
 		--------------------------------------------------
 	*/
-	
-	/*
-	
-	Examples
 
-	// Setup API
-	$API = new LodestoneAPI();
-	
-	// Search by Name + Server
-	$API->searchCharacter("Premium Virtue", "Gungnir");
-	
-	// Get by specific ID
-	# $API->parseProfile($ID);
-	# Show($API->getCharacters());
-	
-	// Get by specific ID
-	# $API->parseAchievements($ID);
-	# Show($API->getAchievements());
+	// Debug stuff
+	//error_reporting(-1);
+	if (!function_exists('Show')) { function Show($Data) { echo '<pre>'; print_r($Data); echo '</pre>'; }}
 
-	// Print source code (for debugging)
-	$API->printSourceArray();
-	*/
-	
-	
 	/*	LodestoneAPI
 	 *	------------
-	 *	> parseProfile - $ID [public] (Parse the lodestone and obtain profile information based on their character ID.)
 	 */
 	class LodestoneAPI extends Parser
 	{
@@ -49,18 +30,65 @@
 		
 		// Configuration
 		public $AchievementCategories = array(13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24);
+		public $ClassList = array();
+		public $ClassDisicpline = array();
 		
 		// List of characters parsed.
 		public $Characters 		= array();
 		public $Achievements 	= array();
 		public $Search 			= array();
+		
+		public function __construct()
+		{
+			// Set classes
+			$this->ClassList = array(
+				"Gladiator", "Pugilist", "Marauder", "Lancer", "Archer", "Conjurer", "Thaumaturge", "Arcanist", "Carpenter", "Blacksmith", 
+				"Armorer", "Goldsmith", "Leatherworker", "Weaver", "Alchemist", "Culinarian", "Miner", "Botanist", "Fisher"
+			);
+			
+			// Set class by disicpline							
+			$this->ClassDisicpline = array(
+				"dow" => array_slice($this->ClassList, 0, 5),
+				"dom" => array_slice($this->ClassList, 5, 3),
+				"doh" => array_slice($this->ClassList, 8, 8),
+				"dol" => array_slice($this->ClassList, 16, 3),
+			);
+		}
+		
+		// Quick get
+		public function get($Name, $Server)
+		{
+			// Clean
+			$Name 	= trim(ucwords($Name));
+			$Server = trim(ucwords($Server));
+			
+			// Search by Name + Server, exact
+			$this->searchCharacter($Name, $Server, true);
+			
+			// Get by specific ID
+			$ID = $this->getSearch()['results'][0]['id'];
+			
+			// If an ID or not
+			if ($ID)
+			{
+				// Parse profile
+				$this->parseProfile($ID);
+				
+				// Return character
+				return $this->getCharacterByID($ID);
+			}
+			else
+			{
+				return false;
+			}
+		}
 
 		#-------------------------------------------#
 		# SEARCH									#
 		#-------------------------------------------#
 
 		// Search a character by its name and server.
-		public function searchCharacter($Name, $Server)
+		public function searchCharacter($Name, $Server, $GetExact)
 		{
 			if (!$Name)
 			{
@@ -72,6 +100,9 @@
 			}
 			else
 			{
+				// Exact name for later
+				$ExactName = $Name;
+				
 				// Get the source
 				$this->getSource($this->URL['profile'] . str_ireplace(array('%name%', '%server%'), array(str_ireplace(" ", "+", $Name), $Server), $this->URL['search']));
 				
@@ -79,28 +110,51 @@
 				$Found = $this->findAll('thumb_cont_black_50', 5, NULL, false);
 				
 				// Loop through results
-				$i++;
-				foreach($Found as $F)
+				if ($Found)
 				{
-					$Avatar 	= explode('&quot;', $F[0])[3];
-					$Data 		= explode('&quot;', $F[3]);
-					$ID			= trim(explode('/', $Data[3])[3]);
-					$NameServer	= explode("(", trim(str_ireplace(">", NULL, strip_tags(html_entity_decode($Data[4]))))); 
-					$Name		= trim($NameServer[0]);
-					$Server		= trim(str_ireplace(")", NULL, $NameServer[1]));
-					$Language 	= $F[4];
+					foreach($Found as $F)
+					{
+						$Avatar 	= explode('&quot;', $F[0])[3];
+						$Data 		= explode('&quot;', $F[3]);
+						$ID			= trim(explode('/', $Data[3])[3]);
+						$NameServer	= explode("(", trim(str_ireplace(">", NULL, strip_tags(html_entity_decode($Data[4]))))); 
+						$Name		= trim($NameServer[0]);
+						$Server		= trim(str_ireplace(")", NULL, $NameServer[1]));
+						$Language 	= $F[4];
+						
+						// Append search results
+						$this->Search['results'][] = array(
+							"avatar" 	=> $Avatar,
+							"name"		=> $Name,
+							"server"	=> $Server,
+							"id"		=> $ID,
+						);
+					}
 					
-					// Append search results
-					$this->Search['results'][] = array(
-						"avatar" 	=> $Avatar,
-						"name"		=> $Name,
-						"server"	=> $Server,
-						"id"		=> $ID,
-					);
+					// If to get exact
+					if ($GetExact)
+					{
+						$Exact = false;
+						foreach($this->Search['results'] as $Character)
+						{
+							if ($Character['name'] == $ExactName)
+							{
+								$this->Search['results'] = NULL;
+								$this->Search['results'][] = $Character;
+								$this->Search['isExact'] = true;
+								break;
+							}
+						}
+					}
+					
+					// Number of results
+					$this->Search['total'] = count($this->Search['results']);
 				}
-				
-				// Number of results
-				$this->Search['total'] = count($this->Search['results']);
+				else
+				{
+					$this->Search['total'] = 0;
+					$this->Search['results'] = NULL;	
+				}
 			}
 		}
 		
@@ -127,7 +181,7 @@
 				$Character = new Character();
 				
 				// Set Character Data
-				$Character->setID(trim($ID));
+				$Character->setID(trim($ID), $this->URL['profile'] . $ID);
 				$Character->setNameServer($this->find('player_name_brown'));
 				$Character->setAvatar($this->find('thumb_cont_black_40', false));
 				$Character->setPortrait($this->findRange('bg_chara_264', 2, NULL, false));
@@ -140,28 +194,43 @@
 				$Character->setAttributes($this->findRange('param_list_attributes', 8));
 				$Character->setElemental($this->findRange('param_list_elemental', 8));
 				$Character->setOffense($this->findRange('param_title_offence', 6));
+				$Character->setDefense($this->findRange('param_title_deffence', 6));
 				$Character->setPhysical($this->findRange('param_title_melle', 6));
 				$Character->setResists($this->findRange('param_title_melleresists', 6));
-				$Character->setSpell($this->findRange('param_title_spell', 6));
-				$Character->setPVP($this->findRange('param_title_pvpparam', 6));
 				$Character->setActiveClassLevel($this->findRange('&quot;class_info&quot;', 3));
-				
-				$this->segment('item_detail_box');
 				
 				// Set Gear (Also sets Active Class and Job)
 				$Gear = $this->findAll('item_detail_box', NULL, '//ITEM Detail', false);
 				$Character->setGear($Gear);
 				
-				$this->segment('area_header_w358_inner');
+				// The next few attributes are based on class
+				if (in_array($Character->getActiveClass(), $this->ClassDisicpline['dow']) || in_array($Character->getActiveClass(), $this->ClassDisicpline['dom']))
+				{
+					$Character->setSpell($this->findRange('param_title_spell', 6));
+					$Character->setPVP($this->findRange('param_title_pvpparam', 6));
+				}
+				else if (in_array($Character->getActiveClass(), $this->ClassDisicpline['doh']))
+				{
+					$Character->setCrafting($this->findRange('param_title_crafting', 6));
+				}
+				else if (in_array($Character->getActiveClass(), $this->ClassDisicpline['dol']))
+				{
+					$Character->setGathering($this->findRange('param_title_gathering', 6));
+				}
+
+				#$this->segment('area_header_w358_inner');
 				
 				// Set Minions
 				$Minions = $this->findRange('area_header_w358_inner', NULL, '//Minion', false);
 				$Character->setMinions($Minions);
 				
-				$this->segment('class_fighter');
+				#$this->segment('class_fighter');
 				
 				// Set ClassJob
 				$Character->setClassJob($this->findRange('class_fighter', NULL, '//Class Contents', false));
+				
+				// Validate data
+				$Character->validate();
 				
 				// Append character to array
 				$this->Characters[$ID] = $Character;
@@ -225,7 +294,6 @@
 				}
 			}
 		}
-		
 	}
 	
 	/*	Character
@@ -234,7 +302,9 @@
 	class Character
 	{
 		private $ID;
+		private $Lodestone;
 		private $Name;
+		private $NameClean;
 		private $Server;
 		private $Avatars;
 		private $Portrait;
@@ -251,27 +321,34 @@
 		private $Gear;
 		private $Minions;
 		private $ClassJob;
+		private $Validated = true;
+		private $Errors = array();
 		
 		#-------------------------------------------#
 		# FUNCTIONS									#
 		#-------------------------------------------#
 		
 		// ID
-		public function setID($ID)
+		public function setID($ID, $URL = NULL)
 		{
-			$this->ID = $ID;	
+			$this->ID = $ID;
+			$this->Lodestone = $URL;
 		}
 		public function getID() { return $this->ID; }
+		public function getLodestone() { return $this->Lodestone; }
 		
 		// NAME + SERVER
 		public function setNameServer($String)
 		{
 			$String 		= explode(" (", str_ireplace(")", NULL, $String));
-			$this->Name 	= trim($String[0]);
+			$this->Name 	= htmlspecialchars_decode(trim($String[0]), ENT_QUOTES);
 			$this->Server 	= trim($String[1]);
+			$this->NameClean= preg_replace('/[^a-z]/i', '', strtolower($this->Name));
+			
 		}
 		public function getName() { return $this->Name; }
 		public function getServer() { return $this->Server; }
+		public function getNameClean() { return$this->NameClean; }
 		
 		// AVATAR
 		public function setAvatar($String)
@@ -293,8 +370,8 @@
 		public function setRaceClan($String)
 		{
 			$String 		= explode("/", $String);
-			$this->Clan 	= trim($String[0]);
-			$this->Race 	= trim($String[1]);
+			$this->Clan 	= htmlspecialchars_decode(trim($String[0]), ENT_QUOTES);
+			$this->Race 	= htmlspecialchars_decode(trim($String[1]), ENT_QUOTES);
 		}
 		public function getRace() { return $this->Race; }
 		public function getClan() { return $this->Clan; }
@@ -308,22 +385,37 @@
 		{
 			$this->Nameday 		= trim(strip_tags(html_entity_decode($String[11])));
 			$this->Guardian 	= trim(strip_tags(html_entity_decode($String[15])));
+				
+			$i = 0;
+			foreach($String as $Line)
+			{
+				if (stripos($Line, 'Grand Company') !== false) 	{ $Company = trim(strip_tags(html_entity_decode($String[($i + 1)]))); }
+				if (stripos($Line, 'Free Company') !== false) 	{ $FreeCompany = trim($String[($i + 1)]); }
+				$i++;
+			}
 			
-			$Company 			= trim(strip_tags(html_entity_decode($String[30])));
-			$this->Company 		= array("name" => explode("/", $Company)[0], "rank" => explode("/", $Company )[1]);
+			// If grand company
+			if (isset($Company))
+			{
+				$this->Company 		= array("name" => explode("/", $Company)[0], "rank" => explode("/", $Company )[1]);
+			}
 			
-			$FreeCompany		= trim($String[35]);
-			$FreeCompanyImg		= trim(filter_var(explode('&quot;', $FreeCompany)[1], FILTER_SANITIZE_NUMBER_INT));
-			$this->FreeCompany 	= array("name" => trim(strip_tags(html_entity_decode($FreeCompany))), "url" => trim($FreeCompanyImg));
+			// If free company
+			if (isset($FreeCompany))
+			{
+				$FreeCompanyImg		= trim(filter_var(explode('&quot;', $FreeCompany)[1], FILTER_SANITIZE_NUMBER_INT));
+				$this->FreeCompany 	= array("name" => trim(strip_tags(html_entity_decode($FreeCompany))), "url" => trim($FreeCompanyImg));
+			}
 		}
 		public function getNameday() 		{ return $this->Nameday; }
 		public function getGuardian() 		{ return $this->Guardian; }
-		public function getCompany() 		{ return $this->Company; }
+		public function getCompanyName() 	{ return $this->Company['name']; }
+		public function getCompanyRank() 	{ return $this->Company['rank']; }
 		public function getFreeCompany() 	{ return $this->FreeCompany; }
 		
 		// CITY
-		public function setCity($String) { $this->City = trim($String[1]); }
-		public function getCity() { return $this->City(); }
+		public function setCity($String) { $this->City = htmlspecialchars_decode(trim($String[1]), ENT_QUOTES); }
+		public function getCity() { return $this->City; }
 		
 		// BIOGRAPHY
 		public function setBiography($String) { $this->Biography = trim($String[0]); }
@@ -401,11 +493,29 @@
 			$this->Stats['spell']['spell speed'] 			= trim(filter_var($String[2], FILTER_SANITIZE_NUMBER_INT));
 		}
 		
+		// STATS > CRAFTING
+		public function setCrafting($String)
+		{
+			$this->Stats['crafting']['craftsmanship'] 	= trim(filter_var($String[0], FILTER_SANITIZE_NUMBER_INT));
+			$this->Stats['crafting']['control']			= trim(filter_var($String[1], FILTER_SANITIZE_NUMBER_INT));
+		}
+		
+		// STATS > CRAFTING
+		public function setGathering($String)
+		{
+			$this->Stats['gathering']['gathering'] 	= trim(filter_var($String[0], FILTER_SANITIZE_NUMBER_INT));
+			$this->Stats['gathering']['Perception']	= trim(filter_var($String[1], FILTER_SANITIZE_NUMBER_INT));
+		}
+		
 		// STATS > PVP
 		public function setPVP($String)
 		{
 			$this->Stats['pvp']['morale'] = trim(filter_var($String[0], FILTER_SANITIZE_NUMBER_INT));
 		}
+		
+		// GET STAT FUNC
+		public function getStat($Type, $Attribute) { if (isset($this->Stats[$Type])) { return $this->Stats[$Type][$Attribute]; } else { return 0; }}
+		public function getStats() { return $this->Stats; }
 		
 		// ACTIVE CLASS + LEVEL
 		public function setActiveClassLevel($String)
@@ -431,26 +541,40 @@
 				{
 					// Item Icon
 					if (stripos($Line, 'socket_64') !== false) { $Data = trim(explode('&quot;', $A[$i + 1])[1]); $Temp['icon'] = $Data; }
-					if (stripos($Line, 'item_name') !== false) { $Data = trim(str_ireplace(array('>', '"'), NULL, strip_tags(html_entity_decode($A[$i + 2])))); $Temp['name'] = $Data; }
-					if (stripos($Line, 'item_name') !== false) { $Data = trim(html_entity_decode($A[$i + 3])); $Temp['slot'] = $Data; }
+					if (stripos($Line, 'item_name') !== false) { $Data = trim(str_ireplace(array('>', '"'), NULL, strip_tags(html_entity_decode($A[$i + 2])))); $Temp['name'] = htmlspecialchars_decode(trim($Data), ENT_QUOTES); }
+					if (stripos($Line, 'item_name') !== false) { 
+						$Data = htmlspecialchars_decode(trim(html_entity_decode($A[$i + 3])), ENT_QUOTES);
+						if (strpos($Data, " Arm") !== false || strpos($Data, " Tool") !== false) { $Data = 'Main'; }
+						$Temp['slot'] = $Data;
+					}
 					
 					// Increment
 					$i++;
 				}
 				
+				// Slot manipulation
+				$Slot = $Temp['slot'];
+				if (isset($GearArray[$Slot])) { $Slot = $Slot . 2; }		
+				
 				// Append array
-				$GearArray[] = $Temp;
-				$GearArray[$Temp['slot']] = $Temp;
+				$GearArray['numbers'][] = $Temp;
+				$GearArray['slots'][$Slot] = $Temp;
 			}	
 			
 			// Set Gear
-			$this->Gear = $GearArray;
+			$this->Gear['equipped'] = $GearArray;
 			
 			// Set Active Class
 			$classjob = explode("&#39;", $this->Gear[0]['slot'])[0];
 			$this->Stats['active']['class'] = $classjob;
-			$this->Stats['active']['job'] = str_ireplace("Soul of the ", NULL, $this->Gear['Soul Crystal']['name']);
+			if (isset($this->Gear['Soul Crystal'])) { $this->Stats['active']['job'] = str_ireplace("Soul of the ", NULL, $this->Gear['Soul Crystal']['name']); }
 		}
+		public function getGear()			{ return $this->Gear; }
+		public function getEquipped($Type)	{ return $this->Gear['equipped'][$Type]; }
+		public function getSlot($Slot)		{ return $this->Gear['equipped']['slots'][$Slot]; }
+		public function getActiveClass() 	{ return $this->Stats['active']['class']; }
+		public function getActiveJob() 		{ return $this->Stats['active']['job']; }
+		public function getActiveLevel() 	{ return $this->Stats['active']['level']; }
 		
 		// MINIONS
 		public function setMinions($Array)
@@ -464,7 +588,10 @@
 			{
 				if (stripos($A, 'ic_reflection_box') !== false)
 				{
-					$Pets[] = trim(explode('&quot;', $Array[$i])[5]);
+					$arr = array();
+					$arr['Name'] = trim(explode('&quot;', $Array[$i])[5]);
+					$arr['Icon'] = trim(explode('&quot;', $Array[$i + 2])[1]);
+					$Pets[] = $arr;
 				}
 				
 				// Increment
@@ -474,6 +601,7 @@
 			// set pets
 			$this->Minions = $Pets;
 		}
+		public function getMinions() { return $this->Minions; }
 		
 		// CLASS + JOB
 		public function setClassJob($Array)
@@ -488,19 +616,22 @@
 				// If class
 				if(stripos($A, 'ic_class_wh24_box') !== false)
 				{
-					$Data = trim(strip_tags(html_entity_decode($Array[$i])));
-					$Level = trim(strip_tags(html_entity_decode($Array[$i + 1])));
-					$EXP = trim(strip_tags(html_entity_decode($Array[$i + 2])));
-					if ($Data)
+					$Class 	= trim(strip_tags(html_entity_decode($Array[$i])));
+					$Level 	= trim(strip_tags(html_entity_decode($Array[$i + 1])));
+					$EXP 	= trim(strip_tags(html_entity_decode($Array[$i + 2])));
+					if ($Class)
 					{
-						$Temp[] = array(
-							'class' => $Data,
+						$arr = array(
+							'class' => $Class,
 							'level' => $Level,
 							'exp'	=> array(
 								'current' => explode(" / ", $EXP)[0], 
 								'max' => explode(" / ", $EXP)[1]
 							)
 						);
+							
+						$Temp[] = $arr;
+						$Temp[$Class] = $arr;
 					}
 				}
 				
@@ -509,7 +640,18 @@
 			}
 			
 			$this->ClassJob = $Temp;
-		}	
+		}
+		public function getClassJob($Class) { return $this->ClassJob[ucwords($Class)]; }
+		
+		// VALIDATE
+		public function validate()
+		{
+			// Check Name
+			if (!$this->Name) { $this->Validated = false; $this->Errors[] = 'Character name is false.'; }
+		}
+		public function isValid() { return $this->Validated; }
+		public function getErrors() { return $this->Errors; }
+		
 	}		
 	
 	
@@ -784,4 +926,31 @@
 			return htmlentities($source);	
 		}
 	}
+	
+	# --------------------------------------
+
+	// Setup API
+	$API = new LodestoneAPI();
+	
+	# Set character object (echo portrait for example)
+	$Character = $API->get("Premium Virtue", "Gungnir");
+	echo '<img src="'. $Character->getPortrait() .'" />';
+	
+	// Search by Name + Server
+	# $API->searchCharacter("Premium Virtue", "Gungnir", true);
+	
+	// Get by specific ID
+	# $ID = 730968;
+	# $API->parseProfile($ID);
+	# $Character = $API->getCharacterByID($ID);
+	# Show($Character);
+	
+	// Get by specific ID
+	# $API->parseAchievements($ID);
+	# Show($API->getAchievements());
+
+	// Print source code (for debugging)
+	# $API->printSourceArray();
+
+	
 ?>
