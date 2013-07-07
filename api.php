@@ -428,9 +428,6 @@
 			$this->Stats['core']['mp'] = trim($String[1]);
 			$this->Stats['core']['tp'] = trim($String[2]);
 		}
-		public function getHP() { return $this->Stats['core']['hp']; }
-		public function getMP() { return $this->Stats['core']['mp']; }
-		public function getTP() { return $this->Stats['core']['tp']; }
 		
 		// ATTRIBUTES
 		public function setAttributes($String) 
@@ -545,7 +542,7 @@
 					if (stripos($Line, 'item_name') !== false) { 
 						$Data = htmlspecialchars_decode(trim(html_entity_decode($A[$i + 3])), ENT_QUOTES);
 						if (strpos($Data, " Arm") !== false || strpos($Data, " Tool") !== false) { $Data = 'Main'; }
-						$Temp['slot'] = $Data;
+						$Temp['slot'] = strtolower($Data);
 					}
 					
 					// Increment
@@ -567,7 +564,7 @@
 			// Set Active Class
 			$classjob = explode("&#39;", $this->Gear[0]['slot'])[0];
 			$this->Stats['active']['class'] = $classjob;
-			if (isset($this->Gear['Soul Crystal'])) { $this->Stats['active']['job'] = str_ireplace("Soul of the ", NULL, $this->Gear['Soul Crystal']['name']); }
+			if (isset($this->Gear['soul crystal'])) { $this->Stats['active']['job'] = str_ireplace("Soul of the ", NULL, $this->Gear['soul crystal']['name']); }
 		}
 		public function getGear()			{ return $this->Gear; }
 		public function getEquipped($Type)	{ return $this->Gear['equipped'][$Type]; }
