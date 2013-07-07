@@ -88,7 +88,7 @@
 		#-------------------------------------------#
 
 		// Search a character by its name and server.
-		public function searchCharacter($Name, $Server, $GetExact)
+		public function searchCharacter($Name, $Server, $GetExact = true)
 		{
 			if (!$Name)
 			{
@@ -118,7 +118,7 @@
 						$Data 		= explode('&quot;', $F[3]);
 						$ID			= trim(explode('/', $Data[3])[3]);
 						$NameServer	= explode("(", trim(str_ireplace(">", NULL, strip_tags(html_entity_decode($Data[4]))))); 
-						$Name		= trim($NameServer[0]);
+						$Name		= htmlspecialchars_decode(trim($NameServer[0]), ENT_QUOTES);
 						$Server		= trim(str_ireplace(")", NULL, $NameServer[1]));
 						$Language 	= $F[4];
 						
@@ -137,7 +137,10 @@
 						$Exact = false;
 						foreach($this->Search['results'] as $Character)
 						{
-							if ($Character['name'] == $ExactName)
+							#Show($Character['name'] .' < > '. $ExactName);
+							#Show(md5($Character['name']) .' < > '. md5($ExactName));
+							#Show(strlen($Character['name']) .' < > '. strlen($ExactName));
+							if (($Character['name']) == ($ExactName))
 							{
 								$this->Search['results'] = NULL;
 								$this->Search['results'][] = $Character;
@@ -152,7 +155,6 @@
 				}
 				else
 				{
-					Show("Did not find");
 					$this->Search['total'] = 0;
 					$this->Search['results'] = NULL;	
 				}
@@ -930,12 +932,14 @@
 
 
 	// Setup API
-	$API = new LodestoneAPI();
+	# $API = new LodestoneAPI();
+	# $API->searchCharacter("P'r'e'm'i'u'm V'i't'", "Hyperion");
+	# Show($API->getSearch());
 	
 	// Set character object (echo portrait for example)
-	$Character = $API->get("P'r'e'm'i'u'm V'i't'", "Hyperion");
-	Show($Character);
-	#echo '<img src="'. $Character->getPortrait() .'" />';
+	# $Character = $API->get("P'r'e'm'i'u'm V'i't'", "Hyperion");
+	# Show($Character);
+	# echo '<img src="'. $Character->getPortrait() .'" />';
 	
 	// Search by Name + Server
 	# $API->searchCharacter("Premium Virtue", "Gungnir", true);
