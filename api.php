@@ -13,8 +13,8 @@
 	*/
 
 	// Debug stuff
-	# error_reporting(-1);
-	# function show($Data) { echo '<pre>'; print_r($Data); echo '</pre>'; }
+ 	# error_reporting(-1);
+	function show($Data) { echo '<pre>'; print_r($Data); echo '</pre>'; }
 
 	/*	LodestoneAPI
 	 *	------------
@@ -566,7 +566,7 @@
 			$this->Gear['equipped'] = $GearArray;
 			
 			// Set Active Class
-			$classjob = explode("'", $Main)[0];
+			$classjob = str_ireplace('Two--Handed ', NULL, explode("'", $Main)[0]);
 			$this->Stats['active']['class'] = $classjob;
 			if (isset($this->Gear['soul crystal'])) { $this->Stats['active']['job'] = str_ireplace("Soul of the ", NULL, $this->Gear['soul crystal']['name']); }
 		}
@@ -932,13 +932,16 @@
 
 
 	// Setup API
-	# $API = new LodestoneAPI();
+	$API = new LodestoneAPI();
+	
 	# $API->searchCharacter("P'r'e'm'i'u'm V'i't'", "Hyperion");
 	# Show($API->getSearch());
 	
 	// Set character object (echo portrait for example)
-	# $Character = $API->get("P'r'e'm'i'u'm V'i't'", "Hyperion");
-	# Show($Character);
+	$Character = $API->get("Darka Munday", "Ragnarok");
+	Show("class = " . $Character->getActiveClass());
+	Show("job = ". $Character->getActiveJob());
+	Show("level = ". $Character->getActiveLevel());
 	# echo '<img src="'. $Character->getPortrait() .'" />';
 	
 	// Search by Name + Server
