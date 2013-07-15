@@ -14,7 +14,7 @@
 
 	// Debug stuff
  	# error_reporting(-1);
-	function show($Data) { echo '<pre>'; print_r($Data); echo '</pre>'; }
+	//function show($Data) { echo '<pre>'; print_r($Data); echo '</pre>'; }
 
 	/*	LodestoneAPI
 	 *	------------
@@ -648,7 +648,29 @@
 		public function validate()
 		{
 			// Check Name
-			if (!$this->Name) { $this->Validated = false; $this->Errors[] = 'Character name is false.'; }
+			if (!$this->Name) 			{ $this->Validated = false; $this->Errors[] = 'Name is false'; }
+			if (!$this->Server) 		{ $this->Validated = false; $this->Errors[] = 'Server is false'; }
+			if (!$this->ID) 			{ $this->Validated = false; $this->Errors[] = 'ID is false'; }
+			if (!$this->Lodestone) 		{ $this->Validated = false; $this->Errors[] = 'Lodestone URL is false'; }
+			if (!$this->Avatars['96']) 	{ $this->Validated = false; $this->Errors[] = 'Avatars is false'; }
+			
+			if (!$this->Portrait) 		{ $this->Validated = false; $this->Errors[] = 'Portrait is false'; }
+			if (!$this->Race) 			{ $this->Validated = false; $this->Errors[] = 'Race is false'; }
+			if (!$this->Clan) 			{ $this->Validated = false; $this->Errors[] = 'Clan is false'; }
+			if (!$this->Nameday) 		{ $this->Validated = false; $this->Errors[] = 'Nameday is false'; }
+			if (!$this->Guardian) 		{ $this->Validated = false; $this->Errors[] = 'Guardian is false'; }
+			if (!$this->City) 			{ $this->Validated = false; $this->Errors[] = 'City is false'; }
+			
+			if (!is_numeric($this->Stats['core']['hp'])) { $this->Validated = false; $this->Errors[] = 'hp is false or non numeric'; }
+			if (!is_numeric($this->Stats['core']['mp'])) { $this->Validated = false; $this->Errors[] = 'mp is false or non numeric'; }
+			if (!is_numeric($this->Stats['core']['tp'])) { $this->Validated = false; $this->Errors[] = 'tp is false or non numeric'; }
+			
+			foreach($this->ClassJob as $CJ)
+			{
+				if (!is_numeric($CJ['level']) && $CJ['level'] != '-') { $this->Validated = false; $this->Errors[] = $CJ['class'] .' level was non numeric and not "-"'; }
+				if (!is_numeric($CJ['exp']['current']) && $CJ['exp']['current'] != '-') { $this->Validated = false; $this->Errors[] = $CJ['class'] .' level was non numeric and not "-"'; }
+				if (!is_numeric($CJ['exp']['max']) && $CJ['exp']['current'] != '-') { $this->Validated = false; $this->Errors[] = $CJ['class'] .' level was non numeric and not "-"'; }
+			}
 		}
 		public function isValid() { return $this->Validated; }
 		public function getErrors() { return $this->Errors; }
@@ -926,39 +948,5 @@
 			curl_close($ch);
 			return htmlentities($source);	
 		}
-	}
-	
-	# --------------------------------------
-
-
-	// Setup API
-	$API = new LodestoneAPI();
-	
-	# $API->searchCharacter("P'r'e'm'i'u'm V'i't'", "Hyperion");
-	# Show($API->getSearch());
-	
-	// Set character object (echo portrait for example)
-	$Character = $API->get("Darka Munday", "Ragnarok");
-	Show("class = " . $Character->getActiveClass());
-	Show("job = ". $Character->getActiveJob());
-	Show("level = ". $Character->getActiveLevel());
-	# echo '<img src="'. $Character->getPortrait() .'" />';
-	
-	// Search by Name + Server
-	# $API->searchCharacter("Premium Virtue", "Gungnir", true);
-	
-	// Get by specific ID
-	# $ID = 730968;
-	# $API->parseProfile($ID);
-	# $Character = $API->getCharacterByID($ID);
-	# Show($Character);
-	
-	// Get by specific ID
-	# $API->parseAchievements($ID);
-	# Show($API->getAchievements());
-
-	// Print source code (for debugging)
-	# $API->printSourceArray();
-
-	
+	}	
 ?>
