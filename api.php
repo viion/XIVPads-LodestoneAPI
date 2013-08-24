@@ -23,7 +23,7 @@
 	{
 		// url addresses to various lodestone content.
 		private $URL = array(
-			'profile'		=> 'http://na.beta.finalfantasyxiv.com/lodestone/character/',
+			'profile'		=> 'http://eu.finalfantasyxiv.com/lodestone/character/',
 			'achievement' 	=> '/achievement/',
 			'search'		=> '?q=%name%&worldname=%server%'
 		);
@@ -56,19 +56,24 @@
 		}
 		
 		// Quick get
-		public function get($Name, $Server)
+		public function get($Array)
 		{
 			// Clean
-			$Name 	= trim(ucwords($Name));
-			$Server = trim(ucwords($Server));
+			$Name 	= trim(ucwords($Array['name']));
+			$Server = trim(ucwords($Array['server']));
+			$ID		= trim($Array['id']);
 			
-			// Search by Name + Server, exact
-			$this->searchCharacter($Name, $Server, true);
+			// If no ID passed, find it.
+			if (!$ID)
+			{
+				// Search by Name + Server, exact
+				$this->searchCharacter($Name, $Server, true);
+				
+				// Get by specific ID
+				$ID = $this->getSearch()['results'][0]['id'];
+			}
 			
-			// Get by specific ID
-			$ID = $this->getSearch()['results'][0]['id'];
-			
-			// If an ID or not
+			// If an ID
 			if ($ID)
 			{
 				// Parse profile
@@ -105,17 +110,17 @@
 				
 				// Get the source
 				$this->getSource($this->URL['profile'] . str_ireplace(array('%name%', '%server%'), array(str_ireplace(" ", "+", $Name), $Server), $this->URL['search']));
-				
+
 				// Get all found characters
-				$Found = $this->findAll('thumb_cont_black_50', 5, NULL, false);
-				
+				$Found = $this->findAll('thumb_cont_black_50', 10, NULL, false);
+
 				// Loop through results
 				if ($Found)
 				{
 					foreach($Found as $F)
 					{
-						$Avatar 	= explode('&quot;', $F[0])[3];
-						$Data 		= explode('&quot;', $F[3]);
+						$Avatar 	= explode('&quot;', $F[1])[3];
+						$Data 		= explode('&quot;', $F[6]);
 						$ID			= trim(explode('/', $Data[3])[3]);
 						$NameServer	= explode("(", trim(str_ireplace(">", NULL, strip_tags(html_entity_decode($Data[4]))))); 
 						$Name		= htmlspecialchars_decode(trim($NameServer[0]), ENT_QUOTES);
@@ -140,13 +145,20 @@
 							#Show($Character['name'] .' < > '. $ExactName);
 							#Show(md5($Character['name']) .' < > '. md5($ExactName));
 							#Show(strlen($Character['name']) .' < > '. strlen($ExactName));
-							if (($Character['name']) == ($ExactName))
+							if (($Character['name']) == ($ExactName) && strlen(trim($Character['name'])) == strlen(trim($ExactName)))
 							{
+								$Exact = true;
 								$this->Search['results'] = NULL;
 								$this->Search['results'][] = $Character;
 								$this->Search['isExact'] = true;
 								break;
 							}
+						}
+						
+						// If no exist false, null array
+						if (!$Exact)
+						{
+							$this->Search = NULL;	
 						}
 					}
 					
@@ -163,6 +175,21 @@
 		
 		// Get search results
 		public function getSearch() { return $this->Search; }
+
+		// Checks if an error page exists
+		public function errorPage($ID)
+		{
+			// Get the source
+			$this->getSource($this->URL['profile'] . $ID);
+
+			// Check character tag
+			$PageNotFound = $this->find('/lodestone/character/');
+			
+			// if not found, error.
+			if (!$PageNotFound) { return true; }
+
+			return false;
+		}
 		
 		#-------------------------------------------#
 		# PROFILE									#
@@ -175,68 +202,81 @@
 			{
 				echo "error: No ID Set.";	
 			}
+			else if ($this->errorPage($ID))
+			{
+				echo "error: Character page does not exist.";	
+			}
 			else
 			{
 				// Get the source
-				$this->getSource($this->URL['profile'] . $ID);	
+				$this->getSource($this->URL['profile'] . $ID);
 				
 				// Create a new character object
 				$Character = new Character();
 				
 				// Set Character Data
 				$Character->setID(trim($ID), $this->URL['profile'] . $ID);
-				$Character->setNameServer($this->find('player_name_brown'));
-				$Character->setAvatar($this->find('thumb_cont_black_40', false));
-				$Character->setPortrait($this->findRange('bg_chara_264', 2, NULL, false));
-				$Character->setRaceClan($this->find('chara_profile_title'));
-				$Character->setLegacy($this->find('bt_legacy_history'));
-				$Character->setBirthGuardianCompany($this->findRange('chara_profile_list', 60, NULL, false));
-				$Character->setCity($this->findRange('City-state', 5));
-				$Character->setBiography($this->findRange('txt_selfintroduction', 5));
-				$Character->setHPMPTP($this->findRange('param_power_area', 10));
-				$Character->setAttributes($this->findRange('param_list_attributes', 8));
-				$Character->setElemental($this->findRange('param_list_elemental', 8));
-				$Character->setOffense($this->findRange('param_title_offence', 6));
-				$Character->setDefense($this->findRange('param_title_deffence', 6));
-				$Character->setPhysical($this->findRange('param_title_melle', 6));
-				$Character->setResists($this->findRange('param_title_melleresists', 6));
-				$Character->setActiveClassLevel($this->findRange('&quot;class_info&quot;', 3));
-				
-				// Set Gear (Also sets Active Class and Job)
-				$Gear = $this->findAll('item_detail_box', NULL, '//ITEM Detail', false);
-				$Character->setGear($Gear);
-				
-				// The next few attributes are based on class
-				if (in_array($Character->getActiveClass(), $this->ClassDisicpline['dow']) || in_array($Character->getActiveClass(), $this->ClassDisicpline['dom']))
-				{
-					$Character->setSpell($this->findRange('param_title_spell', 6));
-					$Character->setPVP($this->findRange('param_title_pvpparam', 6));
-				}
-				else if (in_array($Character->getActiveClass(), $this->ClassDisicpline['doh']))
-				{
-					$Character->setCrafting($this->findRange('param_title_crafting', 6));
-				}
-				else if (in_array($Character->getActiveClass(), $this->ClassDisicpline['dol']))
-				{
-					$Character->setGathering($this->findRange('param_title_gathering', 6));
-				}
+				$Character->setNameServer($this->findRange('player_name_brown', 3));
 
-				#$this->segment('area_header_w358_inner');
-				
-				// Set Minions
-				$Minions = $this->findRange('area_header_w358_inner', NULL, '//Minion', false);
-				$Character->setMinions($Minions);
-				
-				#$this->segment('class_fighter');
-				
-				// Set ClassJob
-				$Character->setClassJob($this->findRange('class_fighter', NULL, '//Class Contents', false));
-				
-				// Validate data
-				$Character->validate();
-				
-				// Append character to array
-				$this->Characters[$ID] = $Character;
+				// Only process if character name set
+				if (strlen($Character->getName()) > 3)
+				{
+					$Character->setAvatar($this->findRange('thumb_cont_black_40', 3, NULL, false));
+					$Character->setPortrait($this->findRange('bg_chara_264', 2, NULL, false));
+					$Character->setRaceClan($this->find('chara_profile_title'));
+					$Character->setLegacy($this->find('bt_legacy_history'));
+					$Character->setBirthGuardianCompany($this->findRange('chara_profile_list', 60, NULL, false));
+					$Character->setCity($this->findRange('City-state', 5));
+					$Character->setBiography($this->findRange('txt_selfintroduction', 5));
+					$Character->setHPMPTP($this->findRange('param_power_area', 10));
+					$Character->setAttributes($this->findRange('param_list_attributes', 8));
+					$Character->setElemental($this->findRange('param_list_elemental', 8));
+					$Character->setOffense($this->findRange('param_title_offence', 6));
+					$Character->setDefense($this->findRange('param_title_deffence', 6));
+					$Character->setPhysical($this->findRange('param_title_melle', 6));
+					$Character->setResists($this->findRange('param_title_melleresists', 6));
+					$Character->setActiveClassLevel($this->findRange('&quot;class_info&quot;', 3));
+					
+					// Set Gear (Also sets Active Class and Job)
+					$Gear = $this->findAll('item_detail_box', NULL, '//ITEM Detail', false);
+					$Character->setGear($Gear);
+					
+					// The next few attributes are based on class
+					if (in_array($Character->getActiveClass(), $this->ClassDisicpline['dow']) || in_array($Character->getActiveClass(), $this->ClassDisicpline['dom']))
+					{
+						$Character->setSpell($this->findRange('param_title_spell', 6));
+						$Character->setPVP($this->findRange('param_title_pvpparam', 6));
+					}
+					else if (in_array($Character->getActiveClass(), $this->ClassDisicpline['doh']))
+					{
+						$Character->setCrafting($this->findRange('param_title_crafting', 6));
+					}
+					else if (in_array($Character->getActiveClass(), $this->ClassDisicpline['dol']))
+					{
+						$Character->setGathering($this->findRange('param_title_gathering', 6));
+					}
+
+					#$this->segment('area_header_w358_inner');
+					
+					// Set Minions
+					$Minions = $this->findRange('area_header_w358_inner', NULL, '//Minion', false);
+					$Character->setMinions($Minions);
+					
+					#$this->segment('class_fighter');
+					
+					// Set ClassJob
+					$Character->setClassJob($this->findRange('class_fighter', NULL, '//Class Contents', false));
+					
+					// Validate data
+					$Character->validate();
+					
+					// Append character to array
+					$this->Characters[$ID] = $Character;
+				}
+				else
+				{
+					$this->Characters[$ID] = NULL;
+				}
 			}
 		}
 		
@@ -252,15 +292,15 @@
 			// Get biography
 			$Character->setBiography($this->findRange('txt_selfintroduction', 5));
 			
-			// Append character to array
-			$this->Characters[$ID] = $Character;
+			// Return biography
+			return $Character->getBiography();
 		}
 		
 		// Get a list of parsed characters.
 		public function getCharacters() { return $this->Characters;	}
 		
 		// Get a list of parsed characters.
-		public function getCharacterByID($ID) { return $this->Characters[$ID]; }
+		public function getCharacterByID($ID) { return isset($this->Characters[$ID]) ? $this->Characters[$ID] : NULL; }
 		
 		#-------------------------------------------#
 		# ACHIEVEMENTS								#
@@ -343,9 +383,8 @@
 		// NAME + SERVER
 		public function setNameServer($String)
 		{
-			$String 		= explode(" (", str_ireplace(")", NULL, $String));
 			$this->Name 	= htmlspecialchars_decode(trim($String[0]), ENT_QUOTES);
-			$this->Server 	= trim($String[1]);
+			$this->Server 	= str_ireplace(array("(", ")"), NULL, trim($String[1]));
 			$this->NameClean= preg_replace('/[^a-z]/i', '', strtolower($this->Name));
 			
 		}
@@ -356,25 +395,35 @@
 		// AVATAR
 		public function setAvatar($String)
 		{
-			$this->Avatars['50'] = trim(explode('&quot;', $String)[3]);
-			$this->Avatars['64'] = str_ireplace("50x50", "60x60", $this->Avatars['50']);
-			$this->Avatars['96'] = str_ireplace("50x50", "96x96", $this->Avatars['50']);
+			$String = $String[2];
+			if (isset($String))
+			{
+				$this->Avatars['50'] = trim(explode('&quot;', $String)[1]);
+				$this->Avatars['64'] = str_ireplace("50x50", "60x60", $this->Avatars['50']);
+				$this->Avatars['96'] = str_ireplace("50x50", "96x96", $this->Avatars['50']);
+			}
 		}
 		public function getAvatar($Size) { return $this->Avatars[$Size]; }
 		
 		// PORTRAIT
 		public function setPortrait($String)
 		{
-			$this->Portrait = trim(explode('&quot;', $String[1])[1]);
+			if (isset($String))
+			{
+				$this->Portrait = trim(explode('&quot;', $String[1])[1]);
+			}
 		}
 		public function getPortrait() { return $this->Portrait; }
 		
 		// RACE + CLAN
 		public function setRaceClan($String)
 		{
-			$String 		= explode("/", $String);
-			$this->Clan 	= htmlspecialchars_decode(trim($String[0]), ENT_QUOTES);
-			$this->Race 	= htmlspecialchars_decode(trim($String[1]), ENT_QUOTES);
+			if (isset($String))
+			{
+				$String 		= explode("/", $String);
+				$this->Clan 	= htmlspecialchars_decode(trim($String[0]), ENT_QUOTES);
+				$this->Race 	= htmlspecialchars_decode(trim($String[1]), ENT_QUOTES);
+			}
 		}
 		public function getRace() { return $this->Race; }
 		public function getClan() { return $this->Clan; }
@@ -530,6 +579,7 @@
 			$GearArray = NULL;
 			
 			// Loop through gear equipped
+			$Main = NULL;
 			foreach($Array as $A)
 			{
 				// Temp array
@@ -537,7 +587,6 @@
 				
 				// Loop through data
 				$i = 0;
-				$Main;
 				foreach($A as $Line)
 				{
 					// Item Icon
@@ -545,14 +594,19 @@
 					if (stripos($Line, 'item_name') !== false) { $Data = trim(str_ireplace(array('>', '"'), NULL, strip_tags(html_entity_decode($A[$i + 2])))); $Temp['name'] = htmlspecialchars_decode(trim($Data), ENT_QUOTES); }
 					if (stripos($Line, 'item_name') !== false) { 
 						$Data = htmlspecialchars_decode(trim(html_entity_decode($A[$i + 3])), ENT_QUOTES);
-						if (strpos($Data, " Arm") !== false || strpos($Data, " Tool") !== false) { $Main = $Data; $Data = 'Main'; }
+						if (
+							strpos($Data, " Arm") !== false || 
+							strpos($Data, " Grimoire") !== false || 
+							strpos($Data, " Tool") !== false
+						) 
+						{ $Main = $Data; $Data = 'Main'; }
 						$Temp['slot'] = strtolower($Data);
 					}
 					
 					// Increment
 					$i++;
 				}
-				
+
 				// Slot manipulation
 				$Slot = $Temp['slot'];
 				if (isset($GearArray[$Slot])) { $Slot = $Slot . 2; }		
@@ -566,7 +620,7 @@
 			$this->Gear['equipped'] = $GearArray;
 			
 			// Set Active Class
-			$classjob = str_ireplace('Two--Handed ', NULL, explode("'", $Main)[0]);
+			$classjob = str_ireplace('Two-Handed ', NULL, explode("'", $Main)[0]);
 			$this->Stats['active']['class'] = $classjob;
 			if (isset($this->Gear['soul crystal'])) { $this->Stats['active']['job'] = str_ireplace("Soul of the ", NULL, $this->Gear['soul crystal']['name']); }
 		}
@@ -574,7 +628,7 @@
 		public function getEquipped($Type)	{ return $this->Gear['equipped'][$Type]; }
 		public function getSlot($Slot)		{ return $this->Gear['equipped']['slots'][$Slot]; }
 		public function getActiveClass() 	{ return $this->Stats['active']['class']; }
-		public function getActiveJob() 		{ return $this->Stats['active']['job']; }
+		public function getActiveJob() 		{ return isset($this->Stats['active']['job']) ? $this->Stats['active']['job'] : NULL; }
 		public function getActiveLevel() 	{ return $this->Stats['active']['level']; }
 		
 		// MINIONS
@@ -590,8 +644,8 @@
 				if (stripos($A, 'ic_reflection_box') !== false)
 				{
 					$arr = array();
-					$arr['Name'] = trim(explode('&quot;', $Array[$i])[5]);
-					$arr['Icon'] = trim(explode('&quot;', $Array[$i + 2])[1]);
+					$arr['name'] = trim(explode('&quot;', $Array[$i])[5]);
+					$arr['icon'] = trim(explode('&quot;', $Array[$i + 2])[1]);
 					$Pets[] = $arr;
 				}
 				
@@ -617,7 +671,7 @@
 				// If class
 				if(stripos($A, 'ic_class_wh24_box') !== false)
 				{
-					$Class 	= trim(strip_tags(html_entity_decode($Array[$i])));
+					$Class 	= strtolower(trim(strip_tags(html_entity_decode($Array[$i]))));
 					$Level 	= trim(strip_tags(html_entity_decode($Array[$i + 1])));
 					$EXP 	= trim(strip_tags(html_entity_decode($Array[$i + 2])));
 					if ($Class)
@@ -642,7 +696,8 @@
 			
 			$this->ClassJob = $Temp;
 		}
-		public function getClassJob($Class) { return $this->ClassJob[ucwords($Class)]; }
+		public function getClassJob($Class) { return $this->ClassJob[strtolower($Class)]; }
+		public function getClassJobs() { return $this->ClassJob; }
 		
 		// VALIDATE
 		public function validate()
@@ -782,7 +837,7 @@
 		}
 		
 		// Find data based on a tag, and take the next i amount
-		protected function findRange($Tag, $Range,$Tag2 = NULL, $Clean = TRUE)
+		protected function findRange($Tag, $Range, $Tag2 = NULL, $Clean = TRUE)
 		{
 			$Found 		= false;
 			$Found2		= false;
@@ -816,7 +871,7 @@
 			}
 			
 			// Remove empty values
-			$Array = array_values(array_filter($Array));
+			$Array = isset($Array) ? array_values(array_filter($Array)) : NULL;
 			
 			// Return array, else false.
 			if ($Array)
@@ -935,8 +990,8 @@
 				CURLOPT_FOLLOWLOCATION 	=> false,        	// follow redirects
 				CURLOPT_ENCODING       	=> "",     			// handle all encodings
 				CURLOPT_AUTOREFERER    	=> true,         	// set referer on redirect
-				CURLOPT_CONNECTTIMEOUT 	=> 60,           	// timeout on connects
-				CURLOPT_TIMEOUT        	=> 60,           	// timeout on response
+				CURLOPT_CONNECTTIMEOUT 	=> 15,           	// timeout on connects
+				CURLOPT_TIMEOUT        	=> 15,           	// timeout on response
 				CURLOPT_MAXREDIRS      	=> 5,            	// stop after 10 redirects
 				CURLOPT_USERAGENT      	=> "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/27.0.1453.110 Safari/537.36", 
 				CURLOPT_HTTPHEADER     	=> array('Content-type: text/html; charset=utf-8', 'Accept-Language: en'),
@@ -949,4 +1004,18 @@
 			return htmlentities($source);	
 		}
 	}	
+	
+/*
+	$API = new LodestoneAPI();
+	$API->get(array(
+		'id' => 1224351
+	));
+# 	$API->get(array(
+#		'name' => 'Premium Virtue', 
+#		'server' => 'Excalibur',
+#	));
+	Show($API);
+	Show($API->printSourceArray);
+*/
+	
 ?>
