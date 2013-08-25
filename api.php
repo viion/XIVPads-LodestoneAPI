@@ -1,4 +1,4 @@
-<?
+<?php
 	/*
 		XIVPads.com (v4) - Lodestone Query API
 		--------------------------------------------------
@@ -399,7 +399,7 @@
 			if (isset($String))
 			{
 				$this->Avatars['50'] = trim(explode('&quot;', $String)[1]);
-				$this->Avatars['64'] = str_ireplace("50x50", "60x60", $this->Avatars['50']);
+				$this->Avatars['64'] = str_ireplace("50x50", "64x64", $this->Avatars['50']);
 				$this->Avatars['96'] = str_ireplace("50x50", "96x96", $this->Avatars['50']);
 			}
 		}
