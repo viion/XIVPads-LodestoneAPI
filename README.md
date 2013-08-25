@@ -33,7 +33,10 @@ object pre-filled with the profile information where you can call traditional "g
 $API = new LodestoneAPI();
 
 // Parse the character: Premium Virtue - Gungnir
-$Character = $API->get("Premium Virtue", "Gungnir");
+$Character = $API->get(array(
+  "name" => "Premium Virtue", 
+  "server" => "Gungnir"
+));
 
 // Print character portrait
 echo '<img src="'. $Character->getPortrait() .'" />';
@@ -111,7 +114,7 @@ API Methods
 **LodestoneAPI**
 ```php
 searchCharacter(name, server, exact[true|false])
-get(name, server)
+get(array) (array takes: "name" => "xxx", "server" => "xxx", "id" => "123", ID will take priority)
 getSearch()
 getAchievements()
 getCharacters()
