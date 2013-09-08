@@ -13,7 +13,7 @@
 	*/
 
 	// Debug stuff
- 	# error_reporting(-1);
+ 	#error_reporting(-1);
 	//function show($Data) { echo '<pre>'; print_r($Data); echo '</pre>'; }
 
 	/*	LodestoneAPI
@@ -59,9 +59,9 @@
 		public function get($Array)
 		{
 			// Clean
-			$Name 	= trim(ucwords($Array['name']));
-			$Server = trim(ucwords($Array['server']));
-			$ID		= trim($Array['id']);
+			$Name 	= isset($Array['name']) 	? trim(ucwords($Array['name'])) : NULL;
+			$Server = isset($Array['server']) 	? trim(ucwords($Array['server'])) : NULL;
+			$ID		= isset($Array['id']) 		? trim($Array['id']) : NULL;
 			
 			// If no ID passed, find it.
 			if (!$ID)
@@ -337,12 +337,43 @@
 				}
 			}
 		}
+
+		#-------------------------------------------#
+		# FUNCTIONS									#
+		#-------------------------------------------#
+		protected function sksort(&$array, $subkey, $sort_ascending) 
+		{
+			if (count($array))
+				$temp_array[key($array)] = array_shift($array);
+			foreach($array as $key => $val){
+				$offset = 0;
+				$found = false;
+				foreach($temp_array as $tmp_key => $tmp_val)
+				{
+					if(!$found and strtolower($val[$subkey]) > strtolower($tmp_val[$subkey]))
+					{
+						$temp_array = array_merge(    (array)array_slice($temp_array,0,$offset),
+													array($key => $val),
+													array_slice($temp_array,$offset)
+												  );
+						$found = true;
+					}
+					$offset++;
+				}
+				if(!$found) $temp_array = array_merge($temp_array, array($key => $val));
+			}
+			if ($sort_ascending)
+				$array = array_reverse($temp_array);
+			else 
+				$array = $temp_array;
+		}
+
 	}
 	
 	/*	Character
 	 *	---------
 	 */
-	class Character
+	class Character extends LodestoneAPI
 	{
 		private $ID;
 		private $Lodestone;
@@ -609,7 +640,7 @@
 
 				// Slot manipulation
 				$Slot = $Temp['slot'];
-				if (isset($GearArray[$Slot])) { $Slot = $Slot . 2; }		
+				if (isset($GearArray['slots'][$Slot])) { $Slot = $Slot . 2; }		
 				
 				// Append array
 				$GearArray['numbers'][] = $Temp;
@@ -622,7 +653,7 @@
 			// Set Active Class
 			$classjob = str_ireplace('Two-Handed ', NULL, explode("'", $Main)[0]);
 			$this->Stats['active']['class'] = $classjob;
-			if (isset($this->Gear['soul crystal'])) { $this->Stats['active']['job'] = str_ireplace("Soul of the ", NULL, $this->Gear['soul crystal']['name']); }
+			if (isset($this->Gear['equipped']['slots']['soul crystal'])) { $this->Stats['active']['job'] = str_ireplace("Soul of the ", NULL, $this->Gear['equipped']['slots']['soul crystal']); }
 		}
 		public function getGear()			{ return $this->Gear; }
 		public function getEquipped($Type)	{ return $this->Gear['equipped'][$Type]; }
@@ -697,7 +728,44 @@
 			$this->ClassJob = $Temp;
 		}
 		public function getClassJob($Class) { return $this->ClassJob[strtolower($Class)]; }
-		public function getClassJobs() { return $this->ClassJob; }
+		public function getClassJobs($Specific = null) 
+		{ 
+			$arr = array();
+			if ($Specific)
+			{
+				foreach($this->getClassJobs() as $Key => $Data)
+				{
+					if ($Specific == 'numbered')
+					{
+						if (is_numeric($Key)) 
+						{
+							$arr[] = $Data;
+						}
+					}
+					else if ($Specific == 'named')
+					{
+						if (!is_numeric($Key)) 
+						{
+							$arr[$Key] = $Data;
+						}
+					}
+				}
+			}
+			else
+			{
+				$arr = $this->ClassJob;
+			}
+
+			return $arr;
+			
+		}
+		public function getClassJobsOrdered($Ascending = false, $Specific = NULL)
+		{
+			$ClassJobs = $this->getClassJobs();
+			if ($Specific) { $ClassJobs = $this->getClassJobs($Specific); }
+			$this->sksort($ClassJobs, "level", $Ascending);
+			return $ClassJobs;
+		}
 		
 		// VALIDATE
 		public function validate()
@@ -1005,17 +1073,15 @@
 		}
 	}	
 	
-/*
+	/*
 	$API = new LodestoneAPI();
-	$API->get(array(
-		'id' => 1224351
+	$Character = $API->get(array(
+		'name' => 'Premium Virtue', 
+		'server' => 'Excalibur',
 	));
-# 	$API->get(array(
-#		'name' => 'Premium Virtue', 
-#		'server' => 'Excalibur',
-#	));
-	Show($API);
-	Show($API->printSourceArray);
-*/
+
+	Show($Character->getClassJobsOrdered(false, 'numbered'));
+	*/
+
 	
 ?>
