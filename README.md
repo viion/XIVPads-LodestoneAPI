@@ -10,7 +10,7 @@ An API for parsing lodestone data, designed and maintained by XIVPads.com and XI
 
 **General Notes**
 - If you have problems, please create an issue on here.
-- The indentation is "4 spaces" for tabs, if you set your IDE to this it will look nice.
+- The tab indent size is "4 spaces", if you set your IDE to this it will look nice.
 
 **Implemented**
 - Character Search
