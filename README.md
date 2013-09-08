@@ -8,6 +8,10 @@ An API for parsing lodestone data, designed and maintained by XIVPads.com and XI
 - Moderate understanding of Object-Oriented Programming
 - 500 Gil
 
+**General Notes**
+- If you have problems, please create an issue on here.
+- The indentation is "4 spaces" for tabs, if you set your IDE to this it will look nice.
+
 **Implemented**
 - Character Search
 - Profile Parse
