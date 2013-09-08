@@ -702,6 +702,7 @@
 				// If class
 				if(stripos($A, 'ic_class_wh24_box') !== false)
 				{
+					$Icon 	= explode('?', str_ireplace(array('"', 'src='), '', html_entity_decode(explode(" ", $A)[2])))[0];
 					$Class 	= strtolower(trim(strip_tags(html_entity_decode($Array[$i]))));
 					$Level 	= trim(strip_tags(html_entity_decode($Array[$i + 1])));
 					$EXP 	= trim(strip_tags(html_entity_decode($Array[$i + 2])));
@@ -709,6 +710,7 @@
 					{
 						$arr = array(
 							'class' => $Class,
+							'icon'	=> $Icon,
 							'level' => $Level,
 							'exp'	=> array(
 								'current' => explode(" / ", $EXP)[0], 
@@ -757,7 +759,6 @@
 			}
 
 			return $arr;
-			
 		}
 		public function getClassJobsOrdered($Ascending = false, $Specific = NULL)
 		{
@@ -1082,6 +1083,5 @@
 
 	Show($Character->getClassJobsOrdered(false, 'numbered'));
 	*/
-
 	
 ?>
