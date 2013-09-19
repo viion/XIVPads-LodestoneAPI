@@ -112,6 +112,39 @@ $API->parseAchievements($ID)
 Show($API->getAchievements());
 ```
 
+**Parse Free Company**
+
+Pasrse the memberlist of a free company by the free company id.
+
+```php
+//Example 1:
+//Set CompanyID
+$CompanyID = '9237023573225242655';
+
+// Parse Companydata
+$SearchResult = $API->searchFreeCompanyById($CompanyID);
+
+//Get Companydata
+$GetResult = $API->getSearchFreeCompany();
+
+//Show Companydata
+Show($GetResult);
+
+
+//Example 2:
+//Set CompanyID
+$CompanyID = '9237023573225242655';
+
+// Parse Companymembers
+$SearchResult2 = $API->searchFreeCompanyMembersById($CompanyID);
+
+//Get Companymembers
+$GetResult2 = $API->getSearchFreeCompanyMembers();
+
+//Show Companymembers
+Show($GetResult2);
+```
+
 API Methods
 --------
 
@@ -120,6 +153,10 @@ API Methods
 searchCharacter(name, server, exact[true|false])
 get(array) (array takes: "name" => "xxx", "server" => "xxx", "id" => "123", ID will take priority)
 getSearch()
+searchFreeCompanyById(CompanyId)
+searchFreeCompanyMembersById(CompanyId)
+getSearchFreeCompany()
+getSearchFreeCompanyMembers()
 getAchievements()
 getCharacters()
 getCharacterByID(id)
