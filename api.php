@@ -245,7 +245,9 @@
   			      if(array_key_exists($j, $Found))
         		  {
                 //add data to the array
-                array_push($CompanyMembers, preg_replace ('#\(.*?\)#m' , '' , $Found[$j]));
+                $Result = preg_replace ('#\(.*?\)#m' , '' , $Found[$j]);  //preg_replace to delete Server (all persons of one company are at one server.)
+                $Result[0] = htmlspecialchars_decode(trim($Result[0]), ENT_QUOTES);  //Save Playername with normal characters
+                array_push($CompanyMembers, $Result);
               }
             }
             // Append search results
