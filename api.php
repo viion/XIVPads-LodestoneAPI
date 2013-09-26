@@ -415,7 +415,7 @@
 		public function setNameServer($String)
 		{
 			$this->Name 	= htmlspecialchars_decode(trim($String[0]), ENT_QUOTES);
-			$this->Server 	= str_ireplace(array("(", ")"), NULL, trim($String[1]));
+			$this->Server 	= str_ireplace(")", "", explode("(", trim($String[0]))[1]);
 			$this->NameClean= preg_replace('/[^a-z]/i', '', strtolower($this->Name));
 			
 		}
@@ -1073,15 +1073,15 @@
 			return htmlentities($source);	
 		}
 	}	
-	
+
 	/*
 	$API = new LodestoneAPI();
 	$Character = $API->get(array(
-		'name' => 'Premium Virtue', 
+		'name' => 'Nemi Chan', 
 		'server' => 'Excalibur',
 	));
 
-	Show($Character->getClassJobsOrdered(false, 'numbered'));
+	Show($Character);
 	*/
-	
+
 ?>
