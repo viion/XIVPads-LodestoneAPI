@@ -14,7 +14,7 @@
 
 	// Debug stuff
  	#error_reporting(-1);
-	//function show($Data) { echo '<pre>'; print_r($Data); echo '</pre>'; }
+	function show($Data) { echo '<pre>'; print_r($Data); echo '</pre>'; }
 
 	/*	LodestoneAPI
 	 *	------------
@@ -414,8 +414,9 @@
 		// NAME + SERVER
 		public function setNameServer($String)
 		{
-			$this->Name 	= htmlspecialchars_decode(trim($String[0]), ENT_QUOTES);
-			$this->Server 	= str_ireplace(")", "", explode("(", trim($String[0]))[1]);
+			$Data = str_ireplace(")", "", explode("(", htmlspecialchars_decode(trim($String[0]))));
+			$this->Name 	= $Data[0];
+			$this->Server 	= $Data[1];
 			$this->NameClean= preg_replace('/[^a-z]/i', '', strtolower($this->Name));
 			
 		}
@@ -1074,7 +1075,7 @@
 		}
 	}	
 
-	/*
+
 	$API = new LodestoneAPI();
 	$Character = $API->get(array(
 		'name' => 'Nemi Chan', 
@@ -1082,6 +1083,6 @@
 	));
 
 	Show($Character);
-	*/
+
 
 ?>
