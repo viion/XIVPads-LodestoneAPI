@@ -24,13 +24,13 @@
 		// url addresses to various lodestone content.
 		private $URL = array(
 			'profile'		=> 'http://eu.finalfantasyxiv.com/lodestone/character/',
-			'achievement' 	=> '/achievement/',
+			'freecompany' 	=> 'http://eu.finalfantasyxiv.com/lodestone/freecompany/',
+			'achievement' 	=> '/achievement/kind/',
 			'search'		=> '?q=%name%&worldname=%server%',
-			'freecompany' => 'http://eu.finalfantasyxiv.com/lodestone/freecompany/'
 		);
 		
 		// Configuration
-		public $AchievementCategories = array(13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24);
+		public $AchievementCategories = array(1, 2, 4, 5, 6, 8, 11, 12, 13);
 		public $ClassList = array();
 		public $ClassDisicpline = array();
 		
@@ -86,6 +86,39 @@
 				
 				// Return character
 				return $this->getCharacterByID($ID);
+			}
+			else
+			{
+				return false;
+			}
+		}
+
+		// Quick get company
+		public function getFC($Array)
+		{
+			// Clean
+			$Name 	= isset($Array['name']) 	? trim(ucwords($Array['name'])) : NULL;
+			$Server = isset($Array['server']) 	? trim(ucwords($Array['server'])) : NULL;
+			$ID		= isset($Array['id']) 		? trim($Array['id']) : NULL;
+
+			// If no ID passed, find it.
+			if (!$ID)
+			{
+				// Search by Name + Server, exact
+				$this->searchFreeCompany($Name, $Server, true);
+				
+				// Get by specific ID
+				$ID = $this->getSearch()['results'][0]['id'];
+			}
+			
+			// If an ID
+			if ($ID)
+			{
+				// Parse profile
+				$this->parseFreeCompany($ID);
+				
+				// Return character
+				return $this->getFreeCompanyByID($ID);
 			}
 			else
 			{
@@ -178,89 +211,81 @@
 			}
 		}
 		
-    // Search a free company by company id
-		public function searchFreeCompanyById($CompanyId)
+    	// Search a free company by name and server
+		public function searchFreeCompany($Name, $Server, $GetExact = true)
 		{
-			if (!$CompanyId)
+			if (!$Name)
 			{
-				echo "error: No CompanyID Set.";
+				echo "error: No Name Set.";	
+			}
+			else if (!$Server)
+			{
+				echo "error: No Server Set.";	
 			}
 			else
 			{
-				// Get the source
-				$this->getSource($this->URL['freecompany'] . preg_replace('![^0-9]!', '', $CompanyId));
-				// Get all found data
-				$Found = $this->findAll('table_style2', 50, NULL, true);
+				// Exact name for later
+				$ExactName = $Name;
 
-				//results
+				// Get the source
+				$this->getSource($this->URL['freecompany'] . str_ireplace(array('%name%', '%server%'), array(str_ireplace(" ", "+", $Name), $Server), $this->URL['search']));
+
+				// Get all found data
+				$Found = $this->findAll('ic_freecompany_box', 20, NULL, false);
+				
+				// if found
 				if ($Found)
 				{
-          $FreeCompanyName = $Found[0][1];
-          $ActiveMembers = $Found[0][6];
-          $CompanySlogan  = $Found[0][8];
+					foreach($Found as $F)
+					{
+						$Company 	= $this->clean($F[3]);
+						$ID			= trim(explode("/", $F[5])[3]);
+						$Name 		= trim(explode("(", $this->clean($F[5]))[0]);
+						$Server 	= str_ireplace(")", "", trim(explode("(", $this->clean($F[5]))[1]));
+						$Members 	= trim(explode(":", $this->clean($F[8]))[1]);
+						$Formed 	= trim(explode(",", explode("(", $F[13])[2])[0]);
 
-          // Append search results
-          $this->FreeCompanyList['results'] = array(
-							"freecompanyname" 	=> $FreeCompanyName,
-							"activemembers"		=> $ActiveMembers,
-							"companyslogan"	=> $CompanySlogan,
+						$this->Search['results'][] = 
+						array(
+							"id"		=> $ID,
+							"company" 	=> $Company,
+							"name"		=> $Name,
+							"server"	=> $Server,
+							"members"	=> $Members,
+							"formed"	=> $Formed,
 						);
-  			}
-  		}
+					}
+
+					// If to get exact
+					if ($GetExact)
+					{
+						$Exact = false;
+						foreach($this->Search['results'] as $FreeCompany)
+						{
+							if (($FreeCompany['name']) == ($ExactName) && strlen(trim($FreeCompany['name'])) == strlen(trim($ExactName)))
+							{
+								$Exact = true;
+								$this->Search['results'] = NULL;
+								$this->Search['results'][] = $FreeCompany;
+								$this->Search['isExact'] = true;
+								break;
+							}
+						}
+						
+						// If no exist false, null array
+						if (!$Exact)
+						{
+							$this->Search = NULL;	
+						}
+					}
+				}
+				else
+				{
+					$this->Search['total'] = 0;
+					$this->Search['results'] = NULL;	
+				}
+	  		}
 		}
-
-    // Search all free company members by company id
-		public function searchFreeCompanyMembersById($CompanyId, $Subsite = '/member/')
-		{
-			if (!$CompanyId)
-			{
-				echo "error: No CompanyID Set.";
-			}
-			else
-			{
-  		  //If Company was not searched before, search it, because i need the count of members
-  		  if(!array_key_exists('activemembers', $this->FreeCompanyList))
-  		  {
-          $SearchResult = $this->searchFreeCompanyById($CompanyId);
-        }
-
-        //Count of memberpages
-        $CountMember = $this->FreeCompanyList['results']['activemembers'];
-        $CountMemberpages = ceil($CountMember/20);
-
-        $CompanyMembers = array();
-
-        //walk through all mamberpages
-        for ($i = 1; $i <= $CountMemberpages; $i++)
-  			{
-  					// Get the source
-    				$this->getSource($this->URL['freecompany'] . preg_replace('![^0-9]!', '', $CompanyId) . $Subsite . '?page=' . $i);
-    				// Get all found data
-    				$Found = $this->findAll('player_name_area', 15, 'col2box clearfix', true);
-
-            //for each person on the site (19 persons per site)
-            for ($j = 0; $j <= 19; $j++)
-  			    {
-  			      //if it is an existing person
-  			      if(array_key_exists($j, $Found))
-        		  {
-                //add data to the array
-                $Result = preg_replace ('#\(.*?\)#m' , '' , $Found[$j]);  //preg_replace to delete Server (all persons of one company are at one server.)
-                $Result[0] = htmlspecialchars_decode(trim($Result[0]), ENT_QUOTES);  //Save Playername with normal characters
-                array_push($CompanyMembers, $Result);
-              }
-            }
-            // Append search results
-            $this->FreeCompanyMembersList['results'] = $CompanyMembers;
-  			}
-  		}
-		}
-
-		// Get company search results
-		public function getSearchFreeCompany() { return $this->FreeCompanyList; }
-
-		// Get company members search results
-		public function getSearchFreeCompanyMembers() { return $this->FreeCompanyMembersList; }		
 		
 		// Get search results
 		public function getSearch() { return $this->Search; }
@@ -388,7 +413,7 @@
 		// Get a list of parsed characters.
 		public function getCharacters() { return $this->Characters;	}
 		
-		// Get a list of parsed characters.
+		// Get a character by id
 		public function getCharacterByID($ID) { return isset($this->Characters[$ID]) ? $this->Characters[$ID] : NULL; }
 		
 		#-------------------------------------------#
@@ -399,8 +424,10 @@
 		public function getAchievements() { return $this->Achievements; }
 		
 		// Parse a achievements based on ID
-		public function parseAchievements($ID)
+		public function parseAchievements()
 		{
+			$ID = $this->getID();
+
 			if (!$ID)
 			{
 				echo "error: No ID Set.";	
@@ -426,6 +453,66 @@
 				}
 			}
 		}
+
+		// Parse achievement by category
+		public function parseAchievementsByCategory($cID)
+		{
+			$ID = $this->getID();
+
+			if (!$cID)
+			{
+				echo "error: No ID Set.";	
+			}
+			else
+			{
+				$Category = $this->AchievementCategories[$cID];
+
+				// Get the source
+				$this->getSource($this->URL['profile'] . $ID . $this->URL['achievement'] . $cID .'/');
+				
+				// Create a new character object
+				$Achievements = new Achievements();
+				
+				// Get Achievements
+				$Achievements->set($this->findAll('achievement_area_body', NULL, 'bt_more', false));
+				$Achievements->setPoints($this->findRange('total_point', 10));
+				$Achievements->setCategory($cID);
+				
+				// Append character to array
+				$this->Achievements[$cID] = $Achievements;
+			}
+		}
+
+		#-------------------------------------------#
+		# FREE COMPANY								#
+		#-------------------------------------------#
+
+		// Parse free company profile
+		public function parseFreeCompany($ID)
+		{
+			if (!$ID)
+			{
+				echo "error: No ID Set.";	
+			}
+			else
+			{
+				$this->getSource($this->URL['freecompany'] . $ID);
+
+				// Create a new character object
+				$FreeCompany = new FreeCompany();
+				
+				// Set Character Data
+				$FreeCompany->setID(trim($ID), $this->URL['profile'] . $ID);
+				$FreeCompany->setNameServerCompany($this->findRange('ic_freecompany_box', 10));
+				$FreeCompany->setTagFormedMembersSlogan($this->findRange('table_black m0auto', 50, false, false));
+
+				// Save free company
+				$this->FreeCompanies[$ID] = $FreeCompany;
+			}
+		}
+
+		// Get a free company by id
+		public function getFreeCompanyByID($ID) { return isset($this->FreeCompanies[$ID]) ? $this->FreeCompanies[$ID] : NULL; }
 
 		#-------------------------------------------#
 		# FUNCTIONS									#
@@ -506,8 +593,7 @@
 			$Data = str_ireplace(")", "", explode("(", (trim($String[0]))));
 			$this->Name 	= htmlspecialchars_decode(trim($Data[0]), ENT_QUOTES);
 			$this->Server 	= htmlspecialchars_decode(trim($Data[1]), ENT_QUOTES);
-			$this->NameClean= preg_replace('/[^a-z]/i', '', strtolower($this->Name));
-			
+			$this->NameClean= preg_replace('/[^a-z]/i', '', strtolower($this->Name));	
 		}
 		public function getName() { return $this->Name; }
 		public function getServer() { return $this->Server; }
@@ -888,8 +974,62 @@
 		}
 		public function isValid() { return $this->Validated; }
 		public function getErrors() { return $this->Errors; }
-		
-	}		
+	}
+
+	/* Free Company
+	 * ------------
+	 */	
+	class FreeCompany extends LodestoneAPI
+	{
+		private $ID;
+		private $Company;
+		private $Name;
+		private $Server;
+		private $Tag;
+		private $Formed;
+		private $Members;
+		private $Slogan;
+
+		#-------------------------------------------#
+		# FUNCTIONS									#
+		#-------------------------------------------#
+
+		// ID
+		public function setID($ID, $URL = NULL)
+		{
+			$this->ID = $ID;
+			$this->Lodestone = $URL;
+		}
+		public function getID() { return $this->ID; }
+		public function getLodestone() { return $this->Lodestone; }
+
+		// NAME + SERVER
+		public function setNameServerCompany($String)
+		{
+			$this->Company 	= htmlspecialchars_decode(trim($String[0]), ENT_QUOTES);
+			$this->Name 	= htmlspecialchars_decode(trim($String[1]), ENT_QUOTES);
+			$this->Server 	= str_ireplace(array("(", ")"), null, htmlspecialchars_decode(trim($String[2]), ENT_QUOTES));
+		}
+
+		// TAG + FORMED + MEMBERS + SLOGAN
+		public function setTagFormedMembersSlogan($String)
+		{
+			$Data 			= explode("&gt;", strip_tags($String[4]));
+			$this->Name 	= str_ireplace("&lt;/span", "", $Data[2]);
+			$this->Tag 		= str_ireplace(array("&amp;laquo;", "&amp;raquo;", "&lt;/td"), "", $Data[4]);
+			$this->Formed 	= trim(explode(",", explode("(", $String[11])[2])[0]);
+			$this->Members 	= htmlspecialchars_decode(trim($String[17]), ENT_QUOTES);
+			$this->Slogan 	= htmlspecialchars_decode(trim($String[21]), ENT_QUOTES);
+		}
+		public function getCompany() { return $this->Company; }
+		public function getName() { return $this->Name; }
+		public function getServer() { return $this->Server; }
+		public function getTag() { return $this->Tag; }
+		public function getFormed() { return $this->Formed; }
+		public function getMembers() { return $this->Members; }
+		public function getSlogan() { return $this->Slogan; }
+
+	}	
 	
 	
 	/*	Achievement
@@ -1111,7 +1251,7 @@
 		}
 		
 		// Clean a found results
-		private function clean($Line)
+		protected function clean($Line)
 		{
 			// Strip tags
 			$Line = strip_tags(html_entity_decode($Line));
@@ -1141,7 +1281,7 @@
 		}
 		
 		// Fetches page source via CURL
-		private function curl($URL)
+		protected function curl($URL)
 		{
 			$options = array(	
 				CURLOPT_RETURNTRANSFER	=> true,         	// return web page
@@ -1166,12 +1306,25 @@
 
 	/*
 	$API = new LodestoneAPI();
+	/*
+	$FreeCompany = $API->getFC(array(
+		"name" 		=> "call for help", 
+		"server" 	=> "Excalibur"
+	));
+	Show($FreeCompany);
+	
 	$Character = $API->get(array(
-		'name' => 'Nemi Chan', 
-		'server' => 'Excalibur',
+		"name"		=> "Premium Virtue",
+		"server"	=> "Excalibur"
 	));
 
-	Show($Character);
+	// Parse achievement
+	$Character->parseAchievementsByCategory(13);
+
+	// Get achievements
+	$Achievements = $Character->getAchievements()[13]->get();
+
+	Show($Achievements);
 	*/
 
 ?>
