@@ -18,10 +18,11 @@ An API for parsing lodestone data, designed and maintained by XIVPads.com and XI
 - Achievement Parse
 - Free Company
 
-**Todo**
+**Todo (order of priority)**
 - Clean up some code
 - Modularize achievements to characters
 - Linkshell Parse
+- Lodestone Database Parse
 - Friend Parse
 - Blog Parse
 
