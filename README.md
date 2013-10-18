@@ -123,10 +123,10 @@ Parse a free company works the same way as characters. The functions to fetch th
 $FreeCompany = $API->getFC(
 [
 	"name" 		=> "call for help", 
-	"server" 	=> "Excalibur"
+	"server" 	=> "excalibur"
 ],
 [
-	"members"	=> false,
+	"members"	=> true,
 ]);
 Show($FreeCompany); // returned object
 
@@ -136,6 +136,17 @@ echo $FreeCompany->getSlogan();
 
 // Members List
 Show($FreeCompany->getMembers();
+```
+
+The options for getFC are optional, the example below will parse free company but not fetch members.
+
+```php
+$FreeCompany = $API->getFC(
+[
+	"name" 		=> "call for help", 
+	"server" 	=> "excalibur"
+]);
+Show($FreeCompany); // returned object
 ```
 
 
