@@ -158,7 +158,7 @@ API Methods
 ```php
 // Quick Get functions
 get(array) (array takes: "name" => "xxx", "server" => "xxx", "id" => "123", ID will take priority)
-getFC(array, config[optional]) (array takes: "name" => "xxx", "server" => "xxx", "id" => "123, ID will take priority)
+getFC(array, config[optional]) (array takes: "name" => "xxx", "server" => "xxx", "id" => "123", ID will take priority)
 
 // Search functions
 searchCharacter(name, server, exact[true|false])
