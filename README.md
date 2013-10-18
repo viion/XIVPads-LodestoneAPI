@@ -16,12 +16,12 @@ An API for parsing lodestone data, designed and maintained by XIVPads.com and XI
 - Character Search
 - Profile Parse
 - Achievement Parse
+- Free Company
 
 **Todo**
 - Clean up some code
-- Individual Achievement Parse using an Category ID
+- Modularize achievements to characters
 - Linkshell Parse
-- Free Company Parse
 - Friend Parse
 - Blog Parse
 
@@ -114,55 +114,61 @@ Show($API->getAchievements());
 
 **Parse Free Company**
 
-Pasrse the memberlist of a free company by the free company id.
+Parse a free company works the same way as characters. The functions to fetch this data allow an config array to be passed with the settings you wish to use. Currently only 1 setting added, this is because the larger free company you parse, the longer it will take and you may wish to not parse members, so by default full member information is not fetched.
+
+***Options***
+- "members" [true, false] - default false.
 
 ```php
-//Example 1:
-//Set CompanyID
-$CompanyID = '9237023573225242655';
+$FreeCompany = $API->getFC(
+[
+	"name" 		=> "call for help", 
+	"server" 	=> "Excalibur"
+],
+[
+	"members"	=> false,
+]);
+Show($FreeCompany); // returned object
 
-// Parse Companydata
-$SearchResult = $API->searchFreeCompanyById($CompanyID);
+// echo general info
+echo $FreeCompany->getName();
+echo $FreeCompany->getSlogan();
 
-//Get Companydata
-$GetResult = $API->getSearchFreeCompany();
-
-//Show Companydata
-Show($GetResult);
-
-
-//Example 2:
-//Set CompanyID
-$CompanyID = '9237023573225242655';
-
-// Parse Companymembers
-$SearchResult2 = $API->searchFreeCompanyMembersById($CompanyID);
-
-//Get Companymembers
-$GetResult2 = $API->getSearchFreeCompanyMembers();
-
-//Show Companymembers
-Show($GetResult2);
+// Members List
+Show($FreeCompany->getMembers();
 ```
+
 
 API Methods
 --------
 
 **LodestoneAPI**
 ```php
-searchCharacter(name, server, exact[true|false])
+// Quick Get functions
 get(array) (array takes: "name" => "xxx", "server" => "xxx", "id" => "123", ID will take priority)
+getFC(array, config[optional]) (array takes: "name" => "xxx", "server" => "xxx", "id" => "123, ID will take priority)
+
+// Search functions
+searchCharacter(name, server, exact[true|false])
+searchFreeCompany(name, server, exact[true|false])
+
+// Get Functions
 getSearch()
-searchFreeCompanyById(CompanyId)
-searchFreeCompanyMembersById(CompanyId)
-getSearchFreeCompany()
-getSearchFreeCompanyMembers()
-getAchievements()
 getCharacters()
 getCharacterByID(id)
+getFreeCompanies
+getFreeCompanyByID(id)
+getAchievements() * Going to be depreciated and move to character object
+
+// Parse
 parseProfile(id)
 parseBiography(id)
-parseAchievements(id)
+parseAchievements()
+parseAchievementsByCategory(cID)
+parseFreeCompany(id, options[optional])
+
+// Error check
+errorPage(id)
 ```
 
 **Character**
@@ -195,6 +201,20 @@ getMinions() // Returns array containing 'Name' and 'Icon'
 getClassJob(class) // Get level/exp info of a class
 isValid() // Wheather character data is valid or not (WIP)
 getErrors() // List of errors found during validation
+```
+
+**FreeCompany**
+```PHP
+getID()
+getLodestone() // the url of the lodestone profile
+getCompany() // maelstrom, twin adder, immortal flames.
+getName()
+getServer()
+getTag()
+getFormed()
+getMemberCount()
+getSlogan()
+getMembers() // array of members containing: id, name, server, rank, rank image, class icon, class level
 ```
 
 **Stat Types**
