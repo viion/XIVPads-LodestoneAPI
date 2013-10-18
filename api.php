@@ -14,20 +14,45 @@
 
 	// Debug stuff
  	#error_reporting(-1);
-	//function show($Data) { echo '<pre>'; print_r($Data); echo '</pre>'; }
+	if (!function_exists('show')) { function show($Data) { echo '<pre>'; print_r($Data); echo '</pre>'; } }
 
 	/*	LodestoneAPI
 	 *	------------
 	 */
 	class LodestoneAPI extends Parser
 	{
-		// url addresses to various lodestone content.
-		private $URL = array(
-			'profile'		=> 'http://eu.finalfantasyxiv.com/lodestone/character/',
-			'freecompany' 	=> 'http://eu.finalfantasyxiv.com/lodestone/freecompany/',
-			'achievement' 	=> '/achievement/kind/',
-			'search'		=> '?q=%name%&worldname=%server%',
-		);
+		// url addresses to various lodestone content. (DO NOT CHANGE, it will break some functionality of the API)
+		private $URL =
+		[
+			# Search related urls
+			'search' =>
+			[
+				'query'		=> '?q=%name%&worldname=%server%',
+			],
+
+			# Character related urls
+			'character' => 
+			[	
+				'profile'		=> 'http://eu.finalfantasyxiv.com/lodestone/character/',
+				'achievement' 	=> '/achievement/kind/',
+			],
+
+			# Free company related urls
+			'freecompany' => 
+			[
+				'profile'		=> 'http://eu.finalfantasyxiv.com/lodestone/freecompany/',
+				'member' 		=> '/member/',
+				'memberpage' 	=> '?page=%page%'
+			]
+		];
+
+		// defaults
+		private $defaults =
+		[
+			'automaticallyParseFreeCompanyMembers' => true,
+			'pagesPerFreeCompanyMemberList' => 20,
+
+		];
 		
 		// Configuration
 		public $AchievementCategories = array(1, 2, 4, 5, 6, 8, 11, 12, 13);
@@ -94,7 +119,7 @@
 		}
 
 		// Quick get company
-		public function getFC($Array)
+		public function getFC($Array, $Options = null)
 		{
 			// Clean
 			$Name 	= isset($Array['name']) 	? trim(ucwords($Array['name'])) : NULL;
@@ -115,7 +140,7 @@
 			if ($ID)
 			{
 				// Parse profile
-				$this->parseFreeCompany($ID);
+				$this->parseFreeCompany($ID, $Options);
 				
 				// Return character
 				return $this->getFreeCompanyByID($ID);
@@ -147,7 +172,7 @@
 				$ExactName = $Name;
 				
 				// Get the source
-				$this->getSource($this->URL['profile'] . str_ireplace(array('%name%', '%server%'), array(str_ireplace(" ", "+", $Name), $Server), $this->URL['search']));
+				$this->getSource($this->URL['character']['profile'] . str_ireplace(array('%name%', '%server%'), array(str_ireplace(" ", "+", $Name), $Server), $this->URL['search']['query']));
 
 				// Get all found characters
 				$Found = $this->findAll('thumb_cont_black_50', 10, NULL, false);
@@ -228,7 +253,7 @@
 				$ExactName = $Name;
 
 				// Get the source
-				$this->getSource($this->URL['freecompany'] . str_ireplace(array('%name%', '%server%'), array(str_ireplace(" ", "+", $Name), $Server), $this->URL['search']));
+				$this->getSource($this->URL['freecompany']['profile'] . str_ireplace(array('%name%', '%server%'), array(str_ireplace(" ", "+", $Name), $Server), $this->URL['search']['query']));
 
 				// Get all found data
 				$Found = $this->findAll('ic_freecompany_box', 20, NULL, false);
@@ -294,7 +319,7 @@
 		public function errorPage($ID)
 		{
 			// Get the source
-			$this->getSource($this->URL['profile'] . $ID);
+			$this->getSource($this->URL['character']['profile'] . $ID);
 
 			// Check character tag
 			$PageNotFound = $this->find('/lodestone/character/');
@@ -323,13 +348,13 @@
 			else
 			{
 				// Get the source
-				$this->getSource($this->URL['profile'] . $ID);
+				$this->getSource($this->URL['character']['profile'] . $ID);
 				
 				// Create a new character object
 				$Character = new Character();
 				
 				// Set Character Data
-				$Character->setID(trim($ID), $this->URL['profile'] . $ID);
+				$Character->setID(trim($ID), $this->URL['character']['profile'] . $ID);
 				$Character->setNameServer($this->findRange('player_name_brown', 3));
 
 				// Only process if character name set
@@ -398,7 +423,7 @@
 		public function parseBiography($ID)
 		{
 			// Get the source
-			$this->getSource($this->URL['profile'] . $ID);	
+			$this->getSource($this->URL['character']['profile'] . $ID);	
 			
 			// Create a new character object
 			$Character = new Character();
@@ -438,7 +463,7 @@
 				foreach($this->AchievementCategories as $Category)
 				{
 					// Get the source
-					$x = $this->getSource($this->URL['profile'] . $ID . $this->URL['achievement'] .'category/'. $Category .'/');
+					$x = $this->getSource($this->URL['character']['profile'] . $ID . $this->URL['character']['achievement'] .'category/'. $Category .'/');
 					
 					// Create a new character object
 					$Achievements = new Achievements();
@@ -468,7 +493,7 @@
 				$Category = $this->AchievementCategories[$cID];
 
 				// Get the source
-				$this->getSource($this->URL['profile'] . $ID . $this->URL['achievement'] . $cID .'/');
+				$this->getSource($this->URL['character']['profile'] . $ID . $this->URL['character']['achievement'] . $cID .'/');
 				
 				// Create a new character object
 				$Achievements = new Achievements();
@@ -488,7 +513,7 @@
 		#-------------------------------------------#
 
 		// Parse free company profile
-		public function parseFreeCompany($ID)
+		public function parseFreeCompany($ID, $Options = null)
 		{
 			if (!$ID)
 			{
@@ -496,15 +521,45 @@
 			}
 			else
 			{
-				$this->getSource($this->URL['freecompany'] . $ID);
+				// Options
+				$this->defaults['automaticallyParseFreeCompanyMembers'] = (isset($Options['members'])) ? $Options['members'] : $this->defaults['automaticallyParseFreeCompanyMembers'];
+
+				// Get source
+				$this->getSource($this->URL['freecompany']['profile'] . $ID);
 
 				// Create a new character object
 				$FreeCompany = new FreeCompany();
 				
 				// Set Character Data
-				$FreeCompany->setID(trim($ID), $this->URL['profile'] . $ID);
+				$FreeCompany->setID(trim($ID), $this->URL['freecompany']['profile'] . $ID);
 				$FreeCompany->setNameServerCompany($this->findRange('ic_freecompany_box', 10));
 				$FreeCompany->setTagFormedMembersSlogan($this->findRange('table_black m0auto', 50, false, false));
+
+				// If to parse free company members
+				if ($this->defaults['automaticallyParseFreeCompanyMembers'])
+				{
+					// Temp array
+					$MembersList = [];
+
+					// Get number of pages
+					$TotalPages = ceil(round(intval($FreeCompany->getMemberCount()) / intval(trim($this->defaults['pagesPerFreeCompanyMemberList'])), 10));
+
+					// Get all members
+					for($Page = 1; $Page <= $TotalPages; $Page++)
+					{
+						// Parse Members page
+						$this->getSource($FreeCompany->getLodestone() . $this->URL['freecompany']['member'] . str_ireplace('%page%', $Page, $this->URL['freecompany']['memberpage']));
+
+						// Set Members
+						$MemberArray = $FreeCompany->parseMembers($this->findAll('player_name_area', 18, null, null));
+
+						// Merge existing member list with new member array
+						$MembersList = array_merge($MembersList, $MemberArray);
+					}
+
+					// End point for member list
+					$FreeCompany->setMembers($MembersList);
+				}
 
 				// Save free company
 				$this->FreeCompanies[$ID] = $FreeCompany;
@@ -517,6 +572,8 @@
 		#-------------------------------------------#
 		# FUNCTIONS									#
 		#-------------------------------------------#
+
+		// This function will sort a multi dimentional array based on a key index, its global, do not use $var = sksort().
 		protected function sksort(&$array, $subkey, $sort_ascending) 
 		{
 			if (count($array))
@@ -543,13 +600,12 @@
 			else 
 				$array = $temp_array;
 		}
-
 	}
 	
 	/*	Character
 	 *	---------
 	 */
-	class Character extends LodestoneAPI
+	class Character
 	{
 		private $ID;
 		private $Lodestone;
@@ -878,7 +934,7 @@
 				// If class
 				if(stripos($A, 'ic_class_wh24_box') !== false)
 				{
-					$Icon 	= explode('?', str_ireplace(array('"', 'src='), '', html_entity_decode(explode(" ", $A)[2])))[0];
+					$Icon 	= isset(explode(" ", $A)[2]) ? explode('?', str_ireplace(array('"', 'src='), '', html_entity_decode(explode(" ", $A)[2])))[0] : null;
 					$Class 	= strtolower(trim(strip_tags(html_entity_decode($Array[$i]))));
 					$Level 	= trim(strip_tags(html_entity_decode($Array[$i + 1])));
 					$EXP 	= trim(strip_tags(html_entity_decode($Array[$i + 2])));
@@ -979,7 +1035,7 @@
 	/* Free Company
 	 * ------------
 	 */	
-	class FreeCompany extends LodestoneAPI
+	class FreeCompany
 	{
 		private $ID;
 		private $Company;
@@ -987,8 +1043,10 @@
 		private $Server;
 		private $Tag;
 		private $Formed;
-		private $Members;
+		private $MemberCount;
 		private $Slogan;
+
+		private $Members = [];
 
 		#-------------------------------------------#
 		# FUNCTIONS									#
@@ -1014,21 +1072,78 @@
 		// TAG + FORMED + MEMBERS + SLOGAN
 		public function setTagFormedMembersSlogan($String)
 		{
-			$Data 			= explode("&gt;", strip_tags($String[4]));
-			$this->Name 	= str_ireplace("&lt;/span", "", $Data[2]);
-			$this->Tag 		= str_ireplace(array("&amp;laquo;", "&amp;raquo;", "&lt;/td"), "", $Data[4]);
-			$this->Formed 	= trim(explode(",", explode("(", $String[11])[2])[0]);
-			$this->Members 	= htmlspecialchars_decode(trim($String[17]), ENT_QUOTES);
-			$this->Slogan 	= htmlspecialchars_decode(trim($String[21]), ENT_QUOTES);
+			$Data 				= explode("&gt;", strip_tags($String[4]));
+			$this->Name 		= str_ireplace("&lt;/span", "", $Data[2]);
+			$this->Tag 			= str_ireplace(array("&amp;laquo;", "&amp;raquo;", "&lt;/td"), "", $Data[4]);
+			$this->Formed 		= trim(explode(",", explode("(", $String[11])[2])[0]);
+			$this->MemberCount 	= trim(strip_tags(htmlspecialchars_decode(trim($String[17]), ENT_QUOTES)));
+			$this->Slogan 		= trim(strip_tags(htmlspecialchars_decode(trim($String[21]), ENT_QUOTES)));
 		}
 		public function getCompany() { return $this->Company; }
 		public function getName() { return $this->Name; }
 		public function getServer() { return $this->Server; }
 		public function getTag() { return $this->Tag; }
 		public function getFormed() { return $this->Formed; }
-		public function getMembers() { return $this->Members; }
+		public function getMemberCount() { return $this->MemberCount; }
 		public function getSlogan() { return $this->Slogan; }
 
+		// MEMBERS / PARSE + SET + GET
+		public function parseMembers($Data)
+		{
+			// Temp array
+			$temp = [];
+
+			// Loop through data
+			foreach($Data as $D)
+			{
+				$Name 		= trim(explode("(", trim(strip_tags(htmlspecialchars_decode($D[1]), ENT_QUOTES)))[0]);
+				$Server 	= trim(str_ireplace(")", "", trim(explode("(", trim(strip_tags(htmlspecialchars_decode($D[1]), ENT_QUOTES)))[1])));
+				$ID 		= trim(explode("/", $D[1])[3]);
+
+				$RankImage	= trim(explode("?", explode("&quot;", $D[3])[1])[0]);
+				$Rank		= trim(str_ireplace("&gt;", null, explode("&quot;", $D[3])[8]));
+
+				$ClassImage = explode("?", explode("&quot;",$D[7])[3])[0];
+				$ClassLevel = explode(">", strip_tags(htmlspecialchars_decode(explode("&quot;",$D[7])[10])))[1];
+
+				$arr =
+				[
+					'id'		=> $ID,
+					'name'		=> $Name,
+					'server'	=> $Server,
+
+					'rank' =>
+					[
+						'image' => $RankImage,
+						'title' => $Rank
+					],
+
+					'class' =>
+					[
+						'image' => $ClassImage,
+						'level' => $ClassLevel,
+					]
+				];
+				
+				// Append to array
+				$temp[] = $arr;
+			}
+
+			// Return temp
+			return $temp;
+		}
+		public function setMembers($Array)
+		{
+			if (isset($Array) && is_array($Array) && count($Array) > 0)
+			{
+				$this->Members = $Array;
+			}
+			else
+			{
+				$this->Members = false;
+			}
+		}
+		public function getMembers() { return $this->members; }
 	}	
 	
 	
@@ -1304,27 +1419,43 @@
 		}
 	}	
 
+	#-----------------------------------------------
+	# Example Usage
+	#-----------------------------------------------
+	
 	/*
+	# New API
 	$API = new LodestoneAPI();
-	/*
-	$FreeCompany = $API->getFC(array(
+	
+	# Parse Free Company
+	$FreeCompany = $API->getFC(
+	[
 		"name" 		=> "call for help", 
 		"server" 	=> "Excalibur"
-	));
-	Show($FreeCompany);
+	],
+	[
+		"members"	=> false,
+	]);
+	Show($FreeCompany); // returned object
 	
-	$Character = $API->get(array(
+	/*
+	# Parse Character
+	$Character = $API->get(
+	[
 		"name"		=> "Premium Virtue",
 		"server"	=> "Excalibur"
-	));
+	]);
+	Show($Character);
+	*/
 
-	// Parse achievement
+	/*
+	# Parse achievement by category (requires character to have been parsed)
 	$Character->parseAchievementsByCategory(13);
 
 	// Get achievements
 	$Achievements = $Character->getAchievements()[13]->get();
-
 	Show($Achievements);
 	*/
+
 
 ?>
