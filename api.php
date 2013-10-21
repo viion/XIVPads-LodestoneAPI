@@ -1333,12 +1333,15 @@
 			$this->Name 	= trim(explode("(", $String[0])[0]);
 			$this->Server 	= trim(str_ireplace(")", null, explode("(", $String[0])[1]));
 		}
+		public function getName() { return $this->Name; }
+		public function getServer() { return $this->Server; }
 
 		// MEMBER COUNT
 		public function setMemberCount($String)
 		{
 			$this->TotalMembers = intval(trim(preg_replace("/[^0-9]/", "", $String)[0]));
 		}
+		public function getTotalMembers() { return $this->TotalMembers; }
 
 		// MEMBERS
 		public function setMembers($Array)
@@ -1714,7 +1717,6 @@
 	
 
 	# New API
-	/*
 	$API = new LodestoneAPI();
 
 	# Parse Linkshell
@@ -1725,7 +1727,7 @@
 	]);
 	Show($Linkshell);
 	
-	
+	/*
 	# Parse Free Company
 	$FreeCompany = $API->getFC(
 	[
