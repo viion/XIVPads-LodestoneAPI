@@ -27,7 +27,7 @@
 			# Search related urls
 			'search' =>
 			[
-				'query'		=> '?q=%name%&worldname=%server%',
+				'query'			=> '?q=%name%&worldname=%server%',
 			],
 
 			# Character related urls
@@ -42,31 +42,41 @@
 			[
 				'profile'		=> 'http://eu.finalfantasyxiv.com/lodestone/freecompany/',
 				'member' 		=> '/member/',
-				'memberpage' 	=> '?page=%page%'
-			]
+				'memberpage' 	=> '?page=%page%',
+			],
+
+			# Linkshell related urls
+			'linkshell' =>
+			[
+				'profile'		=> 'http://eu.finalfantasyxiv.com/lodestone/linkshell/',
+				'activity'		=> '/activity/',
+			],
 		];
 
 		// defaults
 		private $defaults =
 		[
-			'automaticallyParseFreeCompanyMembers' => true,
+			'automaticallyParseFreeCompanyMembers' => false,
 			'pagesPerFreeCompanyMemberList' => 20,
 
 		];
 		
 		// Configuration
-		public $AchievementCategories = array(1, 2, 4, 5, 6, 8, 11, 12, 13);
-		public $ClassList = array();
-		public $ClassDisicpline = array();
+		public $AchievementCategories = [1, 2, 4, 5, 6, 8, 11, 12, 13];
+		public $ClassList = [];
+		public $ClassDisicpline = [];
 		
-		// List of characters parsed.
-		public $Characters 		= array();
-		public $Achievements 	= array();
-		public $Search 			= array();
+		// List of characters parsed
+		public $Characters = [];
+		public $Achievements = [];
+		public $Search = [];
 		
-		//List of Companydata parsed
-		public $FreeCompanyList 	     = array();
-		public $FreeCompanyMembersList = array();
+		// List of free company data parsed
+		public $FreeCompanyList = [];
+		public $FreeCompanyMembersList = [];
+
+		// List of linkshell data parsed
+		public $Linkshells = [];
 		
 		public function __construct()
 		{
@@ -86,7 +96,7 @@
 		}
 		
 		// Quick get
-		public function get($Array)
+		public function get($Array, $Options = null)
 		{
 			// Clean
 			$Name 	= isset($Array['name']) 	? trim(ucwords($Array['name'])) : NULL;
@@ -118,7 +128,7 @@
 			}
 		}
 
-		// Quick get company
+		// Quick get free company
 		public function getFC($Array, $Options = null)
 		{
 			// Clean
@@ -144,6 +154,39 @@
 				
 				// Return character
 				return $this->getFreeCompanyByID($ID);
+			}
+			else
+			{
+				return false;
+			}
+		}
+
+		// Quick get linkshell
+		public function getLS($Array, $Options = null)
+		{
+			// Clean
+			$Name 	= isset($Array['name']) 	? trim(ucwords($Array['name'])) : NULL;
+			$Server = isset($Array['server']) 	? trim(ucwords($Array['server'])) : NULL;
+			$ID		= isset($Array['id']) 		? trim($Array['id']) : NULL;
+
+			// If no ID passed, find it.
+			if (!$ID)
+			{
+				// Search by Name + Server, exact
+				$this->searchLinkshell($Name, $Server, true);
+				
+				// Get by specific ID
+				$ID = $this->getSearch()['results'][0]['id'];
+			}
+			
+			// If an ID
+			if ($ID)
+			{
+				// Parse profile
+				$this->parseLinkshell($ID, $Options);
+				
+				// Return character
+				return $this->getLinkshellByID($ID);
 			}
 			else
 			{
@@ -292,6 +335,78 @@
 								$Exact = true;
 								$this->Search['results'] = NULL;
 								$this->Search['results'][] = $FreeCompany;
+								$this->Search['isExact'] = true;
+								break;
+							}
+						}
+						
+						// If no exist false, null array
+						if (!$Exact)
+						{
+							$this->Search = NULL;	
+						}
+					}
+				}
+				else
+				{
+					$this->Search['total'] = 0;
+					$this->Search['results'] = NULL;	
+				}
+	  		}
+		}
+
+		// Search a linkshell by name and server
+		public function searchLinkshell($Name, $Server, $GetExact = true)
+		{
+			if (!$Name)
+			{
+				echo "error: No Name Set.";	
+			}
+			else if (!$Server)
+			{
+				echo "error: No Server Set.";	
+			}
+			else
+			{
+				// Exact name for later
+				$ExactName = $Name;
+
+				// Get the source
+				$this->getSource($this->URL['linkshell']['profile'] . str_ireplace(array('%name%', '%server%'), array(str_ireplace(" ", "+", $Name), $Server), $this->URL['search']['query']));
+
+				// Get all found data
+				$Found = $this->findAll('player_name_gold linkshell_name', 5, NULL, false);
+				
+				// if found
+				if ($Found)
+				{
+					foreach($Found as $F)
+					{
+						$ID 		= trim(explode("/", $F[0])[3]);
+						$Name 		= trim(str_ireplace(['&quot;', '&lt;', '&gt;'], null, explode("/", $F[0])[4]));
+						$Server 	= trim(strip_tags(html_entity_decode(str_ireplace(")", null, explode("(", $F[0])[1]))));
+						$Members	= trim(explode(":", strip_tags(html_entity_decode($F[3])))[1]);
+
+						$this->Search['results'][] = 
+						[
+							"id"		=> $ID,
+							"name"		=> $Name,
+							"server"	=> $Server,
+							"members"	=> $Members,
+						];
+					}
+
+					// If to get exact
+					if ($GetExact)
+					{
+						$Exact = false;
+						foreach($this->Search['results'] as $Linkshell)
+						{
+							if (($Linkshell['name']) == ($ExactName) && strlen(trim($Linkshell['name'])) == strlen(trim($ExactName)))
+							{
+								$Exact = true;
+								$this->Search['results'] = NULL;
+								$this->Search['results'][] = $Linkshell;
 								$this->Search['isExact'] = true;
 								break;
 							}
@@ -566,8 +681,48 @@
 			}
 		}
 
+		// Get a list of parsed free companies.
+		public function getFreeCompanies() { return $this->FreeCompanies; }
+
 		// Get a free company by id
 		public function getFreeCompanyByID($ID) { return isset($this->FreeCompanies[$ID]) ? $this->FreeCompanies[$ID] : NULL; }
+
+		#-------------------------------------------#
+		# FREE COMPANY								#
+		#-------------------------------------------#
+
+		// Parse free company profile
+		public function parseLinkshell($ID, $Options = null)
+		{
+			if (!$ID)
+			{
+				echo "error: No ID Set.";	
+			}
+			else
+			{
+				// Get source
+				$this->getSource($this->URL['linkshell']['profile'] . $ID);
+
+				// Create a new character object
+				$Linkshell = new Linkshell();
+				
+				// Set Character Data
+				$Linkshell->setID(trim($ID), $this->URL['linkshell']['profile'] . $ID);
+				$Linkshell->setNameServer($this->findRange('player_name_brown', 10));
+				$Linkshell->setMemberCount($this->findRange('ic_silver', 5));
+				$Linkshell->setMembers($this->findAll('thumb_cont_black_50', 25, false, false));
+
+
+				// Save free company
+				$this->Linkshells[$ID] = $Linkshell;
+			}
+		}
+
+		// Get a list of parsed linkshells.
+		public function getLinkshells() { return $this->Linkshells; }
+
+		// Get a linkshell by id
+		public function getLinkshellByID($ID) { return isset($this->Linkshells[$ID]) ? $this->Linkshells[$ID] : NULL; }
 
 		#-------------------------------------------#
 		# FUNCTIONS									#
@@ -1145,6 +1300,140 @@
 		}
 		public function getMembers() { return $this->members; }
 	}	
+
+
+	/* Linkshell
+	 * ---------
+	 */	
+	class Linkshell
+	{
+		private $ID;
+		private $Name;
+		private $Server;
+		private $TotalMembers;
+
+		private $Members = [];
+
+		#-------------------------------------------#
+		# FUNCTIONS									#
+		#-------------------------------------------#
+
+		// ID
+		public function setID($ID, $URL = NULL)
+		{
+			$this->ID = $ID;
+			$this->Lodestone = $URL;
+		}
+		public function getID() { return $this->ID; }
+		public function getLodestone() { return $this->Lodestone; }
+
+		// NAME + SERVER
+		public function setNameServer($String)
+		{
+			$this->Name 	= trim(explode("(", $String[0])[0]);
+			$this->Server 	= trim(str_ireplace(")", null, explode("(", $String[0])[1]));
+		}
+
+		// MEMBER COUNT
+		public function setMemberCount($String)
+		{
+			$this->TotalMembers = intval(trim(preg_replace("/[^0-9]/", "", $String)[0]));
+		}
+
+		// MEMBERS
+		public function setMembers($Array)
+		{
+			$temp = [];
+
+			// Loop through members
+			foreach($Array as $arr)
+			{
+				// Rank can move offset. Take it out, process it and remove it
+				if (stripos($arr[9], "ic_") !== false)
+				{
+					$Rank = isset(explode("&quot;", $arr[9])[1]) ? trim(explode("&quot;", $arr[9])[1]) : null;
+					switch($Rank)
+					{
+						default: $Rank = 'member'; break;
+						case 'ic_master': $Rank = 'master'; break;
+						case 'ic_leader': $Rank = 'leader'; break;
+					}
+					$arr[9] = null;
+					$arr = array_values(array_filter($arr));
+				}
+				else
+				{
+					// Default rank
+					$Rank = 'member';
+				}
+
+				// Char data
+				$ID 				= trim(explode("/", $arr[1])[3]);
+				$Avatar 			= trim(explode("?", explode("&quot;", $arr[2])[1])[0]);
+				$Name 				= trim(explode("(", strip_tags(htmlspecialchars_decode($arr[8])))[0]);
+				$Server				= trim(explode("(", str_ireplace(")", null, strip_tags(htmlspecialchars_decode($arr[8]))))[1]);
+
+				// Class
+				$ClassIcon			= trim(explode("&quot;", $arr[11])[3]);
+				$ClassLevel 		= intval(trim(strip_tags(htmlspecialchars_decode($arr[11]))));
+
+				// Company
+				$CompanyName = null; $CompanyRank = null;
+				$CompanyIcon		= isset(explode("&quot;", $arr[12])[3]) ? trim(explode("&quot;", $arr[12])[3]) : null;
+				if ($CompanyIcon)
+				{
+					$CompanyName 	= trim(explode("/", str_ireplace("-->", null, strip_tags(htmlspecialchars_decode($arr[12]))))[0]);
+					$CompanyRank 	= trim(explode("/", str_ireplace("-->", null, strip_tags(htmlspecialchars_decode($arr[12]))))[1]);
+				}
+				
+				// Free Company
+				$FC_ID = null; $FC_Name = null;
+				$FC_Icon 			= isset(explode("&quot;", $arr[13])[3]) ? trim(explode("&quot;", $arr[13])[3]) : null;
+				if ($FC_Icon)
+				{
+					$FC_ID			= trim(explode("/", explode("&quot;", $arr[13])[11])[3]);
+					$FC_Name 		= trim(str_ireplace("-->", null, strip_tags(htmlspecialchars_decode($arr[13]))));
+				}
+
+				// Sort array
+				$arr =
+				[
+					'id'		=> $ID,
+					'avatar'	=> $Avatar,
+					'name'		=> $Name,
+					'server'	=> $Server,
+					'rank'		=> $Rank,
+
+					'class' =>
+					[
+						'icon'	=> $ClassIcon,
+						'level'	=> $ClassLevel,
+					],
+					
+					'company' =>
+					[
+						'icon'	=> $CompanyIcon,
+						'name'	=> $CompanyName,
+						'rank'	=> $CompanyRank,
+					],
+					
+					'freecompany' =>
+					[
+						'icon'	=> $FC_Icon,
+						'id'	=> $FC_ID,
+						'name'	=> $FC_Name,
+					],
+				];
+
+				// append to temp array
+				$temp[] = $arr;
+			}
+
+			// Set Members
+			$this->Members = $temp;
+		}
+		public function getMembers() { return $this->Members; }
+	}
 	
 	
 	/*	Achievement
@@ -1423,9 +1712,19 @@
 	# Example Usage
 	#-----------------------------------------------
 	
-	/*
+
 	# New API
+	/*
 	$API = new LodestoneAPI();
+
+	# Parse Linkshell
+	$Linkshell = $API->getLS(
+	[
+		"name"		=> "derp squad",
+		"server"	=> "Excalibur",
+	]);
+	Show($Linkshell);
+	
 	
 	# Parse Free Company
 	$FreeCompany = $API->getFC(
