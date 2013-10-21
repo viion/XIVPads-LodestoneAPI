@@ -839,8 +839,8 @@
 			if (isset($String))
 			{
 				$String 		= explode("/", $String);
-				$this->Clan 	= htmlspecialchars_decode(trim($String[0]), ENT_QUOTES);
-				$this->Race 	= htmlspecialchars_decode(trim($String[1]), ENT_QUOTES);
+				$this->Clan 	= htmlspecialchars_decode(trim($String[1]), ENT_QUOTES);
+				$this->Race 	= htmlspecialchars_decode(trim($String[0]), ENT_QUOTES);
 			}
 		}
 		public function getRace() { return $this->Race; }
@@ -1715,7 +1715,7 @@
 	# Example Usage
 	#-----------------------------------------------
 	
-
+	/*
 	# New API
 	$API = new LodestoneAPI();
 
@@ -1727,7 +1727,7 @@
 	]);
 	Show($Linkshell);
 	
-	/*
+	
 	# Parse Free Company
 	$FreeCompany = $API->getFC(
 	[
@@ -1739,7 +1739,7 @@
 	]);
 	Show($FreeCompany); // returned object
 	
-	/*
+
 	# Parse Character
 	$Character = $API->get(
 	[
@@ -1747,9 +1747,8 @@
 		"server"	=> "Excalibur"
 	]);
 	Show($Character);
-	*/
 
-	/*
+
 	# Parse achievement by category (requires character to have been parsed)
 	$Character->parseAchievementsByCategory(13);
 
