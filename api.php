@@ -58,7 +58,6 @@
 		[
 			'automaticallyParseFreeCompanyMembers' => false,
 			'pagesPerFreeCompanyMemberList' => 20,
-
 		];
 		
 		// Configuration
@@ -1298,7 +1297,7 @@
 				$this->Members = false;
 			}
 		}
-		public function getMembers() { return $this->members; }
+		public function getMembers() { return $this->Members; }
 	}	
 
 
