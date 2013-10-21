@@ -16,12 +16,12 @@ An API for parsing lodestone data, designed and maintained by XIVPads.com and XI
 - Character Search
 - Profile Parse
 - Achievement Parse
-- Free Company
+- Free Company Search/Parse
+- Linkshell Search/Parse
 
 **Todo (order of priority)**
 - Clean up some code
 - Modularize achievements to characters
-- Linkshell Parse
 - Lodestone Database Parse
 - Friend Parse
 - Blog Parse
@@ -150,6 +150,25 @@ $FreeCompany = $API->getFC(
 Show($FreeCompany); // returned object
 ```
 
+**Parse Linkshell**
+
+Parse a linkshell works the same way as characters/FC. 
+
+```php
+$Linkshell = $API->getLS(
+[
+	"name" 		=> "derp squad", 
+	"server" 	=> "excalibur"
+]);
+Show($Linkshell); // returned object
+
+// echo general info
+echo $Linkshell->getName();
+echo $Linkshell->getServer();
+
+// Members List
+Show($Linkshell->getMembers();
+```
 
 API Methods
 --------
@@ -163,14 +182,17 @@ getFC(array, config[optional]) (array takes: "name" => "xxx", "server" => "xxx",
 // Search functions
 searchCharacter(name, server, exact[true|false])
 searchFreeCompany(name, server, exact[true|false])
+SearchLinkshell(name, server, exact[true|false])
 
 // Get Functions
 getSearch()
 getCharacters()
 getCharacterByID(id)
-getFreeCompanies
+getFreeCompanies()
 getFreeCompanyByID(id)
-getAchievements() * Going to be depreciated and move to character object
+getAchievements()
+getLinkshells()
+getLinkshellByID(id)
 
 // Parse
 parseProfile(id)
@@ -178,6 +200,7 @@ parseBiography(id)
 parseAchievements()
 parseAchievementsByCategory(cID)
 parseFreeCompany(id, options[optional])
+parseLinkshell(id, options[optiona]) * no options currently
 
 // Error check
 errorPage(id)
@@ -227,6 +250,16 @@ getFormed()
 getMemberCount()
 getSlogan()
 getMembers() // array of members containing: id, name, server, rank, rank image, class icon, class level
+```
+
+**Linkshell**
+```PHP
+getID()
+getLodestone() // the url of the lodestone profile
+getName()
+getServer()
+getTotalMembers() // a count
+getMembers() // array of members containing: id, avatar, name, server, rank, class(icon lv), company (icon, name, rank), freecompany (icon, id, name)
 ```
 
 **Stat Types**
