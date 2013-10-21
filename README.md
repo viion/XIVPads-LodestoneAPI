@@ -136,7 +136,7 @@ echo $FreeCompany->getName();
 echo $FreeCompany->getSlogan();
 
 // Members List
-Show($FreeCompany->getMembers();
+Show($FreeCompany->getMembers());
 ```
 
 The options for getFC are optional, the example below will parse free company but not fetch members.
@@ -167,7 +167,7 @@ echo $Linkshell->getName();
 echo $Linkshell->getServer();
 
 // Members List
-Show($Linkshell->getMembers();
+Show($Linkshell->getMembers());
 ```
 
 API Methods
