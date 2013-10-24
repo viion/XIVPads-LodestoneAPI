@@ -14,7 +14,7 @@
 
 	// Debug stuff
  	#error_reporting(-1);
-	if (!function_exists('show')) { function show($Data) { echo '<pre>'; print_r($Data); echo '</pre>'; } }
+	//if (!function_exists('show')) { function show($Data) { echo '<pre>'; print_r($Data); echo '</pre>'; } }
 
 	/*	LodestoneAPI
 	 *	------------
@@ -594,13 +594,20 @@
 		}
 
 		// Parse achievement by category
-		public function parseAchievementsByCategory($cID)
+		public function parseAchievementsByCategory($cID, $ID = null)
 		{
-			$ID = $this->getID();
+			if (!$ID)
+			{
+				$ID = $this->getID();
+			}
 
-			if (!$cID)
+			if (!$ID)
 			{
 				echo "error: No ID Set.";	
+			}
+			else if (!$cID)
+			{
+				echo "No catagory id set.";
 			}
 			else
 			{
@@ -620,6 +627,11 @@
 				// Append character to array
 				$this->Achievements[$cID] = $Achievements;
 			}
+		}
+
+		public function getAchievementCategories()
+		{
+			return $this->AchievementCategories;
 		}
 
 		#-------------------------------------------#
@@ -687,7 +699,7 @@
 		public function getFreeCompanyByID($ID) { return isset($this->FreeCompanies[$ID]) ? $this->FreeCompanies[$ID] : NULL; }
 
 		#-------------------------------------------#
-		# FREE COMPANY								#
+		# LINKSHELL									#
 		#-------------------------------------------#
 
 		// Parse free company profile
@@ -853,7 +865,7 @@
 		public function setBirthGuardianCompany($String)
 		{
 			$this->Nameday 		= trim(strip_tags(html_entity_decode($String[11])));
-			$this->Guardian 	= trim(strip_tags(html_entity_decode($String[15])));
+			$this->Guardian 	= str_ireplace("&#39;", "'", trim(strip_tags(html_entity_decode($String[15]))));
 				
 			$i = 0;
 			foreach($String as $Line)
@@ -1026,7 +1038,8 @@
 
 				// Slot manipulation
 				$Slot = $Temp['slot'];
-				if (isset($GearArray['slots'][$Slot])) { $Slot = $Slot . 2; }		
+				if (isset($GearArray['slots'][$Slot])) { $Slot = $Slot . 2; }	
+				$Temp['slot'] = $Slot;	
 				
 				// Append array
 				$GearArray['numbers'][] = $Temp;
@@ -1479,9 +1492,20 @@
 				foreach($A as $Line)
 				{
 					// Get achievement Data
-					if (stripos($Line, 'achievement_name') !== false) { $Data = trim(strip_tags(html_entity_decode($Line))); $Temp['name'] = $Data; }
-					if (stripos($Line, 'achievement_point') !== false) { $Data = trim(strip_tags(html_entity_decode($Line))); $Temp['points'] = $Data; }
-					if (stripos($Line, 'getElementById') !== false) { $Temp['date'] = trim(filter_var(explode("(", strip_tags(html_entity_decode($Line)))[2], FILTER_SANITIZE_NUMBER_INT)); }
+					if (stripos($Line, 'achievement_name') !== false) 
+					{ 
+						$Data = trim(strip_tags(html_entity_decode($Line))); 
+						$Temp['name'] = str_ireplace("&#39;", "'", $Data);
+					}
+					if (stripos($Line, 'achievement_point') !== false) 
+					{ 
+						$Data = trim(strip_tags(html_entity_decode($Line))); 
+						$Temp['points'] = intval(htmlspecialchars_decode($Data)); 
+					}
+					if (stripos($Line, 'getElementById') !== false) 
+					{ 
+						$Temp['date'] = trim(filter_var(explode("(", strip_tags(html_entity_decode($Line)))[2], FILTER_SANITIZE_NUMBER_INT)); 
+					}
 					
 					// Increment
 					$i++;
@@ -1746,15 +1770,26 @@
 		"server"	=> "Excalibur"
 	]);
 	Show($Character);
+	
 
-
+	$API = new LodestoneAPI();
+	
 	# Parse achievement by category (requires character to have been parsed)
-	$Character->parseAchievementsByCategory(13);
+	$API->parseAchievementsByCategory(2, 730968);
 
 	// Get achievements
-	$Achievements = $Character->getAchievements()[13]->get();
+	$Achievements = $API->getAchievements()[2]->get();
 	Show($Achievements);
-	*/
+	
 
+	# Parse Character
+	$API = new LodestoneAPI();
+	$Character = $API->get(
+	[
+		"name"		=> "Premium Virtue",
+		"server"	=> "Excalibur"
+	]);
+	Show($Character->getGear());
+	*/
 
 ?>
