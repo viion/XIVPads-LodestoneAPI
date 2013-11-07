@@ -14,7 +14,7 @@
 
 	// Debug stuff
  	#error_reporting(-1);
-	//if (!function_exists('show')) { function show($Data) { echo '<pre>'; print_r($Data); echo '</pre>'; } }
+	if (!function_exists('show')) { function show($Data) { echo '<pre>'; print_r($Data); echo '</pre>'; } }
 
 	/*	LodestoneAPI
 	 *	------------
