@@ -484,8 +484,8 @@
 					$Character->setHPMPTP($this->findRange('param_power_area', 10));
 					$Character->setAttributes($this->findRange('param_list_attributes', 8));
 					$Character->setElemental($this->findRange('param_list_elemental', 8));
-					$Character->setOffense($this->findRange('param_title_offence', 6));
-					$Character->setDefense($this->findRange('param_title_deffence', 6));
+					$Character->setOffense($this->findRange('param_title_offense', 6));
+					$Character->setDefense($this->findRange('param_title_deffense', 6));
 					$Character->setPhysical($this->findRange('param_title_melle', 6));
 					$Character->setResists($this->findRange('param_title_melleresists', 6));
 					$Character->setActiveClassLevel($this->findRange('&quot;class_info&quot;', 3));
