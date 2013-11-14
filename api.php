@@ -13,8 +13,8 @@
 	*/
 
 	// Debug stuff
- 	#error_reporting(-1);
-	if (!function_exists('show')) { function show($Data) { echo '<pre>'; print_r($Data); echo '</pre>'; } }
+ 	//error_reporting(-1);
+	//if (!function_exists('show')) { function show($Data) { echo '<pre>'; print_r($Data); echo '</pre>'; } }
 
 	/*	LodestoneAPI
 	 *	------------
@@ -212,7 +212,7 @@
 			{
 				// Exact name for later
 				$ExactName = $Name;
-				
+
 				// Get the source
 				$this->getSource($this->URL['character']['profile'] . str_ireplace(array('%name%', '%server%'), array(str_ireplace(" ", "+", $Name), $Server), $this->URL['search']['query']));
 
@@ -247,9 +247,9 @@
 						$Exact = false;
 						foreach($this->Search['results'] as $Character)
 						{
-							#Show($Character['name'] .' < > '. $ExactName);
-							#Show(md5($Character['name']) .' < > '. md5($ExactName));
-							#Show(strlen($Character['name']) .' < > '. strlen($ExactName));
+							show($Character['name'] .' < > '. $ExactName);
+							show(md5($Character['name']) .' < > '. md5($ExactName));
+							show(strlen($Character['name']) .' < > '. strlen($ExactName));
 							if (($Character['name']) == ($ExactName) && strlen(trim($Character['name'])) == strlen(trim($ExactName)))
 							{
 								$Exact = true;
@@ -1697,7 +1697,8 @@
 		// Prints the source array
 		public function printSourceArray()
 		{
-			Show($this->SourceCodeArray);
+			s
+			how($this->SourceCodeArray);
 		}
 		
 		// Get the DOMDocument from the source via its URL.
@@ -1782,14 +1783,22 @@
 	Show($Achievements);
 	
 
+
 	# Parse Character
+	show("> new LodestoneAPi");
 	$API = new LodestoneAPI();
+
+	show("> get");
 	$Character = $API->get(
 	[
 		"name"		=> "Premium Virtue",
 		"server"	=> "Excalibur"
 	]);
-	Show($Character->getGear());
+
+	show("> vardump");
+	show($Character);
+
 	*/
+	
 
 ?>
