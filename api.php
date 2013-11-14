@@ -1697,8 +1697,7 @@
 		// Prints the source array
 		public function printSourceArray()
 		{
-			s
-			how($this->SourceCodeArray);
+			show($this->SourceCodeArray);
 		}
 		
 		// Get the DOMDocument from the source via its URL.
