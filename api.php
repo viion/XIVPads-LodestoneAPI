@@ -247,9 +247,9 @@
 						$Exact = false;
 						foreach($this->Search['results'] as $Character)
 						{
-							show($Character['name'] .' < > '. $ExactName);
-							show(md5($Character['name']) .' < > '. md5($ExactName));
-							show(strlen($Character['name']) .' < > '. strlen($ExactName));
+							//show($Character['name'] .' < > '. $ExactName);
+							//show(md5($Character['name']) .' < > '. md5($ExactName));
+							//show(strlen($Character['name']) .' < > '. strlen($ExactName));
 							if (($Character['name']) == ($ExactName) && strlen(trim($Character['name'])) == strlen(trim($ExactName)))
 							{
 								$Exact = true;
