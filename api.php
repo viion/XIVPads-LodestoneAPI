@@ -278,7 +278,7 @@
 			}
 		}
 		
-    	// Search a free company by name and server
+		// Search a free company by name and server
 		public function searchFreeCompany($Name, $Server, $GetExact = true)
 		{
 			if (!$Name)
@@ -514,6 +514,10 @@
 					// Set Minions
 					$Minions = $this->findRange('area_header_w358_inner', NULL, '//Minion', false);
 					$Character->setMinions($Minions);
+					
+					// Set Mounts
+					$Mounts = $this->findRange('area_header_w358_inner', NULL, '//Mount', false, 2);
+					$Character->setMounts($Mounts);
 					
 					#$this->segment('class_fighter');
 					
@@ -792,6 +796,7 @@
 		private $Stats;
 		private $Gear;
 		private $Minions;
+		private $Mounts;
 		private $ClassJob;
 		private $Validated = true;
 		private $Errors = array();
@@ -1087,6 +1092,33 @@
 			$this->Minions = $Pets;
 		}
 		public function getMinions() { return $this->Minions; }
+		
+		// MOUNTS
+		public function setMounts($Array)
+		{
+			// Mount array
+			$Mounts = array();
+			
+			// Loop through array
+			$i = 0;
+			foreach($Array as $A)
+			{
+				if (stripos($A, 'ic_reflection_box') !== false)
+				{
+					$arr = array();
+					$arr['name'] = trim(explode('&quot;', $Array[$i])[5]);
+					$arr['icon'] = trim(explode('&quot;', $Array[$i + 2])[1]);
+					$Mounts[] = $arr;
+				}
+				
+				// Increment
+				$i++;		
+			}
+			
+			// set Mounts
+			$this->Mounts = $Mounts;
+		}
+		public function getMounts() { return $this->Mounts; }
 		
 		// CLASS + JOB
 		public function setClassJob($Array)
@@ -1566,7 +1598,7 @@
 		}
 		
 		// Find data based on a tag, and take the next i amount
-		protected function findRange($Tag, $Range, $Tag2 = NULL, $Clean = TRUE)
+		protected function findRange($Tag, $Range, $Tag2 = NULL, $Clean = TRUE, $StartAt = 1)
 		{
 			$Found 		= false;
 			$Found2		= false;
@@ -1588,11 +1620,19 @@
 				
 				if ($Found)
 				{
-					// If clean true, clean line!
-					if ($Clean) { $Array[] = $this->Clean(strip_tags(html_entity_decode($Line))); } else { $Array[] = $Line; }
-					
 					// Iterate
 					$Interates++;
+					
+					// Check if we reached the StartAt value
+					if($Interates < $StartAt)
+					{
+						$Found = false;
+						$Found2 = false;
+						continue;
+					}
+					
+					// If clean true, clean line!
+					if ($Clean) { $Array[] = $this->Clean(strip_tags(html_entity_decode($Line))); } else { $Array[] = $Line; }
 					
 					// If iterate hits range, break.
 					if ($Interates == $Range  || $Found2) { break; }
