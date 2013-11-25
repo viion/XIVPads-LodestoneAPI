@@ -234,6 +234,7 @@ getActiveClass()
 getActiveJob()
 getActiveLevel()
 getMinions() // Returns array containing 'Name' and 'Icon'
+getMounts() // Returns array containing 'Name' and 'Icon' (Thanks to @Lucleonhart!)
 getClassJob(class) // Get level/exp info of a class
 isValid() // Wheather character data is valid or not (WIP)
 getErrors() // List of errors found during validation
