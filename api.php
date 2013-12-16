@@ -64,6 +64,13 @@
 		public $AchievementCategories = [1, 2, 4, 5, 6, 8, 11, 12, 13];
 		public $ClassList = [];
 		public $ClassDisicpline = [];
+		public $GearSlots = 
+		[
+			"main","main2","shield","soul crystal",
+			"head","body","hands","waist","legs","feet",
+			"necklace","earrings","bracelets","ring","ring2"
+		];
+
 		
 		// List of characters parsed
 		public $Characters = [];
@@ -1036,6 +1043,14 @@
 						{ $Main = $Data; $Data = 'Main'; }
 						$Temp['slot'] = strtolower($Data);
 					}
+
+					// Item level
+					if (stripos($Line, 'Item Level') !== false)
+					{
+						$int = filter_var(strip_tags(html_entity_decode($Line)), FILTER_SANITIZE_NUMBER_INT);
+						$Temp['ilevel'] = $int;
+					}
+
 					
 					// Increment
 					$i++;
