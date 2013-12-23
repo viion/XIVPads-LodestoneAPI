@@ -18,13 +18,6 @@ $Data = json_decode(file_get_contents('http://xivpads.com/lodestone_rss.json'), 
 ```
 
 The data array returns like so:
-- total
-- [array]
--- time (unix)
--- url
--- title
--- image url
-
 ```js
 Array
 (
