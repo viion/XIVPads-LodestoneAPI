@@ -1914,7 +1914,7 @@
 	#-----------------------------------------------
 	# Example Usage
 	#-----------------------------------------------
-	
+	/*
 	
 	# New API
 	$API = new LodestoneAPI();
@@ -1926,7 +1926,7 @@
 		"server"	=> "Excalibur",
 	]);
 	Show($Linkshell);	
-	/*
+	
 
 	$API = new LodestoneAPI();
 
