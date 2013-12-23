@@ -14,7 +14,7 @@
 
 	// Debug stuff
  	//error_reporting(-1);
-	//if (!function_exists('show')) { function show($Data) { echo '<pre>'; print_r($Data); echo '</pre>'; } }
+	if (!function_exists('show')) { function show($Data) { echo '<pre>'; print_r($Data); echo '</pre>'; } }
 
 	/*	LodestoneAPI
 	 *	------------
@@ -600,9 +600,12 @@
 		public function getAchievements() { return $this->Achievements; }
 		
 		// Parse a achievements based on ID
-		public function parseAchievements()
+		public function parseAchievements($ID = null)
 		{
-			$ID = $this->getID();
+			if (!$ID)
+			{
+				$ID = $this->getID();
+			}
 
 			if (!$ID)
 			{
@@ -610,23 +613,30 @@
 			}
 			else
 			{
+				// Main achievement object
+				$MA = new Achievements();
+
 				// Loop through categories
-				foreach($this->AchievementCategories as $Category)
+				foreach($this->AchievementCategories as $cID)
 				{
-					// Get the source
-					$x = $this->getSource($this->URL['character']['profile'] . $ID . $this->URL['character']['achievement'] .'category/'. $Category .'/');
-					
-					// Create a new character object
-					$Achievements = new Achievements();
-					
-					// Get Achievements
-					$Achievements->set($this->findAll('achievement_area_body', NULL, 'bt_more', false));
-					$Achievements->setPoints($this->findRange('total_point', 10));
-					$Achievements->setCategory($Category);
-					
-					// Append character to array
-					$this->Achievements[$ID][$Category] = $Achievements;
+					// Parse Achievements
+					$this->parseAchievementsByCategory($cID, $ID);
+
+					// Get Achievement Object
+					$A = $this->Achievements[$cID];
+
+					// Add onto main achievements object
+					$MA->setTotalPoints($MA->getTotalPoints() + $A->getTotalPoints());
+					$MA->setCurrentPoints($MA->getCurrentPoints() + $A->getCurrentPoints());
+					$MA->setTotalAchievements($MA->getTotalAchievements() + $A->getTotalAchievements());
+					$MA->setCurrentAchievements($MA->getCurrentAchievements() + $A->getCurrentAchievements());
+					$MA->genPointsPercentage();
+					$MA->addAchievements($A->get());
+					$MA->addCategory($cID);
 				}
+
+				// Format Achievements
+				$this->Achievements = $MA;
 			}
 		}
 
@@ -648,8 +658,6 @@
 			}
 			else
 			{
-				$Category = $this->AchievementCategories[$cID];
-
 				// Get the source
 				$this->getSource($this->URL['character']['profile'] . $ID . $this->URL['character']['achievement'] . $cID .'/');
 				
@@ -657,9 +665,8 @@
 				$Achievements = new Achievements();
 				
 				// Get Achievements
+				$Achievements->addCategory($cID);
 				$Achievements->set($this->findAll('achievement_area_body', NULL, 'bt_more', false));
-				$Achievements->setPoints($this->findRange('total_point', 10));
-				$Achievements->setCategory($cID);
 				
 				// Append character to array
 				$this->Achievements[$cID] = $Achievements;
@@ -1572,24 +1579,31 @@
 	 */
 	class Achievements
 	{
-		private $Category;
-		private $TotalPoints;
-		private $Points;
-		private $List;
-		
-		// CATEGORIES
-		public function setCategory($ID)
-		{
-			$this->Category = $ID;	
-		}
-		public function getCategory() { return $this->Category; }
+		private $TotalPoints = 0;
+		private $CurrentPoints = 0;
+		private $PointsPercentage = 0;
+		private $TotalAchievements = 0;
+		private $CurrentAchievements = 0;
+		private $Categories = [];
+		private $List = [];
 		
 		// POINTS
-		public function setPoints($String)
-		{
-			$this->TotalPoints = trim($String[0]);	
-		}
-		public function getPoints() { return $this->TotalPoints; }
+		public function setTotalPoints($Value) { $this->TotalPoints = $Value; }
+		public function setCurrentPoints($Value) { $this->CurrentPoints = $Value; }
+		public function setPointsPercentage($Value) { $this->PointsPercentage = $Value; }
+		public function setTotalAchievements($Value) { $this->TotalAchievements = $Value; }
+		public function setCurrentAchievements($Value) { $this->CurrentAchievements = $Value; }
+
+		public function getTotalPoints() { return $this->TotalPoints; }
+		public function getCurrentPoints() { return $this->CurrentPoints; }
+		public function getPointsPercentage() { return $this->PointsPercentage; }
+		public function getTotalAchievements() { return $this->TotalAchievements; }
+		public function getCurrentAchievements() { return $this->CurrentAchievements; }
+
+		// CATEGORY
+		public function addCategory($ID) { $this->Categories[] = $ID; }
+		public function setCategories($List) { $this->Categories = $List; }
+		public function getCategories() { return $this->Categories; }
 		
 		// ACHIEVEMENTS
 		public function set($Array)
@@ -1627,21 +1641,33 @@
 					$i++;
 				}
 				
-				// Obtained or not
-				if ($Temp['date']) { $Temp['obtained'] = true; } else { $Temp['obtained'] = false; }
+				// Obtained or not, if there is a date, the achievement is obtained.
+				if (isset($Temp['date'])) { $Temp['obtained'] = true; } else { $Temp['obtained'] = false; }
 				
-				// Increment Points
-				if ($Temp['obtained']) { $this->Points['current'] += $Temp['points']; }
-				$this->Points['max'] += $Temp['points'];
+				// If achievement obtained, add points
+				if ($Temp['obtained']) 
+				{ 
+					$this->CurrentPoints += $Temp['points']; 
+					$this->CurrentAchievements++;
+				}
+
+				// Set the total obtainable points
+				$this->TotalPoints += $Temp['points'];
+				$this->TotalAchievements++;
 				
 				// Append temp data
 				$NewList[] = $Temp;
 			}
+
+			// Set points percentage
+			$this->PointsPercentage = (round($this->CurrentPoints / $this->TotalPoints, 3) * 100);
 			
 			// Set Achievement List
 			$this->List = $NewList;	
 		}
 		public function get() { return $this->List; }
+		public function addAchievements($List) { $this->List = array_merge($this->List, $List); }
+		public function genPointsPercentage() { $this->PointsPercentage = (round($this->CurrentPoints / $this->TotalPoints, 3) * 100); }
 	}
 	
 	/*	Parser
@@ -1893,15 +1919,32 @@
 	]);
 	Show($Character);
 
+
+	// Set an ID
+	$API = new LodestoneAPI();
+
+	// Parse achievements
+	$API->parseAchievements(730968);
+
+	Show($API->getAchievements());
+	
+	// Show achievements
+	Show($API->getAchievements());
+
+
+	// Lodestone
 	$API = new LodestoneAPI();
 	
-	# Parse achievement by category (requires character to have been parsed)
-	$API->parseAchievementsByCategory(2, 730968);
+	// Set category id
+	$CategoryID = 2;
+
+	// Parse achievement by category
+	$API->parseAchievementsByCategory($CategoryID, 730968);
 
 	// Get achievements
-	$Achievements = $API->getAchievements()[2]->get();
-	Show($Achievements);
+	Show($API->getAchievements()[$CategoryID]);
 	
+	/*
 	# Parse Character
 	show("> new LodestoneAPi");
 	$API = new LodestoneAPI();
