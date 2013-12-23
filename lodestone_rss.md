@@ -1,8 +1,9 @@
 Lodestone RSS
 =============
-XIVPads.com generated an json file that can be used as an RSS on your own website to show announcements made on the official lodestone.
+XIVPads.com generates an json file that can be used as an RSS on your own website to show announcements made on the official lodestone. The file contains a total count and the data of each entry in "topics".
 
 **Details**
+- Parses 20 of the latest topics
 - Updates every 1 hour
 - Language: json
 
