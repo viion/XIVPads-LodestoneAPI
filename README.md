@@ -29,7 +29,7 @@ For an Lodestone RSS Json file, view: https://github.com/viion/XIVPads-Lodestone
 - Blog Parse
 
 **Thanks:**
-@stygiansabyss for patch 2.1 free company icon fix
+- @stygiansabyss for patch 2.1 free company icon fix
 
 Getting Started
 --------
