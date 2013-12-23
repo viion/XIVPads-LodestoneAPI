@@ -764,9 +764,9 @@
 				
 				// Set Character Data
 				$Linkshell->setID(trim($ID), $this->URL['linkshell']['profile'] . $ID);
-				$Linkshell->setNameServer($this->findRange('player_name_brown', 10));
+				$Linkshell->setNameServer($this->findRange('player_name_brown', 15));
 				$Linkshell->setMemberCount($this->findRange('ic_silver', 5));
-				$Linkshell->setMembers($this->findAll('thumb_cont_black_50', 25, false, false));
+				$Linkshell->setMembers($this->findAll('thumb_cont_black_50', 50, false, false));
 
 
 				// Save free company
@@ -1510,19 +1510,19 @@
 				$Server				= trim(explode("(", str_ireplace(")", null, strip_tags(htmlspecialchars_decode($arr[8]))))[1]);
 
 				// Class
-				$ClassIcon			= trim(explode("&quot;", $arr[11])[3]);
-				$ClassLevel 		= intval(trim(strip_tags(htmlspecialchars_decode($arr[11]))));
+				$ClassIcon			= trim(explode("&quot;", $arr[12])[3]);
+				$ClassLevel 		= intval(trim(strip_tags(htmlspecialchars_decode($arr[13]))));
 
 				// Company
-				$CompanyName = null; $CompanyRank = null;
-				$CompanyIcon		= isset(explode("&quot;", $arr[12])[3]) ? trim(explode("&quot;", $arr[12])[3]) : null;
-				if ($CompanyIcon)
-				{
-					$CompanyName 	= trim(explode("/", str_ireplace("-->", null, strip_tags(htmlspecialchars_decode($arr[12]))))[0]);
-					$CompanyRank 	= trim(explode("/", str_ireplace("-->", null, strip_tags(htmlspecialchars_decode($arr[12]))))[1]);
-				}
-				
-				// Free Company
+                $CompanyName = null; $CompanyRank = null;
+                $CompanyIcon        = isset(explode("&quot;", $arr[15])[1]) ? trim(explode("&quot;", $arr[15])[1]) : null;
+                if ($CompanyIcon)
+                {
+                    $CompanyName    = trim(explode("/", str_ireplace("-->", null, strip_tags(htmlspecialchars_decode($arr[15]))))[0]);
+                    $CompanyRank    = trim(explode("/", str_ireplace("-->", null, strip_tags(htmlspecialchars_decode($arr[15]))))[1]);
+                }
+
+                // Free Company (fixed by @stygiansabyss for patch 2.1)
                 if ($CompanyIcon) 
                 {
                     $freeCompanyDetails      = 24;
@@ -1537,11 +1537,11 @@
                     $freeCompanyImagesSecond = $arr[20];
                     $freeCompanyImagesThird  = $arr[21];
                 }
-                $FC_ID 		= null; $FC_Name = null;
-                $FC_Icon 	= array();
-                $FC_Icon[] 	= isset(explode("&quot;", $freeCompanyImagesFirst)[1]) ? trim(explode("&quot;", $freeCompanyImagesFirst)[1]) : null;
-                $FC_Icon[] 	= isset(explode("&quot;", $freeCompanyImagesSecond)[1]) ? trim(explode("&quot;", $freeCompanyImagesSecond)[1]) : null;
-                $FC_Icon[] 	= isset(explode("&quot;", $freeCompanyImagesThird)[1]) ? trim(explode("&quot;", $freeCompanyImagesThird)[1]) : null;
+                $FC_ID = null; $FC_Name = null;
+                $FC_Icon = array();
+                $FC_Icon[]          = isset(explode("&quot;", $freeCompanyImagesFirst)[1]) ? trim(explode("&quot;", $freeCompanyImagesFirst)[1]) : null;
+                $FC_Icon[]          = isset(explode("&quot;", $freeCompanyImagesSecond)[1]) ? trim(explode("&quot;", $freeCompanyImagesSecond)[1]) : null;
+                $FC_Icon[]          = isset(explode("&quot;", $freeCompanyImagesThird)[1]) ? trim(explode("&quot;", $freeCompanyImagesThird)[1]) : null;
                 if ($FC_Icon[0] != null)
                 {
                     if ($FC_Icon[2] == null) {
@@ -1915,18 +1915,18 @@
 	# Example Usage
 	#-----------------------------------------------
 	
-	/*
+	
 	# New API
 	$API = new LodestoneAPI();
 
 	# Parse Linkshell
 	$Linkshell = $API->getLS(
 	[
-		"name"		=> "derp squad",
+		"name"		=> "ComraderyARR",
 		"server"	=> "Excalibur",
 	]);
 	Show($Linkshell);	
-	
+	/*
 
 	$API = new LodestoneAPI();
 
