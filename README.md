@@ -102,18 +102,32 @@ $Character = $API->getCharacterByID($IDList[0]);
 **Parse Achievements**
 
 This will take a significant amount of time to complete as it is looping through all achievement 
-categories, I plan to make a standalone function call that can be looped locally.
+categories.
 
 ```php
 // Set an ID
-$ID = 730968;
+$API = new LodestoneAPI();
 
 // Parse achievements
-$API->parseAchievements($ID)
+$API->parseAchievements(730968);
 
-// Show achievements
 Show($API->getAchievements());
 ```
+You can parse a specific category by doing:
+```php
+// Lodestone
+$API = new LodestoneAPI();
+
+// Set category id
+$CategoryID = 2;
+
+// Parse achievement by category
+$API->parseAchievementsByCategory($CategoryID, 730968);
+
+// Get achievements
+Show($API->getAchievements()[$CategoryID]);
+```
+
 
 **Parse Free Company**
 
@@ -246,6 +260,17 @@ getMounts() // Returns array containing 'Name' and 'Icon' (Thanks to @Lucleonhar
 getClassJob(class) // Get level/exp info of a class
 isValid() // Wheather character data is valid or not (WIP)
 getErrors() // List of errors found during validation
+```
+
+**Achievements**
+If you parse all achievements via the parseAchievements function, the data below will be an accumlative result. If you use the function parseAchievementsByCategory the results will be specific to that category parsed.
+```PHP
+get() // Gets the list of achievements in the object
+getTotalPoints() // Total points obtainable from parsed result
+getCurrentPoints() // Total points the character has obtained for this parsed result
+getPointsPercentage() // An percentage of the total obtained achievements
+getTotalAchievements() // Total achievements obtainable from parsed result
+getCurrentAchievements() // Total achievements the character has obtained for this parsed result
 ```
 
 **FreeCompany**
