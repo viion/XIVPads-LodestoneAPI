@@ -331,19 +331,19 @@
 				$this->getSource($this->URL['freecompany']['profile'] . str_ireplace(array('%name%', '%server%'), array(str_ireplace(" ", "+", $Name), $Server), $this->URL['search']['query']));
 
 				// Get all found data
-				$Found = $this->findAll('ic_freecompany_box', 20, NULL, false);
+				$Found = $this->findAll('groundcompany_name', 20, NULL, false);
 				
 				// if found
 				if ($Found)
 				{
 					foreach($Found as $F)
 					{
-						$Company 	= $this->clean($F[3]);
-						$ID			= trim(explode("/", $F[5])[3]);
-						$Name 		= trim(explode("(", $this->clean($F[5]))[0]);
-						$Server 	= str_ireplace(")", "", trim(explode("(", $this->clean($F[5]))[1]));
-						$Members 	= trim(explode(":", $this->clean($F[8]))[1]);
-						$Formed 	= trim(explode(",", explode("(", $F[13])[2])[0]);
+						$Company 	= $this->clean($F[0]);
+						$ID			= trim(explode("/", $F[2])[3]);
+						$Name 		= trim(explode("(", $this->clean($F[2]))[0]);
+						$Server 	= trim(str_ireplace(")", "", explode("(", $this->clean($F[2]))[1]));
+						$Members 	= trim(explode(":", $this->clean($F[5]))[1]);
+						$Formed 	= trim(explode(",", explode("(", $F[10])[2])[0]);
 
 						$this->Search['results'][] = 
 						array(
@@ -703,8 +703,8 @@
 				
 				// Set Character Data
 				$FreeCompany->setID(trim($ID), $this->URL['freecompany']['profile'] . $ID);
-				$FreeCompany->setNameServerCompany($this->findRange('ic_freecompany_box', 10));
-				$FreeCompany->setTagFormedMembersSlogan($this->findRange('table_black m0auto', 50, false, false));
+				$FreeCompany->setNameServerCompany($this->findRange('-- playname --', null, '-- //playname --', false));
+				$FreeCompany->setCompanyDetails($this->findRange('-- Company Profile --', null, '-- //Company Profile --', false));
 
 				// If to parse free company members
 				if ($this->defaults['automaticallyParseFreeCompanyMembers'])
@@ -1146,7 +1146,7 @@
 			$this->Gear['equipped'] = $GearArray;
 			
 			// Set Active Class
-			$classjob = str_ireplace('Two-Handed ', NULL, explode("'", $Main)[0]);
+			$classjob = str_ireplace(array('Two-Handed ', 'One-Handed '), NULL, explode("'", $Main)[0]);
 			$this->Stats['active']['class'] = $classjob;
 			if (isset($this->Gear['equipped']['slots']['soul crystal'])) { $this->Stats['active']['job'] = str_ireplace("Soul of the ", NULL, $this->Gear['equipped']['slots']['soul crystal']); }
 		}
@@ -1354,20 +1354,18 @@
 		// NAME + SERVER
 		public function setNameServerCompany($String)
 		{
-			$this->Company 	= htmlspecialchars_decode(trim($String[0]), ENT_QUOTES);
-			$this->Name 	= htmlspecialchars_decode(trim($String[1]), ENT_QUOTES);
-			$this->Server 	= str_ireplace(array("(", ")"), null, htmlspecialchars_decode(trim($String[2]), ENT_QUOTES));
+			$this->Company 	= trim(explode("&lt;", explode("friendship_color", $String[9])[0])[0]);
+			$this->Name 	= trim(htmlspecialchars_decode(trim($String[10]), ENT_QUOTES));
+			$this->Server 	= trim(str_ireplace(array("(", ")"), null, htmlspecialchars_decode(trim($String[11]), ENT_QUOTES)));
 		}
 
 		// TAG + FORMED + MEMBERS + SLOGAN
-		public function setTagFormedMembersSlogan($String)
+		public function setCompanyDetails($String)
 		{
-			$Data 				= explode("&gt;", strip_tags($String[4]));
-			$this->Name 		= str_ireplace("&lt;/span", "", $Data[2]);
-			$this->Tag 			= str_ireplace(array("&amp;laquo;", "&amp;raquo;", "&lt;/td"), "", $Data[4]);
-			$this->Formed 		= trim(explode(",", explode("(", $String[11])[2])[0]);
-			$this->MemberCount 	= trim(strip_tags(htmlspecialchars_decode(trim($String[17]), ENT_QUOTES)));
-			$this->Slogan 		= trim(strip_tags(htmlspecialchars_decode(trim($String[21]), ENT_QUOTES)));
+			$this->Tag 			= Trim(str_ireplace("&raquo;", null, strip_tags(htmlspecialchars_decode(explode("|", str_ireplace("laquo;", "|", $String[9]))[1]))));
+			$this->Formed 		= trim(explode(",", explode("(", $String[16])[2])[0]);
+			$this->MemberCount 	= trim(strip_tags(htmlspecialchars_decode(trim($String[22]), ENT_QUOTES)));
+			$this->Slogan 		= trim(strip_tags(htmlspecialchars_decode(trim($String[26]), ENT_QUOTES)));
 		}
 		public function getCompany() { return $this->Company; }
 		public function getName() { return $this->Name; }
@@ -1525,13 +1523,42 @@
 				}
 				
 				// Free Company
-				$FC_ID = null; $FC_Name = null;
-				$FC_Icon 			= isset(explode("&quot;", $arr[13])[3]) ? trim(explode("&quot;", $arr[13])[3]) : null;
-				if ($FC_Icon)
-				{
-					$FC_ID			= trim(explode("/", explode("&quot;", $arr[13])[11])[3]);
-					$FC_Name 		= trim(str_ireplace("-->", null, strip_tags(htmlspecialchars_decode($arr[13]))));
-				}
+                if ($CompanyIcon) 
+                {
+                    $freeCompanyDetails      = 24;
+                    $freeCompanyImagesFirst  = $arr[20];
+                    $freeCompanyImagesSecond = $arr[21];
+                    $freeCompanyImagesThird  = $arr[22];
+                } 
+                else 
+                {
+                    $freeCompanyDetails      = 23;
+                    $freeCompanyImagesFirst  = $arr[19];
+                    $freeCompanyImagesSecond = $arr[20];
+                    $freeCompanyImagesThird  = $arr[21];
+                }
+                $FC_ID 		= null; $FC_Name = null;
+                $FC_Icon 	= array();
+                $FC_Icon[] 	= isset(explode("&quot;", $freeCompanyImagesFirst)[1]) ? trim(explode("&quot;", $freeCompanyImagesFirst)[1]) : null;
+                $FC_Icon[] 	= isset(explode("&quot;", $freeCompanyImagesSecond)[1]) ? trim(explode("&quot;", $freeCompanyImagesSecond)[1]) : null;
+                $FC_Icon[] 	= isset(explode("&quot;", $freeCompanyImagesThird)[1]) ? trim(explode("&quot;", $freeCompanyImagesThird)[1]) : null;
+                if ($FC_Icon[0] != null)
+                {
+                    if ($FC_Icon[2] == null) {
+                        $freeCompanyDetails--;
+                        unset($FC_Icon[2]);
+                    }
+                    if ($FC_Icon[1] == null) {
+                        $freeCompanyDetails--;
+                        unset($FC_Icon[1]);
+                    }
+                    if ($FC_Icon[0] == null) {
+                        $freeCompanyDetails--;
+                    }
+
+                    $FC_ID          = trim(explode("/", explode("&quot;", $arr[$freeCompanyDetails])[3])[3]);
+                    $FC_Name        = trim(str_ireplace("-->", null, strip_tags(htmlspecialchars_decode($arr[$freeCompanyDetails]))));
+                }
 
 				// Sort array
 				$arr =
@@ -1900,17 +1927,23 @@
 	]);
 	Show($Linkshell);	
 	
+
+	$API = new LodestoneAPI();
+
 	# Parse Free Company
 	$FreeCompany = $API->getFC(
 	[
-		"name" 		=> "call for help", 
+		"name" 		=> "Penguin Farm", 
 		"server" 	=> "Excalibur"
 	],
 	[
-		"members"	=> false,
+		"members"	=> true,
 	]);
 	Show($FreeCompany); // returned object
-	
+	*/
+/*
+	$API = new LodestoneAPI();
+
 	# Parse Character
 	$Character = $API->get(
 	[
