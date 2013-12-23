@@ -20,13 +20,16 @@ For an Lodestone RSS Json file, view: https://github.com/viion/XIVPads-Lodestone
 - Achievement Parse
 - Free Company Search/Parse
 - Linkshell Search/Parse
+- Lodestone news parse
 
 **Todo (order of priority)**
-- Clean up some code
-- Modularize achievements to characters
+- Clean up some code (24/7!)
 - Lodestone Database Parse
 - Friend Parse
 - Blog Parse
+
+** Thanks to **
+@stygiansabyss for patch 2.1 free company icon fix
 
 Getting Started
 --------
