@@ -51,6 +51,12 @@
 				'profile'		=> 'http://eu.finalfantasyxiv.com/lodestone/linkshell/',
 				'activity'		=> '/activity/',
 			],
+
+			# Topics
+			'lodestone' =>
+			[
+				'topic' 		=> 'http://eu.finalfantasyxiv.com/lodestone/topics/',
+			],
 		];
 
 		// defaults
@@ -198,6 +204,26 @@
 			{
 				return false;
 			}
+		}
+
+		// Get lodestone object
+		public function Lodestone($Options)
+		{
+			// Get a Lodestone object
+			$Lodestone = new Lodestone();
+
+			// Lodestone urls
+			$Lodestone->setURLs($this->URL['lodestone']);
+
+			// If topics option set, get topics
+			if (isset($Options['topics']) && $Options['topics'])
+			{
+				$this->getSource($this->URL['lodestone']['topic']);
+				$Lodestone->setTopics($this->findAll('topics_list_inner', NULL, 'right_cont clearfix', false));
+			}
+
+			// Return lodestone object.
+			return $Lodestone;
 		}
 
 		#-------------------------------------------#
@@ -455,7 +481,7 @@
 		# PROFILE									#
 		#-------------------------------------------#
 		
-		// Parse a profile based on ID.
+		// Parse a profile based on ID
 		public function parseProfile($ID)
 		{
 			if (!$ID)
@@ -544,7 +570,7 @@
 			}
 		}
 		
-		// Parse just biography, based on ID.
+		// Parse just biography, based on ID
 		public function parseBiography($ID)
 		{
 			// Get the source
@@ -560,7 +586,7 @@
 			return $Character->getBiography();
 		}
 		
-		// Get a list of parsed characters.
+		// Get a list of parsed characters
 		public function getCharacters() { return $this->Characters;	}
 		
 		// Get a character by id
@@ -640,6 +666,7 @@
 			}
 		}
 
+		// Get the achievement categories
 		public function getAchievementCategories()
 		{
 			return $this->AchievementCategories;
@@ -778,7 +805,49 @@
 				$array = $temp_array;
 		}
 	}
-	
+
+	/*	Lodestone
+	 *	---------
+	 */
+	class Lodestone
+	{
+		// Variables
+		private $URLs = [];
+		private $Topics = [];
+
+
+		// Construct
+		function __construct() { }
+
+		// set urls
+		function setURLs($URLs)
+		{
+			$this->URLs = $URLs;
+		}
+
+		// Topics
+		function setTopics($Data)
+		{
+			// Total topics
+			$this->Topics['total'] = count($Data);
+
+			// Loop through topics to get data
+			$TopicData = [];
+			foreach($Data as $i => $D)
+			{
+				// Time
+				$TopicData[$i]['time'] 	= trim(explode(",", explode("(", $D[3])[2])[0]);
+				$TopicData[$i]['url'] 	= trim(str_ireplace("/lodestone/topics/", null, $this->URLs['topic']) . explode('&quot;', explode("&gt;", $D[6])[0])[1]);
+				$TopicData[$i]['title'] = trim(explode("(", iconv("UTF-8", "ASCII//TRANSLIT", trim(strip_tags(html_entity_decode($D[6])))))[0]);
+				$TopicData[$i]['image'] = trim(explode('&quot;', $D[8])[3]);
+			}
+
+			$this->Topics['data'] = $TopicData;
+		}
+		function getTopics() { return $this->Topics; }
+	}
+
+
 	/*	Character
 	 *	---------
 	 */
@@ -1803,8 +1872,7 @@
 		"name"		=> "derp squad",
 		"server"	=> "Excalibur",
 	]);
-	Show($Linkshell);
-	
+	Show($Linkshell);	
 	
 	# Parse Free Company
 	$FreeCompany = $API->getFC(
@@ -1817,7 +1885,6 @@
 	]);
 	Show($FreeCompany); // returned object
 	
-
 	# Parse Character
 	$Character = $API->get(
 	[
@@ -1825,7 +1892,6 @@
 		"server"	=> "Excalibur"
 	]);
 	Show($Character);
-	
 
 	$API = new LodestoneAPI();
 	
@@ -1836,8 +1902,6 @@
 	$Achievements = $API->getAchievements()[2]->get();
 	Show($Achievements);
 	
-
-
 	# Parse Character
 	show("> new LodestoneAPi");
 	$API = new LodestoneAPI();
@@ -1850,9 +1914,17 @@
 	]);
 
 	show("> vardump");
-	show($Character);
+	show($Character->getMounts());
 
+	$API = new LodestoneAPI();
+	$Options = 
+	[
+		'topics' => true,
+	];
+
+	$Lodestone = $API->Lodestone($Options);
+
+	Show($Lodestone->getTopics());
 	*/
-	
 
 ?>
