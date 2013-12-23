@@ -181,6 +181,7 @@ API Methods
 get(array) (array takes: "name" => "xxx", "server" => "xxx", "id" => "123", ID will take priority)
 getFC(array, config[optional]) (array takes: "name" => "xxx", "server" => "xxx", "id" => "123", ID will take priority)
 getLS(array, config[optional]) (array takes: "name" => "xxx", "server" => "xxx", "id" => "123", ID will take priority)
+Lodestone(array) (array takes: topics => true/false)
 
 // Search functions
 searchCharacter(name, server, exact[true|false])
@@ -207,6 +208,11 @@ parseLinkshell(id, options[optiona]) * no options currently
 
 // Error check
 errorPage(id)
+```
+
+**Lodestone**
+```php
+getTopics() // an array containing data related to news topics on the Lodestone.
 ```
 
 **Character**
