@@ -14,7 +14,7 @@
 
 	// Debug stuff
  	//error_reporting(-1);
-	if (!function_exists('show')) { function show($Data) { echo '<pre>'; print_r($Data); echo '</pre>'; } }
+	//if (!function_exists('show')) { function show($Data) { echo '<pre>'; print_r($Data); echo '</pre>'; } }
 
 	/*	LodestoneAPI
 	 *	------------
@@ -502,12 +502,12 @@
 				
 				// Set Character Data
 				$Character->setID(trim($ID), $this->URL['character']['profile'] . $ID);
-				$Character->setNameServer($this->findRange('player_name_brown', 3));
+				$Character->setNameServer($this->findRange('player_name_thumb', 15));
 
 				// Only process if character name set
 				if (strlen($Character->getName()) > 3)
 				{
-					$Character->setAvatar($this->findRange('thumb_cont_black_40', 3, NULL, false));
+					$Character->setAvatar($this->findRange('player_name_thumb', 10, NULL, false));
 					$Character->setPortrait($this->findRange('bg_chara_264', 2, NULL, false));
 					$Character->setRaceClan($this->find('chara_profile_title'));
 					$Character->setLegacy($this->find('bt_legacy_history'));
@@ -900,9 +900,8 @@
 		// NAME + SERVER
 		public function setNameServer($String)
 		{
-			$Data = str_ireplace(")", "", explode("(", (trim($String[0]))));
-			$this->Name 	= htmlspecialchars_decode(trim($Data[0]), ENT_QUOTES);
-			$this->Server 	= htmlspecialchars_decode(trim($Data[1]), ENT_QUOTES);
+			$this->Name 	= trim($String[0]);
+			$this->Server 	= trim(str_ireplace(["(", ")"], null, $String[1]));
 			$this->NameClean= preg_replace('/[^a-z]/i', '', strtolower($this->Name));	
 		}
 		public function getName() { return $this->Name; }
@@ -1951,6 +1950,7 @@
 		"server"	=> "Excalibur"
 	]);
 	Show($Character);
+	$API->printSourceArray();
 
 
 	// Set an ID
