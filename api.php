@@ -14,7 +14,7 @@
 
 	// Debug stuff
  	//error_reporting(-1);
-	//if (!function_exists('show')) { function show($Data) { echo '<pre>'; print_r($Data); echo '</pre>'; } }
+	if (!function_exists('show')) { function show($Data) { echo '<pre>'; print_r($Data); echo '</pre>'; } }
 
 	/*	LodestoneAPI
 	 *	------------
@@ -900,9 +900,9 @@
 		// NAME + SERVER
 		public function setNameServer($String)
 		{
-			$this->Name 	= trim($String[0]);
-			$this->Server 	= trim(str_ireplace(["(", ")"], null, $String[1]));
-			$this->NameClean= preg_replace('/[^a-z]/i', '', strtolower($this->Name));	
+			$this->Name 		= str_ireplace("&#39;", "'", trim($String[0]));
+			$this->Server 		= trim(str_ireplace(["(", ")"], null, $String[1]));
+			$this->NameClean	= preg_replace('/[^a-z]/i', '', strtolower($this->Name));	
 		}
 		public function getName() { return $this->Name; }
 		public function getServer() { return $this->Server; }
@@ -1951,7 +1951,7 @@
 	]);
 	Show($Character);
 	$API->printSourceArray();
-
+	
 
 	// Set an ID
 	$API = new LodestoneAPI();
