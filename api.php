@@ -1131,7 +1131,7 @@
 					}
 
 	                                // Level
-                                        if (stripos($Line, 'gear_level') !== false)
+					if (stripos($Line, 'gear_level') !== false)
 					{
 						$int = filter_var(strip_tags(html_entity_decode($Line)), FILTER_SANITIZE_NUMBER_INT);
 						$Temp['level'] = $int;
