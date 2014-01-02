@@ -1108,6 +1108,10 @@
 					// Item Icon
 					if (stripos($Line, 'socket_64') !== false) { $Data = trim(explode('&quot;', $A[$i + 1])[1]); $Temp['icon'] = $Data; }
 					if (stripos($Line, 'item_name') !== false) { $Data = trim(str_ireplace(array('>', '"'), NULL, strip_tags(html_entity_decode($A[$i + 2])))); $Temp['name'] = htmlspecialchars_decode(trim($Data), ENT_QUOTES); }
+					// Item ID
+					if (stripos($Line, 'bt_db_item_detail') !== false) { $Data = trim(str_ireplace(array('>', '"'), NULL, html_entity_decode(preg_match("/\/lodestone\/playguide\/db\/item\/([a-z0-9]{11})\//", $Line, $matches)))); $Temp['id_lodestone'] = $matches[1]; }
+					// Cannot equip [slot(s)]
+					if (stripos($Line, 'Cannot equip gear to') !== false) { $Data = trim(str_ireplace(array('>', '"'), NULL, strip_tags(html_entity_decode($Line)))); $Temp['no_equip'] = htmlspecialchars_decode(trim(str_replace('Cannot equip gear to', '', str_replace('.', '', $Data))), ENT_QUOTES); }
 					if (stripos($Line, 'item_name') !== false) { 
 						$Data = htmlspecialchars_decode(trim(html_entity_decode($A[$i + 3])), ENT_QUOTES);
 						if (
@@ -1124,6 +1128,13 @@
 					{
 						$int = filter_var(strip_tags(html_entity_decode($Line)), FILTER_SANITIZE_NUMBER_INT);
 						$Temp['ilevel'] = $int;
+					}
+
+	                                // Level
+                                        if (stripos($Line, 'gear_level') !== false)
+					{
+						$int = filter_var(strip_tags(html_entity_decode($Line)), FILTER_SANITIZE_NUMBER_INT);
+						$Temp['level'] = $int;
 					}
 
 					
