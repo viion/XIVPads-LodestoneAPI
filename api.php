@@ -465,9 +465,6 @@
 		// Checks if an error page exists
 		public function errorPage($ID)
 		{
-			// Get the source
-			$this->getSource($this->URL['character']['profile'] . $ID);
-
 			// Check character tag
 			$PageNotFound = $this->find('/lodestone/character/');
 			
@@ -488,18 +485,20 @@
 			{
 				echo "error: No ID Set.";	
 			}
-			else if ($this->errorPage($ID))
+
+			// Get the source
+			$this->getSource($this->URL['character']['profile'] . $ID);
+
+
+			if ($this->errorPage($ID))
 			{
 				echo "error: Character page does not exist.";	
 			}
 			else
 			{
-				// Get the source
-				$this->getSource($this->URL['character']['profile'] . $ID);
-				
 				// Create a new character object
 				$Character = new Character();
-				
+
 				// Set Character Data
 				$Character->setID(trim($ID), $this->URL['character']['profile'] . $ID);
 				$Character->setNameServer($this->findRange('player_name_thumb', 15));
@@ -1939,10 +1938,15 @@
 		"members"	=> true,
 	]);
 	Show($FreeCompany); // returned object
-	*/
-/*
-	$API = new LodestoneAPI();
+	
 
+	$API = new LodestoneAPI();
+	$API->parseProfile(730968);
+	$Char = $API->getCharacterByID(730968);
+
+	Show($Char);
+
+	/*
 	# Parse Character
 	$Character = $API->get(
 	[
