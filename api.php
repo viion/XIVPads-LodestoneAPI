@@ -765,7 +765,7 @@
 				$Linkshell->setID(trim($ID), $this->URL['linkshell']['profile'] . $ID);
 				$Linkshell->setNameServer($this->findRange('player_name_brown', 15));
 				$Linkshell->setMemberCount($this->findRange('ic_silver', 5));
-				$Linkshell->setMembers($this->findAll('thumb_cont_black_50', 50, false, false));
+				$Linkshell->setMembers($this->findAll('thumb_cont_black_50', null, "/tr", false));
 
 
 				// Save free company
@@ -1480,7 +1480,7 @@
 			$temp = [];
 
 			// Loop through members
-			foreach($Array as $arr)
+			foreach($Array as $i => $arr)
 			{
 				// Rank can move offset. Take it out, process it and remove it
 				if (stripos($arr[9], "ic_") !== false)
@@ -1520,43 +1520,29 @@
                     $CompanyRank    = trim(explode("/", str_ireplace("-->", null, strip_tags(htmlspecialchars_decode($arr[15]))))[1]);
                 }
 
-                // Free Company (fixed by @stygiansabyss for patch 2.1)
-                if ($CompanyIcon) 
+                $FC_Icon = []; $Image1 = null; $Image2 = null; $Image3 = null;
+                foreach($arr as $i => $a)
                 {
-                    $freeCompanyDetails      = 24;
-                    $freeCompanyImagesFirst  = $arr[20];
-                    $freeCompanyImagesSecond = $arr[21];
-                    $freeCompanyImagesThird  = $arr[22];
-                } 
-                else 
-                {
-                    $freeCompanyDetails      = 23;
-                    $freeCompanyImagesFirst  = $arr[19];
-                    $freeCompanyImagesSecond = $arr[20];
-                    $freeCompanyImagesThird  = $arr[21];
-                }
-                $FC_ID = null; $FC_Name = null;
-                $FC_Icon = array();
-                $FC_Icon[]          = isset(explode("&quot;", $freeCompanyImagesFirst)[1]) ? trim(explode("&quot;", $freeCompanyImagesFirst)[1]) : null;
-                $FC_Icon[]          = isset(explode("&quot;", $freeCompanyImagesSecond)[1]) ? trim(explode("&quot;", $freeCompanyImagesSecond)[1]) : null;
-                $FC_Icon[]          = isset(explode("&quot;", $freeCompanyImagesThird)[1]) ? trim(explode("&quot;", $freeCompanyImagesThird)[1]) : null;
-                if ($FC_Icon[0] != null)
-                {
-                    if ($FC_Icon[2] == null) {
-                        $freeCompanyDetails--;
-                        unset($FC_Icon[2]);
-                    }
-                    if ($FC_Icon[1] == null) {
-                        $freeCompanyDetails--;
-                        unset($FC_Icon[1]);
-                    }
-                    if ($FC_Icon[0] == null) {
-                        $freeCompanyDetails--;
-                    }
+	                // Free Company (fixed by @stygiansabyss for patch 2.1)
+	                if (stripos($a, 'ic_crest_32') !== false)
+	                {
+	                	$Image1 = explode("&quot;", $arr[$i + 1]); if (isset($Image1[1]) && stripos($Image1[0], 'img') != false) { $Image1 = trim($Image1[1]); } else { $Image1 = false; }
+	                	$Image2 = explode("&quot;", $arr[$i + 2]); if (isset($Image2[1]) && stripos($Image2[0], 'img') != false) { $Image2 = trim($Image2[1]); } else { $Image2 = false; }
+	                	$Image3 = explode("&quot;", $arr[$i + 3]); if (isset($Image3[1]) && stripos($Image3[0], 'img') != false) { $Image3 = trim($Image3[1]); } else { $Image3 = false; }
+	                	
+	                	if ($Image1) { $FC_Icon[] = $Image1; }
+	                	if ($Image2) { $FC_Icon[] = $Image2; }
+	                	if ($Image3) { $FC_Icon[] = $Image3; }
 
-                    $FC_ID          = trim(explode("/", explode("&quot;", $arr[$freeCompanyDetails])[3])[3]);
-                    $FC_Name        = trim(str_ireplace("-->", null, strip_tags(htmlspecialchars_decode($arr[$freeCompanyDetails]))));
-                }
+	                }
+
+	                // FC Details
+	                if (stripos($a, 'txt_gc') !== false)
+	                {
+	                	$FC_ID = trim(explode("/", $a)[4]);
+	                	$FC_Name = trim(strip_tags(htmlspecialchars_decode($a)));
+	                }
+	            }                
 
 				// Sort array
 				$arr =
@@ -1920,18 +1906,18 @@
 	# Parse Linkshell
 	$Linkshell = $API->getLS(
 	[
-		"name"		=> "ComraderyARR",
-		"server"	=> "Excalibur",
+		"name"		=> "Bahamut FR",
+		"server"	=> "shiva",
 	]);
 	Show($Linkshell);	
 	
-
+	
 	$API = new LodestoneAPI();
 
 	# Parse Free Company
 	$FreeCompany = $API->getFC(
 	[
-		"name" 		=> "Penguin Farm", 
+		"name" 		=> "Bahamut FR", 
 		"server" 	=> "Excalibur"
 	],
 	[
