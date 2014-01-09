@@ -1520,7 +1520,7 @@
                     $CompanyRank    = trim(explode("/", str_ireplace("-->", null, strip_tags(htmlspecialchars_decode($arr[15]))))[1]);
                 }
 
-                $FC_Icon = []; $Image1 = null; $Image2 = null; $Image3 = null;
+                $FC_Icon = []; $Image1 = null; $Image2 = null; $Image3 = null; $FC_ID = null; $FC_Name = null;
                 foreach($arr as $i => $a)
                 {
 	                // Free Company (fixed by @stygiansabyss for patch 2.1)
