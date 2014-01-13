@@ -283,7 +283,9 @@
 							//show($Character['name'] .' < > '. $ExactName);
 							//show(md5($Character['name']) .' < > '. md5($ExactName));
 							//show(strlen($Character['name']) .' < > '. strlen($ExactName));
-							if (($Character['name']) == ($ExactName) && strlen(trim($Character['name'])) == strlen(trim($ExactName)))
+							$n1 = trim(strtolower($Character['name']));
+							$n2 = trim(strtolower($ExactName));
+							if ($n1 == $n2 && strlen($n1) == strlen($n2))
 							{
 								$Exact = true;
 								$this->Search['results'] = NULL;
@@ -362,7 +364,9 @@
 						$Exact = false;
 						foreach($this->Search['results'] as $FreeCompany)
 						{
-							if (($FreeCompany['name']) == ($ExactName) && strlen(trim($FreeCompany['name'])) == strlen(trim($ExactName)))
+							$n1 = trim(strtolower($FreeCompany['name']));
+							$n2 = trim(strtolower($ExactName));
+							if ($n1 == $n2 && strlen($n1) == strlen($n2))
 							{
 								$Exact = true;
 								$this->Search['results'] = NULL;
@@ -434,7 +438,9 @@
 						$Exact = false;
 						foreach($this->Search['results'] as $Linkshell)
 						{
-							if (($Linkshell['name']) == ($ExactName) && strlen(trim($Linkshell['name'])) == strlen(trim($ExactName)))
+							$n1 = trim(strtolower($Linkshell['name']));
+							$n2 = trim(strtolower($ExactName));
+							if ($n1 == $n2 && strlen($n1) == strlen($n2))
 							{
 								$Exact = true;
 								$this->Search['results'] = NULL;
@@ -1906,8 +1912,8 @@
 	# Parse Linkshell
 	$Linkshell = $API->getLS(
 	[
-		"name"		=> "Bahamut FR",
-		"server"	=> "shiva",
+		"name"		=> "Derp Squad",
+		"server"	=> "Excalibur",
 	]);
 	Show($Linkshell);	
 	
@@ -1917,14 +1923,14 @@
 	# Parse Free Company
 	$FreeCompany = $API->getFC(
 	[
-		"name" 		=> "Bahamut FR", 
-		"server" 	=> "Excalibur"
+		"name" => "Daeva of War",
+		"server" => "Hyperion"
 	],
 	[
 		"members"	=> true,
 	]);
 	Show($FreeCompany); // returned object
-	
+	/*
 
 	$API = new LodestoneAPI();
 	$API->parseProfile(730968);
@@ -1980,7 +1986,7 @@
 	]);
 
 	show("> vardump");
-	show($Character->getMounts());
+	show($Character);
 
 	$API = new LodestoneAPI();
 	$Options = 
