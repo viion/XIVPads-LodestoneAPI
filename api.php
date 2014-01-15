@@ -1359,8 +1359,8 @@
 		public function setNameServerCompany($String)
 		{
 			$this->Company 	= trim(explode("&lt;", explode("friendship_color", $String[9])[0])[0]);
-			$this->Name 	= trim(htmlspecialchars_decode(trim($String[10]), ENT_QUOTES));
-			$this->Server 	= trim(str_ireplace(array("(", ")"), null, htmlspecialchars_decode(trim($String[11]), ENT_QUOTES)));
+			$this->Name 	= trim(strip_tags(html_entity_decode($String[10])));
+			$this->Server 	= trim(str_ireplace(array("(", ")"), null, strip_tags(html_entity_decode($String[11]))));
 		}
 
 		// TAG + FORMED + MEMBERS + SLOGAN
@@ -1930,7 +1930,7 @@
 		"members"	=> true,
 	]);
 	Show($FreeCompany); // returned object
-	/*
+	
 
 	$API = new LodestoneAPI();
 	$API->parseProfile(730968);
