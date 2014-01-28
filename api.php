@@ -1100,7 +1100,7 @@
 			$GearArray = NULL;
 			
 			// Get ID List
-			$ItemIDArray = json_deocde(file_get_contents("http://xivpads.com/items.json"), true);
+			$ItemIDArray = json_decode(file_get_contents("http://xivpads.com/items.json"), true);
 			
 			// Loop through gear equipped
 			$Main = NULL;
