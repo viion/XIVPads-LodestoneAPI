@@ -1099,6 +1099,9 @@
 			$this->Gear['slots'] = count($Array);
 			$GearArray = NULL;
 			
+			// Get ID List
+			$ItemIDArray = json_deocde(file_get_contents("http://xivpads.com/items.json"), true);
+			
 			// Loop through gear equipped
 			$Main = NULL;
 			foreach($Array as $A)
@@ -1130,6 +1133,11 @@
 						$int = filter_var(strip_tags(html_entity_decode($Line)), FILTER_SANITIZE_NUMBER_INT);
 						$Temp['ilevel'] = $int;
 					}
+					
+					// Get item ID
+					$Temp['id'] = null;
+					$ItemID = $ItemIDArray[md5(strtolower($Temp['name']))];
+					if ($ItemID) { $Temp['id'] = $ItemID; }
 
 					
 					// Increment
