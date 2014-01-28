@@ -1115,7 +1115,15 @@
 				{
 					// Item Icon
 					if (stripos($Line, 'socket_64') !== false) { $Data = trim(explode('&quot;', $A[$i + 1])[1]); $Temp['icon'] = $Data; }
-					if (stripos($Line, 'item_name') !== false) { $Data = trim(str_ireplace(array('>', '"'), NULL, strip_tags(html_entity_decode($A[$i + 2])))); $Temp['name'] = htmlspecialchars_decode(trim($Data), ENT_QUOTES); }
+					if (stripos($Line, 'item_name') !== false)
+					{ 
+						$Data = trim(str_ireplace(array('>', '"'), NULL, strip_tags(html_entity_decode($A[$i + 2])))); $Temp['name'] = htmlspecialchars_decode(trim($Data), ENT_QUOTES);
+
+						// Get item ID
+						$Temp['id'] = null;
+						$ItemID = $ItemIDArray[md5(strtolower($Temp['name']))];
+						if ($ItemID) { $Temp['id'] = $ItemID; }
+					}
 					if (stripos($Line, 'item_name') !== false) { 
 						$Data = htmlspecialchars_decode(trim(html_entity_decode($A[$i + 3])), ENT_QUOTES);
 						if (
@@ -1134,10 +1142,7 @@
 						$Temp['ilevel'] = $int;
 					}
 					
-					// Get item ID
-					$Temp['id'] = null;
-					$ItemID = $ItemIDArray[md5(strtolower($Temp['name']))];
-					if ($ItemID) { $Temp['id'] = $ItemID; }
+					
 
 					
 					// Increment
@@ -1946,16 +1951,17 @@
 
 	Show($Char);
 
-	/*
+
 	# Parse Character
+	$API = new LodestoneAPI();
 	$Character = $API->get(
 	[
 		"name"		=> "Premium Virtue",
 		"server"	=> "Excalibur"
 	]);
 	Show($Character);
-	$API->printSourceArray();
-	
+	//$API->printSourceArray();
+	/*
 
 	// Set an ID
 	$API = new LodestoneAPI();
