@@ -2,7 +2,8 @@ XIVPads-LodestoneAPI
 ====================
 An API for parsing lodestone data, designed and maintained by XIVPads.com and XIVDB.com
 
-For an Lodestone RSS Json file, view: https://github.com/viion/XIVPads-LodestoneAPI/blob/master/lodestone_rss.md
+- For help and code examples on XIVDB's Tooltips, go to: https://github.com/viion/XIVDB-Tooltips
+- For an Lodestone RSS Json file, view: https://github.com/viion/XIVPads-LodestoneAPI/blob/master/lodestone_rss.md
 
 **Requirements**
 - PHP 5.4 (Function array dereferencing http://php.net/manual/en/migration54.new-features.php)

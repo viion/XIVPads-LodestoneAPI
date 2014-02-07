@@ -12,7 +12,7 @@ XIVPads.com generates an json file that can be used as an RSS on your own websit
 
 Parsing
 -------
-You can use file_get_getcontents() and json_decode() to parse the data in PHP.
+You can use file_get_contents() and json_decode() to parse the data in PHP.
 ```php
 // Get array data
 $Data = json_decode(file_get_contents('http://xivpads.com/lodestone_rss.json'), true);

@@ -283,7 +283,9 @@
 							//show($Character['name'] .' < > '. $ExactName);
 							//show(md5($Character['name']) .' < > '. md5($ExactName));
 							//show(strlen($Character['name']) .' < > '. strlen($ExactName));
-							if (($Character['name']) == ($ExactName) && strlen(trim($Character['name'])) == strlen(trim($ExactName)))
+							$n1 = trim(strtolower($Character['name']));
+							$n2 = trim(strtolower($ExactName));
+							if ($n1 == $n2 && strlen($n1) == strlen($n2))
 							{
 								$Exact = true;
 								$this->Search['results'] = NULL;
@@ -362,7 +364,9 @@
 						$Exact = false;
 						foreach($this->Search['results'] as $FreeCompany)
 						{
-							if (($FreeCompany['name']) == ($ExactName) && strlen(trim($FreeCompany['name'])) == strlen(trim($ExactName)))
+							$n1 = trim(strtolower($FreeCompany['name']));
+							$n2 = trim(strtolower($ExactName));
+							if ($n1 == $n2 && strlen($n1) == strlen($n2))
 							{
 								$Exact = true;
 								$this->Search['results'] = NULL;
@@ -434,7 +438,9 @@
 						$Exact = false;
 						foreach($this->Search['results'] as $Linkshell)
 						{
-							if (($Linkshell['name']) == ($ExactName) && strlen(trim($Linkshell['name'])) == strlen(trim($ExactName)))
+							$n1 = trim(strtolower($Linkshell['name']));
+							$n2 = trim(strtolower($ExactName));
+							if ($n1 == $n2 && strlen($n1) == strlen($n2))
 							{
 								$Exact = true;
 								$this->Search['results'] = NULL;
@@ -465,9 +471,6 @@
 		// Checks if an error page exists
 		public function errorPage($ID)
 		{
-			// Get the source
-			$this->getSource($this->URL['character']['profile'] . $ID);
-
 			// Check character tag
 			$PageNotFound = $this->find('/lodestone/character/');
 			
@@ -488,18 +491,20 @@
 			{
 				echo "error: No ID Set.";	
 			}
-			else if ($this->errorPage($ID))
+
+			// Get the source
+			$this->getSource($this->URL['character']['profile'] . $ID);
+
+
+			if ($this->errorPage($ID))
 			{
 				echo "error: Character page does not exist.";	
 			}
 			else
 			{
-				// Get the source
-				$this->getSource($this->URL['character']['profile'] . $ID);
-				
 				// Create a new character object
 				$Character = new Character();
-				
+
 				// Set Character Data
 				$Character->setID(trim($ID), $this->URL['character']['profile'] . $ID);
 				$Character->setNameServer($this->findRange('player_name_thumb', 15));
@@ -766,7 +771,7 @@
 				$Linkshell->setID(trim($ID), $this->URL['linkshell']['profile'] . $ID);
 				$Linkshell->setNameServer($this->findRange('player_name_brown', 15));
 				$Linkshell->setMemberCount($this->findRange('ic_silver', 5));
-				$Linkshell->setMembers($this->findAll('thumb_cont_black_50', 50, false, false));
+				$Linkshell->setMembers($this->findAll('thumb_cont_black_50', null, "/tr", false));
 
 
 				// Save free company
@@ -1094,6 +1099,9 @@
 			$this->Gear['slots'] = count($Array);
 			$GearArray = NULL;
 			
+			// Get ID List
+			$ItemIDArray = json_decode(file_get_contents("http://xivpads.com/items.json"), true);
+			
 			// Loop through gear equipped
 			$Main = NULL;
 			foreach($Array as $A)
@@ -1107,11 +1115,19 @@
 				{
 					// Item Icon
 					if (stripos($Line, 'socket_64') !== false) { $Data = trim(explode('&quot;', $A[$i + 1])[1]); $Temp['icon'] = $Data; }
-					if (stripos($Line, 'item_name') !== false) { $Data = trim(str_ireplace(array('>', '"'), NULL, strip_tags(html_entity_decode($A[$i + 2])))); $Temp['name'] = htmlspecialchars_decode(trim($Data), ENT_QUOTES); }
 					// Item ID
 					if (stripos($Line, 'bt_db_item_detail') !== false) { $Data = trim(str_ireplace(array('>', '"'), NULL, html_entity_decode(preg_match("/\/lodestone\/playguide\/db\/item\/([a-z0-9]{11})\//", $Line, $matches)))); $Temp['id_lodestone'] = $matches[1]; }
 					// Cannot equip [slot(s)]
 					if (stripos($Line, 'Cannot equip gear to') !== false) { $Data = trim(str_ireplace(array('>', '"'), NULL, strip_tags(html_entity_decode($Line)))); $Temp['no_equip'] = htmlspecialchars_decode(trim(str_replace('Cannot equip gear to', '', str_replace('.', '', $Data))), ENT_QUOTES); }
+					if (stripos($Line, 'item_name') !== false)
+					{ 
+						$Data = trim(str_ireplace(array('>', '"'), NULL, strip_tags(html_entity_decode($A[$i + 2])))); $Temp['name'] = htmlspecialchars_decode(trim($Data), ENT_QUOTES);
+
+						// Get item ID
+						$Temp['id'] = null;
+						$ItemID = $ItemIDArray[md5(strtolower($Temp['name']))];
+						if ($ItemID) { $Temp['id'] = $ItemID; }
+					}
 					if (stripos($Line, 'item_name') !== false) { 
 						$Data = htmlspecialchars_decode(trim(html_entity_decode($A[$i + 3])), ENT_QUOTES);
 						if (
@@ -1129,6 +1145,8 @@
 						$int = filter_var(strip_tags(html_entity_decode($Line)), FILTER_SANITIZE_NUMBER_INT);
 						$Temp['ilevel'] = $int;
 					}
+					
+					
 
 	                                // Level
 					if (stripos($Line, 'gear_level') !== false)
@@ -1365,8 +1383,8 @@
 		public function setNameServerCompany($String)
 		{
 			$this->Company 	= trim(explode("&lt;", explode("friendship_color", $String[9])[0])[0]);
-			$this->Name 	= trim(htmlspecialchars_decode(trim($String[10]), ENT_QUOTES));
-			$this->Server 	= trim(str_ireplace(array("(", ")"), null, htmlspecialchars_decode(trim($String[11]), ENT_QUOTES)));
+			$this->Name 	= trim(strip_tags(html_entity_decode($String[10])));
+			$this->Server 	= trim(str_ireplace(array("(", ")"), null, strip_tags(html_entity_decode($String[11]))));
 		}
 
 		// TAG + FORMED + MEMBERS + SLOGAN
@@ -1492,7 +1510,7 @@
 			$temp = [];
 
 			// Loop through members
-			foreach($Array as $arr)
+			foreach($Array as $i => $arr)
 			{
 				// Rank can move offset. Take it out, process it and remove it
 				if (stripos($arr[9], "ic_") !== false)
@@ -1532,43 +1550,29 @@
                     $CompanyRank    = trim(explode("/", str_ireplace("-->", null, strip_tags(htmlspecialchars_decode($arr[15]))))[1]);
                 }
 
-                // Free Company (fixed by @stygiansabyss for patch 2.1)
-                if ($CompanyIcon) 
+                $FC_Icon = []; $Image1 = null; $Image2 = null; $Image3 = null; $FC_ID = null; $FC_Name = null;
+                foreach($arr as $i => $a)
                 {
-                    $freeCompanyDetails      = 24;
-                    $freeCompanyImagesFirst  = $arr[20];
-                    $freeCompanyImagesSecond = $arr[21];
-                    $freeCompanyImagesThird  = $arr[22];
-                } 
-                else 
-                {
-                    $freeCompanyDetails      = 23;
-                    $freeCompanyImagesFirst  = $arr[19];
-                    $freeCompanyImagesSecond = $arr[20];
-                    $freeCompanyImagesThird  = $arr[21];
-                }
-                $FC_ID = null; $FC_Name = null;
-                $FC_Icon = array();
-                $FC_Icon[]          = isset(explode("&quot;", $freeCompanyImagesFirst)[1]) ? trim(explode("&quot;", $freeCompanyImagesFirst)[1]) : null;
-                $FC_Icon[]          = isset(explode("&quot;", $freeCompanyImagesSecond)[1]) ? trim(explode("&quot;", $freeCompanyImagesSecond)[1]) : null;
-                $FC_Icon[]          = isset(explode("&quot;", $freeCompanyImagesThird)[1]) ? trim(explode("&quot;", $freeCompanyImagesThird)[1]) : null;
-                if ($FC_Icon[0] != null)
-                {
-                    if ($FC_Icon[2] == null) {
-                        $freeCompanyDetails--;
-                        unset($FC_Icon[2]);
-                    }
-                    if ($FC_Icon[1] == null) {
-                        $freeCompanyDetails--;
-                        unset($FC_Icon[1]);
-                    }
-                    if ($FC_Icon[0] == null) {
-                        $freeCompanyDetails--;
-                    }
+	                // Free Company (fixed by @stygiansabyss for patch 2.1)
+	                if (stripos($a, 'ic_crest_32') !== false)
+	                {
+	                	$Image1 = explode("&quot;", $arr[$i + 1]); if (isset($Image1[1]) && stripos($Image1[0], 'img') != false) { $Image1 = trim($Image1[1]); } else { $Image1 = false; }
+	                	$Image2 = explode("&quot;", $arr[$i + 2]); if (isset($Image2[1]) && stripos($Image2[0], 'img') != false) { $Image2 = trim($Image2[1]); } else { $Image2 = false; }
+	                	$Image3 = explode("&quot;", $arr[$i + 3]); if (isset($Image3[1]) && stripos($Image3[0], 'img') != false) { $Image3 = trim($Image3[1]); } else { $Image3 = false; }
+	                	
+	                	if ($Image1) { $FC_Icon[] = $Image1; }
+	                	if ($Image2) { $FC_Icon[] = $Image2; }
+	                	if ($Image3) { $FC_Icon[] = $Image3; }
 
-                    $FC_ID          = trim(explode("/", explode("&quot;", $arr[$freeCompanyDetails])[3])[3]);
-                    $FC_Name        = trim(str_ireplace("-->", null, strip_tags(htmlspecialchars_decode($arr[$freeCompanyDetails]))));
-                }
+	                }
+
+	                // FC Details
+	                if (stripos($a, 'txt_gc') !== false)
+	                {
+	                	$FC_ID = trim(explode("/", $a)[4]);
+	                	$FC_Name = trim(strip_tags(htmlspecialchars_decode($a)));
+	                }
+	            }                
 
 				// Sort array
 				$arr =
@@ -1932,37 +1936,43 @@
 	# Parse Linkshell
 	$Linkshell = $API->getLS(
 	[
-		"name"		=> "ComraderyARR",
+		"name"		=> "Derp Squad",
 		"server"	=> "Excalibur",
 	]);
 	Show($Linkshell);	
 	
-
+	
 	$API = new LodestoneAPI();
 
 	# Parse Free Company
 	$FreeCompany = $API->getFC(
 	[
-		"name" 		=> "Penguin Farm", 
-		"server" 	=> "Excalibur"
+		"name" => "Daeva of War",
+		"server" => "Hyperion"
 	],
 	[
 		"members"	=> true,
 	]);
 	Show($FreeCompany); // returned object
-	*/
-/*
+	
+
 	$API = new LodestoneAPI();
+	$API->parseProfile(730968);
+	$Char = $API->getCharacterByID(730968);
+
+	Show($Char);
+
 
 	# Parse Character
+	$API = new LodestoneAPI();
 	$Character = $API->get(
 	[
 		"name"		=> "Premium Virtue",
 		"server"	=> "Excalibur"
 	]);
 	Show($Character);
-	$API->printSourceArray();
-	
+	//$API->printSourceArray();
+	/*
 
 	// Set an ID
 	$API = new LodestoneAPI();
@@ -2001,7 +2011,7 @@
 	]);
 
 	show("> vardump");
-	show($Character->getMounts());
+	show($Character);
 
 	$API = new LodestoneAPI();
 	$Options = 
