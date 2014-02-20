@@ -259,6 +259,7 @@ getSlot() // (List below)
 getActiveClass()
 getActiveJob()
 getActiveLevel()
+getClassJobsOrdered('desc', 'level', 'named'); // Returns class/jobs ordered by an index.
 getMinions() // Returns array containing 'Name' and 'Icon'
 getMounts() // Returns array containing 'Name' and 'Icon' (Thanks to @Lucleonhart!)
 getClassJob(class) // Get level/exp info of a class
