@@ -520,32 +520,11 @@
                     $Character->setCity($this->findRange('City-state', 5));
                     $Character->setBiography($this->findRange('txt_selfintroduction', 5));
                     $Character->setHPMPTP($this->findRange('param_power_area', 10));
-                    $Character->setAttributes($this->findRange('param_list_attributes', 8));
-                    $Character->setElemental($this->findRange('param_list_elemental', 8));
-                    $Character->setOffense($this->findRange('param_title_offense', 6));
-                    $Character->setDefense($this->findRange('param_title_deffense', 6));
-                    $Character->setPhysical($this->findRange('param_title_melle', 6));
-                    $Character->setResists($this->findRange('param_title_melleresists', 6));
-                    $Character->setActiveClassLevel($this->findRange('&quot;class_info&quot;', 3));
+                    $Character->setStats($this->findAll('param_left_area_inner', 12, null, false));
+                    $Character->setActiveClassLevel($this->findAll('class_info', 5, null, false));
                     
                     // Set Gear (Also sets Active Class and Job)
-                    $Gear = $this->findAll('item_detail_box', NULL, '//ITEM Detail', false);
-                    $Character->setGear($Gear);
-                    
-                    // The next few attributes are based on class
-                    if (in_array($Character->getActiveClass(), $this->ClassDisicpline['dow']) || in_array($Character->getActiveClass(), $this->ClassDisicpline['dom']))
-                    {
-                        $Character->setSpell($this->findRange('param_title_spell', 6));
-                        $Character->setPVP($this->findRange('param_title_pvpparam', 6));
-                    }
-                    else if (in_array($Character->getActiveClass(), $this->ClassDisicpline['doh']))
-                    {
-                        $Character->setCrafting($this->findRange('param_title_crafting', 6));
-                    }
-                    else if (in_array($Character->getActiveClass(), $this->ClassDisicpline['dol']))
-                    {
-                        $Character->setGathering($this->findRange('param_title_gathering', 6));
-                    }
+                    $Character->setGear($this->findAll('-- ITEM Detail --', NULL, '-- //ITEM Detail --', false));
 
                     #$this->segment('area_header_w358_inner');
                     
@@ -964,101 +943,91 @@
         
         // HP + MP + TP
         public function setHPMPTP($String) 
-        { 
+        {
             $this->Stats['core']['hp'] = trim($String[0]);
             $this->Stats['core']['mp'] = trim($String[1]);
             $this->Stats['core']['tp'] = trim($String[2]);
         }
-        
-        // ATTRIBUTES
-        public function setAttributes($String) 
-        { 
-            $this->Stats['attributes']['strength']      = trim($String[0]);
-            $this->Stats['attributes']['dexterity']     = trim($String[1]);
-            $this->Stats['attributes']['vitality']      = trim($String[2]);
-            $this->Stats['attributes']['intelligence']  = trim($String[3]);
-            $this->Stats['attributes']['mind']          = trim($String[4]);
-            $this->Stats['attributes']['piety']         = trim($String[5]);
-        }
-        
-        // ELEMENTAL
-        public function setElemental($String) 
-        { 
-            $this->Stats['elemental']['fire']           = trim(filter_var($String[0], FILTER_SANITIZE_NUMBER_INT));
-            $this->Stats['elemental']['ice']            = trim(filter_var($String[1], FILTER_SANITIZE_NUMBER_INT));
-            $this->Stats['elemental']['wind']           = trim(filter_var($String[2], FILTER_SANITIZE_NUMBER_INT));
-            $this->Stats['elemental']['earth']          = trim(filter_var($String[3], FILTER_SANITIZE_NUMBER_INT));
-            $this->Stats['elemental']['lightning']      = trim(filter_var($String[4], FILTER_SANITIZE_NUMBER_INT));
-            $this->Stats['elemental']['water']          = trim(filter_var($String[5], FILTER_SANITIZE_NUMBER_INT));
-        }
-        
-        // STATS > OFFENSE
-        public function setOffense($String)
+
+        // Stats
+        public function setStats($String)
         {
-            $this->Stats['offense']['accuracy']             = trim(filter_var($String[0], FILTER_SANITIZE_NUMBER_INT));
-            $this->Stats['offense']['critical hit rate']    = trim(filter_var($String[1], FILTER_SANITIZE_NUMBER_INT));
-            $this->Stats['offense']['determination']        = trim(filter_var($String[2], FILTER_SANITIZE_NUMBER_INT));
+            $this->Stats['attributes']['strength']          = trim(filter_var($String[0][4], FILTER_SANITIZE_NUMBER_INT));
+            $this->Stats['attributes']['dexterity']         = trim(filter_var($String[0][5], FILTER_SANITIZE_NUMBER_INT));
+            $this->Stats['attributes']['vitality']          = trim(filter_var($String[0][6], FILTER_SANITIZE_NUMBER_INT));
+            $this->Stats['attributes']['intelligence']      = trim(filter_var($String[0][7], FILTER_SANITIZE_NUMBER_INT));
+            $this->Stats['attributes']['mind']              = trim(filter_var($String[0][8], FILTER_SANITIZE_NUMBER_INT));
+            $this->Stats['attributes']['piety']             = trim(filter_var($String[0][9], FILTER_SANITIZE_NUMBER_INT));
+
+            $this->Stats['elemental']['fire']               = trim(filter_var($String[1][3], FILTER_SANITIZE_NUMBER_INT));
+            $this->Stats['elemental']['ice']                = trim(filter_var($String[1][4], FILTER_SANITIZE_NUMBER_INT));
+            $this->Stats['elemental']['wind']               = trim(filter_var($String[1][5], FILTER_SANITIZE_NUMBER_INT));
+            $this->Stats['elemental']['earth']              = trim(filter_var($String[1][6], FILTER_SANITIZE_NUMBER_INT));
+            $this->Stats['elemental']['lightning']          = trim(filter_var($String[1][7], FILTER_SANITIZE_NUMBER_INT));
+            $this->Stats['elemental']['water']              = trim(filter_var($String[1][8], FILTER_SANITIZE_NUMBER_INT));
+
+            $this->Stats['offense']['accuracy']             = trim(filter_var($String[2][3], FILTER_SANITIZE_NUMBER_INT));
+            $this->Stats['offense']['critical hit rate']    = trim(filter_var($String[2][4], FILTER_SANITIZE_NUMBER_INT));
+            $this->Stats['offense']['determination']        = trim(filter_var($String[2][5], FILTER_SANITIZE_NUMBER_INT));
+
+            $this->Stats['defense']['defense']              = trim(filter_var($String[3][3], FILTER_SANITIZE_NUMBER_INT));
+            $this->Stats['defense']['parry']                = trim(filter_var($String[3][4], FILTER_SANITIZE_NUMBER_INT));
+            $this->Stats['defense']['magic defense']        = trim(filter_var($String[3][5], FILTER_SANITIZE_NUMBER_INT));
+
+            $this->Stats['physical']['attack power']        = trim(filter_var($String[4][3], FILTER_SANITIZE_NUMBER_INT));
+            $this->Stats['physical']['skill speed']         = trim(filter_var($String[4][4], FILTER_SANITIZE_NUMBER_INT));
+
+            // 5th one switches between different types of classes
+
+            if (stripos($String[5][3], 'Craftsmanship') !== false)
+            {
+                $this->Stats['crafting']['craftsmanship']       = trim(filter_var($String[5][3], FILTER_SANITIZE_NUMBER_INT));
+                $this->Stats['crafting']['control']             = trim(filter_var($String[5][4], FILTER_SANITIZE_NUMBER_INT));
+
+                $last = 7;
+            }
+            if (stripos($String[5][3], 'Gathering') !== false)
+            {
+                $this->Stats['gathering']['gathering']          = trim(filter_var($String[5][3], FILTER_SANITIZE_NUMBER_INT));
+                $this->Stats['gathering']['Perception']         = trim(filter_var($String[5][4], FILTER_SANITIZE_NUMBER_INT));
+
+                $last = 7;
+            }
+            else
+            {
+                $this->Stats['spell']['attack magic potency']   = trim(filter_var($String[5][3], FILTER_SANITIZE_NUMBER_INT));
+                $this->Stats['spell']['healing magic potency']  = trim(filter_var($String[5][4], FILTER_SANITIZE_NUMBER_INT));
+                $this->Stats['spell']['spell speed']            = trim(filter_var($String[5][5], FILTER_SANITIZE_NUMBER_INT));
+
+                $this->Stats['pvp']['morale']                   = trim(filter_var($String[7][3], FILTER_SANITIZE_NUMBER_INT));
+
+                $last = 8;
+            }
+
+            $this->Stats['resists']['slow']                 = trim(filter_var($String[6][3], FILTER_SANITIZE_NUMBER_INT));
+            $this->Stats['resists']['silence']              = trim(filter_var($String[6][4], FILTER_SANITIZE_NUMBER_INT));
+            $this->Stats['resists']['blind']                = trim(filter_var($String[6][5], FILTER_SANITIZE_NUMBER_INT));
+            $this->Stats['resists']['poison']               = trim(filter_var($String[6][3], FILTER_SANITIZE_NUMBER_INT));
+            $this->Stats['resists']['stun']                 = trim(filter_var($String[6][4], FILTER_SANITIZE_NUMBER_INT));
+            $this->Stats['resists']['sleep']                = trim(filter_var($String[6][5], FILTER_SANITIZE_NUMBER_INT));
+            $this->Stats['resists']['bind']                 = trim(filter_var($String[6][5], FILTER_SANITIZE_NUMBER_INT));
+            $this->Stats['resists']['heavy']                = trim(filter_var($String[6][5], FILTER_SANITIZE_NUMBER_INT));
+
+            $this->Stats['resists']['slashing']             = trim(filter_var($String[$last][3], FILTER_SANITIZE_NUMBER_INT));
+            $this->Stats['resists']['piercing']             = trim(filter_var($String[$last][4], FILTER_SANITIZE_NUMBER_INT));
+            $this->Stats['resists']['blunt']                = trim(filter_var($String[$last][5], FILTER_SANITIZE_NUMBER_INT));
         }
-        
-        // STATS > DEFENSE
-        public function setDefense($String)
-        {
-            $this->Stats['defense']['defense']              = trim(filter_var($String[0], FILTER_SANITIZE_NUMBER_INT));
-            $this->Stats['defense']['parry']                = trim(filter_var($String[1], FILTER_SANITIZE_NUMBER_INT));
-            $this->Stats['defense']['magic defense']        = trim(filter_var($String[2], FILTER_SANITIZE_NUMBER_INT));
-        }
-        
-        // STATS > PHYSICAL
-        public function setPhysical($String)
-        {
-            $this->Stats['physical']['attack power']        = trim(filter_var($String[0], FILTER_SANITIZE_NUMBER_INT));
-            $this->Stats['physical']['skill speed']             = trim(filter_var($String[1], FILTER_SANITIZE_NUMBER_INT));
-        }
-        
-        // STATS > RESISTS
-        public function setResists($String)
-        {
-            $this->Stats['resists']['slashing']             = trim(filter_var($String[0], FILTER_SANITIZE_NUMBER_INT));
-            $this->Stats['resists']['piercing']             = trim(filter_var($String[1], FILTER_SANITIZE_NUMBER_INT));
-            $this->Stats['resists']['blunt']                = trim(filter_var($String[2], FILTER_SANITIZE_NUMBER_INT));
-        }
-        
-        // STATS > SPELL
-        public function setSpell($String)
-        {
-            $this->Stats['spell']['attack magic potency']   = trim(filter_var($String[0], FILTER_SANITIZE_NUMBER_INT));
-            $this->Stats['spell']['healing magic potency']  = trim(filter_var($String[1], FILTER_SANITIZE_NUMBER_INT));
-            $this->Stats['spell']['spell speed']            = trim(filter_var($String[2], FILTER_SANITIZE_NUMBER_INT));
-        }
-        
-        // STATS > CRAFTING
-        public function setCrafting($String)
-        {
-            $this->Stats['crafting']['craftsmanship']   = trim(filter_var($String[0], FILTER_SANITIZE_NUMBER_INT));
-            $this->Stats['crafting']['control']         = trim(filter_var($String[1], FILTER_SANITIZE_NUMBER_INT));
-        }
-        
-        // STATS > CRAFTING
-        public function setGathering($String)
-        {
-            $this->Stats['gathering']['gathering']  = trim(filter_var($String[0], FILTER_SANITIZE_NUMBER_INT));
-            $this->Stats['gathering']['Perception'] = trim(filter_var($String[1], FILTER_SANITIZE_NUMBER_INT));
-        }
-        
-        // STATS > PVP
-        public function setPVP($String)
-        {
-            $this->Stats['pvp']['morale'] = trim(filter_var($String[0], FILTER_SANITIZE_NUMBER_INT));
-        }
+   
         
         // GET STAT FUNC
         public function getStat($Type, $Attribute) { if (isset($this->Stats[$Type])) { return $this->Stats[$Type][$Attribute]; } else { return 0; }}
         public function getStats() { return $this->Stats; }
         
         // ACTIVE CLASS + LEVEL
-        public function setActiveClassLevel($String)
+        public function setActiveClassLevel($Arr)
         {
-            $this->Stats['active']['level'] = trim(filter_var($String[0], FILTER_SANITIZE_NUMBER_INT));
+            // set active level
+            $this->Stats['active']['level'] = trim(filter_var($Arr[1][1], FILTER_SANITIZE_NUMBER_INT));
         }
         
         // GEAR
@@ -1076,48 +1045,115 @@
             {
                 // Temp array
                 $Temp = array();
-                
+                //Show($A);
+
                 // Loop through data
-                $i = 0;
-                foreach($A as $Line)
+                foreach($A as $i => $Line)
                 {
-                    // Item Icon
-                    if (stripos($Line, 'socket_64') !== false) { $Data = trim(explode('&quot;', $A[$i + 1])[1]); $Temp['icon'] = $Data; }
-                    if (stripos($Line, 'item_name') !== false)
-                    { 
-                        $Data = trim(str_ireplace(array('>', '"'), NULL, strip_tags(html_entity_decode($A[$i + 2])))); $Temp['name'] = htmlspecialchars_decode(trim($Data), ENT_QUOTES);
+                    // Name / Id
+                    if (stripos($Line, '&lt;h2') !== false)
+                    {
+                        // Name
+                        $index = ($i + 2);
+                        $itemName = $A[$index];
+                        $itemName = strip_tags(html_entity_decode($itemName));
+                        $itemName = str_ireplace('">', null, $itemName);
+                        $itemName = str_ireplace("&#39;", "'", trim($itemName));
+                        $Temp['name'] = $itemName;
 
                         // Get item ID
                         $Temp['id'] = null;
-                        $ItemID = $ItemIDArray[md5(strtolower($Temp['name']))];
-                        if ($ItemID) { $Temp['id'] = $ItemID; }
+                        $itemNameHashed = md5(strtolower(preg_replace('/[^a-z-]/i', null, $itemName)));
+                        if (isset($ItemIDArray[$itemNameHashed]))
+                        {
+                            $itemID = $ItemIDArray[$itemNameHashed];
+                            $Temp['id'] = $itemID;
+                            $Temp['xivdb'] = 'http://xivdb.com/?item/'. $itemID .'/'. str_ireplace(' ', '-', $itemName);
+                        }
+                        else
+                        {
+                            //Show($itemNameHashed);
+                            //Show($itemName);
+                            //Show(strtolower(preg_replace('/[^a-z-]/i', null, $itemName)));
+                        }
                     }
-                    if (stripos($Line, 'item_name') !== false) { 
-                        $Data = htmlspecialchars_decode(trim(html_entity_decode($A[$i + 3])), ENT_QUOTES);
+
+                    // If glamoured
+                    if (stripos($Line, 'mirageitem_ic') !== false)
+                    {
+                        $index = ($i + 1);
+                        $itemGlamourIcon = $A[$index];
+                        $itemGlamourIcon = trim(explode('&quot;', $itemGlamourIcon)[1]);
+                        $Temp['glamour']['icon'] = $itemGlamourIcon;
+
+                        $index = ($i + 4);
+                        $itemGlamourName = $A[$index];
+                        $itemGlamourName = strip_tags(html_entity_decode($itemGlamourName));
+                        $Temp['glamour']['name'] = $itemGlamourName;
+
+                        // Get item ID
+                        $Temp['glamour']['id'] = null;
+                        $itemGlamourNameHashed = md5(strtolower(preg_replace('/[^a-z-]/i', null, $itemGlamourName)));
+                        if (isset($ItemIDArray[$itemGlamourNameHashed]))
+                        {
+                            $itemGlamourID = $ItemIDArray[$itemGlamourNameHashed];
+                            $Temp['glamour']['id'] = $itemGlamourID;
+                            $Temp['glamour']['xivdb'] = 'http://xivdb.com/?item/'. $itemGlamourID .'/'. str_ireplace(' ', '-', $itemGlamourName);
+                        }
+                        else
+                        {
+                            //Show($itemNameHashed);
+                            //Show($itemName);
+                            //Show(strtolower(preg_replace('/[^a-z-]/i', null, $itemName)));
+                        }
+                    }
+                    
+
+                    // Category / Slot / Class
+                    if (stripos($Line, 'category_name') !== false)
+                    {
+                        // Category
+                        $index = ($i);
+                        $itemCategory = $A[$i];
+                        $itemCategory = strip_tags(html_entity_decode($itemCategory));
+                        $itemCategory = str_ireplace("&#39;", "'", trim($itemCategory));
+                        $Temp['category'] = htmlspecialchars_decode($itemCategory);
+                        
+                        // Slot
+                        $itemSlot = $itemCategory;
                         if (
-                            strpos($Data, " Arm") !== false || 
-                            strpos($Data, " Grimoire") !== false || 
-                            strpos($Data, " Tool") !== false
+                            strpos($itemSlot, " Arm") !== false || 
+                            strpos($itemSlot, " Grimoire") !== false || 
+                            strpos($itemSlot, " Tool") !== false
                         ) 
-                        { $Main = $Data; $Data = 'Main'; }
-                        $Temp['slot'] = strtolower($Data);
+                        { 
+                            $ClassJob = strtolower(explode("'", ($itemSlot))[0]); 
+                            $itemSlot = 'Main'; 
+                        }
+                        $Temp['slot'] = $itemSlot;
+                    }
+
+                    // Icon
+                    if (stripos($Line, 'socket_64') !== false)
+                    {
+                        $index = ($i + 1);
+                        $itemIcon = $A[$index];
+                        $itemIcon = trim(explode('&quot;', $itemIcon)[1]);
+                        $Temp['icon'] = $itemIcon;
                     }
 
                     // Item level
                     if (stripos($Line, 'Item Level') !== false)
                     {
-                        $int = filter_var(strip_tags(html_entity_decode($Line)), FILTER_SANITIZE_NUMBER_INT);
-                        $Temp['ilevel'] = $int;
+                        $index = ($i);
+                        $itemLevel = $A[$index];
+                        $itemLevel = strip_tags(html_entity_decode($itemLevel));
+                        $itemLevel = filter_var($itemLevel, FILTER_SANITIZE_NUMBER_INT);
+                        $Temp['ilevel'] = $itemLevel;
                     }
-                    
-                    
-
-                    
-                    // Increment
-                    $i++;
                 }
 
-                // Slot manipulation
+                // Slot manipulation, mainly for rings
                 $Slot = $Temp['slot'];
                 if (isset($GearArray['slots'][$Slot])) { $Slot = $Slot . 2; }   
                 $Temp['slot'] = $Slot;  
@@ -1131,8 +1167,10 @@
             $this->Gear['equipped'] = $GearArray;
             
             // Set Active Class
-            $classjob = str_ireplace(array('Two-Handed ', 'One-Handed '), NULL, explode("'", $Main)[0]);
-            $this->Stats['active']['class'] = $classjob;
+            $ReplaceArray = ['Two-Handed ', 'One-Handed'];
+            $ClassJob = str_ireplace($ReplaceArray, NULL, $ClassJob);
+
+            $this->Stats['active']['class'] = $ClassJob;
             if (isset($this->Gear['equipped']['slots']['soul crystal'])) { $this->Stats['active']['job'] = str_ireplace("Soul of the ", NULL, $this->Gear['equipped']['slots']['soul crystal']); }
         }
         public function getGear()           { return $this->Gear; }
@@ -1156,7 +1194,7 @@
                 {
                     $arr = array();
                     $arr['name'] = trim(explode('&quot;', $Array[$i])[5]);
-                    $arr['icon'] = trim(explode('&quot;', $Array[$i + 2])[1]);
+                    $arr['icon'] = trim(explode('&quot;', $Array[$i + 1])[1]);
                     $Pets[] = $arr;
                 }
                 
@@ -1183,7 +1221,7 @@
                 {
                     $arr = array();
                     $arr['name'] = trim(explode('&quot;', $Array[$i])[5]);
-                    $arr['icon'] = trim(explode('&quot;', $Array[$i + 2])[1]);
+                    $arr['icon'] = trim(explode('&quot;', $Array[$i + 1])[1]);
                     $Mounts[] = $arr;
                 }
                 
@@ -1647,7 +1685,12 @@
                     { 
                         $Temp['date'] = trim(filter_var(explode("(", strip_tags(html_entity_decode($Line)))[2], FILTER_SANITIZE_NUMBER_INT)); 
                     }
-                    
+                    if (stripos($Line, 'bt_more') !== false) 
+                    { 
+                        $Temp['id'] = explode("/", $Line)[6];
+                        $Temp['xivdb'] = 'http://xivdb.com/?achievement/'. $Temp['id'] .'/'. str_ireplace(' ', '-', $Temp['name']);
+                    }
+
                     // Increment
                     $i++;
                 }
@@ -1970,8 +2013,7 @@
 
     Show($Char);
 
-    */
-    /*
+    
     # Parse Character
     $API = new LodestoneAPI();
     $Character = $API->get(
@@ -1979,22 +2021,20 @@
         "name"      => "Premium Virtue",
         "server"    => "Excalibur"
     ]);
-    $JobArray = $Character->getClassJobsOrdered('desc', 'level', 'named');
-    Show($JobArray);
+    Show($Character);
     //$API->printSourceArray();
-    
-
+    */
+    /*
     // Set an ID
     $API = new LodestoneAPI();
 
     // Parse achievements
     $API->parseAchievements(730968);
 
-    Show($API->getAchievements());
-    
     // Show achievements
     Show($API->getAchievements());
-
+    */
+    /*
 
     // Lodestone
     $API = new LodestoneAPI();
