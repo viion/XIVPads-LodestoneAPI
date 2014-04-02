@@ -514,7 +514,7 @@
                 {
                     $Character->setAvatar($this->findRange('player_name_thumb', 10, NULL, false));
                     $Character->setPortrait($this->findRange('bg_chara_264', 2, NULL, false));
-                    $Character->setRaceClan($this->find('chara_profile_title'));
+                    $Character->setRaceClan($this->findRange('chara_profile_title', 3, null, false));
                     $Character->setLegacy($this->find('bt_legacy_history'));
                     $Character->setBirthGuardianCompany($this->findRange('chara_profile_list', 60, NULL, false));
                     $Character->setCity($this->findRange('City-state', 5));
@@ -888,6 +888,7 @@
         {
             if (isset($String))
             {
+                Show($String);
                 $String         = explode("/", $String);
                 $this->Clan     = htmlspecialchars_decode(trim($String[1]), ENT_QUOTES);
                 $this->Race     = htmlspecialchars_decode(trim($String[0]), ENT_QUOTES);
@@ -1051,7 +1052,7 @@
                 foreach($A as $i => $Line)
                 {
                     // Name / Id
-                    if (stripos($Line, '&lt;h2') !== false)
+                    if (stripos($Line, 'item_name') !== false && stripos($Line, 'item_name_right') === false)
                     {
                         // Name
                         $index = ($i + 2);
@@ -1060,6 +1061,11 @@
                         $itemName = str_ireplace('">', null, $itemName);
                         $itemName = str_ireplace("&#39;", "'", trim($itemName));
                         $Temp['name'] = $itemName;
+
+                        if (empty($Temp['name']))
+                        {
+                            Show($A);
+                        }
 
                         // Get item ID
                         $Temp['id'] = null;
@@ -1130,7 +1136,7 @@
                             $ClassJob = strtolower(explode("'", ($itemSlot))[0]); 
                             $itemSlot = 'Main'; 
                         }
-                        $Temp['slot'] = $itemSlot;
+                        $Temp['slot'] = strtolower($itemSlot);
                     }
 
                     // Icon
@@ -1932,9 +1938,15 @@
             
             $ch = curl_init($URL);  
             curl_setopt_array($ch, $options);   
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-type: text/html; charset=utf-8'));
             $source = curl_exec($ch);
             curl_close($ch);
-            return htmlentities($source);   
+
+
+            $html = htmlentities($source);
+            //Show($html);
+
+            return $html; 
         }
     } 
 
@@ -2013,7 +2025,7 @@
 
     Show($Char);
 
-    
+   
     # Parse Character
     $API = new LodestoneAPI();
     $Character = $API->get(
@@ -2021,9 +2033,11 @@
         "name"      => "Premium Virtue",
         "server"    => "Excalibur"
     ]);
+    $API->printSourceArray();
     Show($Character);
+
     //$API->printSourceArray();
-    */
+    
     /*
     // Set an ID
     $API = new LodestoneAPI();
