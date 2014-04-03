@@ -514,7 +514,7 @@
                 {
                     $Character->setAvatar($this->findRange('player_name_thumb', 10, NULL, false));
                     $Character->setPortrait($this->findRange('bg_chara_264', 2, NULL, false));
-                    $Character->setRaceClan($this->findRange('chara_profile_title', 3, null, false));
+                    $Character->setRaceClan($this->find('chara_profile_title'));
                     $Character->setLegacy($this->find('bt_legacy_history'));
                     $Character->setBirthGuardianCompany($this->findRange('chara_profile_list', 60, NULL, false));
                     $Character->setCity($this->findRange('City-state', 5));
@@ -888,7 +888,6 @@
         {
             if (isset($String))
             {
-                Show($String);
                 $String         = explode("/", $String);
                 $this->Clan     = htmlspecialchars_decode(trim($String[1]), ENT_QUOTES);
                 $this->Race     = htmlspecialchars_decode(trim($String[0]), ENT_QUOTES);
