@@ -32,6 +32,10 @@ An API for parsing lodestone data, designed and maintained by XIVPads.com and XI
 **Thanks:**
 - @stygiansabyss for patch 2.1 free company icon fix
 
+**License**
+- MIT License : Copyright (c) 2014 Josh Freeman
+- You may: use, redistribute, modify, share, collaborate, change spaces to tabs, so long as the comment license stays intack at the top. IF YOU MAKE MODIFICATIONS please add your contribution details (name/git handle) in the heading comment, example: http://phpjs.org/functions/number_format/
+
 Getting Started
 --------
 The API is heavily object-oriented. It will parse the Lodestone for information and attach this to a 
