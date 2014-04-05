@@ -14,7 +14,7 @@
 
     // Debug stuff
     //error_reporting(-1);
-    if (!function_exists('show')) { function show($Data) { echo '<pre>'; print_r($Data); echo '</pre>'; } }
+    //if (!function_exists('show')) { function show($Data) { echo '<pre>'; print_r($Data); echo '</pre>'; } }
 
     /*  LodestoneAPI
      *  ------------
@@ -986,7 +986,7 @@
 
                 $last = 7;
             }
-            if (stripos($String[5][3], 'Gathering') !== false)
+            else if (stripos($String[5][3], 'Gathering') !== false)
             {
                 $this->Stats['gathering']['gathering']          = trim(filter_var($String[5][3], FILTER_SANITIZE_NUMBER_INT));
                 $this->Stats['gathering']['Perception']         = trim(filter_var($String[5][4], FILTER_SANITIZE_NUMBER_INT));
@@ -2024,16 +2024,17 @@
 
     Show($Char);
 
-   
+    */
+    /*
     # Parse Character
     $API = new LodestoneAPI();
     $Character = $API->get(
     [
-        "name"      => "Premium Virtue",
-        "server"    => "Excalibur"
+        "name"      => "Rapp Waynex",
+        "server"    => "Mateus"
     ]);
-    $API->printSourceArray();
     Show($Character);
+    /*
 
     //$API->printSourceArray();
     
