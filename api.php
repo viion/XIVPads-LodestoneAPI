@@ -1173,6 +1173,9 @@
                         $Temp['id_lodestone'] = $matches[1];
                     }
 
+                    // Cannot equip
+                    if (stripos($Line, 'Cannot equip gear to') !== false) { $Data = trim(str_ireplace(array('>', '"'), NULL, strip_tags(html_entity_decode($Line)))); $Temp['no_equip'] = htmlspecialchars_decode(trim(str_replace('Cannot equip gear to', '', str_replace('.', '', $Data))), ENT_QUOTES); }
+
                 }
 
                 // Slot manipulation, mainly for rings
