@@ -1049,7 +1049,7 @@
 
                 // Loop through data
                 foreach($A as $i => $Line)
-                {
+                {                    
                     // Name / Id
                     if (stripos($Line, 'item_name') !== false && stripos($Line, 'item_name_right') === false)
                     {
@@ -1156,6 +1156,26 @@
                         $itemLevel = filter_var($itemLevel, FILTER_SANITIZE_NUMBER_INT);
                         $Temp['ilevel'] = $itemLevel;
                     }
+                    
+                    // Level
+                    if (stripos($Line, 'gear_level') !== false)
+                    {
+                        $index = ($i);
+                        $itemLevel = $A[$index];
+                        $itemLevel = strip_tags(html_entity_decode($itemLevel));
+                        $itemLevel = filter_var($itemLevel, FILTER_SANITIZE_NUMBER_INT);
+                        $Temp['level'] = $itemLevel;
+                    }
+                    
+                    // ID Lodestone
+                    if (stripos($Line, 'bt_db_item_detail') !== false) {
+                        $Data = trim(str_ireplace(array('>', '"'), NULL, html_entity_decode(preg_match("/\/lodestone\/playguide\/db\/item\/([a-z0-9]{11})\//", $Line, $matches)))); 
+                        $Temp['id_lodestone'] = $matches[1];
+                    }
+
+                    // Cannot equip
+                    if (stripos($Line, 'Cannot equip gear to') !== false) { $Data = trim(str_ireplace(array('>', '"'), NULL, strip_tags(html_entity_decode($Line)))); $Temp['no_equip'] = htmlspecialchars_decode(trim(str_replace('Cannot equip gear to', '', str_replace('.', '', $Data))), ENT_QUOTES); }
+
                 }
 
                 // Slot manipulation, mainly for rings
