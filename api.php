@@ -523,8 +523,9 @@
                     $Character->setStats($this->findAll('param_left_area_inner', 12, null, false));
                     $Character->setActiveClassLevel($this->findAll('class_info', 5, null, false));
                     
-                    // Set Gear (Also sets Active Class and Job)
+                    // Set Gear (Also sets Active Class and Job), then set item level from the gear
                     $Character->setGear($this->findAll('-- ITEM Detail --', NULL, '-- //ITEM Detail --', false));
+                    $Character->setItemLevel($this->GearSlots);
 
                     #$this->segment('area_header_w358_inner');
                     
@@ -1168,14 +1169,20 @@
                     }
                     
                     // ID Lodestone
-                    if (stripos($Line, 'bt_db_item_detail') !== false) {
+                    if (stripos($Line, 'bt_db_item_detail') !== false) 
+                    {
                         $Data = trim(str_ireplace(array('>', '"'), NULL, html_entity_decode(preg_match("/\/lodestone\/playguide\/db\/item\/([a-z0-9]{11})\//", $Line, $matches)))); 
                         $Temp['id_lodestone'] = $matches[1];
                     }
 
                     // Cannot equip
-                    if (stripos($Line, 'Cannot equip gear to') !== false) { $Data = trim(str_ireplace(array('>', '"'), NULL, strip_tags(html_entity_decode($Line)))); $Temp['no_equip'] = htmlspecialchars_decode(trim(str_replace('Cannot equip gear to', '', str_replace('.', '', $Data))), ENT_QUOTES); }
-
+                    if (stripos($Line, 'Cannot equip gear to') !== false) 
+                    { 
+                        $Data = trim(str_ireplace(array('>', '"'), NULL, strip_tags(html_entity_decode($Line)))); 
+                        $Temp['no_equip'] = htmlspecialchars_decode(trim(str_replace(['Cannot equip gear to', '.'], null,  $Data)), ENT_QUOTES);
+                        $Temp['no_equip_slots'] = explode(" ", str_ireplace([".", ", or", ", and", "Cannot equip gear to ", ","], null, $Data));
+                        $Temp['no_equip_count'] = count($Temp['no_equip_slots']);
+                    }
                 }
 
                 // Slot manipulation, mainly for rings
@@ -1200,10 +1207,70 @@
         }
         public function getGear()           { return $this->Gear; }
         public function getEquipped($Type)  { return $this->Gear['equipped'][$Type]; }
-        public function getSlot($Slot)      { return $this->Gear['equipped']['slots'][$Slot]; }
+        public function getSlot($Slot)      { return isset($this->Gear['equipped']['slots'][$Slot]) ? $this->Gear['equipped']['slots'][$Slot] : null; }
         public function getActiveClass()    { return $this->Stats['active']['class']; }
         public function getActiveJob()      { return isset($this->Stats['active']['job']) ? $this->Stats['active']['job'] : NULL; }
         public function getActiveLevel()    { return $this->Stats['active']['level']; }
+
+        public function getItemLevelArray()     { return $this->Gear['item_level_array']; }
+        public function getItemLevelTotal()     { return $this->Gear['item_level_total']; }
+        public function getItemLevelAverage()   { return $this->Gear['item_level_average']; }
+
+        // Item Level
+        public function setItemLevel($GearSlots)
+        {
+            // Remoove soul crystal as its not calculated in ilv
+            unset($GearSlots[3]);
+
+            // List of categories that have their item level duplicated
+            $arrayOfDuplicatedGear =
+            [
+                "Pugilist's Arm",
+                "Marauder's Arm",
+                "Archer's Arm",
+                "Lancer's Arm",
+                "Two-handed Thaumaturge's Arm",
+                "Two-handed Conjurer's Arm",
+                "Arcanist's Grimoire"
+            ];
+            
+            // Loop through gear to calculate item levels
+            $itemLevels = [];
+            foreach($GearSlots as $Slot)
+            {
+                // Get the gear
+                $Gear = $this->getSlot($Slot);
+
+                if ($Gear)
+                {
+                    // Get the item level
+                    $itemLevel = $Gear['ilevel'];
+
+                    // If category in array of duplicated gear, * 2 the item level
+                    if (in_array($Gear['category'], $arrayOfDuplicatedGear)) $itemLevel = $itemLevel * 2;
+
+
+                    // If item takes up multiple slots
+                    if (isset($Gear['no_equip_count']))
+                    {
+                        // Multiply the item level by the number of slots it takes up + 1 
+                        // (as multi-slot gear always take up their own slot then some other slot)
+                        $itemLevel = $itemLevel * ($Gear['no_equip_count'] + 1);
+                    }
+                }
+                else
+                {
+                    $itemLevel = 0;
+                }
+
+                // Add item level
+                $itemLevels[$Slot] = $itemLevel;
+            }
+
+            $this->Gear['item_level_array'] = $itemLevels;
+            $this->Gear['item_level_total'] = array_sum($itemLevels);
+            $this->Gear['item_level_average'] = floor($this->Gear['item_level_total'] / 13);
+        }
         
         // MINIONS
         public function setMinions($Array)
@@ -2050,8 +2117,11 @@
     $API = new LodestoneAPI();
     $Character = $API->get(
     [
-        "name"      => "Rapp Waynex",
-        "server"    => "Mateus"
+        "name"      => "Premium Virtue",
+        "server"    => "Excalibur"
+
+        //'name' => 'Aihal Evol',
+        //'server' => 'Masamune',
     ]);
     Show($Character);
     /*
