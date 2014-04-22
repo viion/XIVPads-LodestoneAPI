@@ -912,7 +912,7 @@
             {
                 if (stripos($Line, 'Grand Company') !== false)  { $Company = trim(strip_tags(html_entity_decode($String[($i + 1)]))); }
                 if (stripos($Line, 'Free Company') !== false)   { $FreeCompany = trim($String[($i + 1)]); }
-                $i++;
+                $i++;;
             }
             
             // If grand company
@@ -925,7 +925,11 @@
             if (isset($FreeCompany))
             {
                 $FreeCompanyID      = trim(filter_var(explode('&quot;', $FreeCompany)[1], FILTER_SANITIZE_NUMBER_INT));
-                $this->FreeCompany  = array("name" => trim(strip_tags(html_entity_decode($FreeCompany))), "id" => $FreeCompanyID);
+                $FreeCompany        = trim(strip_tags(html_entity_decode($FreeCompany)));
+
+                $FreeCompany        = str_ireplace(["&#39;", "&amp;"], ["'", "&"], $FreeCompany);
+
+                $this->FreeCompany  = array("name" => $FreeCompany, "id" => $FreeCompanyID);
             }
         }
         public function getNameday()        { return $this->Nameday; }
@@ -1018,7 +1022,6 @@
             $this->Stats['resists']['piercing']             = trim(filter_var($String[$last][4], FILTER_SANITIZE_NUMBER_INT));
             $this->Stats['resists']['blunt']                = trim(filter_var($String[$last][5], FILTER_SANITIZE_NUMBER_INT));
         }
-   
         
         // GET STAT FUNC
         public function getStat($Type, $Attribute) { if (isset($this->Stats[$Type])) { return $this->Stats[$Type][$Attribute]; } else { return 0; }}
@@ -1456,6 +1459,7 @@
     class FreeCompany
     {
         private $ID;
+        private $Lodestone;
         private $Company;
         private $Name;
         private $Server;
@@ -2092,18 +2096,22 @@
     
     
     $API = new LodestoneAPI();
+    
+
+    $API = new LodestoneAPI();
 
     # Parse Free Company
     $FreeCompany = $API->getFC(
     [
-        "name" => "Daeva of War",
-        "server" => "Hyperion"
+        "name" => "Chocobo Feather",
+        "server" => "Excalibur"
     ],
     [
         "members"   => true,
     ]);
     Show($FreeCompany); // returned object
-    
+
+
 
     $API = new LodestoneAPI();
     $API->parseProfile(730968);
@@ -2117,8 +2125,9 @@
     $API = new LodestoneAPI();
     $Character = $API->get(
     [
-        "name"      => "Premium Virtue",
-        "server"    => "Excalibur"
+        'id'    => 770079,
+        //"name"      => "Astroth Termiseus",
+        //"server"    => "Excalibur"
 
         //'name' => 'Aihal Evol',
         //'server' => 'Masamune',
