@@ -776,7 +776,9 @@
 
     // Alias for LodestoneAPI()
     class_alias('Viion\Lodestone\API', 'Viion\Lodestone\LodestoneAPI');
+    class_alias('Viion\Lodestone\API', 'API\Lodestone\API');
     class_alias('Viion\Lodestone\API', 'LodestoneAPI');
+
 
     /*  Lodestone
      *  ---------
