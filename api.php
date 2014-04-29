@@ -4,23 +4,31 @@
         --------------------------------------------------
         Author:     Josh Freeman (Premium Virtue)
         Support:    http://xivpads.com/?Portal
-        Version:    4.0
+        Version:    4.2
         PHP:        5.4
         
         Always ensure you download from the github
         https://github.com/viion/XIVPads-LodestoneAPI
         --------------------------------------------------
+        If you have an auto loader, either change the namespace
+        or put the API into /api/lodestone/api.php
+
+        Legacy new LodestoneAPI(); will still work.
     */
 
     // Debug stuff
     //error_reporting(-1);
-    //if (!function_exists('show')) { function show($Data) { echo '<pre>'; print_r($Data); echo '</pre>'; } }
+
+    // Namespace
+    namespace Viion\Lodestone;
 
     /*  LodestoneAPI
      *  ------------
      */
-    class LodestoneAPI extends Parser
+    class API extends Parser
     {
+        public function show() { echo '<pre>'. print_r($this, true) .'</pre>'; }
+
         // url addresses to various lodestone content. (DO NOT CHANGE, it will break some functionality of the API)
         private $URL =
         [
@@ -766,11 +774,17 @@
         public function getLinkshellByID($ID) { return isset($this->Linkshells[$ID]) ? $this->Linkshells[$ID] : NULL; }       
     }
 
+    // Alias for LodestoneAPI()
+    class_alias('Viion\Lodestone\API', 'Viion\Lodestone\LodestoneAPI');
+    class_alias('Viion\Lodestone\API', 'LodestoneAPI');
+
     /*  Lodestone
      *  ---------
      */
     class Lodestone
     {
+        public function show() { echo '<pre>'. print_r($this, true) .'</pre>'; }
+
         // Variables
         private $URLs = [];
         private $Topics = [];
@@ -813,6 +827,8 @@
      */
     class Character
     {
+        public function show() { echo '<pre>'. print_r($this, true) .'</pre>'; }
+
         private $ID;
         private $Lodestone;
         private $Name;
@@ -1458,6 +1474,8 @@
      */ 
     class FreeCompany
     {
+        public function show() { echo '<pre>'. print_r($this, true) .'</pre>'; }
+
         private $ID;
         private $Lodestone;
         private $Company;
@@ -1572,6 +1590,8 @@
      */ 
     class Linkshell
     {
+        public function show() { echo '<pre>'. print_r($this, true) .'</pre>'; }
+
         private $ID;
         private $Name;
         private $Server;
@@ -1724,6 +1744,8 @@
      */
     class Achievements
     {
+        public function show() { echo '<pre>'. print_r($this, true) .'</pre>'; }
+
         private $TotalPoints = 0;
         private $CurrentPoints = 0;
         private $PointsPercentage = 0;
@@ -1827,6 +1849,8 @@
      */
     class Parser
     {
+        public function show() { echo '<pre>'. print_r($this, true) .'</pre>'; }
+
         // The source code of the most recent curl
         protected $SourceCodeArray;
         
@@ -2045,6 +2069,8 @@
      */
     class LSFunctions
     {
+        public function show() { echo '<pre>'. print_r($this, true) .'</pre>'; }
+
         #-------------------------------------------#
         # FUNCTIONS                                 #
         #-------------------------------------------#
@@ -2082,6 +2108,22 @@
     # Example Usage
     #-----------------------------------------------
     /*
+
+
+    $API = new LodestoneAPI();
+    $Character = $API->get(
+    [
+        'id'    => 770079,
+        //"name"      => "Astroth Termiseus",
+        //"server"    => "Excalibur"
+
+        //'name' => 'Aihal Evol',
+        //'server' => 'Masamune',
+    ]);
+    $Character->show();
+
+
+    // old
     
     # New API
     $API = new LodestoneAPI();
