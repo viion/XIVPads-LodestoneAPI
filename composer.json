@@ -1,0 +1,18 @@
+{
+ "name": "viion/xivpads-lodestoneapi",
+ "description": "An API for parsing lodestone data, designed and maintained by XIVPads.com and XIVDB.com",
+ "keywords": ["Final Fantasy XIV", "The Lodestone", "api", "XIVPads", "XIVDB"],
+ "homepage": "http://github.com/viion/XIVPads-LodestoneAPI",
+ "license": "MIT",
+ "authors": [
+  {
+   "name": "Josh Freeman",
+   "email": "josh@viion.co.uk",
+   "homepage": "http://xivpads.com/"
+  }
+ ],
+ "require": {
+  "php": ">=5.4.0",
+  "ext-curl": "*"
+ }
+}
