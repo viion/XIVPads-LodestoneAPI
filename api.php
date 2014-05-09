@@ -1517,7 +1517,7 @@
             $this->Tag          = Trim(str_ireplace("&raquo;", null, strip_tags(htmlspecialchars_decode(explode("|", str_ireplace("laquo;", "|", $String[9]))[1]))));
             $this->Formed       = trim(explode(",", explode("(", $String[16])[2])[0]);
             $this->MemberCount  = trim(strip_tags(htmlspecialchars_decode(trim($String[22]), ENT_QUOTES)));
-            $this->Slogan       = trim(strip_tags(htmlspecialchars_decode(trim($String[26]), ENT_QUOTES)));
+            $this->Slogan       = trim(strip_tags(htmlspecialchars_decode(trim($String[40]), ENT_QUOTES)));
         }
         public function getCompany() { return $this->Company; }
         public function getName() { return $this->Name; }
@@ -1543,8 +1543,8 @@
                 $RankImage  = trim(explode("?", explode("&quot;", $D[3])[1])[0]);
                 $Rank       = trim(str_ireplace("&gt;", null, explode("&quot;", $D[3])[8]));
 
-                $ClassImage = explode("?", explode("&quot;",$D[7])[3])[0];
-                $ClassLevel = explode(">", strip_tags(htmlspecialchars_decode(explode("&quot;",$D[7])[10])))[1];
+                $ClassImage = explode("?", explode("&quot;",$D[7])[5])[0];
+                $ClassLevel = explode(">", strip_tags(htmlspecialchars_decode(explode("&quot;",$D[7])[14])))[1];
 
                 $arr =
                 [
@@ -2153,8 +2153,7 @@
     [
         "members"   => true,
     ]);
-    Show($FreeCompany); // returned object
-
+    $FreeCompany->Show();
 
 
     $API = new LodestoneAPI();
