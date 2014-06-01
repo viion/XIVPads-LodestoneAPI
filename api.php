@@ -1184,7 +1184,13 @@
             
             // Get ID List
             //$this->log('... getting items json from XIVPads'); 
-            //$ItemIDArray = json_decode(file_get_contents("http://xivpads.com/items.json"), true);
+
+            // THIS FILE SHOULD REALLY BE HOSTED LOCALLY
+            // OR MEMCACHED
+            // OR REDIS
+            // OR unoe
+
+            $ItemIDArray = json_decode(file_get_contents("http://xivpads.com/items.json"), true);
             //$this->log('... >> obtained item json from XIVPads'); 
             
             // Loop through gear equipped
