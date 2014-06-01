@@ -43,6 +43,9 @@ The API is heavily object-oriented. It will parse the Lodestone for information 
 entity type object, for example searching a character and parsing the profile will create a character
 object pre-filled with the profile information where you can call traditional "get" functions.
 
+**IMPORTANT**
+Please read this commit: https://github.com/viion/XIVPads-LodestoneAPI/commit/d317664c97ec200d1447da6bcdfe5b730e613127
+
 **Quick Parse**
 ```php
 // Initialize a LodestoneAPI Obkect
