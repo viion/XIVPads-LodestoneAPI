@@ -4,7 +4,7 @@
         --------------------------------------------------
         Author:     Josh Freeman (Premium Virtue)
         Support:    http://xivpads.com/?Portal
-        Version:    4.2
+        Version:    5
         PHP:        5.4
         
         Always ensure you download from the github
@@ -22,12 +22,92 @@
     // Namespace
     namespace Viion\Lodestone;
 
+    /*  trait 'Funky'
+     *  Cool functions that all classes will get access to
+     */
+    trait Funky 
+    {
+        /*  - sƒow
+         *  Shows the contents of an object.
+         */
+        function show($data = null)
+        { 
+            // If there is no data, replace it with this
+            if (!$data) { $data = $this; }
+            
+            // Print it
+            echo '<pre>';
+            print_r($data);
+            echo '</pre>'; 
+        }
+
+        /*  - sksort
+         *  Sorts by a key. Can handle multi-dimentional arrays.
+         *  It is used globally, so it modifies the pointered array, thus use it like so:
+         *      
+         *      $array = ['some' => 'array'];
+         *      $this->sksort($array, 'some');
+         */
+        function sksort(&$array, $subkey, $sort_ascending = false) 
+        {
+            if (count($array))
+            {
+                $temp_array[key($array)] = array_shift($array);
+            }
+
+            foreach($array as $key => $val)
+            {
+                $offset = 0;
+                $found = false;
+
+                foreach($temp_array as $tmp_key => $tmp_val)
+                {
+                    if(!$found and strtolower($val[$subkey]) > strtolower($tmp_val[$subkey]))
+                    {
+                        $temp_array = array_merge(    (array)array_slice($temp_array,0,$offset),
+                                                    array($key => $val),
+                                                    array_slice($temp_array,$offset)
+                                                  );
+                        $found = true;
+                    }
+                    $offset++;
+                }
+
+                if(!$found)
+                {
+                    $temp_array = array_merge($temp_array, array($key => $val));
+                }
+            }
+
+            if ($sort_ascending)
+            {
+                $array = array_reverse($temp_array);
+            }
+            else
+            {
+                $array = $temp_array;
+            }
+        }
+
+        /*  - log
+         *  Sends a message to the global log variable if it exists
+         */
+        function log($message)
+        {
+            if (array_key_exists('API_Logger', $GLOBALS))
+            {
+                global $API_Logger;
+                $API_Logger->log($message);
+            }
+        }
+    }
+
     /*  LodestoneAPI
      *  ------------
      */
     class API extends Parser
     {
-        public function show() { echo '<pre>'. print_r($this, true) .'</pre>'; }
+        use Funky;
 
         // url addresses to various lodestone content. (DO NOT CHANGE, it will break some functionality of the API)
         private $URL =
@@ -85,7 +165,6 @@
             "necklace","earrings","bracelets","ring","ring2"
         ];
 
-        
         // List of characters parsed
         public $Characters = [];
         public $Achievements = [];
@@ -98,6 +177,7 @@
         // List of linkshell data parsed
         public $Linkshells = [];
         
+        // Initialize
         public function __construct()
         {
             // Set classes
@@ -115,9 +195,24 @@
             );
         }
         
-        // Quick get
+        #-------------------------------------------#
+        # SHORT GETS                                #
+        #-------------------------------------------#
+
+        /*  - get
+         *  Gets a character, the array can be either "name, server" OR "id". If you
+         *  pass an name and server, the API will have to search, it will then select the
+         *  first result found. If you pass an ID, the search is skipped and is twice as
+         *  fast and more reliable due to exact ID being known.
+         *
+         *  returns: Character object.
+         *
+         *  The same principle applies to getFC and getLS
+         */
         public function get($Array, $Options = null)
         {
+            $this->log('function: get() - start');
+
             // Clean
             $Name   = isset($Array['name'])     ? trim(ucwords($Array['name'])) : NULL;
             $Server = isset($Array['server'])   ? trim(ucwords($Array['server'])) : NULL;
@@ -140,6 +235,7 @@
                 $this->parseProfile($ID);
                 
                 // Return character
+                $this->log('function: get() - return');
                 return $this->getCharacterByID($ID);
             }
             else
@@ -148,7 +244,10 @@
             }
         }
 
-        // Quick get free company
+        /*  - getFC
+         *  Read "get" for characters, same rules apply to this.
+         *  returns: FreeCompany object
+         */
         public function getFC($Array, $Options = null)
         {
             // Clean
@@ -181,7 +280,10 @@
             }
         }
 
-        // Quick get linkshell
+        /*  - getLS
+         * Read "get" for characters, same rules apply to this.
+         * returns: Linkshell object
+         */
         public function getLS($Array, $Options = null)
         {
             // Clean
@@ -241,6 +343,8 @@
         // Search a character by its name and server.
         public function searchCharacter($Name, $Server, $GetExact = true)
         {
+            $this->log('function: searchCharacter()');
+
             if (!$Name)
             {
                 echo "error: No Name Set."; 
@@ -253,12 +357,14 @@
             {
                 // Exact name for later
                 $ExactName = $Name;
+                $this->log('function: searchCharacter() - searching ...');
 
                 // Get the source
                 $this->getSource($this->URL['character']['profile'] . str_ireplace(array('%name%', '%server%'), array(str_ireplace(" ", "+", $Name), $Server), $this->URL['search']['query']));
 
                 // Get all found characters
                 $Found = $this->findAll('thumb_cont_black_50', 10, NULL, false);
+                $this->log('function: searchCharacter() - got results');
 
                 // Loop through results
                 if ($Found)
@@ -492,17 +598,21 @@
         # PROFILE                                   #
         #-------------------------------------------#
         
-        // Parse a profile based on ID
+        // Parse a profile based on ID (skips searching)
         public function parseProfile($ID)
         {
+            
+            $this->log('function: parseProfile() - parsing profile: '. $ID);
+
             if (!$ID)
             {
                 echo "error: No ID Set.";   
             }
 
             // Get the source
+            $this->log('function: parseProfile() - get source');
             $this->getSource($this->URL['character']['profile'] . $ID);
-
+            $this->log('function: parseProfile() - obtained source');
 
             if ($this->errorPage($ID))
             {
@@ -510,16 +620,23 @@
             }
             else
             {
+                $this->log('function: parseProfile() - starting parse');
+
                 // Create a new character object
                 $Character = new Character();
+                $this->log('function: parseProfile() - new character object');
 
                 // Set Character Data
                 $Character->setID(trim($ID), $this->URL['character']['profile'] . $ID);
                 $Character->setNameServer($this->findRange('player_name_thumb', 15));
 
+                $this->log('function: parseProfile() - set id, name and server');
+
                 // Only process if character name set
                 if (strlen($Character->getName()) > 3)
                 {
+                    $this->log('function: parseProfile() - parsing chunk 1');
+
                     $Character->setAvatar($this->findRange('player_name_thumb', 10, NULL, false));
                     $Character->setPortrait($this->findRange('bg_chara_264', 2, NULL, false));
                     $Character->setRaceClan($this->find('chara_profile_title'));
@@ -530,28 +647,34 @@
                     $Character->setHPMPTP($this->findRange('param_power_area', 10));
                     $Character->setStats($this->findAll('param_left_area_inner', 12, null, false));
                     $Character->setActiveClassLevel($this->findAll('class_info', 5, null, false));
+
+                    $this->log('function: parseProfile() - parsing chunk 2');
                     
                     // Set Gear (Also sets Active Class and Job), then set item level from the gear
                     $Character->setGear($this->findAll('-- ITEM Detail --', NULL, '-- //ITEM Detail --', false));
                     $Character->setItemLevel($this->GearSlots);
 
                     #$this->segment('area_header_w358_inner');
-                    
+                    $this->log('function: parseProfile() - parsing chunk 3');
+
                     // Set Minions
                     $Minions = $this->findRange('area_header_w358_inner', NULL, '//Minion', false);
                     $Character->setMinions($Minions);
                     
                     // Set Mounts
+                    $this->log('function: parseProfile() - parsing chunk 4');
                     $Mounts = $this->findRange('area_header_w358_inner', NULL, '//Mount', false, 2);
                     $Character->setMounts($Mounts);
                     
                     #$this->segment('class_fighter');
                     
                     // Set ClassJob
+                    $this->log('function: parseProfile() - parsing chunk 5');
                     $Character->setClassJob($this->findRange('class_fighter', NULL, '//Class Contents', false));
                     
                     // Validate data
                     $Character->validate();
+                    $this->log('function: parseProfile() - complete profile parse for: '. $ID);
                     
                     // Append character to array
                     $this->Characters[$ID] = $Character;
@@ -588,9 +711,6 @@
         #-------------------------------------------#
         # ACHIEVEMENTS                              #
         #-------------------------------------------#
-        
-        // Get a list of parsed characters
-        public function getAchievements() { return $this->Achievements; }
         
         // Parse a achievements based on ID
         public function parseAchievements($ID = null)
@@ -666,11 +786,11 @@
             }
         }
 
+        // Get a list of parsed characters
+        public function getAchievements() { return $this->Achievements; }
+
         // Get the achievement categories
-        public function getAchievementCategories()
-        {
-            return $this->AchievementCategories;
-        }
+        public function getAchievementCategories() { return $this->AchievementCategories; }
 
         #-------------------------------------------#
         # FREE COMPANY                              #
@@ -778,6 +898,7 @@
     class_alias('Viion\Lodestone\API', 'Viion\Lodestone\LodestoneAPI');
     class_alias('Viion\Lodestone\API', 'API\Lodestone\API');
     class_alias('Viion\Lodestone\API', 'LodestoneAPI');
+    class_alias('Viion\Lodestone\API', 'API\API');
 
 
     /*  Lodestone
@@ -785,7 +906,7 @@
      */
     class Lodestone
     {
-        public function show() { echo '<pre>'. print_r($this, true) .'</pre>'; }
+        use Funky;
 
         // Variables
         private $URLs = [];
@@ -829,7 +950,7 @@
      */
     class Character
     {
-        public function show() { echo '<pre>'. print_r($this, true) .'</pre>'; }
+        use Funky;
 
         private $ID;
         private $Lodestone;
@@ -890,7 +1011,7 @@
                 $this->Avatars['96'] = str_ireplace("50x50", "96x96", $this->Avatars['50']);
             }
         }
-        public function getAvatar($Size) { return $this->Avatars[$Size]; }
+        public function getAvatar($Size = null) { if (!$Size) $Size = 96; return $this->Avatars[$Size]; }
         
         // PORTRAIT
         public function setPortrait($String)
@@ -1055,14 +1176,20 @@
         // GEAR
         public function setGear($Array)
         {
+            
+            $this->log('... set gear'); 
+
             $this->Gear['slots'] = count($Array);
             $GearArray = NULL;
             
             // Get ID List
-            $ItemIDArray = json_decode(file_get_contents("http://xivpads.com/items.json"), true);
+            //$this->log('... getting items json from XIVPads'); 
+            //$ItemIDArray = json_decode(file_get_contents("http://xivpads.com/items.json"), true);
+            //$this->log('... >> obtained item json from XIVPads'); 
             
             // Loop through gear equipped
             $Main = NULL;
+            $this->log('... big loop'); 
             foreach($Array as $A)
             {
                 // Temp array
@@ -1070,6 +1197,7 @@
                 //Show($A);
 
                 // Loop through data
+                $this->log('... big loop 2'); 
                 foreach($A as $i => $Line)
                 {                    
                     // Name / Id
@@ -1205,6 +1333,7 @@
                         $Temp['no_equip_count'] = count($Temp['no_equip_slots']);
                     }
                 }
+                $this->log('... big loop 2 /end'); 
 
                 // Slot manipulation, mainly for rings
                 $Slot = $Temp['slot'];
@@ -1214,8 +1343,9 @@
                 // Append array
                 $GearArray['numbers'][] = $Temp;
                 $GearArray['slots'][$Slot] = $Temp;
-            }   
-            
+            }
+            $this->log('... big loop /end'); 
+
             // Set Gear
             $this->Gear['equipped'] = $GearArray;
             
@@ -1240,6 +1370,9 @@
         // Item Level
         public function setItemLevel($GearSlots)
         {
+            
+            $this->log('... set item level'); 
+
             // Remoove soul crystal as its not calculated in ilv
             unset($GearSlots[3]);
 
@@ -1433,7 +1566,7 @@
 
             // Get a specific job
             // Sort by value
-            (new LSFunctions())->sksort($ClassJobs, $OrderBy, $Ascending);
+            $this->sksort($ClassJobs, $OrderBy, $Ascending);
 
             // Return
             return $ClassJobs;
@@ -1476,7 +1609,7 @@
      */ 
     class FreeCompany
     {
-        public function show() { echo '<pre>'. print_r($this, true) .'</pre>'; }
+        use Funky;
 
         private $ID;
         private $Lodestone;
@@ -1592,7 +1725,7 @@
      */ 
     class Linkshell
     {
-        public function show() { echo '<pre>'. print_r($this, true) .'</pre>'; }
+        use Funky;
 
         private $ID;
         private $Name;
@@ -1746,7 +1879,7 @@
      */
     class Achievements
     {
-        public function show() { echo '<pre>'. print_r($this, true) .'</pre>'; }
+        use Funky;
 
         private $TotalPoints = 0;
         private $CurrentPoints = 0;
@@ -1851,8 +1984,6 @@
      */
     class Parser
     {
-        public function show() { echo '<pre>'. print_r($this, true) .'</pre>'; }
-
         // The source code of the most recent curl
         protected $SourceCodeArray;
         
@@ -2020,12 +2151,6 @@
             return $Line;
         }
         
-        // Prints the source array
-        public function printSourceArray()
-        {
-            show($this->SourceCodeArray);
-        }
-        
         // Get the DOMDocument from the source via its URL.
         protected function getSource($URL)
         {
@@ -2064,170 +2189,11 @@
 
             return $html; 
         }
-    } 
 
-    /*  Functions
-     *  ---------
-     */
-    class LSFunctions
-    {
-        public function show() { echo '<pre>'. print_r($this, true) .'</pre>'; }
-
-        #-------------------------------------------#
-        # FUNCTIONS                                 #
-        #-------------------------------------------#
-
-        // This function will sort a multi dimentional array based on a key index, its global, do not use $var = sksort().
-        public function sksort(&$array, $subkey, $sort_ascending) 
+        // Prints the source array
+        public function printSourceArray()
         {
-            if (count($array))
-                $temp_array[key($array)] = array_shift($array);
-            foreach($array as $key => $val){
-                $offset = 0;
-                $found = false;
-                foreach($temp_array as $tmp_key => $tmp_val)
-                {
-                    if(!$found and strtolower($val[$subkey]) > strtolower($tmp_val[$subkey]))
-                    {
-                        $temp_array = array_merge(    (array)array_slice($temp_array,0,$offset),
-                                                    array($key => $val),
-                                                    array_slice($temp_array,$offset)
-                                                  );
-                        $found = true;
-                    }
-                    $offset++;
-                }
-                if(!$found) $temp_array = array_merge($temp_array, array($key => $val));
-            }
-            if ($sort_ascending)
-                $array = array_reverse($temp_array);
-            else 
-                $array = $temp_array;
+            show($this->SourceCodeArray);
         }
-    } 
-
-    #-----------------------------------------------
-    # Example Usage
-    #-----------------------------------------------
-    /*
-
-
-    $API = new LodestoneAPI();
-    $Character = $API->get(
-    [
-        'id'    => 770079,
-        //"name"      => "Astroth Termiseus",
-        //"server"    => "Excalibur"
-
-        //'name' => 'Aihal Evol',
-        //'server' => 'Masamune',
-    ]);
-    $Character->show();
-
-
-    // old
-    
-    # New API
-    $API = new LodestoneAPI();
-
-    # Parse Linkshell
-    $Linkshell = $API->getLS(
-    [
-        "name"      => "Derp Squad",
-        "server"    => "Excalibur",
-    ]);
-    Show($Linkshell);   
-    
-    
-    $API = new LodestoneAPI();
-    
-
-    $API = new LodestoneAPI();
-
-    # Parse Free Company
-    $FreeCompany = $API->getFC(
-    [
-        "name" => "Chocobo Feather",
-        "server" => "Excalibur"
-    ],
-    [
-        "members"   => true,
-    ]);
-    $FreeCompany->Show();
-
-
-    $API = new LodestoneAPI();
-    $API->parseProfile(730968);
-    $Char = $API->getCharacterByID(730968);
-
-    Show($Char);
-
-    */
-    /*
-    # Parse Character
-    $API = new LodestoneAPI();
-    $Character = $API->get(
-    [
-        'id'    => 770079,
-        //"name"      => "Astroth Termiseus",
-        //"server"    => "Excalibur"
-
-        //'name' => 'Aihal Evol',
-        //'server' => 'Masamune',
-    ]);
-    Show($Character);
-    /*
-
-    //$API->printSourceArray();
-    
-    /*
-    // Set an ID
-    $API = new LodestoneAPI();
-
-    // Parse achievements
-    $API->parseAchievements(730968);
-
-    // Show achievements
-    Show($API->getAchievements());
-    */
-    /*
-
-    // Lodestone
-    $API = new LodestoneAPI();
-    
-    // Set category id
-    $CategoryID = 2;
-
-    // Parse achievement by category
-    $API->parseAchievementsByCategory($CategoryID, 730968);
-
-    // Get achievements
-    Show($API->getAchievements()[$CategoryID]);
-    
-    /*
-    # Parse Character
-    show("> new LodestoneAPi");
-    $API = new LodestoneAPI();
-
-    show("> get");
-    $Character = $API->get(
-    [
-        "name"      => "Premium Virtue",
-        "server"    => "Excalibur"
-    ]);
-
-    show("> vardump");
-    show($Character);
-
-    $API = new LodestoneAPI();
-    $Options = 
-    [
-        'topics' => true,
-    ];
-
-    $Lodestone = $API->Lodestone($Options);
-
-    Show($Lodestone->getTopics());
-    */
-
+    }
 ?>
