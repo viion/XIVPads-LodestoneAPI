@@ -4,6 +4,7 @@ $htmlColor: #333;
 $htmlColorLight: #fff;
 $htmlFontFamily: 'Roboto';
 $htmlFontSize: 14px;
+$codeFont: 'Verdana';
 
 // Import what we need
 @import 'helpers/_googleColors.scss';
@@ -28,6 +29,23 @@ html, body
 header
 {
     padding: 30px 60px;
+}
+p
+{
+    font-size: 14px;
+    margin: 10px 0;
+
+    line-height: 20px;
+
+    &:first-child
+    {
+        margin-top: 0;
+    }
+
+    &:last-child
+    {
+        margin-bottom: 0;
+    }
 }
 a
 {
@@ -56,7 +74,7 @@ nav
         {
             font-size: 13px;
             font-weight: 400;
-            color: #555;
+            color: #666;
             margin: 0 0 5px 0;
         }
     }
@@ -123,13 +141,190 @@ h2
     font-size: 18px;
     font-weight: 300;
 }
+h4
+{
+    font-size: 42px;
+    font-weight: 200;
+    margin: 0 0 20px 0;
+}
+h5
+{
+    font-size: 24px;
+    font-weight: 400;
+    margin: 10px 0 20px 0;
+}
+h6
+{
+    font-size: 16px;
+    font-weight: 400;
+}
 main
 {
     margin: 0 60px;
     border:solid 1px #ddd;
     border-top:none;
     border-bottom:none;
-    padding: 30px 20px;
+    padding: 50px 50px 150px 50px;
+
+    ul
+    {
+        padding: 0 0 0 30px;
+
+        li
+        {
+            padding: 15px 0;
+
+            &:first-child
+            {
+                padding-top: 0;
+            }
+
+            &:last-child 
+            {
+                padding-bottom: 0;
+            }
+        }
+    }
+
+    .gist-file
+    {
+        margin: 20px 30px;
+
+        .line, .line-number
+        {
+            padding: 3px 5px;
+        }
+    }
+
+    // ---
+
+    .e404
+    {
+        text-align: center;
+        padding: 50px;
+    }
+    .docspacer
+    {
+        display: block;
+        height: 20px;
+    }
+    .docline
+    {
+        background-color: #eee;
+        height: 2px;
+        margin: 50px 20%;
+    }
+
+    // --
+
+    .notice
+    {
+        border:solid 1px #ccc;
+        border-radius: 3px;
+        background-color: #eee;
+        padding: 10px 15px;
+        margin: 30px 5% 0 5%;
+    }
+
+    .classblock
+    {
+        background-color: #eee;
+        padding: 15px 20px;
+        margin: 20px 0;
+        display: inline-block;
+
+        strong
+        {
+            color: #888;
+            font-weight: 300;
+            display: inline-block;
+            margin: 0 10px 0 0;
+        }
+    }
+
+    // ---
+
+    .doctable
+    {
+        border:solid 1px #ddd;
+        box-shadow: 0 2px 0 #eee;
+        width: 100%;
+
+        .title
+        {
+            font-size: 14px;
+            font-weight: 200;
+            font-family: $codeFont;
+            color: $googleGreen500;
+            width: 10%;
+        }
+
+        .type
+        {
+            font-size: 12px;
+            font-weight: 200;
+            font-family: $codeFont;
+            color: $googleGray600;
+            width: 10%;
+        }
+
+        tr
+        {
+            border-bottom:solid 1px #ddd;
+
+            &.header
+            {
+                background-color: #ddd;
+                font-size: 14px;
+                font-weight: 600;
+            }
+
+            &.tablesplit, .tablesplit:hover
+            {
+                //background-color: $googleBlue500 !important;
+                border:solid 1px #fff !important;
+                //box-shadow: 0 2px 0 #fff;
+                position: relative;
+                z-index: 2;
+
+                td
+                {
+                    border-bottom:solid 1px #ddd !important;
+                    padding-top: 30px;
+
+                    h3
+                    {
+                        font-weight: 400;
+                        font-size: 18px;
+                        font-style: italic;
+                    }
+                }
+            }
+
+            &:hover
+            {
+                background-color: #eee;
+            }
+
+            td 
+            {
+                padding: 10px;
+                border-right:solid 1px #ddd;
+
+                &:last-child
+                {
+                    border:none;
+                }
+            }
+
+            &:last-child
+            {
+                border:none;
+            }
+        }
+        
+    }
+    
 }
 footer
 {
@@ -139,6 +334,6 @@ footer
     background-color: #ddd;
     font-size: 14px;
     font-weight: 300;
-    border-bottom-left-radius: 3px;
-    border-bottom-right-radius: 3px;
+    //border-bottom-left-radius: 3px;
+    //border-bottom-right-radius: 3px;
 }

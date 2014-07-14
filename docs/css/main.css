@@ -1,3 +1,13 @@
+.blue { color: #5677fc; }
+
+.green { color: #0a8f08; }
+
+.orange { color: #ff5722; }
+
+.purple { color: #9c27b0; }
+
+.red { color: #e00032; }
+
 /* 
 html5doctor.com Reset Stylesheet v1.6.1
 Last Updated: 2010-09-17
@@ -57,6 +67,10 @@ html, body { font-family: "Roboto"; font-size: 14px; color: #333333; background-
 
 header { padding: 30px 60px; }
 
+p { font-size: 14px; margin: 10px 0; line-height: 20px; }
+p:first-child { margin-top: 0; }
+p:last-child { margin-bottom: 0; }
+
 a { color: #5677fc; text-decoration: none; }
 a:hover { text-decoration: underline; }
 
@@ -64,18 +78,48 @@ nav { padding: 10px 60px 0 60px; border-bottom: solid 1px #aaa; -webkit-box-shad
 nav:before, nav:after { content: " "; display: table; }
 nav:after { clear: both; }
 nav .box { float: left; margin: 0 20px 0 0; }
-nav .box h3 { font-size: 13px; font-weight: 400; color: #555; margin: 0 0 5px 0; }
+nav .box h3 { font-size: 13px; font-weight: 400; color: #666; margin: 0 0 5px 0; }
 nav a { -webkit-transition: 0.2s; transition: 0.2s; display: inline-block; border: solid 1px #ccc; border-bottom: none; padding: 10px 18px; font-size: 14px; margin-right: -4px; }
-nav a.green { color: #259b24; }
+nav a.green { color: #0a8f08; }
 nav a.orange { color: #ff5722; }
 nav a:hover { color: #fff; background-color: #5677fc; border: solid 1px #5677fc; -webkit-box-shadow: 0 1px 0 #5677fc; box-shadow: 0 1px 0 #5677fc; border-bottom: none; position: relative; z-index: 2; text-decoration: underline; }
-nav a:hover.green { background-color: #259b24; border: solid 1px #259b24; -webkit-box-shadow: 0 1px 0 #259b24; box-shadow: 0 1px 0 #259b24; border-bottom: none; }
+nav a:hover.green { background-color: #0a8f08; border: solid 1px #0a8f08; -webkit-box-shadow: 0 1px 0 #0a8f08; box-shadow: 0 1px 0 #0a8f08; border-bottom: none; }
 nav a:hover.orange { background-color: #ff5722; border: solid 1px #ff5722; -webkit-box-shadow: 0 1px 0 #ff5722; box-shadow: 0 1px 0 #ff5722; border-bottom: none; }
 
 h1 { font-size: 47px; margin: 0 0 5px 0; font-weight: 300; }
 
 h2 { font-size: 18px; font-weight: 300; }
 
-main { margin: 0 60px; border: solid 1px #ddd; border-top: none; border-bottom: none; padding: 30px 20px; }
+h4 { font-size: 42px; font-weight: 200; margin: 0 0 20px 0; }
 
-footer { color: #888; padding: 15px; margin: 0 60px; background-color: #ddd; font-size: 14px; font-weight: 300; border-bottom-left-radius: 3px; border-bottom-right-radius: 3px; }
+h5 { font-size: 24px; font-weight: 400; margin: 10px 0 20px 0; }
+
+h6 { font-size: 16px; font-weight: 400; }
+
+main { margin: 0 60px; border: solid 1px #ddd; border-top: none; border-bottom: none; padding: 50px 50px 150px 50px; }
+main ul { padding: 0 0 0 30px; }
+main ul li { padding: 15px 0; }
+main ul li:first-child { padding-top: 0; }
+main ul li:last-child { padding-bottom: 0; }
+main .gist-file { margin: 20px 30px; }
+main .gist-file .line, main .gist-file .line-number { padding: 3px 5px; }
+main .e404 { text-align: center; padding: 50px; }
+main .docspacer { display: block; height: 20px; }
+main .docline { background-color: #eee; height: 2px; margin: 50px 20%; }
+main .notice { border: solid 1px #ccc; border-radius: 3px; background-color: #eee; padding: 10px 15px; margin: 30px 5% 0 5%; }
+main .classblock { background-color: #eee; padding: 15px 20px; margin: 20px 0; display: inline-block; }
+main .classblock strong { color: #888; font-weight: 300; display: inline-block; margin: 0 10px 0 0; }
+main .doctable { border: solid 1px #ddd; -webkit-box-shadow: 0 2px 0 #eee; box-shadow: 0 2px 0 #eee; width: 100%; }
+main .doctable .title { font-size: 14px; font-weight: 200; font-family: "Verdana"; color: #0a8f08; width: 10%; }
+main .doctable .type { font-size: 12px; font-weight: 200; font-family: "Verdana"; color: #757575; width: 10%; }
+main .doctable tr { border-bottom: solid 1px #ddd; }
+main .doctable tr.header { background-color: #ddd; font-size: 14px; font-weight: 600; }
+main .doctable tr.tablesplit, main .doctable tr .tablesplit:hover { border: solid 1px #fff !important; position: relative; z-index: 2; }
+main .doctable tr.tablesplit td, main .doctable tr .tablesplit:hover td { border-bottom: solid 1px #ddd !important; padding-top: 30px; }
+main .doctable tr.tablesplit td h3, main .doctable tr .tablesplit:hover td h3 { font-weight: 400; font-size: 18px; font-style: italic; }
+main .doctable tr:hover { background-color: #eee; }
+main .doctable tr td { padding: 10px; border-right: solid 1px #ddd; }
+main .doctable tr td:last-child { border: none; }
+main .doctable tr:last-child { border: none; }
+
+footer { color: #888; padding: 15px; margin: 0 60px; background-color: #ddd; font-size: 14px; font-weight: 300; }

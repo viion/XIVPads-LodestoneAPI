@@ -3,7 +3,16 @@
 // http://www.google.com/design/spec/style/color.html
 
 $googleBlue500: #5677fc;
-$googleGreen500: #259b24;
+$googleGreen500: #0a8f08;
 $googleOrange500: #ff5722;
 $googleGray400: #bdbdbd;
 $googleGray600: #757575;
+$googlePurple500: #9c27b0;
+$googleRed700a: #e00032;
+$GoogleYellow50: #f9fbe7;
+
+.blue { color: $googleBlue500; }
+.green { color: $googleGreen500; }
+.orange { color: $googleOrange500; }
+.purple { color: $googlePurple500; }
+.red { color: $googleRed700a; }

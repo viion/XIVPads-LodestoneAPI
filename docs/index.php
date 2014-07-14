@@ -22,37 +22,93 @@
     <body>
 
         <header>
-            <h1>FFXIV Lodestone API</h1>
+            <h1><i class="fa fa-code-fork"></i> FFXIV Lodestone API</h1>
             <h2>Documentation &nbsp;-&nbsp; <a href="https://github.com/viion/XIVPads-LodestoneAPI">GitHub: Viion "XIVPads-LodestoneAPI"</a></h2>
         </header>
 
         <nav> 
             <div class="box">
-                <h3>Classes</h3>
-                <a href="">API</a>
-                <a href="">Lodestone</a>
-                <a href="">Social</a>
-                <a href="">Character</a>
-                <a href="">FreeCompany</a>
-                <a href="">Linkshell</a>
-                <a href="">Achievements</a>
-                <a href="">Parser</a>
+                <h3>misc</h3>
+                <a href="?docs=home">Home</a>
+                <a href="?docs=examples">Examples</a>
             </div>
 
             <div class="box">
-                <h3>Traits</h3>
-                <a href="" class="green">Funky</a>
-                <a href="" class="green">Config</a>
+                <h3>classes</h3>
+                <a href="?docs=classes/api">API</a>
+                <a href="?docs=classes/lodestone">Lodestone</a>
+                <a href="?docs=classes/social">Social</a>
+                <a href="?docs=classes/character">Character</a>
+                <a href="?docs=classes/freecompany">FreeCompany</a>
+                <a href="?docs=classes/linkshell">Linkshell</a>
+                <a href="?docs=classes/achievements">Achievements</a>
+                <a href="?docs=classes/parser">Parser</a>
             </div>
 
             <div class="box">
-                <h3>Helpers</h3>
-                <a href="" class="orange">Logger</a>
+                <h3>traits</h3>
+                <a href="?docs=traits/funky" class="green">Funky</a>
+                <a href="?docs=traits/config" class="green">Config</a>
+            </div>
+
+            <div class="box">
+                <h3>helpers</h3>
+                <a href="?docs=helpers/logger" class="orange">Logger</a>
             </div>
         </nav>
 
         <main>
-            Site Contents
+        <?php
+
+            function printTable($table)
+            {
+                foreach($table as $dt)
+                {
+                    if (is_array($dt))
+                    {
+                        echo '<tr>
+                            <td class="title">'. $dt[0] .'</td>
+                            <td class="type">'. $dt[1] .'</td>
+                            <td>'. $dt[2] .'</td>
+                        </tr>';
+                    }
+                    else
+                    {
+                        echo '<tr class="tablesplit">
+                            <td colspan="3"><h3><i class="fa fa-code"></i> &nbsp;&nbsp; '. $dt .'</h3></td>
+                        </tr>';
+                    }
+                }
+            }
+
+            // Get the doc
+            $doc = isset($_GET['docs']) ? trim($_GET['docs']) : null;
+
+            // Documentation pages
+            $pages =
+            [
+                'home'          => 'api/home.php',
+                'classes/api'   => 'api/classes/api.php',
+            ];
+
+            // Page to include
+            $pageToInclude = $pages['home'];
+            if ($doc && isset($pages[$doc]))
+            {
+                $pageToInclude = $pages[$doc];
+            }
+
+            // Include it
+            if ($pageToInclude)
+            {
+                include $pageToInclude;
+            }
+            else
+            {
+                echo '<div class="e404"><h1>Page not found!</h1><h2>Either still being created or does not exist</h2></div>';
+            }
+
+        ?>
         </main>
 
         <footer>
