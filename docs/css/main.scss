@@ -1,0 +1,144 @@
+// General variables
+$htmlBackgroundColor: #fff;
+$htmlColor: #333;
+$htmlColorLight: #fff;
+$htmlFontFamily: 'Roboto';
+$htmlFontSize: 14px;
+
+// Import what we need
+@import 'helpers/_googleColors.scss';
+@import 'helpers/_breakpoints.scss';
+@import 'helpers/_classes.scss';
+@import 'helpers/_reset.scss';
+@import 'helpers/_forms.scss';
+
+// -------------------------------------
+// Padding, stop it.
+*, *:before, *:after { -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; }
+// -------------------------------------
+html, body
+{
+    font-family: $htmlFontFamily;
+    font-size: $htmlFontSize;
+    color: $htmlColor;
+    background-color: $htmlBackgroundColor;
+    margin: 0;
+    padding: 0;
+}
+header
+{
+    padding: 30px 60px;
+}
+a
+{
+    color: $googleBlue500;
+    text-decoration: none;
+
+    &:hover
+    {
+        text-decoration: underline;
+    }
+}
+nav
+{
+    padding: 10px 60px 0 60px;
+    border-bottom:solid 1px #aaa;
+    box-shadow: 0 2px 0 #eee;
+
+    @include cf();
+
+    .box
+    {
+        float: left;
+        margin: 0 20px 0 0;
+
+        h3
+        {
+            font-size: 13px;
+            font-weight: 400;
+            color: #555;
+            margin: 0 0 5px 0;
+        }
+    }
+
+    a 
+    {
+        @include transition(0.2s);
+
+        display: inline-block;
+        border:solid 1px #ccc;
+        border-bottom:none;
+        padding: 10px 18px;
+        font-size: 14px;
+        margin-right:-4px;
+
+        &.green
+        {
+            color: $googleGreen500;
+        }
+
+        &.orange
+        {
+            color: $googleOrange500;
+        }
+
+        &:hover
+        {
+            color: #fff;
+            background-color: $googleBlue500;
+            border:solid 1px $googleBlue500;
+            box-shadow: 0 1px 0 $googleBlue500;
+            border-bottom: none;
+            
+            position: relative;
+            z-index: 2;
+            text-decoration: underline;
+
+            &.green
+            {
+                background-color: $googleGreen500;
+                border:solid 1px $googleGreen500;
+                box-shadow: 0 1px 0 $googleGreen500;
+                border-bottom: none;
+            }
+
+            &.orange
+            {
+                background-color: $googleOrange500;
+                border:solid 1px $googleOrange500;
+                box-shadow: 0 1px 0 $googleOrange500;
+                border-bottom: none;
+            }
+        }
+    }
+}
+h1
+{
+    font-size: 47px;
+    margin: 0 0 5px 0;
+    font-weight: 300;
+}
+h2
+{
+    font-size: 18px;
+    font-weight: 300;
+}
+main
+{
+    margin: 0 60px;
+    border:solid 1px #ddd;
+    border-top:none;
+    border-bottom:none;
+    padding: 30px 20px;
+}
+footer
+{
+    color: #888;
+    padding: 15px;
+    margin: 0 60px;
+    background-color: #ddd;
+    font-size: 14px;
+    font-weight: 300;
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
