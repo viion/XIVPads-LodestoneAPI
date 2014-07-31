@@ -206,6 +206,20 @@
             ],
         ];
 
+        // Gamedataz
+        public $AchievementCategories = [1, 2, 4, 5, 6, 8, 11, 12, 13];
+
+        // Gear sets
+        public $GearSlots = 
+        [
+            "main","main2","shield","soul crystal",
+            "head","body","hands","waist","legs","feet",
+            "necklace","earrings","bracelets","ring","ring2"
+        ];
+
+        public $ClassList = [];
+        public $ClassDisicpline = [];
+
         //---------------------------------------------------------------------
         // Keys!
         //---------------------------------------------------------------------
@@ -214,6 +228,23 @@
         // Change this to your own app ID if you wish.
         private $GoogleAPIKey = 'AIzaSyDWPpnQYGaiZN-AuQBNyDDSCJdy9fQcHnQ';
         public function getGoogleAPIKey() { return $this->GoogleAPIKey; }
+
+        function __construct()
+        {
+            // Set classes
+            $this->ClassList = array(
+                "Gladiator", "Pugilist", "Marauder", "Lancer", "Archer", "Conjurer", "Thaumaturge", "Arcanist", "Carpenter", "Blacksmith", 
+                "Armorer", "Goldsmith", "Leatherworker", "Weaver", "Alchemist", "Culinarian", "Miner", "Botanist", "Fisher"
+            );
+            
+            // Set class by disicpline                          
+            $this->ClassDisicpline = array(
+                "dow" => array_slice($this->ClassList, 0, 5),
+                "dom" => array_slice($this->ClassList, 5, 3),
+                "doh" => array_slice($this->ClassList, 8, 8),
+                "dol" => array_slice($this->ClassList, 16, 3),
+            );
+        }
     }
 
     /*  LodestoneAPI
@@ -230,17 +261,6 @@
             'automaticallyParseFreeCompanyMembers' => false,
             'pagesPerFreeCompanyMemberList' => 20,
         ];
-        
-        // Configuration
-        public $AchievementCategories = [1, 2, 4, 5, 6, 8, 11, 12, 13];
-        public $ClassList = [];
-        public $ClassDisicpline = [];
-        public $GearSlots = 
-        [
-            "main","main2","shield","soul crystal",
-            "head","body","hands","waist","legs","feet",
-            "necklace","earrings","bracelets","ring","ring2"
-        ];
 
         // List of characters parsed
         public $Characters = [];
@@ -255,22 +275,7 @@
         public $Linkshells = [];
         
         // Initialize
-        public function __construct()
-        {
-            // Set classes
-            $this->ClassList = array(
-                "Gladiator", "Pugilist", "Marauder", "Lancer", "Archer", "Conjurer", "Thaumaturge", "Arcanist", "Carpenter", "Blacksmith", 
-                "Armorer", "Goldsmith", "Leatherworker", "Weaver", "Alchemist", "Culinarian", "Miner", "Botanist", "Fisher"
-            );
-            
-            // Set class by disicpline                          
-            $this->ClassDisicpline = array(
-                "dow" => array_slice($this->ClassList, 0, 5),
-                "dom" => array_slice($this->ClassList, 5, 3),
-                "doh" => array_slice($this->ClassList, 8, 8),
-                "dol" => array_slice($this->ClassList, 16, 3),
-            );
-        }
+        public function __construct() {}
         
         #-------------------------------------------#
         # SHORT GETS                                #
@@ -880,8 +885,9 @@
                 
                 // Set Character Data
                 $FreeCompany->setID(trim($ID), $this->URL['freecompany']['profile'] . $ID);
-                $FreeCompany->setNameServerCompany($this->findRange('-- playname --', null, '-- //playname --', false));
-                $FreeCompany->setCompanyDetails($this->findRange('-- Company Profile --', null, '-- //Company Profile --', false));
+                $FreeCompany->setBasicData($this->findRange('crest_id centering_h', 10));
+                $FreeCompany->setEmblum($this->findRange('ic_crest_64', 10, null, false));
+                $FreeCompany->setFullDetails($this->findRange('-- Company Profile --', null, '-- //Company Profile --', false));
 
                 // If to parse free company members
                 if ($this->defaults['automaticallyParseFreeCompanyMembers'])
@@ -1176,7 +1182,7 @@
 
                         // avatar
                         $var = $D[$ii + 1];
-                        $Temp['user']['avatar'] = 'http://forum.square-enix.com/ffxiv/'. $this->getAttribute('src', $var);
+                        $Temp['user']['avatar'] = str_ireplace("'", "%27", 'http://forum.square-enix.com/ffxiv/'. $this->getAttribute('src', $var));
                     }
 
                     // Find topic title and url
@@ -1945,7 +1951,10 @@
                 // Slot manipulation, mainly for rings
                 $Slot = $Temp['slot'];
                 if (isset($GearArray['slots'][$Slot])) { $Slot = $Slot . 2; }   
-                $Temp['slot'] = $Slot;  
+                $Temp['slot'] = $Slot; 
+
+                // Add index
+                $Temp['slot_id'] = array_search($Temp['slot'], $this->GearSlots); 
                 
                 // Append array
                 $GearArray['numbers'][] = $Temp;
@@ -1997,6 +2006,7 @@
             
             // Loop through gear to calculate item levels
             $itemLevels = [];
+            $itemlevelsSlotID = [];
             foreach($GearSlots as $Slot)
             {
                 // Get the gear
@@ -2026,9 +2036,13 @@
 
                 // Add item level
                 $itemLevels[$Slot] = $itemLevel;
+
+                // Insert as slot id
+                $itemlevelsSlotID[array_search($Slot, $this->GearSlots)] = $itemLevel;
             }
 
             $this->Gear['item_level_array'] = $itemLevels;
+            $this->Gear['item_level_slots'] = $itemlevelsSlotID;
             $this->Gear['item_level_total'] = array_sum($itemLevels);
             $this->Gear['item_level_average'] = floor($this->Gear['item_level_total'] / 13);
         }
@@ -2289,7 +2303,7 @@
     /*  Free Company
      *  ------------
      */ 
-    class FreeCompany
+    class FreeCompany extends Parser
     {
         use Funky;
         use Config;
@@ -2299,10 +2313,19 @@
         private $Company;
         private $Name;
         private $Server;
+        private $Emblum;
+
         private $Tag;
         private $Formed;
         private $MemberCount;
         private $Slogan;
+        private $Ranking;
+        private $Focus;
+        private $Active;
+        private $Seeking;
+        private $Recruitment;
+        private $Estate;
+        
 
         private $Members = [];
 
@@ -2320,20 +2343,173 @@
         public function getLodestone() { return $this->Lodestone; }
 
         // NAME + SERVER
-        public function setNameServerCompany($String)
+        public function setBasicData($String)
         {
-            $this->Company  = trim(explode("&lt;", explode("friendship_color", $String[9])[0])[0]);
-            $this->Name     = trim(strip_tags(html_entity_decode($String[10])));
-            $this->Server   = trim(str_ireplace(array("(", ")"), null, strip_tags(html_entity_decode($String[11]))));
+            $this->Company  = trim($this->strip_html($String[0]));
+            $this->Name     = trim($this->strip_html($String[1]));
+            $this->Server   = trim(str_ireplace(['(', ')'], null, $this->strip_html($String[2])));
         }
 
-        // TAG + FORMED + MEMBERS + SLOGAN
-        public function setCompanyDetails($String)
+        // Emblum
+        public function setEmblum($String)
         {
-            $this->Tag          = Trim(str_ireplace("&raquo;", null, strip_tags(htmlspecialchars_decode(explode("|", str_ireplace("laquo;", "|", $String[9]))[1]))));
-            $this->Formed       = trim(explode(",", explode("(", $String[16])[2])[0]);
-            $this->MemberCount  = trim(strip_tags(htmlspecialchars_decode(trim($String[22]), ENT_QUOTES)));
-            $this->Slogan       = trim(strip_tags(htmlspecialchars_decode(trim($String[40]), ENT_QUOTES)));
+            $this->Emblum =
+            [
+                $this->getAttribute('src', $String[2]),
+                $this->getAttribute('src', $String[3]),
+                $this->getAttribute('src', $String[4]),
+            ];
+        }
+        public function getEmblum() { return $this->getEmblum; }
+
+        // TAG + FORMED + MEMBERS + SLOGAN
+        public function setFullDetails($String)
+        {
+            $Temp = [];
+            $addToFocus = false;
+            $addToSeeking = false;
+
+            foreach($String as $i => $s)
+            {
+                // Tag
+                if (strpos($s, 'table_style2'))
+                {
+                    $offset = $i + 3;
+                    $Temp['tag'] = explode(';', $String[$offset])[14];
+                    $Temp['tag'] = trim(str_ireplace('&amp', null, $Temp['tag']));
+                    continue;
+                }
+
+                // Formed
+                if (strpos($s, 'ldst_strftime'))
+                {
+                    $Temp['formed'] = explode('(', $s)[2];
+                    $Temp['formed'] = trim(explode(',', $Temp['formed'])[0]);
+                    continue;
+                }
+
+                // Active members
+                if (strpos($s, 'Active Members'))
+                {
+                    $offset = $i + 1;
+                    $Temp['members'] = $this->strip_html($String[$offset]);
+                    continue;
+                }
+
+                // Rank / Ranking
+                if (strpos($s, 'class') && strpos($s, 'rank'))
+                {
+                    $offset = $i + 3;
+                    $Temp['ranking']['current'] = $this->strip_html($String[$offset]);
+
+                    $offset = $i + 9;
+                    $Temp['ranking']['weekly'] = trim(filter_var($this->strip_html($String[$offset]), FILTER_SANITIZE_NUMBER_INT));
+
+                    $offset = $i + 11;
+                    $Temp['ranking']['monthly'] = trim(filter_var($this->strip_html($String[$offset]), FILTER_SANITIZE_NUMBER_INT));
+                    continue;
+                }
+
+                // Slogan
+                if (strpos($s, 'Company Slogan'))
+                {
+                    $offset = $i + 1;
+                    $Temp['slogan'] = $this->strip_html($String[$offset]);
+                    continue;
+                }
+
+                // Focus
+                if (strpos($s, 'focus_icon') || $addToFocus)
+                {
+                    $addToFocus = true;
+
+                    $data =
+                    [
+                        trim($this->strip_html($this->getAttribute('src', $s))),
+                        trim($this->strip_html($this->getAttribute('title', $s)))
+                    ];
+
+                    if (isset($data[0]) && strlen($data[0]) > 5)
+                    {
+                        $data[1] = str_ireplace('>', null, $data[1]);
+                        $Temp['focus'][] = $data;
+                    }
+                    
+                    
+                    if (strlen($s) < 20)
+                    {
+                        $addToFocus = false;
+                        continue;
+                    }
+                }
+
+                // Seeking
+                if (strpos($s, 'roles_icon') || $addToSeeking)
+                {
+                    $addToSeeking = true;
+
+                    $data =
+                    [
+                        trim($this->strip_html($this->getAttribute('src', $s))),
+                        trim($this->strip_html($this->getAttribute('title', $s)))
+                    ];
+
+                    if (isset($data[0]) && strlen($data[0]) > 5)
+                    {
+                        $data[1] = str_ireplace('>', null, $data[1]);
+                        $Temp['seeking'][] = $data;
+                    }
+                    
+                    
+                    if (strlen($s) < 20)
+                    {
+                        $addToSeeking = false;
+                        continue;
+                    }
+                }
+
+                // Active
+                if (strpos($s, 'Active') || $addToSeeking)
+                {
+                    $offset = $i + 2;
+                    $Temp['active'] = $this->strip_html($String[$offset]);
+                    continue;
+                }
+
+                // Recruitment
+                if (strpos($s, 'Recruitment') || $addToSeeking)
+                {
+                    $offset = $i + 2;
+                    $Temp['recruitment'] = $this->strip_html($String[$offset]);
+                    continue;
+                }
+
+                // Estate Profil
+                if (strpos($s, 'txt_yellow mb10') || $addToSeeking)
+                {
+                    $offset = $i;
+                    $Temp['estate']['zone'] = $this->strip_html($String[$offset]);
+
+                    $offset = $i + 2;
+                    $Temp['estate']['address'] = $this->strip_html($String[$offset]);
+
+                    $offset = $i + 4;
+                    $Temp['estate']['message'] = $this->strip_html($String[$offset]);
+
+                    continue;
+                }
+            }
+
+            $this->Tag          = $Temp['tag'];
+            $this->Formed       = $Temp['formed'];
+            $this->MemberCount  = $Temp['members'];
+            $this->Slogan       = $Temp['slogan'];
+            $this->Ranking      = $Temp['ranking'];
+            $this->Focus        = isset($Temp['focus']) ? $Temp['focus'] : 'Not specified';
+            $this->Active       = $Temp['active'];
+            $this->Seeking      = isset($Temp['seeking']) ? $Temp['seeking'] : 'Not specified';
+            $this->Recruitment  = $Temp['recruitment'];
+            $this->Estate       = isset($Temp['estate']) ? $Temp['estate'] : 'No Estate or Plot';
         }
         public function getCompany() { return $this->Company; }
         public function getName() { return $this->Name; }
@@ -2342,6 +2518,14 @@
         public function getFormed() { return $this->Formed; }
         public function getMemberCount() { return $this->MemberCount; }
         public function getSlogan() { return $this->Slogan; }
+
+        public function getRanking() { return $this->Ranking; }
+        public function getFocus() { return $this->Focus; }
+        public function getActive() { return $this->Active; }
+        public function getSeeking() { return $this->Seeking; }
+        public function getRecruitment() { return $this->Recruitment(); }
+        public function getEstate() { return $this->Estate(); }
+
 
         // MEMBERS / PARSE + SET + GET
         public function parseMembers($Data)
@@ -2876,6 +3060,12 @@
 
             // Strip stuff
             $string = str_ireplace([$attribute, '&quot;'], null, $string);
+
+            if (is_array($string)) 
+            {
+                $string = implode(null, $string);
+            }
+            
 
             // return
             return $string;
