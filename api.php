@@ -526,8 +526,8 @@
                         $ID         = trim(explode("/", $F[2])[3]);
                         $Name       = trim(explode("(", $this->clean($F[2]))[0]);
                         $Server     = trim(str_ireplace(")", "", explode("(", $this->clean($F[2]))[1]));
-                        $Members    = trim(explode(":", $this->clean($F[5]))[1]);
-                        $Formed     = trim(explode(",", explode("(", $F[10])[2])[0]);
+                        //$Members    = trim(explode(":", $this->clean($F[5]))[1]);
+                        //$Formed     = trim(explode(",", explode("(", $F[10])[2])[0]);
 
                         $this->Search['results'][] = 
                         array(
@@ -2783,60 +2783,67 @@
             $NewList = array();
             
             // Loop through achievement blocks
-            foreach($Array as $A)
+            if ($Array)
             {
-                // Temp data array
-                $Temp = array();
-                
-                // Loop through block data
-                $i = 0;
-                foreach($A as $Line)
+                foreach($Array as $A)
                 {
-                    // Get achievement Data
-                    if (stripos($Line, 'achievement_name') !== false) 
-                    { 
-                        $Data = trim(strip_tags(html_entity_decode($Line))); 
-                        $Temp['name'] = str_ireplace("&#39;", "'", $Data);
+                    // Temp data array
+                    $Temp = array();
+                    
+                    // Loop through block data
+                    $i = 0;
+                    foreach($A as $Line)
+                    {
+                        // Get achievement Data
+                        if (stripos($Line, 'achievement_name') !== false) 
+                        { 
+                            $Data = trim(strip_tags(html_entity_decode($Line))); 
+                            $Temp['name'] = str_ireplace("&#39;", "'", $Data);
+                        }
+                        if (stripos($Line, 'achievement_point') !== false) 
+                        { 
+                            $Data = trim(strip_tags(html_entity_decode($Line))); 
+                            $Temp['points'] = intval(htmlspecialchars_decode($Data)); 
+                        }
+                        if (stripos($Line, 'getElementById') !== false) 
+                        { 
+                            $Temp['date'] = trim(filter_var(explode("(", strip_tags(html_entity_decode($Line)))[2], FILTER_SANITIZE_NUMBER_INT)); 
+                        }
+                        if (stripos($Line, 'bt_more') !== false) 
+                        { 
+                            $Temp['id'] = explode("/", $Line)[6];
+                            $Temp['xivdb'] = 'http://xivdb.com/?achievement/'. $Temp['id'] .'/'. str_ireplace(' ', '-', $Temp['name']);
+                        }
+
+                        // Increment
+                        $i++;
                     }
-                    if (stripos($Line, 'achievement_point') !== false) 
+                    
+                    // Obtained or not, if there is a date, the achievement is obtained.
+                    if (isset($Temp['date'])) { $Temp['obtained'] = true; } else { $Temp['obtained'] = false; }
+                    
+                    // If achievement obtained, add points
+                    if ($Temp['obtained']) 
                     { 
-                        $Data = trim(strip_tags(html_entity_decode($Line))); 
-                        $Temp['points'] = intval(htmlspecialchars_decode($Data)); 
-                    }
-                    if (stripos($Line, 'getElementById') !== false) 
-                    { 
-                        $Temp['date'] = trim(filter_var(explode("(", strip_tags(html_entity_decode($Line)))[2], FILTER_SANITIZE_NUMBER_INT)); 
-                    }
-                    if (stripos($Line, 'bt_more') !== false) 
-                    { 
-                        $Temp['id'] = explode("/", $Line)[6];
-                        $Temp['xivdb'] = 'http://xivdb.com/?achievement/'. $Temp['id'] .'/'. str_ireplace(' ', '-', $Temp['name']);
+                        $this->CurrentPoints += $Temp['points']; 
+                        $this->CurrentAchievements++;
                     }
 
-                    // Increment
-                    $i++;
+                    // Set the total obtainable points
+                    $this->TotalPoints += $Temp['points'];
+                    $this->TotalAchievements++;
+                    
+                    // Append temp data
+                    $NewList[] = $Temp;
                 }
-                
-                // Obtained or not, if there is a date, the achievement is obtained.
-                if (isset($Temp['date'])) { $Temp['obtained'] = true; } else { $Temp['obtained'] = false; }
-                
-                // If achievement obtained, add points
-                if ($Temp['obtained']) 
-                { 
-                    $this->CurrentPoints += $Temp['points']; 
-                    $this->CurrentAchievements++;
-                }
-
-                // Set the total obtainable points
-                $this->TotalPoints += $Temp['points'];
-                $this->TotalAchievements++;
-                
-                // Append temp data
-                $NewList[] = $Temp;
             }
 
             // Set points percentage
-            $this->PointsPercentage = (round($this->CurrentPoints / $this->TotalPoints, 3) * 100);
+            if ($this->CurrentPoints > 0 && $this->TotalPoints > 0) 
+            {
+                $this->PointsPercentage = (round($this->CurrentPoints / $this->TotalPoints, 3) * 100);
+            }
+            
             
             // Set Achievement List
             $this->List = $NewList; 
@@ -3121,7 +3128,7 @@
         // Prints the source array
         public function printSourceArray()
         {
-            show($this->SourceCodeArray);
+            $this->show($this->SourceCodeArray);
         }
     }
 ?>
