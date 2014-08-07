@@ -515,29 +515,48 @@
                 $this->getSource($this->URL['freecompany']['profile'] . str_ireplace(array('%name%', '%server%'), array(str_ireplace(" ", "+", $Name), $Server), $this->URL['search']['query']));
 
                 // Get all found data
-                $Found = $this->findAll('groundcompany_name', 20, NULL, false);
+                $Found = $this->findAll('ic_freecompany_box', null, '/tr', false);
                 
                 // if found
                 if ($Found)
                 {
                     foreach($Found as $F)
                     {
-                        $Company    = $this->clean($F[0]);
-                        $ID         = trim(explode("/", $F[2])[3]);
-                        $Name       = trim(explode("(", $this->clean($F[2]))[0]);
-                        $Server     = trim(str_ireplace(")", "", explode("(", $this->clean($F[2]))[1]));
-                        //$Members    = trim(explode(":", $this->clean($F[5]))[1]);
-                        //$Formed     = trim(explode(",", explode("(", $F[10])[2])[0]);
+                        $Temp = [];
+                        foreach($F as $i => $line)
+                        {
+                            if (stripos($line, 'ic_crest_64') !== false)
+                            {
+                                $offset = $i + 2;
+                                $Temp['emblum'][] = $this->getAttribute('src', $F[$offset]);
+                                $Temp['emblum'][] = $this->getAttribute('src', $F[$offset + 1]);
+                                $Temp['emblum'][] = $this->getAttribute('src', $F[$offset + 2]);
+                            }
 
-                        $this->Search['results'][] = 
-                        array(
-                            "id"        => $ID,
-                            "company"   => $Company,
-                            "name"      => $Name,
-                            "server"    => $Server,
-                            "members"   => $Members,
-                            "formed"    => $Formed,
-                        );
+                            if (stripos($line, 'groundcompany_name') !== false)
+                            {
+                                $Temp['grandcompany'] = $this->strip_html($line);
+                            }
+
+                            if (stripos($line, 'player_name_gold') !== false)
+                            {
+                                $offset = $i + 1;
+                                $data = explode('(', $this->strip_html($F[$offset]));
+                                $Temp['name'] = trim($data[0]);
+                                $Temp['server'] = trim(str_ireplace(')', null, $data[1]));
+
+                                $Temp['id'] = explode('/', $F[$offset])[3];
+                                $Temp['url'] = $this->URL['freecompany']['profile'] . $Temp['id'];
+                            }
+
+                            if (stripos($line, 'ldst_strftime') !== false)
+                            {
+                                $Temp['formed'] = explode('(', $line)[2];
+                                $Temp['formed'] = explode(',', $Temp['formed'])[0];
+                            }
+                        }
+
+                        $this->Search['results'][] = $Temp;
                     }
 
                     // If to get exact
