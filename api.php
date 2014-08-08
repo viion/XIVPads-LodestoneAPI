@@ -924,7 +924,7 @@
                         $this->getSource($FreeCompany->getLodestone() . $this->URL['freecompany']['member'] . str_ireplace('%page%', $Page, $this->URL['freecompany']['memberpage']));
 
                         // Set Members
-                        $MemberArray = $FreeCompany->parseMembers($this->findAll('player_name_area', 18, null, null));
+                        $MemberArray = $FreeCompany->parseMembers($this->findAll('thumb_cont_black_50', null, '/message_ic_box', false));
 
                         // Merge existing member list with new member array
                         $MembersList = array_merge($MembersList, $MemberArray);
@@ -2553,39 +2553,75 @@
             $temp = [];
 
             // Loop through data
-            foreach($Data as $D)
+            if ($Data)
             {
-                $Name       = trim(explode("(", trim(strip_tags(htmlspecialchars_decode($D[1]), ENT_QUOTES)))[0]);
-                $Server     = trim(str_ireplace(")", "", trim(explode("(", trim(strip_tags(htmlspecialchars_decode($D[1]), ENT_QUOTES)))[1])));
-                $ID         = trim(explode("/", $D[1])[3]);
+                foreach($Data as $D)
+                {
+                    $arr = [];
+                    foreach($D as $i => $line)
+                    {
+                        if (stripos($line, 'thumb_cont_black_50') !== false)
+                        {
+                            $offset = $i + 2;
+                            $arr['avatar'] = $this->getAttribute('src', $D[$offset]);
+                            $arr['avatar'] = str_ireplace('50x50', '96x96', $arr['avatar']);
+                        }
 
-                $RankImage  = trim(explode("?", explode("&quot;", $D[3])[1])[0]);
-                $Rank       = trim(str_ireplace("&gt;", null, explode("&quot;", $D[3])[8]));
+                        if (stripos($line, 'name_box') !== false)
+                        {
+                            $offset = $i + 1;
+                            $data = $this->strip_html($D[$offset]);
+                            $data = explode('(', $data);
 
-                $ClassImage = explode("?", explode("&quot;",$D[7])[5])[0];
-                $ClassLevel = explode(">", strip_tags(htmlspecialchars_decode(explode("&quot;",$D[7])[14])))[1];
+                            $arr['name'] = trim($data[0]);
+                            $arr['server'] = trim(str_ireplace(')', null, $data[1]));
 
-                $arr =
-                [
-                    'id'        => $ID,
-                    'name'      => $Name,
-                    'server'    => $Server,
+                            $data = explode('/', $D[$offset]);
+                            $arr['id'] = trim($data[3]);
+                        }
 
-                    'rank' =>
-                    [
-                        'image' => $RankImage,
-                        'title' => $Rank
-                    ],
+                        if (stripos($line, 'fc_member_status') !== false)
+                        {
+                            $offset = $i + 1;
+                            $arr['rank']['title'] = trim($this->strip_html($D[$offset]));
+                            $arr['rank']['image'] = $this->getAttribute('src', $D[$offset]);
+                        }
 
-                    'class' =>
-                    [
-                        'image' => $ClassImage,
-                        'level' => $ClassLevel,
-                    ]
-                ];
-                
-                // Append to array
-                $temp[] = $arr;
+                        if (stripos($line, 'ic_class') !== false)
+                        {
+                            $offset = $i + 2;
+                            $arr['class']['image'] = $this->getAttribute('src', $D[$offset]);
+                        }
+
+                        if (stripos($line, 'lv_class') !== false)
+                        {
+                            $arr['class']['level'] = filter_var($this->strip_html($line), FILTER_SANITIZE_NUMBER_INT);
+                        }
+
+                        if (stripos($line, 'ic_gc') !== false)
+                        {
+                            $offset = $i + 1;
+                            $arr['grandcompany']['image'] = $this->getAttribute('src', $D[$offset]);
+
+                            $data = explode('/', $this->strip_html($D[$offset]));
+                            if (isset($data[0]) && !empty($data[0]))
+                            {
+                                $arr['grandcompany']['name'] = trim($data[0]);
+                                $arr['grandcompany']['rank'] = trim($data[1]);
+                            }
+                            else
+                            {
+                                // Not in a Grand CompanyIcon
+                                $arr['grandcompany']['image'] = null;
+                                $arr['grandcompany']['name'] = null;
+                                $arr['grandcompany']['rank'] = null;
+                            }
+                        }
+                    }
+
+                    // Append to array
+                    $temp[] = $arr;
+                }
             }
 
             // Return temp
