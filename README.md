@@ -48,7 +48,7 @@ Please read this commit: https://github.com/viion/XIVPads-LodestoneAPI/commit/d3
 
 **Quick Parse**
 ```php
-// Initialize a LodestoneAPI Obkect
+// Initialize a LodestoneAPI Object
 $API = new LodestoneAPI();
 
 // Parse the character: Premium Virtue - Gungnir
