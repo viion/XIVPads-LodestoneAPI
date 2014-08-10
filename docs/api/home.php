@@ -76,7 +76,7 @@ page at: <a href="https://github.com/viion/XIVPads-LodestoneAPI" target="_blank"
 </ul>
 
 <div class="notice">
-    <p>When rading links from XIVPads, I highly recommend using an automatic storage for the file, either using something like Memcached, or storing to a DB on a cronjob or at minimum writing to a file</p>
+    <p>When reading links from XIVPads, I highly recommend using an automatic storage for the file either using something like Memcached or storing to a DB on a cronjob, or at minimum writing to a file</p>
 </div>
 
 <div class="docline"></div>

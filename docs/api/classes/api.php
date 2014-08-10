@@ -71,18 +71,18 @@ $table =
     // Search
     'Search',
     [ 'searchCharacter()', '(object) Character', 'Search a Character. <script src="https://gist.github.com/viion/44113b3a20e4f6a1a27b.js"></script>', ],
-    [ 'searchFreeCompany()', '(object) Freecompany', 'Search a Free Company.', ],
-    [ 'searchLinkshell()', '(object) Linkshell', 'Search a Linkshell.', ],
+    [ 'searchFreeCompany()', '(object) Freecompany', 'Search a Free Company. <script src="https://gist.github.com/viion/a5cf91ff0f94c78d69e0.js"></script>', ],
+    [ 'searchLinkshell()', '(object) Linkshell', 'Search a Linkshell. <script src="https://gist.github.com/viion/bf5f4b7e531bb91bcbac.js"></script>', ],
 
     // Search return
     'Search return',
-    [ 'getSearch()', 'array', 'Get an array containing the latest search results.', ],
-    [ 'errorPage()', 'boolean', 'Returns true or false to detmine if a recently parsed page for a character exists or errored out.', ],
+    [ 'getSearch()', 'array', 'Get an array containing the latest search results. This is used in the previous 3 search<Type>() code examples above.', ],
+    [ 'errorPage()', 'boolean', 'This function is not recommended, a simple conditional check is more practical and readable: <script src="https://gist.github.com/viion/bccd377ac077cf43cd83.js"></script>', ],
 
     // Character
     'Character',
-    [ 'parseProfile()', '-', 'Parse a characters profile via their lodestone ID', ],
-    [ 'parseBiography()', '-', 'Parse a characters biography via their lodestone ID', ],
+    [ 'parseProfile()', '-', 'Parse a characters profile via their lodestone ID. <script src="https://gist.github.com/viion/0ebcca0c48b89f584ab6.js"></script>', ],
+    [ 'parseBiography()', '-', 'Parse a characters biography via their lodestone ID. <script src="https://gist.github.com/viion/c8611e5d9e56cbd5811a.js"></script>', ],
     [ 'getCharacters()', 'array of (object) Character', 'Get an array containing Character objects for all parsed Characters.', ],
     [ 'getCharacterByID()', '(object) Character', 'Get a Character object via its ID.', ],
 
