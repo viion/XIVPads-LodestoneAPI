@@ -2357,6 +2357,21 @@
 
             return $character_data;
         }
+        
+        public function probable_jobs()
+        {
+        $jobarray=$this->getClassJobs($ArrayType)["named"];
+        $req=array('PLD'=>array('main'=>"gladiator", 'sub'=>"conjurer"), 'MNK'=>array('main'=>"pugilist", 'sub'=>"lancer"), 'WAR'=>array('main'=>"marauder", 'sub'=>"gladiator"), 'DRG'=>array('main'=>"lancer", 'sub'=>"marauder"), 'BRD'=>array('main'=>"archer", 'sub'=>"pugilist"), 'WHM'=>array('main'=>"conjurer", 'sub'=>"arcanist"), 'BLM'=>array('main'=>"thaumaturge", 'sub'=>"archer"), 'SMN'=>array('main'=>"arcanist", 'sub'=>"thaumaturge"), 'SCH'=>array('main'=>"arcanist", 'sub'=>"conjurer"));
+        $jobs=array("PLD", "MNK", "WAR", "DRG", "BRD", "WHM", "BLM", "SMN", "SCH");
+        foreach ($jobs as $job_name)
+        {
+            if ($jobarray[$req[$job_name]['main']]['level']!="-"&&$jobarray[$req[$job_name]['sub']]['level']!="-"&&$jobarray[$req[$job_name]['main']]['level']>=30&&$jobarray[$req[$job_name]['sub']]['level']>=15)
+            {
+                $returnarray[$job_name]=$jobarray[$req[$job_name]['main']]['level'];
+            }
+        }
+        return $returnarray;
+    }
     }
 
     /*  Free Company
