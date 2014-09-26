@@ -2248,7 +2248,6 @@
 
             // Get a specific job
             // Sort by value
-            show($ClassJobs);
             $this->sksort($ClassJobs, $OrderBy, $Ascending);
 
             // Return
