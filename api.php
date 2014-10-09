@@ -2009,7 +2009,13 @@
                     {
                         $index = ($i + 1);
                         $Data = trim(str_ireplace(array('>', '"'), NULL, html_entity_decode(preg_match("/\/lodestone\/playguide\/db\/item\/([a-z0-9]{11})\//", $A[$index], $matches)))); 
-                        $Temp['id_lodestone'] = $matches[1];
+                        
+                        // TODO : Fix properly, matches is returining false, likely index incorrect.
+                        $Temp['id_lodestone'] = null;
+                        if (isset($matches[1]))
+                        {
+                            $Temp['id_lodestone'] = $matches[1];
+                        }
                     }
 
                     // Cannot equip
@@ -2220,7 +2226,17 @@
             
             $this->ClassJob = $Temp;
         }
-        public function getClassJob($Class) { return $this->ClassJob[strtolower($Class)]; }
+        public function getClassJob($class) 
+        { 
+            $type = 'named';
+            if (is_numeric($class)) 
+            {
+                $type = 'numbered';
+            }
+            
+            return this->ClassJob[$type][$class];
+        }
+        
         public function getClassJobs($Specific = null) 
         {
             $data = $this->ClassJob;
