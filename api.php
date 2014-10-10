@@ -2234,7 +2234,7 @@
                 $type = 'numbered';
             }
             
-            return this->ClassJob[$type][$class];
+            return $this->ClassJob[$type][$class];
         }
         
         public function getClassJobs($Specific = null) 
