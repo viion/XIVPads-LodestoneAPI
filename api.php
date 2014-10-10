@@ -673,11 +673,11 @@
         // Checks if an error page exists
         public function errorPage($ID)
         {
-            // Check character tag
-            $PageNotFound = $this->find('/lodestone/character/');
-            
-            // if not found, error.
-            if (!$PageNotFound) { return true; }
+            // Check error message
+            $PageNotFound = $this->find('base_visual_error');
+
+            // if error message is found.
+            if ($PageNotFound) { return true; }
 
             return false;
         }
