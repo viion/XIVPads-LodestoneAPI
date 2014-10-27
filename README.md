@@ -30,6 +30,7 @@ An API for parsing lodestone data, designed and maintained by XIVPads.com and XI
 - Blog Parse
 
 **Thanks:**
+- @FlyerUA for bug detection and additional functionality: probableJobs()
 - @eedev for (Gear level, ID Lodestone and "Cannot equip gear to" data on the gear array) https://github.com/viion/XIVPads-LodestoneAPI/pull/32
 - @stygiansabyss for patch 2.1 free company icon fix
 
@@ -273,6 +274,9 @@ getMounts() // Returns array containing 'Name' and 'Icon' (Thanks to @Lucleonhar
 getClassJob(class) // Get level/exp info of a class
 isValid() // Wheather character data is valid or not (WIP)
 getErrors() // List of errors found during validation
+probableJobs() // Returns array of probable jobs containing 'name' (like PLD) and 'level'. Refer to DocBlock for other possible return values
+get_single_achievement_byID() // Returns array containing 'id', 'name', 'points', 'state' (achieved or not). Refer to DocBlock for other possible return values
+get_single_achievement_byName() // Returns array containing 'id', 'name', 'points', 'state' (achieved or not). Refer to DocBlock for other possible return values
 ```
 
 **Achievements**
@@ -383,6 +387,5 @@ echo $Character->getSlot('head');
 
 **Achievements**
 todo...
-
 
 
