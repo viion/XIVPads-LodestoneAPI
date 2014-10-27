@@ -30,7 +30,9 @@
 
     // Namespace
     namespace Viion\Lodestone;
-
+    
+    //achievements file
+    
     /*  trait 'Funky'
      *  Cool functions that all classes will get access to
      */
@@ -123,6 +125,29 @@
                 // Log
                 $LodestoneAPILogger->log($message);
             }
+        }
+        /**
+         * Searches the multidimensional array for a given string and returns the top corresponding key if successful. Only returns first occurrence.
+         * @param string The searched value.
+         * @param mixed 2nd level key within which to search for a value
+         * @param array Array within which search is done.
+         * @return mixed NULL or key if value is found
+         */
+        function array_topkey_by_value($value, $akey, $iarray)
+        {
+            $key=NULL;
+            if (is_array($iarray))
+            {
+                foreach ($iarray as $k=> $v)
+                {
+                    if (isset($v[$akey])&&$v[$akey]==$value)
+                    {
+                        $key=$k;
+                        break;
+                    }
+                }
+            }
+            return $key;
         }
     }
 
@@ -234,20 +259,20 @@
         {
             // Set classes
             $this->ClassList = array(
-                "Gladiator", "Pugilist", "Marauder", "Lancer", "Archer", "Conjurer", "Thaumaturge", "Arcanist", "Carpenter", "Blacksmith", 
-                "Armorer", "Goldsmith", "Leatherworker", "Weaver", "Alchemist", "Culinarian", "Miner", "Botanist", "Fisher"
+                "Gladiator", "Pugilist", "Marauder", "Lancer", "Archer", "Rogue", "Conjurer", "Thaumaturge", "Arcanist", "Carpenter", "Blacksmith", 
+                "Armorer", "Goldsmith", "Leatherworker", "Weaver", "Alchemist", "Culinarian", "Miner", "Botanist", "Fisher", 
             );
             
             // Set class by disicpline                          
             $this->ClassDisicpline = array(
-                "dow" => array_slice($this->ClassList, 0, 5),
-                "dom" => array_slice($this->ClassList, 5, 3),
-                "doh" => array_slice($this->ClassList, 8, 8),
-                "dol" => array_slice($this->ClassList, 16, 3),
+                "dow" => array_slice($this->ClassList, 0, 6),
+                "dom" => array_slice($this->ClassList, 6, 3),
+                "doh" => array_slice($this->ClassList, 9, 8),
+                "dol" => array_slice($this->ClassList, 17, 3),
             );
         }
     }
-
+include 'achievements.php';
     /*  LodestoneAPI
      *  ------------
      */
@@ -1966,6 +1991,7 @@
                         if (
                             strpos($itemSlot, " Arm") !== false || 
                             strpos($itemSlot, " Grimoire") !== false || 
+                            strpos($itemSlot, " Arms") !== false || 
                             strpos($itemSlot, " Tool") !== false
                         ) 
                         { 
@@ -2076,7 +2102,9 @@
                 "Lancer's Arm",
                 "Two-handed Thaumaturge's Arm",
                 "Two-handed Conjurer's Arm",
-                "Arcanist's Grimoire"
+                "Arcanist's Grimoire",
+                "Rogue's Arms"
+                
             ];
             
             // Loop through gear to calculate item levels
@@ -2226,7 +2254,7 @@
             $data = $this->ClassJob;
 
             if ($Specific) {
-               $data = $this->ClassJob[$specific];
+               $data = $this->ClassJob[$Specific];
             }
 
             return $data;
@@ -2357,21 +2385,99 @@
 
             return $character_data;
         }
-        
-        public function probable_jobs()
+        /**
+         * Guesses possible jobs for this character based on levels and availability of required classes. It's not 100% accurate since there is no way to actually know if person completed quest to get certain job.
+         * @return array Array of most probable jobs and their levels.
+         */
+        public function probableJobs()
         {
-        $jobarray=$this->getClassJobs($ArrayType)["named"];
-        $req=array('PLD'=>array('main'=>"gladiator", 'sub'=>"conjurer"), 'MNK'=>array('main'=>"pugilist", 'sub'=>"lancer"), 'WAR'=>array('main'=>"marauder", 'sub'=>"gladiator"), 'DRG'=>array('main'=>"lancer", 'sub'=>"marauder"), 'BRD'=>array('main'=>"archer", 'sub'=>"pugilist"), 'WHM'=>array('main'=>"conjurer", 'sub'=>"arcanist"), 'BLM'=>array('main'=>"thaumaturge", 'sub'=>"archer"), 'SMN'=>array('main'=>"arcanist", 'sub'=>"thaumaturge"), 'SCH'=>array('main'=>"arcanist", 'sub'=>"conjurer"));
-        $jobs=array("PLD", "MNK", "WAR", "DRG", "BRD", "WHM", "BLM", "SMN", "SCH");
-        foreach ($jobs as $job_name)
-        {
-            if ($jobarray[$req[$job_name]['main']]['level']!="-"&&$jobarray[$req[$job_name]['sub']]['level']!="-"&&$jobarray[$req[$job_name]['main']]['level']>=30&&$jobarray[$req[$job_name]['sub']]['level']>=15)
+            $jobarray=$this->getClassJobs("named");
+            $req=array('PLD'=>array('main'=>"gladiator", 'sub'=>"conjurer"), 'MNK'=>array('main'=>"pugilist", 'sub'=>"lancer"), 'WAR'=>array('main'=>"marauder", 'sub'=>"gladiator"), 'DRG'=>array('main'=>"lancer", 'sub'=>"marauder"), 'BRD'=>array('main'=>"archer", 'sub'=>"pugilist"), 'WHM'=>array('main'=>"conjurer", 'sub'=>"arcanist"), 'BLM'=>array('main'=>"thaumaturge", 'sub'=>"archer"), 'SMN'=>array('main'=>"arcanist", 'sub'=>"thaumaturge"), 'SCH'=>array('main'=>"arcanist", 'sub'=>"conjurer"), 'NIN'=>array('main'=>"rogue", 'sub'=>"pugilist"));
+            $jobs=array("PLD", "MNK", "WAR", "DRG", "BRD", "WHM", "BLM", "SMN", "SCH", "NIN");
+            foreach ($jobs as $job_name)
             {
-                $returnarray[$job_name]=$jobarray[$req[$job_name]['main']]['level'];
+                if ($jobarray[$req[$job_name]['main']]['level']!="-"&&$jobarray[$req[$job_name]['sub']]['level']!="-"&&$jobarray[$req[$job_name]['main']]['level']>=30&&$jobarray[$req[$job_name]['sub']]['level']>=15)
+                {
+                    $returnarray[$job_name]=$jobarray[$req[$job_name]['main']]['level'];
+                }
+            }
+            return $returnarray;
+        }
+        /**
+         * Gets info about achievement by achievement's ID
+         * @param int ID of achievement. Refer to achievements.php for ID for each achievement
+         * @return mixed Returns NULL on error, FALSE if user made achievements info private or array with id, name, points and state (achieved or not) if successfully parsed
+         */
+        public function get_single_achievement_byID($achID)
+        {
+            if (defined('achievements_loaded'))
+            {
+                global $achievements;
+                if (isset($this->ID)&&array_key_exists($achID, $achievements))
+                {
+                    $parser=new public_parser();
+                    $parser->getSource($this->URL['character']['profile'].$this->ID.'/achievement/detail/'.$achID);
+                    if (AchievementsPublic($parser->findAll('area_inner_tc', 20)))
+                    {
+                        $current_achievement=array("id"=>$achID, "title"=>$achievements[$achID]['title'], "points"=>$achievements[$achID]['points'],"achieved"=>false);
+                        foreach ($parser->SourceCodeArray as $line)
+                        {
+                            if (preg_match('#class=&quot;[\w\s]*(already|yet)#', $line, $matches))
+                            {
+                                if ($matches[1]=="already")
+                                {
+                                    $current_achievement["achieved"]=true;
+                                }
+                                else
+                                {
+                                    $current_achievement["achieved"]=false;
+                                }
+                                break;
+                            }
+                        }
+                        return $current_achievement;
+                    }
+                    else
+                    {
+                        return FALSE;
+                    }
+                }
+                else
+                {
+                    return NULL;
+                }
+            }
+            else
+            {
+                echo "You seem to be missing achievements.php. You will need it to use this function";
             }
         }
-        return $returnarray;
-    }
+        
+        /**
+         * Gets info about achievement by achievement's name
+         * @param string Name of achievement. Refer to achievements.php for title for each achievement
+         * @return mixed Returns NULL on error, FALSE if user made achievements info private or array with id, name, points and state (achieved or not) if successfully parsed
+         */
+        public function get_single_achievement_byName($achName)
+        {
+            if (defined('achievements_loaded'))
+            {
+                global $achievements;
+                $key=$this->array_topkey_by_value($achName, 'title', $achievements);
+                if (isset($key))
+                {
+                    return $this->get_single_achievement_byID($key);
+                }
+                else
+                {
+                    return NULL;
+                }
+            }
+            else
+            {
+                echo "You seem to be missing achievements.php. You will need it to use this function";
+            }
+        }
     }
 
     /*  Free Company
@@ -3294,4 +3400,57 @@
             $this->show($this->SourceCodeArray);
         }
     }
+
+// Messy as hell but I didn't really feel like rewriting these functions while I needed them. I don't know why you made em protected to begin with.    
+class public_parser extends Parser
+{
+    public $SourceCodeArray;
+    use Funky;
+    
+    public function find($Tag, $Clean=TRUE)
+    {
+        return parent::find($Tag, $Clean=TRUE);
+    }
+
+    public function findRange($Tag, $Range, $Tag2=NULL, $Clean=TRUE, $StartAt=1)
+    {
+        return parent::findRange($Tag, $Range, $Tag2=NULL, $Clean=TRUE, $StartAt=1);
+    }
+
+    public function findAll($Tag, $Range, $Tag2=NULL, $Clean=TRUE)
+    {
+        return parent::findAll($Tag, $Range, $Tag2=NULL, $Clean=TRUE);
+    }
+
+    public function segment($Tag)
+    {
+        return parent::segment($Tag);
+    }
+
+    public function clean($Line)
+    {
+        return parent::clean($Line);
+    }
+
+    public function strip_html($Line)
+    {
+        return parent::strip_html($Line);
+    }
+
+    public function getAttribute($attribute, $string)
+    {
+        return parent::getAttribute($attribute, $string);
+    }
+
+    public function getSource($URL)
+    {
+        return parent::getSource($URL);
+    }
+
+    public function curl($URL)
+    {
+        return parent::curl($URL);
+    }
+
+}
 ?>
