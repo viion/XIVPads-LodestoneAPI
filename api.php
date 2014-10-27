@@ -30,9 +30,7 @@
 
     // Namespace
     namespace Viion\Lodestone;
-    
-    //achievements file
-    
+  
     /*  trait 'Funky'
      *  Cool functions that all classes will get access to
      */
@@ -272,7 +270,10 @@
             );
         }
     }
-include 'achievements.php';
+      
+    //achievements file
+    include 'achievements.php';
+    
     /*  LodestoneAPI
      *  ------------
      */
