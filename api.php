@@ -2212,6 +2212,7 @@
                     $Class  = strtolower(trim(strip_tags(html_entity_decode($Array[$i]))));
                     $Level  = trim(strip_tags(html_entity_decode($Array[$i + 1])));
                     $EXP    = trim(strip_tags(html_entity_decode($Array[$i + 2])));
+
                     if ($Class)
                     {
                         $arr = array(
@@ -2225,6 +2226,12 @@
                             'exp-current' => explode(" / ", $EXP)[0],
                             'exp-max' => explode(" / ", $EXP)[1],
                         );
+
+                        if ($arr['level'] == '-') { $arr['level'] = 0; }
+                        if ($arr['exp']['current'] == '-') { $arr['exp']['current'] = 0; }
+                        if ($arr['exp']['max'] == '-') { $arr['exp']['max'] = 0; }
+                        if ($arr['exp-current'] == '-') { $arr['exp-current'] = 0; }
+                        if ($arr['exp-max'] == '-') { $arr['exp-max'] = 0; }
                             
                         $Temp['numbered'][] = $arr;
                         $Temp['named'][$Class] = $arr;
