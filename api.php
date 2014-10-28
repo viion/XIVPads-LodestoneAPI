@@ -1845,9 +1845,9 @@
             $this->Stats['resists']['bind']                 = trim(filter_var($String[6][5], FILTER_SANITIZE_NUMBER_INT));
             $this->Stats['resists']['heavy']                = trim(filter_var($String[6][5], FILTER_SANITIZE_NUMBER_INT));
 
-            //$this->Stats['resists']['slashing']             = trim(filter_var($String[$last][3], FILTER_SANITIZE_NUMBER_INT));
-            //$this->Stats['resists']['piercing']             = trim(filter_var($String[$last][4], FILTER_SANITIZE_NUMBER_INT));
-            //$this->Stats['resists']['blunt']                = trim(filter_var($String[$last][5], FILTER_SANITIZE_NUMBER_INT));
+            $this->Stats['resists']['slashing']             = trim(filter_var($String[7][3], FILTER_SANITIZE_NUMBER_INT));
+            $this->Stats['resists']['piercing']             = trim(filter_var($String[7][4], FILTER_SANITIZE_NUMBER_INT));
+            $this->Stats['resists']['blunt']                = trim(filter_var($String[7][5], FILTER_SANITIZE_NUMBER_INT));
         }
         
         // GET STAT FUNC
