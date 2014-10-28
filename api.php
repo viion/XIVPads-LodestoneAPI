@@ -729,8 +729,9 @@
                     $Character->setAvatar($this->findRange('player_name_thumb', 10, NULL, false));
                     $Character->setPortrait($this->findRange('bg_chara_264', 2, NULL, false));
                     $Character->setRaceClan($this->find('chara_profile_title'));
-                    $Character->setLegacy($this->find('bt_legacy_history'));
-                    $Character->setBirthGuardianCompany($this->findRange('chara_profile_list', 60, NULL, false));
+                    //$Character->setLegacy($this->find('bt_legacy_history'));
+                    $Character->setNamedayCityCompanyFC($this->findRange('chara_profile_left', null, "chara_class_box", false));
+
                     $Character->setCity($this->findRange('City-state', 5));
                     $Character->setBiography($this->findRange('txt_selfintroduction', 5));
                     $Character->setHPMPTP($this->findRange('param_power_area', 10));
@@ -747,12 +748,12 @@
                     $this->log(__LINE__, 'function: parseProfile() - parsing chunk 3');
 
                     // Set Minions
-                    $Minions = $this->findRange('area_header_w358_inner', NULL, '//Minion', false);
+                    $Minions = $this->findRange('-- Minion --', NULL, '//Minion', false);
                     $Character->setMinions($Minions);
                     
                     // Set Mounts
                     $this->log(__LINE__, 'function: parseProfile() - parsing chunk 4');
-                    $Mounts = $this->findRange('area_header_w358_inner', NULL, '//Mount', false, 2);
+                    $Mounts = $this->findRange('-- Mount --', NULL, '//Mount', false);
                     $Character->setMounts($Mounts);
                     
                     #$this->segment('class_fighter');
@@ -1602,7 +1603,7 @@
     /*  Character
      *  ---------
      */
-    class Character
+    class Character extends Parser
     {
         use Funky;
         use Config;
@@ -1716,38 +1717,48 @@
         // LEGACY
         public function setLegacy($String) { $this->Legacy = $String; }
         public function getLegacy() { return $this->Legacy; }
-        
-        // BIRTHDATE + GUARDIAN + COMPANY + FREE COMPANY
-        public function setBirthGuardianCompany($String)
+
+        public function setNamedayCityCompanyFC($String)
         {
-            $this->Nameday      = trim(strip_tags(html_entity_decode($String[11])));
-            $this->Guardian     = str_ireplace("&#39;", "'", trim(strip_tags(html_entity_decode($String[15]))));
-                
-            $i = 0;
-            foreach($String as $Line)
+            foreach($String as $i => $line)
             {
-                if (stripos($Line, 'Grand Company') !== false)  { $Company = trim(strip_tags(html_entity_decode($String[($i + 1)]))); }
-                if (stripos($Line, 'Free Company') !== false)   { $FreeCompany = trim($String[($i + 1)]); }
-                $i++;;
-            }
-            
-            // If grand company
-            if (isset($Company))
-            {
-                $this->Company      = array("name" => explode("/", $Company)[0], "rank" => explode("/", $Company )[1]);
-            }
-            
-            // If free company
-            if (isset($FreeCompany))
-            {
-                $FreeCompanyID      = trim(filter_var(explode('&quot;', $FreeCompany)[1], FILTER_SANITIZE_NUMBER_INT));
-                $FreeCompany        = trim(strip_tags(html_entity_decode($FreeCompany)));
+                if (stripos($line, 'Nameday') !== false)
+                {
+                    $offset = ($i + 1);
+                    $this->Nameday = $this->strip_html($String[$offset]);
+                }
 
-                $FreeCompany        = str_ireplace(["&#39;", "&amp;"], ["'", "&"], $FreeCompany);
+                if (stripos($line, 'Guardian') !== false)
+                {
+                    $offset = ($i + 1);
+                    $this->Guardian = $this->strip_html($String[$offset]);
+                }
 
-                $this->FreeCompany  = array("name" => $FreeCompany, "id" => $FreeCompanyID);
+                if (stripos($line, 'City-state') !== false)
+                {
+                    $offset = ($i + 1);
+                    $this->City = $this->strip_html($String[$offset]);
+                }
+
+                if (stripos($line, 'Grand Company') !== false)
+                {
+                    $offset = ($i + 1);
+                    $data = explode('/', $this->strip_html($String[$offset]));
+                    $this->Company['name'] = $data[0];
+                    $this->Company['rank'] = $data[1];
+                }
+
+                if (stripos($line, 'Free Company') !== false)
+                {
+                    $offset = ($i + 1);
+                    $this->FreeCompany = explode("/", $String[$offset]);
+                    $this->FreeCompany = trim($this->FreeCompany[3]);
+                    
+                    break;
+                }
             }
         }
+
         public function getNameday()        { return $this->Nameday; }
         public function getGuardian()       { return $this->Guardian; }
         public function getCompanyName()    { return $this->Company['name']; }
@@ -1834,9 +1845,9 @@
             $this->Stats['resists']['bind']                 = trim(filter_var($String[6][5], FILTER_SANITIZE_NUMBER_INT));
             $this->Stats['resists']['heavy']                = trim(filter_var($String[6][5], FILTER_SANITIZE_NUMBER_INT));
 
-            $this->Stats['resists']['slashing']             = trim(filter_var($String[$last][3], FILTER_SANITIZE_NUMBER_INT));
-            $this->Stats['resists']['piercing']             = trim(filter_var($String[$last][4], FILTER_SANITIZE_NUMBER_INT));
-            $this->Stats['resists']['blunt']                = trim(filter_var($String[$last][5], FILTER_SANITIZE_NUMBER_INT));
+            //$this->Stats['resists']['slashing']             = trim(filter_var($String[$last][3], FILTER_SANITIZE_NUMBER_INT));
+            //$this->Stats['resists']['piercing']             = trim(filter_var($String[$last][4], FILTER_SANITIZE_NUMBER_INT));
+            //$this->Stats['resists']['blunt']                = trim(filter_var($String[$last][5], FILTER_SANITIZE_NUMBER_INT));
         }
         
         // GET STAT FUNC
