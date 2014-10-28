@@ -1,6 +1,4 @@
 <?php
-
-// to do: add 2.4 achievements
 global $achievements;
 $achievements=array();
 define('achievements_loaded', true);
@@ -748,32 +746,31 @@ $achievements[692]=array("title"=>"In the Black I", "points"=>"5");
 $achievements[693]=array("title"=>"In the Black II", "points"=>"5");
 $achievements[694]=array("title"=>"In the Black III", "points"=>"10");
 $achievements[738]=array("title"=>"Bump on a Log: Immortal Flames", "points"=>"20");
-/*
-  $achievements[]=array("title"=>"Dreams of Ice","points"=>"");
-  $achievements[]=array("title"=>"Uncoiled","points"=>"");
-  $achievements[]=array("title"=>"Imagine Dragon","points"=>"");
-  $achievements[]=array("title"=>"Go Big or Go Home VIII","points"=>"");
-  $achievements[]=array("title"=>"Go Big or Go Home IX","points"=>"");
-  $achievements[]=array("title"=>"Go Big or Go Home X","points"=>"");
-  $achievements[]=array("title"=>"Leaving a Better Impression I","points"=>"");
-  $achievements[]=array("title"=>"Leaving a Better Impression II","points"=>"");
-  $achievements[]=array("title"=>"Remapping the Realm: Sunken Temple of Qarn","points"=>"");
-  $achievements[]=array("title"=>"Remapping the Realm: Sastasha","points"=>"");
-  $achievements[]=array("title"=>"Mapping the Realm: Snowcloak","points"=>"");
-  $achievements[]=array("title"=>"Out of a Bind I","points"=>"");
-  $achievements[]=array("title"=>"Out of a Bind II","points"=>"");
-  $achievements[]=array("title"=>"Out of a Bind III","points"=>"");
-  $achievements[]=array("title"=>"Mapping the Realm: The Final Coil of Bahamut I","points"=>"");
-  $achievements[]=array("title"=>"Mapping the Realm: The Final Coil of Bahamut II","points"=>"");
-  $achievements[]=array("title"=>"Let it Go","points"=>"");
-  $achievements[]=array("title"=>"Come on, Rogue I","points"=>"");
-  $achievements[]=array("title"=>"Come on, Rogue II","points"=>"");
-  $achievements[]=array("title"=>"Come on, Rogue III","points"=>"");
-  $achievements[]=array("title"=>"Come on, Rogue IV","points"=>"");
-  $achievements[]=array("title"=>"Come on, Rogue V","points"=>"");
-  $achievements[]=array("title"=>"Bump on a Log: Rogue","points"=>"");
-  $achievements[]=array("title"=>"Against the Ninja","points"=>"");
-  $achievements[]=array("title"=>"Yoshimitsu's Island","points"=>""); */
+$achievements[1029]=array("title"=>"Dreams of Ice","points"=>"20");
+$achievements[1030]=array("title"=>"Uncoiled","points"=>"20");
+$achievements[1031]=array("title"=>"Imagine Dragon","points"=>"30");
+$achievements[1032]=array("title"=>"Go Big or Go Home VIII","points"=>"20");
+$achievements[1033]=array("title"=>"Go Big or Go Home IX","points"=>"20");
+$achievements[1034]=array("title"=>"Go Big or Go Home X","points"=>"20");
+$achievements[1035]=array("title"=>"Leaving a Better Impression I","points"=>"0");
+$achievements[1036]=array("title"=>"Leaving a Better Impression II","points"=>"0");
+$achievements[1037]=array("title"=>"Remapping the Realm: Sunken Temple of Qarn","points"=>"10");
+$achievements[1038]=array("title"=>"Remapping the Realm: Sastasha","points"=>"10");
+$achievements[1039]=array("title"=>"Mapping the Realm: Snowcloak","points"=>"10");
+$achievements[1040]=array("title"=>"Out of a Bind I","points"=>"5");
+$achievements[1041]=array("title"=>"Out of a Bind II","points"=>"10");
+$achievements[1042]=array("title"=>"Out of a Bind III","points"=>"20");
+$achievements[1043]=array("title"=>"Mapping the Realm: The Final Coil of Bahamut I","points"=>"10");
+$achievements[1044]=array("title"=>"Mapping the Realm: The Final Coil of Bahamut II","points"=>"10");
+$achievements[1045]=array("title"=>"Let it Go","points"=>"10");
+$achievements[1046]=array("title"=>"Come on, Rogue I","points"=>"5");
+$achievements[1047]=array("title"=>"Come on, Rogue II","points"=>"5");
+$achievements[1048]=array("title"=>"Come on, Rogue III","points"=>"5");
+$achievements[1049]=array("title"=>"Come on, Rogue IV","points"=>"5");
+$achievements[1050]=array("title"=>"Come on, Rogue V","points"=>"5");
+$achievements[1051]=array("title"=>"Bump on a Log: Rogue","points"=>"20");
+$achievements[1052]=array("title"=>"Against the Ninja","points"=>"5");
+$achievements[1053]=array("title"=>"Yoshimitsu's Island","points"=>"10"); 
 
 function AchievementsPublic($Array)
 {
