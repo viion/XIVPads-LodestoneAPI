@@ -30,7 +30,7 @@
 
     // Namespace
     namespace Viion\Lodestone;
-  
+
     /*  trait 'Funky'
      *  Cool functions that all classes will get access to
      */
@@ -124,7 +124,7 @@
                 $LodestoneAPILogger->log($message);
             }
         }
-        /**
+		/**
          * Searches the multidimensional array for a given string and returns the top corresponding key if successful. Only returns first occurrence.
          * @param string The searched value.
          * @param mixed 2nd level key within which to search for a value
@@ -256,7 +256,7 @@
         function __construct()
         {
             // Set classes
-            $this->ClassList = array(
+			$this->ClassList = array(
                 "Gladiator", "Pugilist", "Marauder", "Lancer", "Archer", "Rogue", "Conjurer", "Thaumaturge", "Arcanist", "Carpenter", "Blacksmith", 
                 "Armorer", "Goldsmith", "Leatherworker", "Weaver", "Alchemist", "Culinarian", "Miner", "Botanist", "Fisher" 
             );
@@ -270,10 +270,8 @@
             );
         }
     }
-      
-    //achievements file
-    include 'achievements.php';
-    
+	//achievements file
+	include 'achievements.php';
     /*  LodestoneAPI
      *  ------------
      */
@@ -756,7 +754,7 @@
                     $Character->setPortrait($this->findRange('bg_chara_264', 2, NULL, false));
                     $Character->setRaceClan($this->find('chara_profile_title'));
                     $Character->setLegacy($this->find('bt_legacy_history'));
-                    $Character->setBirthGuardianCompany($this->findRange('chara_profile_list', 60, NULL, false));
+                    $Character->setBirthGuardianCompany($this->findRange('chara_profile_table', 60, NULL, false));
                     $Character->setCity($this->findRange('City-state', 5));
                     $Character->setBiography($this->findRange('txt_selfintroduction', 5));
                     $Character->setHPMPTP($this->findRange('param_power_area', 10));
@@ -1746,9 +1744,9 @@
         // BIRTHDATE + GUARDIAN + COMPANY + FREE COMPANY
         public function setBirthGuardianCompany($String)
         {
-            $this->Nameday      = trim(strip_tags(html_entity_decode($String[11])));
-            $this->Guardian     = str_ireplace("&#39;", "'", trim(strip_tags(html_entity_decode($String[15]))));
-                
+            $this->Nameday      = trim(strip_tags(html_entity_decode($String[3])));
+            $this->Guardian     = str_ireplace("&#39;", "'", trim(strip_tags(html_entity_decode($String[7]))));
+            //show_formated($String);    
             $i = 0;
             foreach($String as $Line)
             {
@@ -1766,7 +1764,7 @@
             // If free company
             if (isset($FreeCompany))
             {
-                $FreeCompanyID      = trim(filter_var(explode('&quot;', $FreeCompany)[1], FILTER_SANITIZE_NUMBER_INT));
+                $FreeCompanyID      = trim(filter_var(explode('&quot;', $FreeCompany)[3], FILTER_SANITIZE_NUMBER_INT));
                 $FreeCompany        = trim(strip_tags(html_entity_decode($FreeCompany)));
 
                 $FreeCompany        = str_ireplace(["&#39;", "&amp;"], ["'", "&"], $FreeCompany);
@@ -1825,7 +1823,6 @@
             $this->Stats['physical']['skill speed']         = trim(filter_var($String[4][4], FILTER_SANITIZE_NUMBER_INT));
 
             // 5th one switches between different types of classes
-
             if (stripos($String[5][3], 'Craftsmanship') !== false)
             {
                 $this->Stats['crafting']['craftsmanship']       = trim(filter_var($String[5][3], FILTER_SANITIZE_NUMBER_INT));
@@ -1846,9 +1843,9 @@
                 $this->Stats['spell']['healing magic potency']  = trim(filter_var($String[5][4], FILTER_SANITIZE_NUMBER_INT));
                 $this->Stats['spell']['spell speed']            = trim(filter_var($String[5][5], FILTER_SANITIZE_NUMBER_INT));
 
-                $this->Stats['pvp']['morale']                   = trim(filter_var($String[7][3], FILTER_SANITIZE_NUMBER_INT));
+                //$this->Stats['pvp']['morale']                   = trim(filter_var($String[7][3], FILTER_SANITIZE_NUMBER_INT));
 
-                $last = 8;
+                $last = 7;
             }
 
             $this->Stats['resists']['slow']                 = trim(filter_var($String[6][3], FILTER_SANITIZE_NUMBER_INT));
@@ -1863,7 +1860,8 @@
             $this->Stats['resists']['slashing']             = trim(filter_var($String[$last][3], FILTER_SANITIZE_NUMBER_INT));
             $this->Stats['resists']['piercing']             = trim(filter_var($String[$last][4], FILTER_SANITIZE_NUMBER_INT));
             $this->Stats['resists']['blunt']                = trim(filter_var($String[$last][5], FILTER_SANITIZE_NUMBER_INT));
-        }
+                        
+            }
         
         // GET STAT FUNC
         public function getStat($Type, $Attribute) { if (isset($this->Stats[$Type])) { return $this->Stats[$Type][$Attribute]; } else { return 0; }}
@@ -1992,7 +1990,7 @@
                         if (
                             strpos($itemSlot, " Arm") !== false || 
                             strpos($itemSlot, " Grimoire") !== false || 
-                            strpos($itemSlot, " Arms") !== false || 
+							strpos($itemSlot, " Arms") !== false || 
                             strpos($itemSlot, " Tool") !== false
                         ) 
                         { 
@@ -2036,7 +2034,8 @@
                     {
                         $index = ($i + 1);
                         $Data = trim(str_ireplace(array('>', '"'), NULL, html_entity_decode(preg_match("/\/lodestone\/playguide\/db\/item\/([a-z0-9]{11})\//", $A[$index], $matches)))); 
-                                                // TODO : Fix properly, matches is returining false, likely index incorrect.
+                        
+                        // TODO : Fix properly, matches is returining false, likely index incorrect.
                         $Temp['id_lodestone'] = null;
                         if (isset($matches[1]))
                         {
@@ -2109,8 +2108,7 @@
                 "Two-handed Thaumaturge's Arm",
                 "Two-handed Conjurer's Arm",
                 "Arcanist's Grimoire",
-                "Rogue's Arms"
-                
+				"Rogue's Arms"
             ];
             
             // Loop through gear to calculate item levels
@@ -2254,7 +2252,7 @@
             
             $this->ClassJob = $Temp;
         }
-         public function getClassJob($class) 
+        public function getClassJob($class) 
         { 
             $type = 'named';
             if (is_numeric($class)) 
@@ -2264,6 +2262,7 @@
             
             return $this->ClassJob[$type][$class];
         }
+        
         public function getClassJobs($Specific = null) 
         {
             $data = $this->ClassJob;
@@ -2400,6 +2399,7 @@
 
             return $character_data;
         }
+        
         /**
          * Guesses possible jobs for this character based on levels and availability of required classes. It's not 100% accurate since there is no way to actually know if person completed quest to get certain job.
          * @return array Array of most probable jobs and their levels.
@@ -3142,6 +3142,11 @@
      *  > getSource - $URL [protected] (Fetches the source code of the specified url.)
      *  > curl - $URL [private] (Core curl function with additional options.)
      */
+    /*  Parser
+     *  ------
+     *  > getSource - $URL [protected] (Fetches the source code of the specified url.)
+     *  > curl - $URL [private] (Core curl function with additional options.)
+     */
     class Parser
     {
         // The source code of the most recent curl
@@ -3415,8 +3420,7 @@
             $this->show($this->SourceCodeArray);
         }
     }
-
-// Messy as hell but I didn't really feel like rewriting these functions while I needed them. I don't know why you made em protected to begin with.    
+    // Messy as hell but I didn't really feel like rewriting these functions while I needed them. I don't know why you made em protected to begin with.    
 class public_parser extends Parser
 {
     public $SourceCodeArray;
