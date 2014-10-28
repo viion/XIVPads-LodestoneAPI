@@ -234,16 +234,16 @@
         {
             // Set classes
             $this->ClassList = array(
-                "Gladiator", "Pugilist", "Marauder", "Lancer", "Archer", "Conjurer", "Thaumaturge", "Arcanist", "Carpenter", "Blacksmith", 
+                "Gladiator", "Pugilist", "Marauder", "Lancer", "Archer", "Rogue", "Conjurer", "Thaumaturge", "Arcanist", "Carpenter", "Blacksmith", 
                 "Armorer", "Goldsmith", "Leatherworker", "Weaver", "Alchemist", "Culinarian", "Miner", "Botanist", "Fisher"
             );
             
             // Set class by disicpline                          
             $this->ClassDisicpline = array(
-                "dow" => array_slice($this->ClassList, 0, 5),
-                "dom" => array_slice($this->ClassList, 5, 3),
-                "doh" => array_slice($this->ClassList, 8, 8),
-                "dol" => array_slice($this->ClassList, 16, 3),
+                "dow" => array_slice($this->ClassList, 0, 6),
+                "dom" => array_slice($this->ClassList, 6, 3),
+                "doh" => array_slice($this->ClassList, 9, 8),
+                "dol" => array_slice($this->ClassList, 17, 3),
             );
         }
     }
