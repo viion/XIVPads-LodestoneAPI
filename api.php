@@ -2586,7 +2586,7 @@
                 $this->getAttribute('src', $String[4]),
             ];
         }
-        public function getEmblum() { return $this->getEmblum; }
+        public function getEmblum() { return $this->Emblum; }
 
         // TAG + FORMED + MEMBERS + SLOGAN
         public function setFullDetails($String)
