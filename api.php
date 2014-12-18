@@ -1806,10 +1806,12 @@
         {
             if (isset($String))
             {
-                $this->Portrait = trim(explode('&quot;', $String[1])[1]);
+                $portraitURL = trim(explode('&quot;', $String[1])[1]);
+                $this->Portrait['small'] = $portraitURL;
+                $this->Portrait['big'] = str_replace('264x360', '640x873', $portraitURL);
             }
         }
-        public function getPortrait() { return $this->Portrait; }
+        public function getPortrait($Size = null) { if (!$Size) $Size = 'small'; return $this->Portrait[$Size]; }
 
         // RACE + CLAN
         public function setRaceClan($String)
