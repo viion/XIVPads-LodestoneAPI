@@ -35,7 +35,18 @@
      *  Cool functions that all classes will get access to
      */
     trait Funky
-    {
+    {		
+		/**
+		 * Return Unicode for a character
+		 * @param string $u
+		 * @return int
+		 */
+		function uniord($u) {
+			$k = mb_convert_encoding($u, 'UCS-2LE', 'UTF-8');
+			$k1 = ord(substr($k, 0, 1));
+			$k2 = ord(substr($k, 1, 1));
+			return $k2 * 256 + $k1;
+		}
         /*  - sƒow
          *  Shows the contents of an object.
          */
@@ -1821,10 +1832,13 @@
                 $String         = explode("/", $String);
                 $this->Clan     = htmlspecialchars_decode(trim($String[1]), ENT_QUOTES);
                 $this->Race     = htmlspecialchars_decode(trim($String[0]), ENT_QUOTES);
+                $GenderUnicode	= $this->uniord(htmlspecialchars_decode(trim($String[2]), ENT_QUOTES));
+				$this->Gender	= ($GenderUnicode == 9792) ? 'female' : 'male';
             }
         }
         public function getRace() { return $this->Race; }
         public function getClan() { return $this->Clan; }
+        public function getGender() { return $this->Gender; }
 
         // LEGACY
         public function setLegacy($String) { $this->Legacy = $String; }
@@ -2458,6 +2472,7 @@
                 'portrait'      => $this->getPortrait(),
                 'race'          => $this->getRace(),
                 'clan'          => $this->getClan(),
+                'gender'        => $this->getGender(),
                 'legacy'        => $this->getLegacy(),
                 'nameday'       => $this->getNameday(),
                 'guardian'      => $this->getGuardian(),
