@@ -30,6 +30,7 @@
 
     // Namespace
     namespace Viion\Lodestone;
+	require_once(dirname(__FILE__).'/phpQuery.php');
 
     /*  trait 'Funky'
      *  Cool functions that all classes will get access to
@@ -160,6 +161,7 @@
                 'profile'       => 'http://eu.finalfantasyxiv.com/lodestone/character/',
                 'achiSummary'   => '/achievement/',
                 'achievement'   => '/achievement/kind/',
+                'blog'   => '/blog/',
             ],
 
             # Free company related urls
@@ -278,6 +280,11 @@
         public $Characters = [];
         public $Achievements = [];
         public $Search = [];
+		/**
+		 * Blog
+		 * @var Blog 
+		 */
+        public $Blog = null;
 
         // List of free company data parsed
         public $FreeCompanyList = [];
@@ -944,6 +951,37 @@
 
         // Get the achievement categories
         public function getAchievementCategories() { return $this->AchievementCategories; }
+
+        
+
+        #-------------------------------------------#
+        # BLOG                                      #
+        #-------------------------------------------#
+
+        // Parse achievement by CharacterID
+        public function parseBlog($ID = null)
+        {
+            if (!$ID)
+            {
+                $ID = $this->getID();
+            }
+
+            if (!$ID)
+            {
+                echo "error: No ID Set.";
+            }
+            else
+            {
+                $Blog = new Blog($ID);
+				$Blog->setEntries();
+				$this->Blog = $Blog;
+            }
+        }
+
+        // Get a list of blogEntries
+        public function getBlog() { return $this->Blog; }
+        // Get a blogEntryById
+        public function getBlogByID($bID) { return $this->Blog->getEntryByID($bID); }
 
         #-------------------------------------------#
         # FREE COMPANY                              #
@@ -3182,6 +3220,96 @@
 
             $this->List = $achievements;
         }
+    }
+
+
+    /*  Blog
+     *  -----------
+     */
+    class Blog extends Parser
+    {
+        use Funky;
+        use Config;
+		
+        private $Entries = [];
+        private $cID = null;
+        private $blogUrlBase = null;
+		
+		public function __construct($cID=null){
+			if(is_null($cID) === false){
+				$this->setCharacterID($cID)
+					 ->setBlogURL($this->URL['character']['profile'] . $this->cID . $this->URL['character']['blog']);
+			}
+			return $this;
+		}
+		
+		public function setCharacterID($cID){ $this->cID = $cID; return $this; }
+		public function getCharacterID(){ return $this->cID; }
+		
+		public function setBlogURL($url){ $this->blogUrlBase = $url; return $this; }
+		public function getBlogURL(){ return $this->blogUrlBase; }
+		
+		public function setEntries($withFullText=false){
+			// Get Data from URL
+			\phpQuery::newDocumentFileHTML($this->blogUrlBase);
+			// Loop it
+			foreach(pq('#mydiary_list>div.base_header_long') as $node){
+                $temp = [];
+				$pqNode = pq($node);
+				// Headline & ID
+				$headlineNode = $pqNode->find('h1>a.large:first');
+				$temp['url'] = $headlineNode->attr('href');
+				$temp['id'] = explode("/", $temp['url'])[5];
+				$temp['headline'] = $headlineNode->text();
+				//Tags
+				$temp['tags'] = $this->_getTags(pq('div.diary_tag_body_long',$node));
+				//Body
+				$temp['shorttext'] = trim($pqNode->find('div.comment')->text());
+				if($withFullText === true){
+					$blogEntryDom = \phpQuery::newDocumentFileHTML($this->blogUrlBase .$temp['id'] )->find('div.diary_flame');
+					$temp['fulltext'] = $this->_getFulltext($blogEntryDom);
+				}
+				
+				$this->Entries[$temp['id']] = $temp;
+			}
+			return $this;
+		}
+		
+		public function getEntryByID($bID){
+			if (!$bID){
+                echo "No blog id set.";
+            }else{
+				if(!isset($this->Entries[$bID]) || !array_key_exists('fulltext',$this->Entries[$bID])){
+					$this->Entries[$bID]['url'] = $this->blogUrlBase . $bID;
+					$blogEntryDom = \phpQuery::newDocumentFileHTML($this->Entries[$bID]['url'])->find('div.diary_flame');
+					$this->Entries[$bID]['id'] = $bID;
+					$this->Entries[$bID]['headline'] = trim(pq('div.area_footer>h1:first',$blogEntryDom)->text());
+					$this->Entries[$bID]['tags'] = $this->_getTags(pq('div.diary_tag_body_w570',$blogEntryDom));
+					$this->Entries[$bID]['fulltext'] = $this->_getFulltext($blogEntryDom);
+					// Shorttext is not really needed
+					//$this->Entries[$bID]['shorttext'] = trim(pq('div.area_footer>h1:first',$blogEntryDom)->text());
+				}
+				return $this->Entries[$bID];
+			}
+		}
+		
+		private function _getFulltext($domNode){
+			return trim(pq('div.body:first',$domNode)->html());
+		}
+		
+		private function _getTags($domNode){
+			$tags = [];
+			foreach(pq('a',$domNode) as $tagLinkNode){
+				$linkNode =  pq($tagLinkNode);
+				$tagName = trim(str_replace(array('[',']'),'',$linkNode->text()));
+				$tagLink = $linkNode->attr('href');
+				$tags[$tagName] = array(
+					'name' => $tagName,
+					'url' => $tagLink
+				);
+			}
+			return $tags;
+		}
     }
 
     /*  Parser
