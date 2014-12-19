@@ -8,7 +8,7 @@ RewriteRule ^avatar/([0-9]*)\.jpg$ avatar_cache.php?character_id=$1
 ====================
 
 ###avatar_cache.php
-
+``` 
 <?php
 $cacheDir = __DIR__ . "/files/avatarcache/";
 
@@ -38,3 +38,4 @@ $type = 'image/jpeg';
 header('Content-Type:'.$type);
 header('Content-Length: ' . filesize($file));
 readfile($file);
+``` 
