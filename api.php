@@ -188,6 +188,7 @@
                 'maintenance'   => 'http://eu.finalfantasyxiv.com/lodestone/news/category/2',
                 'updates'       => 'http://eu.finalfantasyxiv.com/lodestone/news/category/3',
                 'status'        => 'http://eu.finalfantasyxiv.com/lodestone/news/category/4',
+				'worldstatus'	=> 'http://eu.finalfantasyxiv.com/lodestone/worldstatus/',
 
                 // Multi language is currently not supposed as the "Dev Tracker" links change
                 // based on time. I could make it parse this page, get the correct link and
@@ -1315,6 +1316,54 @@
             // Return array
             return $Array;
         }
+		
+		/** Worldstatus
+		 * Returs array Array("Datacenter" => "Server" = "Status")
+		 * for example:
+		 * Array
+		 * (
+		 *     [Elemental] => Array
+		 *         (
+		 *             [Aegis] => Online
+		 *             [Atomos] => Online
+		 *             [Carbuncle] => Online
+		 *             [Garuda] => Online
+		 *             [Gungnir] => Online
+		 *             [Kujata] => Online
+		 *             [Ramuh] => Online
+		 *             [Tonberry] => Online
+		 *             [Typhon] => Online
+		 *             [Unicorn] => Online
+		 *         )
+		 * 
+		 *     [Gaia] => Array
+		 *         (
+		 *             [Alexander] => Online
+		 *             [Bahamut] => Online
+		 *             [Durandal] => Online
+		 *             [Fenrir] => Online
+		 *		       ...
+		 * @return array
+		 */
+		
+		public  function getWorldstatus(){
+			// Get Data from URL
+			\phpQuery::newDocumentFileHTML($this->URL['lodestone']['worldstatus']);
+			$dataArray = [];
+			// Loop it
+			foreach(pq('#server_status div.area_body') as $node){
+				$pqNode = pq($node);
+				$datacenter = trim(str_replace("Data Center: ", "",$pqNode->find('div.text-headline:first')->text()));
+				$pqTable = $pqNode->next('div.area_inner_header')->find('table');
+				foreach($pqTable->find('tr.worldstatus_1') as $tableRow){
+					$pqTableRow = pq($tableRow);
+					$server = trim($pqTableRow->find('td:first>div')->text());
+					$status = trim($pqTableRow->find('td:last>span')->text());
+					$dataArray[$datacenter][$server] = $status;
+				}
+			}
+			return $dataArray;
+		}
 
         // Handles the main parsing for lodestone pages that are categories.
         private function baseParse($url, $icon)
@@ -1535,6 +1584,10 @@
         }
     }
 
+
+    // Alias for Lodestone()
+    class_alias('Viion\Lodestone\Lodestone', 'Lodestone');
+    class_alias('Viion\Lodestone\Lodestone', 'Lodestone\Lodestone');
     /*  Social
      *  ---------
      */
