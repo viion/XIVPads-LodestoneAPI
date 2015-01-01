@@ -2859,8 +2859,8 @@
         public function getFocus() { return $this->Focus; }
         public function getActive() { return $this->Active; }
         public function getSeeking() { return $this->Seeking; }
-        public function getRecruitment() { return $this->Recruitment(); }
-        public function getEstate() { return $this->Estate(); }
+        public function getRecruitment() { return $this->Recruitment; }
+        public function getEstate() { return $this->Estate; }
 
 
         // MEMBERS / PARSE + SET + GET
