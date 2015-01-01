@@ -2758,16 +2758,19 @@
                 if (strpos($s, 'focus_icon') || $addToFocus)
                 {
                     $addToFocus = true;
+                    
+                    $onOrOff = stripos($s, 'icon_off') !== false ? 0 : 1;
 
-                    $data =
+		    $data =
                     [
-                        trim($this->strip_html($this->getAttribute('src', $s))),
-                        trim($this->strip_html($this->getAttribute('title', $s)))
+                        'icon' => trim($this->strip_html($this->getAttribute('src', $s))),
+                        'name' => trim($this->strip_html($this->getAttribute('title', $s))),
+                        'status' => $onOrOff
                     ];
 
-                    if (isset($data[0]) && strlen($data[0]) > 5)
+                    if (isset($data['name']) && strlen($data['name']) > 5)
                     {
-                        $data[1] = str_ireplace('>', null, $data[1]);
+                        $data['name'] = str_ireplace('>', null, $data['name']);
                         $Temp['focus'][] = $data;
                     }
 
