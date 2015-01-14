@@ -2333,7 +2333,7 @@
             $ReplaceArray = ['Two-Handed ', 'One-Handed'];
             $ClassJob = str_ireplace($ReplaceArray, NULL, $ClassJob);
 
-            $this->Stats['active']['class'] = $ClassJob;
+            $this->Stats['active']['class'] = trim($ClassJob);
             if (isset($this->Gear['equipped']['slots']['soul crystal'])) { $this->Stats['active']['job'] = str_ireplace("Soul of the ", NULL, $this->Gear['equipped']['slots']['soul crystal']); }
         }
         public function getGear()           { return $this->Gear; }
