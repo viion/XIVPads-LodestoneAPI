@@ -30,23 +30,24 @@
 
     // Namespace
     namespace Viion\Lodestone;
+	require_once(dirname(__FILE__).'/phpQuery.php');
 
     /*  trait 'Funky'
      *  Cool functions that all classes will get access to
      */
     trait Funky
-    {		
-		/**
-		 * Return Unicode for a character
-		 * @param string $u
-		 * @return int
-		 */
-		function uniord($u) {
-			$k = mb_convert_encoding($u, 'UCS-2LE', 'UTF-8');
-			$k1 = ord(substr($k, 0, 1));
-			$k2 = ord(substr($k, 1, 1));
-			return $k2 * 256 + $k1;
-		}
+    {
+        /**
+         * Return Unicode for a character
+         * @param string $u
+         * @return int
+         */
+        function uniord($u) {
+            $k = mb_convert_encoding($u, 'UCS-2LE', 'UTF-8');
+            $k1 = ord(substr($k, 0, 1));
+            $k2 = ord(substr($k, 1, 1));
+            return $k2 * 256 + $k1;
+        }
         /*  - sƒow
          *  Shows the contents of an object.
          */
@@ -160,6 +161,7 @@
                 'profile'       => 'http://eu.finalfantasyxiv.com/lodestone/character/',
                 'achiSummary'   => '/achievement/',
                 'achievement'   => '/achievement/kind/',
+                'blog'   => '/blog/',
             ],
 
             # Free company related urls
@@ -186,6 +188,7 @@
                 'maintenance'   => 'http://eu.finalfantasyxiv.com/lodestone/news/category/2',
                 'updates'       => 'http://eu.finalfantasyxiv.com/lodestone/news/category/3',
                 'status'        => 'http://eu.finalfantasyxiv.com/lodestone/news/category/4',
+				'worldstatus'	=> 'http://eu.finalfantasyxiv.com/lodestone/worldstatus/',
 
                 // Multi language is currently not supposed as the "Dev Tracker" links change
                 // based on time. I could make it parse this page, get the correct link and
@@ -278,6 +281,11 @@
         public $Characters = [];
         public $Achievements = [];
         public $Search = [];
+		/**
+		 * Blog
+		 * @var Blog 
+		 */
+        public $Blog = null;
 
         // List of free company data parsed
         public $FreeCompanyList = [];
@@ -945,6 +953,37 @@
         // Get the achievement categories
         public function getAchievementCategories() { return $this->AchievementCategories; }
 
+        
+
+        #-------------------------------------------#
+        # BLOG                                      #
+        #-------------------------------------------#
+
+        // Parse achievement by CharacterID
+        public function parseBlog($ID = null)
+        {
+            if (!$ID)
+            {
+                $ID = $this->getID();
+            }
+
+            if (!$ID)
+            {
+                echo "error: No ID Set.";
+            }
+            else
+            {
+                $Blog = new Blog($ID);
+				$Blog->setEntries();
+				$this->Blog = $Blog;
+            }
+        }
+
+        // Get a list of blogEntries
+        public function getBlog() { return $this->Blog; }
+        // Get a blogEntryById
+        public function getBlogByID($bID) { return $this->Blog->getEntryByID($bID); }
+
         #-------------------------------------------#
         # FREE COMPANY                              #
         #-------------------------------------------#
@@ -1277,6 +1316,54 @@
             // Return array
             return $Array;
         }
+		
+		/** Worldstatus
+		 * Returs array Array("Datacenter" => "Server" = "Status")
+		 * for example:
+		 * Array
+		 * (
+		 *     [Elemental] => Array
+		 *         (
+		 *             [Aegis] => Online
+		 *             [Atomos] => Online
+		 *             [Carbuncle] => Online
+		 *             [Garuda] => Online
+		 *             [Gungnir] => Online
+		 *             [Kujata] => Online
+		 *             [Ramuh] => Online
+		 *             [Tonberry] => Online
+		 *             [Typhon] => Online
+		 *             [Unicorn] => Online
+		 *         )
+		 * 
+		 *     [Gaia] => Array
+		 *         (
+		 *             [Alexander] => Online
+		 *             [Bahamut] => Online
+		 *             [Durandal] => Online
+		 *             [Fenrir] => Online
+		 *		       ...
+		 * @return array
+		 */
+		
+		public  function getWorldstatus(){
+			// Get Data from URL
+			\phpQuery::newDocumentFileHTML($this->URL['lodestone']['worldstatus']);
+			$dataArray = [];
+			// Loop it
+			foreach(pq('#server_status div.area_body') as $node){
+				$pqNode = pq($node);
+				$datacenter = trim(str_replace("Data Center: ", "",$pqNode->find('div.text-headline:first')->text()));
+				$pqTable = $pqNode->next('div.area_inner_header')->find('table');
+				foreach($pqTable->find('tr.worldstatus_1') as $tableRow){
+					$pqTableRow = pq($tableRow);
+					$server = trim($pqTableRow->find('td:first>div')->text());
+					$status = trim($pqTableRow->find('td:last>span')->text());
+					$dataArray[$datacenter][$server] = $status;
+				}
+			}
+			return $dataArray;
+		}
 
         // Handles the main parsing for lodestone pages that are categories.
         private function baseParse($url, $icon)
@@ -1497,6 +1584,10 @@
         }
     }
 
+
+    // Alias for Lodestone()
+    class_alias('Viion\Lodestone\Lodestone', 'Lodestone');
+    class_alias('Viion\Lodestone\Lodestone', 'Lodestone\Lodestone');
     /*  Social
      *  ---------
      */
@@ -1832,8 +1923,8 @@
                 $String         = explode("/", $String);
                 $this->Clan     = htmlspecialchars_decode(trim($String[1]), ENT_QUOTES);
                 $this->Race     = htmlspecialchars_decode(trim($String[0]), ENT_QUOTES);
-                $GenderUnicode	= $this->uniord(htmlspecialchars_decode(trim($String[2]), ENT_QUOTES));
-				$this->Gender	= ($GenderUnicode == 9792) ? 'female' : 'male';
+                $GenderUnicode  = $this->uniord(htmlspecialchars_decode(trim($String[2]), ENT_QUOTES));
+                $this->Gender   = ($GenderUnicode == 9792) ? 'female' : 'male';
             }
         }
         public function getRace() { return $this->Race; }
@@ -2067,6 +2158,7 @@
                         $index = ($i + 4);
                         $itemGlamourName = $A[$index];
                         $itemGlamourName = strip_tags(html_entity_decode($itemGlamourName));
+                        $itemGlamourName = str_ireplace("&#39;", "'", trim($itemGlamourName));
                         $Temp['glamour']['name'] = $itemGlamourName;
 
                         // Get item ID
@@ -2469,7 +2561,7 @@
                 'title'         => $this->getTitle(),
                 'nameclean'     => $this->getNameClean(),
                 'avatar'        => $this->getAvatar(),
-                'portrait'      => $this->getPortrait(),
+                'portrait'      => $this->getPortrait('big'),
                 'race'          => $this->getRace(),
                 'clan'          => $this->getClan(),
                 'gender'        => $this->getGender(),
@@ -2477,6 +2569,7 @@
                 'nameday'       => $this->getNameday(),
                 'guardian'      => $this->getGuardian(),
                 'city'          => $this->getCity(),
+                'gender'        => $this->getGender(),
 
                 // Biography
                 'biography'     => $this->getBiography(),
@@ -2665,16 +2758,19 @@
                 if (strpos($s, 'focus_icon') || $addToFocus)
                 {
                     $addToFocus = true;
+                    
+                    $onOrOff = stripos($s, 'icon_off') !== false ? 0 : 1;
 
-                    $data =
+		    $data =
                     [
-                        trim($this->strip_html($this->getAttribute('src', $s))),
-                        trim($this->strip_html($this->getAttribute('title', $s)))
+                        'icon' => trim($this->strip_html($this->getAttribute('src', $s))),
+                        'name' => trim($this->strip_html($this->getAttribute('title', $s))),
+                        'status' => $onOrOff
                     ];
 
-                    if (isset($data[0]) && strlen($data[0]) > 5)
+                    if (isset($data['name']) && strlen($data['name']) > 5)
                     {
-                        $data[1] = str_ireplace('>', null, $data[1]);
+                        $data['name'] = str_ireplace('>', null, $data['name']);
                         $Temp['focus'][] = $data;
                     }
 
@@ -2686,20 +2782,25 @@
                     }
                 }
 
-                // Seeking
+// Seeking
                 if (strpos($s, 'roles_icon') || $addToSeeking)
                 {
                     $addToSeeking = true;
 
+                    $onOrOff = stripos($s, 'icon_off') !== false ? 0 : 1;
+
+                    if ($onOrOff == 0) continue;
+
                     $data =
                     [
-                        trim($this->strip_html($this->getAttribute('src', $s))),
-                        trim($this->strip_html($this->getAttribute('title', $s)))
+                        'icon' => trim($this->strip_html($this->getAttribute('src', $s))),
+                        'name' => trim($this->strip_html($this->getAttribute('title', $s)))
                     ];
 
-                    if (isset($data[0]) && strlen($data[0]) > 5)
+                    if (isset($data['name']) && strlen($data['name']) > 5)
                     {
-                        $data[1] = str_ireplace('>', null, $data[1]);
+                        $data['icon'] = explode('?', $data['icon'])[0];
+                        $data['name'] = str_ireplace('>', null, $data['name']);
                         $Temp['seeking'][] = $data;
                     }
 
@@ -2766,8 +2867,8 @@
         public function getFocus() { return $this->Focus; }
         public function getActive() { return $this->Active; }
         public function getSeeking() { return $this->Seeking; }
-        public function getRecruitment() { return $this->Recruitment(); }
-        public function getEstate() { return $this->Estate(); }
+        public function getRecruitment() { return $this->Recruitment; }
+        public function getEstate() { return $this->Estate; }
 
 
         // MEMBERS / PARSE + SET + GET
@@ -3182,6 +3283,96 @@
 
             $this->List = $achievements;
         }
+    }
+
+
+    /*  Blog
+     *  -----------
+     */
+    class Blog extends Parser
+    {
+        use Funky;
+        use Config;
+		
+        private $Entries = [];
+        private $cID = null;
+        private $blogUrlBase = null;
+		
+		public function __construct($cID=null){
+			if(is_null($cID) === false){
+				$this->setCharacterID($cID)
+					 ->setBlogURL($this->URL['character']['profile'] . $this->cID . $this->URL['character']['blog']);
+			}
+			return $this;
+		}
+		
+		public function setCharacterID($cID){ $this->cID = $cID; return $this; }
+		public function getCharacterID(){ return $this->cID; }
+		
+		public function setBlogURL($url){ $this->blogUrlBase = $url; return $this; }
+		public function getBlogURL(){ return $this->blogUrlBase; }
+		
+		public function setEntries($withFullText=false){
+			// Get Data from URL
+			\phpQuery::newDocumentFileHTML($this->blogUrlBase);
+			// Loop it
+			foreach(pq('#mydiary_list>div.base_header_long') as $node){
+                $temp = [];
+				$pqNode = pq($node);
+				// Headline & ID
+				$headlineNode = $pqNode->find('h1>a.large:first');
+				$temp['url'] = $headlineNode->attr('href');
+				$temp['id'] = explode("/", $temp['url'])[5];
+				$temp['headline'] = $headlineNode->text();
+				//Tags
+				$temp['tags'] = $this->_getTags(pq('div.diary_tag_body_long',$node));
+				//Body
+				$temp['shorttext'] = trim($pqNode->find('div.comment')->text());
+				if($withFullText === true){
+					$blogEntryDom = \phpQuery::newDocumentFileHTML($this->blogUrlBase .$temp['id'] )->find('div.diary_flame');
+					$temp['fulltext'] = $this->_getFulltext($blogEntryDom);
+				}
+				
+				$this->Entries[$temp['id']] = $temp;
+			}
+			return $this;
+		}
+		
+		public function getEntryByID($bID){
+			if (!$bID){
+                echo "No blog id set.";
+            }else{
+				if(!isset($this->Entries[$bID]) || !array_key_exists('fulltext',$this->Entries[$bID])){
+					$this->Entries[$bID]['url'] = $this->blogUrlBase . $bID;
+					$blogEntryDom = \phpQuery::newDocumentFileHTML($this->Entries[$bID]['url'])->find('div.diary_flame');
+					$this->Entries[$bID]['id'] = $bID;
+					$this->Entries[$bID]['headline'] = trim(pq('div.area_footer>h1:first',$blogEntryDom)->text());
+					$this->Entries[$bID]['tags'] = $this->_getTags(pq('div.diary_tag_body_w570',$blogEntryDom));
+					$this->Entries[$bID]['fulltext'] = $this->_getFulltext($blogEntryDom);
+					// Shorttext is not really needed
+					//$this->Entries[$bID]['shorttext'] = trim(pq('div.area_footer>h1:first',$blogEntryDom)->text());
+				}
+				return $this->Entries[$bID];
+			}
+		}
+		
+		private function _getFulltext($domNode){
+			return trim(pq('div.body:first',$domNode)->html());
+		}
+		
+		private function _getTags($domNode){
+			$tags = [];
+			foreach(pq('a',$domNode) as $tagLinkNode){
+				$linkNode =  pq($tagLinkNode);
+				$tagName = trim(str_replace(array('[',']'),'',$linkNode->text()));
+				$tagLink = $linkNode->attr('href');
+				$tags[$tagName] = array(
+					'name' => $tagName,
+					'url' => $tagLink
+				);
+			}
+			return $tags;
+		}
     }
 
     /*  Parser

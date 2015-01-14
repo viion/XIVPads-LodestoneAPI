@@ -30,6 +30,7 @@ An API for parsing lodestone data, designed and maintained by XIVPads.com and XI
 - Blog Parse
 
 **Thanks:**
+- @JohnRamboTSQ for adding: Big Portrait and Gender detection!, + Blog and World Status!!! Helping migrate to phpQuery
 - @FlyerUA for bug detection and additional functionality: probableJobs()
 - @eedev for (Gear level, ID Lodestone and "Cannot equip gear to" data on the gear array) https://github.com/viion/XIVPads-LodestoneAPI/pull/32
 - @stygiansabyss for patch 2.1 free company icon fix
