@@ -301,16 +301,17 @@
         # SHORT GETS                                #
         #-------------------------------------------#
 
-        /*  - get
+        /**
+		 *   - get
          *  Gets a character, the array can be either "name, server" OR "id". If you
          *  pass an name and server, the API will have to search, it will then select the
          *  first result found. If you pass an ID, the search is skipped and is twice as
          *  fast and more reliable due to exact ID being known.
          *
-         *  returns: Character object.
-         *
          *  The same principle applies to getFC and getLS
-         */
+         *
+         *  @return Character
+         **/
         public function get($Array, $Options = null)
         {
             $this->log(__LINE__, 'function: get() - start');
@@ -346,10 +347,10 @@
             }
         }
 
-        /*  - getFC
+        /**  - getFC
          *  Read "get" for characters, same rules apply to this.
-         *  returns: FreeCompany object
-         */
+         *  @return FreeCompany
+         **/
         public function getFC($Array, $Options = null)
         {
             // Clean
@@ -753,8 +754,8 @@
 
                     $Character->setCity($this->findRange('City-state', 5));
                     $Character->setBiography($this->findRange('txt_selfintroduction', 5));
-                    $Character->setHPMPTP($this->findRange('param_power_area', 10));
                     $Character->setStats($this->findAll('param_left_area_inner', 12, null, false));
+                    $Character->setHPMPTP($this->findRange('param_power_area', 10));
                     $Character->setActiveClassLevel($this->findAll('class_info', 5, null, false));
 
                     $this->log(__LINE__, 'function: parseProfile() - parsing chunk 2');
@@ -814,7 +815,11 @@
         // Get a list of parsed characters
         public function getCharacters() { return $this->Characters; }
 
-        // Get a character by id
+        /**
+		 * Gett Charcater by id
+		 * @param int $ID
+		 * @return Character Get a character by id
+		 */
         public function getCharacterByID($ID) { return isset($this->Characters[$ID]) ? $this->Characters[$ID] : NULL; }
 
         #-------------------------------------------#
@@ -979,9 +984,15 @@
             }
         }
 
-        // Get a list of blogEntries
+        /**
+		 * Get a list of blogEntries
+		 * @return Blog
+		 **/
         public function getBlog() { return $this->Blog; }
-        // Get a blogEntryById
+        /**
+		 * Get a blogEntryById
+		 * @return array
+		 **/
         public function getBlogByID($bID) { return $this->Blog->getEntryByID($bID); }
 
         #-------------------------------------------#
@@ -1993,9 +2004,29 @@
         // HP + MP + TP
         public function setHPMPTP($String)
         {
+			// Setting default values
+			$this->Stats['core'] = array(
+				'hp' => 0,
+				'mp' => 0,
+				'cp' => 0,
+				'gp' => 0,
+				'tp' => 0,
+			);
+			
             $this->Stats['core']['hp'] = trim($String[0]);
-            $this->Stats['core']['mp'] = trim($String[1]);
             $this->Stats['core']['tp'] = trim($String[2]);
+			// Place Parsed Data to correct classtype
+			switch($this->Stats['activeType']){
+				case 'crafter':
+					$points = 'cp';
+					break;
+				case 'gatherer':
+					$points = 'gp';
+					break;
+				default:
+					$points = 'mp';
+			}
+            $this->Stats['core'][$points] = trim($String[1]);
         }
 
         // Stats
@@ -2027,20 +2058,37 @@
             $this->Stats['physical']['skill speed']         = trim(filter_var($String[4][4], FILTER_SANITIZE_NUMBER_INT));
 
             // 5th one switches between different types of classes
-
+			// Setting defaults to avoid undefined indexes (13.01.2014 @JohnRamboTSQ)
+			$this->Stats['spell'] = [
+				'attack magic potency' => null,
+				'healing magic potency' => null,
+				'spell speed' => null
+			];
+			$this->Stats['crafting'] = [
+				'craftsmanship' => null,
+				'control' => null
+			];
+			$this->Stats['gathering'] = [
+				'gathering' => null,
+				'perception' => null
+			];
+			$this->Stats['activeType'] = null;
             if (stripos($String[5][3], 'Craftsmanship') !== false)
             {
                 $this->Stats['crafting']['craftsmanship']       = trim(filter_var($String[5][3], FILTER_SANITIZE_NUMBER_INT));
                 $this->Stats['crafting']['control']             = trim(filter_var($String[5][4], FILTER_SANITIZE_NUMBER_INT));
 
                 $last = 7;
+				
+				$this->Stats['activeType'] = 'crafter';
             }
             else if (stripos($String[5][3], 'Gathering') !== false)
             {
                 $this->Stats['gathering']['gathering']          = trim(filter_var($String[5][3], FILTER_SANITIZE_NUMBER_INT));
-                $this->Stats['gathering']['Perception']         = trim(filter_var($String[5][4], FILTER_SANITIZE_NUMBER_INT));
+                $this->Stats['gathering']['perception']         = trim(filter_var($String[5][4], FILTER_SANITIZE_NUMBER_INT));
 
                 $last = 7;
+				$this->Stats['activeType'] = 'gatherer';
             }
             else
             {
