@@ -604,6 +604,9 @@
                             $this->Search = NULL;
                         }
                     }
+
+                    // Number of results
+                    $this->Search['total'] = count($this->Search['results']);
                 }
                 else
                 {
@@ -678,6 +681,9 @@
                             $this->Search = NULL;
                         }
                     }
+
+                    // Number of results
+                    $this->Search['total'] = count($this->Search['results']);
                 }
                 else
                 {
