@@ -2463,6 +2463,10 @@
                     $arr['name'] = trim(explode('&quot;', $Array[$i])[5]);
                     $arr['icon'] = trim(explode('&quot;', $Array[$i + 1])[1]);
                     $Mounts[] = $arr;
+                    
+                    if (strtolower($arr['name']) == 'legacy chocobo') {
+                        $this->Legacy = true;
+                    }
                 }
 
                 // Increment
