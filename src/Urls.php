@@ -9,6 +9,9 @@ trait Urls
             'base' => 'http://eu.finalfantasyxiv.com/lodestone/',
             'characterSearch' => 'character/?q={name}&worldname={world}',
             'characterProfile' => 'character/{id}',
+            'achievements' => 'character/{id}/achievement/',
+            'achievementsKind' => 'character/{id}/achievement/kind/{kind}/',
+            'sixthAstral' => 'character/{id}/sixth_astral_era/'
         ];
     }
 

@@ -5,6 +5,7 @@ class Search
 {
     use Urls;
     use Data;
+    use Funky;
 
     /**
      * - Character
@@ -18,7 +19,7 @@ class Search
             // Generate url
             $url = $this->urlGen('characterProfile', [ '{id}' => $nameOrId ]);
 
-            // Parse
+            // get doc
             \phpQuery::newDocumentFileHTML($url);
 
             // New character object
@@ -27,7 +28,7 @@ class Search
             // Begin parsing/populating character
             $character->id = pq('.player_name_thumb a')->attr('href');
             $character->name = pq('.player_name_txt h2 a')->text();
-            $character->server = pq('.player_name_txt h2 span')->text();
+            $character->world = pq('.player_name_txt h2 span')->text();
             $character->title = pq('.player_name_txt h2 .chara_title')->text();
             $character->avatar = pq('.player_name_thumb a img')->attr('src');
             $character->bio = pq('.txt_selfintroduction')->html();
@@ -139,14 +140,139 @@ class Search
                 ];
             }
 
-            show($character->dump());
+            // dust up
+            $character->clean();
+            return $character;
         }
         else
         {
-            $url = $this->urlGen('characterSearch', [ '{name}' => $nameOrId, '{world}' => $world ]);
+            $searchName = str_ireplace(' ', '+',  $nameOrId);
 
-            show($url);
+            // Generate url
+            $url = $this->urlGen('characterSearch', [ '{name}' => $searchName, '{world}' => $world ]);
+
+            // get doc
+            \phpQuery::newDocumentFileHTML($url);
+
+            // go through results
+            foreach(pq('.table_black_border_bottom tr') as $i => $node)
+            {
+                $node = pq($node);
+                $name = $node->find('h4.player_name_gold a')->text();
+                $id = filter_var($node->find('h4.player_name_gold a')->attr('href'), FILTER_SANITIZE_NUMBER_INT);
+
+                // match what was sent (lower both as could be user input)
+                if (strtolower($name) == strtolower($nameOrId) && is_numeric($id))
+                {
+                    // recurrsive callback
+                    return $this->Character($id);
+                }
+            }
+
+            return false;
+        }
+    }
+
+    /**
+     * - Achievements
+     */
+    public function Achievements($id, $all = false)
+    {
+        if ($all)
+        {
+            // If legacy or not.
+            $isLegacy = false;
+
+            // get kinds
+            $kinds = $this->getAchievementKinds();
+
+            // New character object
+            $achievement = new Achievements();
+
+            // loop through kinds
+            foreach($kinds as $kind => $type)
+            {
+                // Skip if this is the legacy kind and character is not legacy
+                if ($kind == 13 && !$isLegacy) {
+                    continue;
+                }
+
+                // Generate url
+                $url = $this->urlGen('achievementsKind', [ '{id}' => $id, '{kind}' => $kind ]);
+
+                // get doc
+                \phpQuery::newDocumentFileHTML($url);
+
+                // Begin parsing/populating character
+                $achievement->current = filter_var(pq('.total_point')->text(), FILTER_SANITIZE_NUMBER_INT);
+                $achievement->legacy = (strlen(pq('.legacy')->html()) > 0) ? true : false;
+                $isLegacy = $achievement->legacy;
+
+                foreach(pq('.achievement_cnts ul.mt10 li') as $i => $node)
+                {
+                    $node = pq($node);
+
+                    $points = filter_var($node->find('.achievement_point'), FILTER_SANITIZE_NUMBER_INT);
+                    $obtained = (strlen($node->find('.achievement_date script')->text()) > 1) ? true : false;
+
+                    $achievement->list[] =
+                    [
+                        'id' => explode('/', $node->find('a.button.bt_more')->attr('href'))[6],
+                        'icon' => $node->find('.ic_achievement img')->attr('src'),
+                        'name' => $node->find('.achievement_name')->text(),
+                        'time' => $this->extractTime($node->find('.achievement_date script')->text()),
+                        'obtained' => $obtained,
+                        'points' => $points,
+                        'kind' => $type,
+                        'kind_id' => $kind,
+                    ];
+
+                    // prevent php notices
+                    if (!isset($achievement->kinds[$type])) { $achievement->kinds[$type] = 0; }
+                    if (!isset($achievement->kindsTotal[$type])) { $achievement->kindsTotal[$type] = 0; }
+
+                    // Increment kinds
+                    $achievement->kindsTotal[$type] = $achievement->kindsTotal[$type] + $points;
+                    if ($obtained) {
+                        $achievement->kinds[$type] = $achievement->kinds[$type] + $points;
+                    }
+
+                    // Increment overall total
+                    $achievement->total = $achievement->total + $points;
+                }
+            }
+        }
+        else
+        {
+            // Generate url
+            $url = $this->urlGen('achievements', [ '{id}' => $id ]);
+
+            // get doc
+            \phpQuery::newDocumentFileHTML($url);
+
+            // New character object
+            $achievement = new Achievements();
+
+            // Begin parsing/populating character
+            $achievement->current = filter_var(pq('.total_point')->text(), FILTER_SANITIZE_NUMBER_INT);
+            $achievement->legacy = (strlen(pq('.legacy')->html()) > 0) ? true : false;
+
+            // Recent
+            foreach(pq('.achievement_list li') as $i => $node)
+            {
+                $node = pq($node);
+
+                $achievement->recent[] =
+                [
+                    'id'   => explode('/', $node->find('.ic_achievement a')->attr('href'))[6],
+                    'icon' => $node->find('.ic_achievement a img')->attr('src'),
+                    'name' => $node->find('.achievement_txt a')->text(),
+                    'time' => $this->extractTime($node->find('.achievement_date script')->text()),
+                ];
+            }
         }
 
+        // return
+        return $achievement;
     }
 }

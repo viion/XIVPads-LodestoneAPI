@@ -9,8 +9,12 @@ require 'api-autoloader.php';
 $api = new Viion\Lodestone\LodestoneAPI();
 
 // Get character
-$character = $api->Search->Character(730968);
+/*
+    $character = $api->Search->Character('Premium Virtue', 'Hyperion');
+    $character = $api->Search->Character(730968);
+    show($character->dump());
+*/
 
-// debug
-show('Complete');
-show($character);
+// Get achievements
+$achievements = $api->Search->Achievements(730968, true);
+show($achievements->dump());

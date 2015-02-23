@@ -7,7 +7,7 @@ class Character
 
     public $id;
     public $name;
-    public $server;
+    public $world;
     public $title;
     public $avatar;
     public $bio;
@@ -33,10 +33,18 @@ class Character
     public $minions;
     public $mounts;
 
-    public function dump()
+    /**
+     * - dump
+     * Dump all the data in this class
+     */
+    public function dump($asJson = false)
     {
-        $this->clean();
         $data = get_object_vars($this);
+
+        if ($asJson)
+        {
+            $data = json_encode($data);
+        }
 
         return $data;
     }
@@ -45,7 +53,7 @@ class Character
      * - clean
      * Cleans some of the character Data
      */
-    private function clean()
+    public function clean()
     {
         // Trim stuff
         foreach(get_object_vars($this) as $param => $value)
@@ -63,7 +71,7 @@ class Character
                     $value = filter_var($value, FILTER_SANITIZE_NUMBER_INT);
                     break;
 
-                case 'server':
+                case 'world':
                     $value = str_ireplace(['(', ')'], null, $value);
                     break;
 
