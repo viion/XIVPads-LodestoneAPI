@@ -1,7 +1,7 @@
-XIVPads-LodestoneAPI
-====================
+# Lodestone API (by XIVPads)
 An API for parsing lodestone data, designed and maintained by XIVPads.com and XIVDB.com
 
+## Stuff
 **Requirements**
 - PHP 5.4 (this wont change)
 - CURL Enabled on your Server (use phpinfo() to check this)
@@ -23,12 +23,15 @@ An API for parsing lodestone data, designed and maintained by XIVPads.com and XI
 - You may: use, redistribute, modify, share, collaborate, change spaces to tabs, so long as the comment license stays intack at the top. IF YOU MAKE MODIFICATIONS please add your contribution details (name/git handle) in the readme
 
 **Old API**
-If you are looking for the old API, have a wonder to the ``` _old ``` directory. This will be deleted when the FFXIV expansion goes live.
+- If you are looking for the old API, have a wonder to the ``` _old ``` directory. This will be deleted when the FFXIV expansion goes live.
 
 **Example / Tests**
-View ``` test.php ``` for some good examples and tests. Below is the basics.
+- View ``` test.php ``` for some good examples and tests. Below is the basics.
 
-**Coding style**
+---
+
+## Coding Style
+
 Most of the coding style is straight forward PHP Standards. Accessing chained classes are Capitalized and functions which return a class will also be Capitalized, for example:
 
 ```php
@@ -47,6 +50,45 @@ echo $character->name;
 var_dump($character->dump());
 ```
 
-*API*
+---
 
-todo ...
+## Getting Started
+
+(Composer not been tested yet and may not work)
+
+- Include the autorloader, and that should be it!
+
+```php
+<?php
+require 'api-autoloader.php';
+$api = new Viion\Lodestone\LodestoneAPI();
+```
+
+---
+
+## API
+
+### Character
+
+```php
+<?php
+require 'api-autoloader.php';
+$api = new Viion\Lodestone\LodestoneAPI();
+
+// Search by: name + world
+$character = $api->Search->Character('name', 'world');
+
+// Search by: lodestone id
+$character = $api->Search->Character(1234567);
+
+// Get a dump of all data in an array
+var_dump( $character->dump() );
+
+// Basic data
+echo $character->name;
+echo $character->world;
+var_dump( $character->classjobs );
+```
+
+# work in progres
+# ...
