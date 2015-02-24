@@ -33,6 +33,8 @@ class Character
     public $minions;
     public $mounts;
 
+    public $hash;
+
     /**
      * - dump
      * Dump all the data in this class
@@ -95,5 +97,8 @@ class Character
             // Reset
             $this->$param = $value;
         }
+
+        // Set hash
+        $this->hash = sha1($this->dump(true));
     }
 }
