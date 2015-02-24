@@ -14,7 +14,4 @@ class LodestoneAPI
         // Initialize
         $this->Search = new Search();
     }
-
-
-
 }

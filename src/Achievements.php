@@ -3,8 +3,11 @@ namespace Viion\Lodestone;
 
 class Achievements
 {
-    public $total = 0;
-    public $current = 0;
+    public $pointsTotal = 0;
+    public $pointsCurrent = 0;
+    public $countTotal = 0;
+    public $countCurrent = 0;
+
     public $legacy;
     public $recent;
     public $kinds;

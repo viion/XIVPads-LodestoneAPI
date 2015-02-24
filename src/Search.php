@@ -204,7 +204,7 @@ class Search
                 \phpQuery::newDocumentFileHTML($url);
 
                 // Begin parsing/populating character
-                $achievement->current = filter_var(pq('.total_point')->text(), FILTER_SANITIZE_NUMBER_INT);
+                $achievement->pointsCurrent = filter_var(pq('.total_point')->text(), FILTER_SANITIZE_NUMBER_INT);
                 $achievement->legacy = (strlen(pq('.legacy')->html()) > 0) ? true : false;
                 $isLegacy = $achievement->legacy;
 
@@ -235,10 +235,12 @@ class Search
                     $achievement->kindsTotal[$type] = $achievement->kindsTotal[$type] + $points;
                     if ($obtained) {
                         $achievement->kinds[$type] = $achievement->kinds[$type] + $points;
+                        $achievement->countCurrent = $achievement->countCurrent + 1;
                     }
 
                     // Increment overall total
-                    $achievement->total = $achievement->total + $points;
+                    $achievement->pointsTotal = $achievement->pointsTotal + $points;
+                    $achievement->countTotal = $achievement->countTotal + 1;
                 }
             }
         }
@@ -254,7 +256,7 @@ class Search
             $achievement = new Achievements();
 
             // Begin parsing/populating character
-            $achievement->current = filter_var(pq('.total_point')->text(), FILTER_SANITIZE_NUMBER_INT);
+            $achievement->pointsCurrent = filter_var(pq('.total_point')->text(), FILTER_SANITIZE_NUMBER_INT);
             $achievement->legacy = (strlen(pq('.legacy')->html()) > 0) ? true : false;
 
             // Recent
