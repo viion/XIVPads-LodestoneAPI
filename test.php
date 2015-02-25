@@ -5,7 +5,8 @@ $start = microtime(true);
 function show($data) { echo '<pre>'. print_r($data, true) .'</pre>'; }
 
 // require auto loader
-require 'vendor/autoload.php';
+//require 'vendor/autoload.php';
+require 'api-autoloader.php';
 use Viion\Lodestone\LodestoneAPI;
 
 // new API
@@ -17,8 +18,8 @@ $api = new LodestoneAPI();
     $character = $api->Search->Character(730968);
     show($character->dump());
 
-    $worldStatus = $api->Search->Worldstatus('Chaos','Zodiark');
-    show($worldStatus);
+    //$worldStatus = $api->Search->Worldstatus('Chaos','Zodiark');
+    //show($worldStatus);
 
 /*
 // Get achievements
