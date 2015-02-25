@@ -10,6 +10,9 @@ class Character
     public $world;
     public $title;
     public $avatar;
+    public $avatarLarge;
+    public $portrait;
+    public $portraitLarge;
     public $bio;
     public $race;
     public $clan;
@@ -75,10 +78,6 @@ class Character
 
                 case 'world':
                     $value = str_ireplace(['(', ')'], null, $value);
-                    break;
-
-                case 'avatar':
-                    $value = str_ireplace('50x50', '96x96', $value);
                     break;
 
                 case 'gender':

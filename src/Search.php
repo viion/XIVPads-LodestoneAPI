@@ -31,6 +31,10 @@ class Search
             $character->world = pq('.player_name_txt h2 span')->text();
             $character->title = pq('.player_name_txt h2 .chara_title')->text();
             $character->avatar = pq('.player_name_thumb a img')->attr('src');
+            $character->avatarLarge = str_ireplace('50x50', '96x96', $character->avatar);
+            $character->portrait = pq('.bg_chara_264 a img')->attr('src');
+            $character->portraitLarge = str_ireplace('264x360', '640x873', $character->portrait);
+
             $character->bio = pq('.txt_selfintroduction')->html();
             $character->race = explode('/', pq('.chara_profile_title')->text())[0];
             $character->clan = explode('/', pq('.chara_profile_title')->text())[1];
