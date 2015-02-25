@@ -7,6 +7,10 @@ namespace Viion\Lodestone;
  */
 class LodestoneAPI
 {
+    /**
+     * SearchObject
+     * @var Search
+     */
     public $Search;
 
     function __construct()

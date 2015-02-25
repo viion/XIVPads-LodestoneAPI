@@ -6,15 +6,19 @@ function show($data) { echo '<pre>'. print_r($data, true) .'</pre>'; }
 
 // require auto loader
 require 'vendor/autoload.php';
+use Viion\Lodestone\LodestoneAPI;
 
 // new API
-$api = new Viion\Lodestone\LodestoneAPI();
+$api = new LodestoneAPI();
 
 // Get character
 
 //    $character = $api->Search->Character('Premium Virtue', 'Hyperion');
     $character = $api->Search->Character(730968);
     show($character->dump());
+
+    $worldStatus = $api->Search->Worldstatus('Chaos','Zodiark');
+    show($worldStatus);
 
 /*
 // Get achievements

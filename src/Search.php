@@ -286,4 +286,48 @@ class Search
         // return
         return $achievement;
     }
+
+    /**
+     * Get onlinestatus of server(s)
+     * @param string $datacenter
+     * @param string $server
+     * @return array
+     */
+    public function Worldstatus($datacenter = null, $server = null) {
+        $worldStatus = array();
+        $url = $this->urlGen('worldstatus', []);
+        // Get Data from URL
+        \phpQuery::newDocumentFileHTML($url);
+
+        if(!is_null($datacenter)) {
+            $datacenterNode = pq(sprintf("#server_status div.area_body:contains('%s')", $datacenter));
+            if(!is_null($server)) {
+                $worldStatus[$datacenter][$server] = trim($datacenterNode->next('div.area_inner_header')->find(sprintf('tr.worldstatus_1:contains("%s") td:eq(1)', $server))->text());
+            }else {
+                $pqTable = $datacenterNode->next('div.area_inner_header')->find('table');
+                foreach($pqTable->find('tr.worldstatus_1') as $tableRow) {
+                    $pqTableRow = pq($tableRow);
+                    $server = trim($pqTableRow->find('td:first>div')->text());
+                    $status = trim($pqTableRow->find('td:last>span')->text());
+                    $worldStatus[$datacenter][$server] = trim($status);
+                }
+            }
+        }else {
+            $dataArray = [];
+            // Loop it
+            foreach(pq('#server_status div.area_body') as $node) {
+                $pqNode = pq($node);
+                $datacenter = trim(str_replace("Data Center: ", "", $pqNode->find('div.text-headline:first')->text()));
+                $pqTable = $pqNode->next('div.area_inner_header')->find('table');
+                foreach($pqTable->find('tr.worldstatus_1') as $tableRow) {
+                    $pqTableRow = pq($tableRow);
+                    $server = trim($pqTableRow->find('td:first>div')->text());
+                    $status = trim($pqTableRow->find('td:last>span')->text());
+                    $dataArray[$datacenter][$server] = trim($status);
+                }
+            }
+            $worldStatus = $dataArray;
+        }
+        return $worldStatus;
+    }
 }
