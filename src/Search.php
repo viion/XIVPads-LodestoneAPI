@@ -32,6 +32,8 @@ class Search
             $character->title = pq('.player_name_txt h2 .chara_title')->text();
             $character->avatar = pq('.player_name_thumb a img')->attr('src');
             $character->avatarLarge = str_ireplace('50x50', '96x96', $character->avatar);
+
+            // Added Portrait (25.02.2014 @JohnRamboTSQ)
             $character->portrait = pq('.bg_chara_264 a img')->attr('src');
             $character->portraitLarge = str_ireplace('264x360', '640x873', $character->portrait);
 
@@ -96,34 +98,38 @@ class Search
                 ];
             }
 
-            foreach(pq('#power_gauge li') as $i => $node)
+            // Setting defaults to avoid undefined indexes
+            // 25.02.2014 @JohnRamboTSQ
+            $character->attributes = [
+                'hp' => null,
+                'mp' => null,
+                'cp' => null,
+                'gp' => null,
+                'tp' => null,
+                'attack-magic-potency' => null,
+                'healing-magic-potency' => null,
+                'spell-speed' => null,
+                'craftsmanship' => null,
+                'control' => null,
+                'gathering' => null,
+                'perception' => null
+            ];
+
+            // Cleanup to reduce code repeating
+            // added strip_tags because of htmltags in arrayKeys
+            // 25.02.2015 @JohnRamboTSQ
+            foreach(pq('#power_gauge li,.param_list_attributes li, .param_list_elemental li') as $i => $node)
             {
                 $node = pq($node);
-                $attr = $node->attr('class');
+                $attr = strip_tags(str_ireplace(' clearfix', null, $node->attr('class')));
                 $character->attributes[$attr] = filter_var($node->text(), FILTER_SANITIZE_NUMBER_INT);
             }
-
-            foreach(pq('.param_list_attributes li') as $i => $node)
-            {
-                $node = pq($node);
-                $attr = $node->attr('class');
-                $character->attributes[$attr] = filter_var($node->text(), FILTER_SANITIZE_NUMBER_INT);
-            }
-
-            foreach(pq('.param_list_elemental li') as $i => $node)
-            {
-                $node = pq($node);
-                $attr = str_ireplace(' clearfix', null, $node->attr('class'));
-                $character->attributes[$attr] = filter_var($node->text(), FILTER_SANITIZE_NUMBER_INT);
-            }
-
             foreach(pq('.param_list li') as $i => $node)
             {
                 $node = pq($node);
-                $attr = strtolower(str_ireplace(' ', '-', $node->find('span')->eq(0)));
+                $attr = strip_tags(strtolower(str_ireplace(' ', '-', $node->find('span')->eq(0))));
                 $character->attributes[$attr] = filter_var($node->find('span')->eq(1), FILTER_SANITIZE_NUMBER_INT);
             }
-
             foreach(pq('.minion_box')->eq(0)->find('a') as $i => $node)
             {
                 $node = pq($node);
@@ -133,7 +139,6 @@ class Search
                     'icon' => $node->find('img')->attr('src'),
                 ];
             }
-
             foreach(pq('.minion_box')->eq(1)->find('a') as $i => $node)
             {
                 $node = pq($node);
