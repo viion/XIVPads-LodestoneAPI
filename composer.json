@@ -12,7 +12,10 @@
   }
  ],
  "autoload": {
-  "psr-4": { "Viion\\Lodestone\\": "" }
+  "psr-4": { 
+	  "Viion\\Lodestone\\": "src/",
+	  "":"src/" 
+  }
  },
  "require": {
   "php": ">=5.4.0",
