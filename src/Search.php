@@ -76,6 +76,8 @@ class Search
                         'exp_total' => intval($exp[1]),
                     ];
                 }
+
+                unset($node);
             }
 
             /*
@@ -172,9 +174,16 @@ class Search
             }
             */
 
-            // dust up
+            // show
             $p->show();
+
+            // unset parser
+            unset($p);
+
+            // dust up
             $character->clean();
+
+            // return
             return $character;
         }
         else
