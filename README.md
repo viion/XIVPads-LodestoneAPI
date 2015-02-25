@@ -56,7 +56,7 @@ var_dump($character->dump());
 
 (Composer not been tested yet and may not work)
 
-- Include the autorloader, and that should be it!
+- Include the autoloader, and that should be it!
 
 ```php
 <?php

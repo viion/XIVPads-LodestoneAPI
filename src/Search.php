@@ -34,7 +34,7 @@ class Search
             $character->avatarLarge = str_ireplace('50x50', '96x96', $character->avatar);
 
             // Added Portrait (25.02.2014 @JohnRamboTSQ)
-            $character->portrait = pq('.bg_chara_264 a img')->attr('src');
+            $character->portrait = pq('#chara_img_area>.img_area>img')->attr('src');
             $character->portraitLarge = str_ireplace('264x360', '640x873', $character->portrait);
 
             $character->bio = pq('.txt_selfintroduction')->html();

@@ -5,7 +5,7 @@ $start = microtime(true);
 function show($data) { echo '<pre>'. print_r($data, true) .'</pre>'; }
 
 // require auto loader
-require 'api-autoloader.php';
+require 'vendor/autoload.php';
 
 // new API
 $api = new Viion\Lodestone\LodestoneAPI();
