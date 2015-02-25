@@ -18,9 +18,10 @@ class Search
         {
             // Generate url
             $url = $this->urlGen('characterProfile', [ '{id}' => $nameOrId ]);
+            $html = $this->curl($url);
 
             // get doc
-            \phpQuery::newDocumentFileHTML($url);
+            \phpQuery::newDocumentHTML($html);
 
             // New character object
             $character = new Character();
@@ -208,9 +209,10 @@ class Search
 
                 // Generate url
                 $url = $this->urlGen('achievementsKind', [ '{id}' => $id, '{kind}' => $kind ]);
+                $html = $this->curl($url);
 
                 // get doc
-                \phpQuery::newDocumentFileHTML($url);
+                \phpQuery::newDocumentHTML($html);
 
                 // Begin parsing/populating character
                 $achievement->pointsCurrent = filter_var(pq('.total_point')->text(), FILTER_SANITIZE_NUMBER_INT);
@@ -296,8 +298,11 @@ class Search
     public function Worldstatus($datacenter = null, $server = null) {
         $worldStatus = array();
         $url = $this->urlGen('worldstatus', []);
+        $html = $this->curl($url);
+
+
         // Get Data from URL
-        \phpQuery::newDocumentFileHTML($url);
+        \phpQuery::newDocumentHTML($html);
 
         if(!is_null($datacenter)) {
             $datacenterNode = pq(sprintf("#server_status div.area_body:contains('%s')", $datacenter));
