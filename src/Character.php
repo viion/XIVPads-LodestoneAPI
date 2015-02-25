@@ -10,6 +10,7 @@ class Character
     public $world;
     public $title;
     public $avatar;
+	public $portrait;
     public $bio;
     public $race;
     public $clan;
