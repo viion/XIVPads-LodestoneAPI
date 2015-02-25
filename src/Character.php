@@ -27,6 +27,7 @@ class Character
     public $grandCompanyRank;
     public $grandCompanyIcon;
     public $freeCompany;
+    public $freeCompanyId;
     public $freeCompanyIcon;
 
     public $classjobs;
@@ -86,10 +87,25 @@ class Character
                     break;
 
                 case 'freeCompanyIcon':
-                    foreach($value as $i => $v)
+                    if (is_array($value))
                     {
-                        $value[$i] = str_ireplace('40x40', '128x128', $v);
+                        foreach($value as $i => $v)
+                        {
+                            $v = explode('?', $v)[0];
+                            $value[$i] = str_ireplace('40x40', '128x128', $v);
+                        }
                     }
+                    break;
+
+                // Remove timestamp from images
+                case 'avatar':
+                case 'avatarLarge':
+                case 'portrait':
+                case 'portraitLarge':
+                case 'guardianIcon':
+                case 'cityIcon':
+                case 'grandCompanyIcon':
+                    $value = explode('?', $value)[0];
                     break;
             }
 

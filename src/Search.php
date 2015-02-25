@@ -16,47 +16,69 @@ class Search
         // if numeric, we dont search lodestone
         if (is_numeric($nameOrId))
         {
-            // Generate url
-            $url = $this->urlGen('characterProfile', [ '{id}' => $nameOrId ]);
-
-            // get doc
-            \phpQuery::newDocumentFileHTML($url);
-
             // New character object
             $character = new Character();
 
-            // Begin parsing/populating character
-            $character->id = pq('.player_name_thumb a')->attr('href');
-            $character->name = pq('.player_name_txt h2 a')->text();
-            $character->world = pq('.player_name_txt h2 span')->text();
-            $character->title = pq('.player_name_txt h2 .chara_title')->text();
-            $character->avatar = pq('.player_name_thumb a img')->attr('src');
+            // --- START -------------
+
+            // Generate url and get html
+            $url = $this->urlGen('characterProfile', [ '{id}' => $nameOrId ]);
+            $html = $this->trim($this->curl($url), '<!-- contents -->', '<!-- //Minion -->');
+
+            $p = new Parser($html);
+
+            $character->id = $p->find('player_name_thumb', 1)->numbers();
+            $character->name = $p->find('player_name_thumb', 4)->text();
+            $character->world = $p->find('player_name_thumb', 5)->text();
+            $character->title = $p->find('chara_title')->text();
+            $character->avatar = $p->find('player_name_thumb', 2)->attr('src');
             $character->avatarLarge = str_ireplace('50x50', '96x96', $character->avatar);
 
-            // Added Portrait (25.02.2014 @JohnRamboTSQ)
-            $character->portrait = pq('#chara_img_area>.img_area>img')->attr('src');
+            $character->portrait = $p->find('bg_chara_264', 1)->attr('src');
             $character->portraitLarge = str_ireplace('264x360', '640x873', $character->portrait);
 
-            $character->bio = pq('.txt_selfintroduction')->html();
-            $character->race = explode('/', pq('.chara_profile_title')->text())[0];
-            $character->clan = explode('/', pq('.chara_profile_title')->text())[1];
-            $character->gender = explode('/', pq('.chara_profile_title')->html())[2];
+            $character->bio = $p->find('txt_selfintroduction', 1)->text();
+            $character->race = explode('/', $p->find('chara_profile_title')->text())[0];
+            $character->clan = explode('/', $p->find('chara_profile_title')->text())[1];
+            $character->gender = explode('/', $p->find('chara_profile_title')->text())[2];
 
-            $character->nameday = pq('.chara_profile_box_info')->eq(0)->find('.txt_name')->eq(0)->text();
-            $character->guardian = pq('.chara_profile_box_info')->eq(0)->find('.txt_name')->eq(1)->text();
-            $character->guardianIcon = pq('.chara_profile_box_info')->eq(0)->find('img')->eq(0)->attr('src');
-            $character->city = pq('.chara_profile_box_info')->eq(1)->find('.txt_name')->eq(0)->text();
-            $character->cityIcon = pq('.chara_profile_box_info')->eq(1)->find('img')->eq(0)->attr('src');
-            $character->grandCompany = explode('/', pq('.chara_profile_box_info')->eq(2)->find('.txt_name')->eq(0)->text())[0];
-            $character->grandCompanyRank = explode('/', pq('.chara_profile_box_info')->eq(2)->find('.txt_name')->eq(0)->text())[1];
-            $character->grandCompanyIcon = pq('.chara_profile_box_info')->eq(2)->find('img')->eq(0)->attr('src');
-            $character->freeCompany = pq('.chara_profile_box_info')->eq(3)->find('.txt_name')->eq(0)->text();
+            $character->nameday = $p->find('chara_profile_left', 6)->text();
+            $character->guardian = $p->find('chara_profile_left', 8)->text();
+            $character->guardianIcon = $p->find('chara_profile_left', 4)->attr('src');
+            $character->city = $p->find('chara_profile_left', 12)->text();
+            $character->cityIcon = $p->find('chara_profile_left', 10)->attr('src');
+            $character->grandCompany = explode('/', $p->find('chara_profile_left',16)->text())[0];
+            $character->grandCompanyRank = explode('/', $p->find('chara_profile_left',16)->text())[1];
+            $character->grandCompanyIcon = $p->find('chara_profile_left', 14)->attr('src');
+            $character->freeCompany = $p->find('ic_crest_32', 6)->text();
+            $character->freeCompanyId = filter_var($p->find('ic_crest_32', 6)->attr('href'), FILTER_SANITIZE_NUMBER_INT);
             $character->freeCompanyIcon = [
-                pq('.chara_profile_box_info')->eq(3)->find('img')->eq(0)->attr('src'),
-                pq('.chara_profile_box_info')->eq(3)->find('img')->eq(1)->attr('src'),
-                pq('.chara_profile_box_info')->eq(3)->find('img')->eq(2)->attr('src')
+                $p->find('ic_crest_32', 2)->attr('src'),
+                $p->find('ic_crest_32', 3)->attr('src'),
+                $p->find('ic_crest_32', 4)->attr('src')
             ];
 
+            foreach($p->findAll('ic_class_wh24_box', 3, 'base_inner') as $i => $node)
+            {
+                $node = new Parser($node);
+                $name = $node->find('ic_class_wh24_box')->text();
+
+                if ($name)
+                {
+                    $exp   = explode(' / ', $node->find('ic_class_wh24_box', 2)->text());
+
+                    $character->classjobs[] =
+                    [
+                        'icon' => $node->find('ic_class_wh24_box')->attr("src"),
+                        'name' => $name,
+                        'level' =>  $node->find('ic_class_wh24_box', 1)->numbers(),
+                        'exp_current' => intval($exp[0]),
+                        'exp_total' => intval($exp[1]),
+                    ];
+                }
+            }
+
+            /*
             foreach(pq('.class_list tr') as $i => $node)
             {
                 $node = pq($node);
@@ -148,8 +170,10 @@ class Search
                     'icon' => $node->find('img')->attr('src'),
                 ];
             }
+            */
 
             // dust up
+            $p->show();
             $character->clean();
             return $character;
         }
