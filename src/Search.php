@@ -14,8 +14,7 @@ class Search
     public function Character($nameOrId, $world = null)
     {
         // if numeric, we dont search lodestone
-        if (is_numeric($nameOrId))
-        {
+        if (is_numeric($nameOrId)) {
             // New character object
             $character = new Character();
 
@@ -58,18 +57,21 @@ class Search
                 $p->find('ic_crest_32', 4)->attr('src')
             ];
 
-            foreach($p->findAll('ic_class_wh24_box', 3, 'base_inner') as $i => $node)
-            {
+            # Class/Jobs
+
+            $character->activeLevel = $p->find('"level"')->numbers();
+
+            foreach($p->findAll('ic_class_wh24_box', 3, 'base_inner') as $i => $node) {
+                // new node
                 $node = new Parser($node);
                 $name = $node->find('ic_class_wh24_box')->text();
 
-                if ($name)
-                {
-                    $exp   = explode(' / ', $node->find('ic_class_wh24_box', 2)->text());
+                if ($name) {
+                    $exp    = explode(' / ', $node->find('ic_class_wh24_box', 2)->text());
+                    $icon   = explode('?', $node->find('ic_class_wh24_box')->attr("src"))[0];
 
-                    $character->classjobs[] =
-                    [
-                        'icon' => $node->find('ic_class_wh24_box')->attr("src"),
+                    $character->classjobs[] = [
+                        'icon' => $icon,
                         'name' => $name,
                         'level' =>  $node->find('ic_class_wh24_box', 1)->numbers(),
                         'exp_current' => intval($exp[0]),
@@ -80,47 +82,53 @@ class Search
                 unset($node);
             }
 
-            /*
-            foreach(pq('.class_list tr') as $i => $node)
-            {
-                $node = pq($node);
+            # Gear
 
-                $character->classjobs[] =
-                [
-                    'icon' => $node->find('td')->eq(0)->find('img')->attr('src'),
-                    'name' => $node->find('td')->eq(0)->text(),
-                    'level' => $node->find('td')->eq(1)->text(),
-                    'exp_current' => filter_var(explode('/', $node->find('td')->eq(2)->text())[0], FILTER_SANITIZE_NUMBER_INT),
-                    'exp_total' => filter_var(explode('/', $node->find('td')->eq(2)->text())[1], FILTER_SANITIZE_NUMBER_INT),
+            $iLevelTotal = 0;
+            $iLevelArray = [];
+            foreach($p->findAll('item_detail_box', 35, 'param_power_area') as $i => $node) {
+                // new node
+                $node = new Parser($node);
+                $ilv = filter_var($node->find('pt3 pb3')->text(), FILTER_SANITIZE_NUMBER_INT);
+                $slot = $node->find('ex_bind', 5)->text();
+                $name = str_ireplace('">', null, $node->find('ex_bind', 4)->text());
+
+                $character->gear[] = [
+                    'icon'  => explode('?', $node->find('itemicon')->attr('src'))[0],
+                    'color' => explode('_', $node->find('ex_bind', 3)->text())[0],
+                    'name'  => $name,
+                    'slot'  => $slot,
+                    'id'    => explode('/', $node->find('bt_db_item_detai', 1)->html())[5],
+                    'ilv'   => $ilv ,
                 ];
 
-                // check next to table
-                if (strlen($node->find('td')->eq(3)->text()) > 0)
-                {
-                    $character->classjobs[] =
-                    [
-                        'icon' => $node->find('td')->eq(3)->find('img')->attr('src'),
-                        'name' => $node->find('td')->eq(3)->text(),
-                        'level' => $node->find('td')->eq(4)->text(),
-                        'exp_current' => filter_var(explode('/', $node->find('td')->eq(5)->text())[0], FILTER_SANITIZE_NUMBER_INT),
-                        'exp_total' => filter_var(explode('/', $node->find('td')->eq(5)->text())[1], FILTER_SANITIZE_NUMBER_INT),
-                    ];
+                if ($slot != 'Soul Crystal') {
+                    $iLevelTotal = $iLevelTotal + $ilv;
+                    $iLevelArray[] = $ilv;
+
+                    if (in_array($slot, $this->getTwoHandedItems())) {
+                        $iLevelArray[] = $ilv;
+                    }
+                }
+
+                // active class
+                if ($i == 0) {
+                    $character->activeClass = explode("'", str_ireplace(['Two-Handed ', 'One-Handed'], null, $slot))[0];
+                }
+
+                // active job
+                if ($slot == 'Soul Crystal') {
+                    $character->activeJob = str_ireplace('Soul of the ', null, $name);
                 }
             }
 
-            foreach(pq('.contents:not(.none) .item_detail_box') as $i => $node)
-            {
-                $node = pq($node);
+            $character->gearStats = [
+                'total' => $iLevelTotal,
+                'average' => floor(array_sum($iLevelArray) / 13),
+                'array' => $iLevelArray,
+            ];
 
-                $character->gear[$i] =
-                [
-                    'name' => $node->find('.item_name_right h2')->text(),
-                    'icon' => $node->find('.ic_reflection_box_64 img')->eq(1)->attr('src'),
-                    'slot' => $node->find('.category_name')->text(),
-                    'lodestone' => explode('/', $node->find('.bt_db_item_detail.m0auto.mb8 a')->attr('href'))[5],
-                    'item_level' => filter_var($node->find('.pt3.pb3')->text(), FILTER_SANITIZE_NUMBER_INT),
-                ];
-            }
+            # Attributes
 
             // Setting defaults to avoid undefined indexes
             // 25.02.2014 @JohnRamboTSQ
@@ -139,43 +147,61 @@ class Search
                 'perception' => null
             ];
 
-            // Cleanup to reduce code repeating
-            // added strip_tags because of htmltags in arrayKeys
-            // 25.02.2015 @JohnRamboTSQ
-            foreach(pq('#power_gauge li,.param_list_attributes li, .param_list_elemental li') as $i => $node)
-            {
-                $node = pq($node);
-                $attr = strip_tags(str_ireplace(' clearfix', null, $node->attr('class')));
-                $character->attributes[$attr] = filter_var($node->text(), FILTER_SANITIZE_NUMBER_INT);
-            }
-            foreach(pq('.param_list li') as $i => $node)
-            {
-                $node = pq($node);
-                $attr = strip_tags(strtolower(str_ireplace(' ', '-', $node->find('span')->eq(0))));
-                $character->attributes[$attr] = filter_var($node->find('span')->eq(1), FILTER_SANITIZE_NUMBER_INT);
-            }
-            foreach(pq('.minion_box')->eq(0)->find('a') as $i => $node)
-            {
-                $node = pq($node);
-                $character->minions[$i] =
-                [
-                    'name' => $node->attr('title'),
-                    'icon' => $node->find('img')->attr('src'),
-                ];
-            }
-            foreach(pq('.minion_box')->eq(1)->find('a') as $i => $node)
-            {
-                $node = pq($node);
-                $character->mounts[$i] =
-                [
-                    'name' => $node->attr('title'),
-                    'icon' => $node->find('img')->attr('src'),
-                ];
-            }
-            */
+            foreach($p->FindAll('param_list_attributes', 6) as $i => $node) {
+                // new node
+                $node = new Parser($node);
+                $attr = ['str', 'dex', 'vit', 'int', 'mnd'];
 
-            // show
-            $p->show();
+                foreach($attr as $a) {
+                    $character->attributes[$a] = $node->find($a)->numbers();
+                }
+            }
+
+            foreach($p->FindAll('param_list_elemental', 8) as $i => $node) {
+                // new node
+                $node = new Parser($node);
+                $attr = ['fire', 'ice', 'wind', 'earth', 'thunder', 'water'];
+
+                foreach($attr as $a) {
+                    $character->attributes[$a] = $node->find($a)->numbers();
+                }
+            }
+
+            foreach($p->findAll('param_list', 4, 'param_list_elemental') as $i => $node) {
+                // new node
+                $node = new Parser($node);
+
+                foreach($node->findAll('clearfix',1) as $j => $n)
+                {
+                    $n = new Parser($n);
+                    $name = strtolower(str_replace(range(0,9), null, $n->find('clearfix')->text()));
+                    $name = str_replace(' ', '-', trim($name));
+                    $value = $n->find('clearfix')->numbers();
+                    $character->attributes[$name] = intval(trim($value));
+                }
+            }
+
+            # Minions and Mounts
+            foreach($p->findAll('minion_box', 'chara_content_title') as $i => $node) {
+                // new node
+                $node = new Parser($node);
+
+                // loop through
+                foreach($node->findAll('javascript:void(0)', 2) as $j => $n) {
+                    $n = new Parser($n);
+
+                    $data = [
+                        'name' => str_ireplace('>', null, $n->find('ic_reflection_box')->attr('title')),
+                        'icon' => $n->find('ic_reflection_box', 1)->attr('src'),
+                    ];
+
+                    if ($i == 0) {
+                        $character->mounts[] = $data;
+                    } else {
+                        $character->minions[] = $data;
+                    }
+                }
+            }
 
             // unset parser
             unset($p);

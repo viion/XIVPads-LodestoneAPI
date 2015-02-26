@@ -30,12 +30,17 @@ class Character
     public $freeCompanyId;
     public $freeCompanyIcon;
 
-    public $classjobs;
-    public $gear;
-    public $attributes;
+    public $classjobs = [];
+    public $gear = [];
+    public $gearStats = [];
+    public $attributes = [];
 
-    public $minions;
-    public $mounts;
+    public $activeClass;
+    public $activeJob;
+    public $activeLevel;
+
+    public $minions = [];
+    public $mounts = [];
 
     public $hash;
 

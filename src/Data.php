@@ -27,4 +27,27 @@ trait Data
             13 => 'legacy',
         ];
     }
+
+    public function getTwoHandedItems()
+    {
+        /**
+         * In the game, the Item Level for 2 handed equipment (or where you cannot
+         * equip anything in the offhand slot) is doubled to balance the overall
+         * item level with other classes that can have an offhand. The equipment
+         * type below all have double item level.
+         *
+         * Items in this array are added twice to the Average
+         */
+        return [
+            "Pugilist's Arm",
+            "Marauder's Arm",
+            "Archer's Arm",
+            "Lancer's Arm",
+            "Rogue's Arms",
+            "Two-handed Thaumaturge's Arm",
+            "Two-handed Conjurer's Arm",
+            "Arcanist's Grimoire",
+            "Fisher's Primary Tool",
+        ];
+    }
 }

@@ -68,7 +68,7 @@ class Parser
         foreach($this->html as $i =>$code)
         {
 
-            if (strpos($code, $string)) {
+            if (strpos(html_entity_decode($code), $string)) {
                 $found = $i + $offset;
                 break;
             }
@@ -86,20 +86,24 @@ class Parser
      * Similar to find, but loops to find all and returns an array
      *
      * @param $startAt - the class of where to start
+     * @param $stopAt - the class of where to stop
      * @param $string - the string to look for.
-     * @param $offset (default: 0) - the offset from the string to move down to
+     * @param $offset (default: 0) - the offset from the string to move down to, if string, it goes down to string
      * @return Array;
      */
-    public function findAll($string, $offset = 0, $startAt = null)
+    public function findAll($string, $offset = 0, $startAt = null, $stopAt = null)
     {
         $found = [];
         $startAtMet = false;
 
-        foreach($this->html as $i => $code)
-        {
+        foreach($this->html as $i => $code) {
+            // Check if its time to stop
+            if ($stopAt && $startAtMet && strpos(html_entity_decode($code), $stopAt) !== false) {
+                break;
+            }
+
             // if start at is set, check if its been met
-            if ($startAt && !$startAtMet)
-            {
+            if ($startAt && !$startAtMet) {
                 // if start at found, start at is met, and continue
                 if (strpos($code, $startAt) !== false) {
                     $startAtMet = true;
@@ -109,8 +113,26 @@ class Parser
             }
 
             // Append to found
-            if (strpos($code, $string))
-            {
+            if (strpos($code, $string)) {
+                // if offset is string, treat a bit differently
+                if (is_string($offset)) {
+                    $temp = array_slice($this->html, $i);
+
+                    // loop through temp to find offset
+                    foreach ($temp as $j => $c) {
+                        if (strpos(html_entity_decode($c), $offset) !== false) {
+                            // replace offset with new index
+                            break;
+                        }
+                    }
+
+                    // replace on $j
+                    $found[] = array_slice($this->html, $i, $j);
+
+                    continue;
+                }
+
+                // Slice!
                 $found[] = array_slice($this->html, $i, $offset);
             }
         }
@@ -125,7 +147,12 @@ class Parser
 
     public function text()
     {
-        return trim(strip_tags(htmlspecialchars_decode(trim($this->found), ENT_QUOTES)));
+        $text = trim($this->found);
+        $text = htmlspecialchars_decode($text, ENT_QUOTES);
+        $text = strip_tags($text);
+        $text = html_entity_decode($text, ENT_QUOTES, 'UTF-8');
+        $text = trim($text);
+        return $text;
     }
 
     public function numbers()
@@ -135,23 +162,12 @@ class Parser
 
     public function attr($attribute)
     {
-        $attribute = $attribute .'=';
-        $string = explode(' ', $this->found);
+        $html = html_entity_decode($this->found);
 
-        // Loop through to find 'attribute',
-        foreach($string as $s)
-        {
-            if (stripos($s, $attribute) !== false)
-            {
-                $string = $s;
-                break;
-            }
-        }
-
-        // Strip stuff
-        $string = str_replace([$attribute, '&quot;'], null, $string);
+        preg_match_all('/('. $attribute .')=("[^"]*")/i', $html, $result);
+        $result = str_ireplace([$attribute .'=', '"'], null, $result[0][0]);
 
         // return
-        return $string;
+        return html_entity_decode($result, ENT_QUOTES, 'UTF-8');
     }
 }
