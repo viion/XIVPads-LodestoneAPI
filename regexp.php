@@ -58,10 +58,12 @@ foreach($p->findAll('ic_class_wh24_box', 3, 'base_inner') as $i => $node) {
 }
 
 $finish = microtime(true);
-show("Parse items (viion parser): " . ($finish - $start) . ' ms');
+show("Parse classjobs (viion parser): " . ($finish - $start) . ' ms');
 
 
 $start = microtime(true);
+/*
+// Item parse
 $regExp = "#item_detail_box.*?ic_reflection_box_64.*?<img.*?src=\"([^\"]+?itemicon[^\"]+)\".*?class=\"item_name.*?>([^<]*?)</h2>.*?class=\"category_name\">([^<]*?)</h3>.*?<a href=\"\/lodestone\/playguide\/db\/item\/([\w\d]+?)\/\".*?class=\"pt3 pb3\">.+?\s([0-9]{1,3})</div>#s";
 
 preg_match_all($regExp, $source, $matches);
@@ -79,9 +81,26 @@ foreach($matches[0] as $mkey => $match) {
 }
 $finish = microtime(true);
 show("Parse items (regExp): " . ($finish - $start) . ' ms');
+*/
 
-echo "<h2>phpQuery</h2>";
+$regExp = "#ic_class_wh24_box.*?<img.*?src=\"(.*?)\".*?>([^<]+?)<\/td[^<]*?<td[^>]*?>([\d]+?)<\/td[^<]*?<td[^>]*?>([\d-]+?)[^<\d-]+?([\d-]+?)<\/td#s";
+
+preg_match_all($regExp, $source, $matches);
+array_shift($matches);
+$classjobs = array();
+foreach($matches[0] as $mkey => $match) {
+	$classjobs[] = array(
+		'icon' => utf8_encode($matches[0][$mkey]),
+		'name' => utf8_encode($matches[1][$mkey]),
+		'level' => $matches[2][$mkey],
+		'exp_current' => $matches[3][$mkey],
+		'exp_total' => $matches[4][$mkey],
+	);
+}
+$finish = microtime(true);
+show("Parse classjobs (regExp): " . ($finish - $start) . ' ms');
+echo "<h2>Viion Parser</h2>";
 show($character);
 echo "<h2>Regexp</h2>";
-show($items);
+show($classjobs);
 
