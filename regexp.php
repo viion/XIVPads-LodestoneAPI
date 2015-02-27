@@ -1,4 +1,23 @@
+<meta charset="UTF-8">
 <?php
+
+function trimHTML($html, $start, $end) {
+	$temp = $html;
+
+	// Start position
+	$start = strpos($temp, $start);
+
+	// cut to start
+	$temp = substr($html, $start);
+
+	// Cut to end
+	$end = strpos($temp, $end) + strlen($end);
+
+	// sub from entire
+	$html = substr($html, $start, $end);
+
+	return $html;
+}
 
 /**
  * Testing RegExp 
@@ -29,78 +48,63 @@ curl_setopt_array($ch, $options);
 curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-type: text/html; charset=utf-8'));
 $source = curl_exec($ch);
 curl_close($ch);
-
+$html = trimHTML($source, '<!-- contents -->', '<!-- //Minion -->');
+//$html = $source;
 $finish = microtime(true);
 show("Load HTML (Curl): " . ($finish - $start) . ' ms');
 
-
-$start = microtime(true);
-
-$p = new \Viion\Lodestone\Parser($source);
-$character = new stdClass();
-foreach($p->findAll('ic_class_wh24_box', 3, 'base_inner') as $i => $node) {
-	$node = new \Viion\Lodestone\Parser($node);
-	$name = $node->find('ic_class_wh24_box')->text();
-
-	if($name) {
-		$exp = explode(' / ', $node->find('ic_class_wh24_box', 2)->text());
-
-		$character->classjobs[] = [
-					'icon' => $node->find('ic_class_wh24_box')->attr("src"),
-					'name' => $name,
-					'level' => $node->find('ic_class_wh24_box', 1)->numbers(),
-					'exp_current' => intval($exp[0]),
-					'exp_total' => intval($exp[1]),
-		];
-	}
-
-	unset($node);
-}
-
-$finish = microtime(true);
-show("Parse classjobs (viion parser): " . ($finish - $start) . ' ms');
-
-
-$start = microtime(true);
-/*
-// Item parse
-$regExp = "#item_detail_box.*?ic_reflection_box_64.*?<img.*?src=\"([^\"]+?itemicon[^\"]+)\".*?class=\"item_name.*?>([^<]*?)</h2>.*?class=\"category_name\">([^<]*?)</h3>.*?<a href=\"\/lodestone\/playguide\/db\/item\/([\w\d]+?)\/\".*?class=\"pt3 pb3\">.+?\s([0-9]{1,3})</div>#s";
-
-preg_match_all($regExp, $source, $matches);
-
-array_shift($matches);
 $items = array();
-foreach($matches[0] as $mkey => $match) {
-	$items[$matches[3][$mkey]] = array(
-		'name' => utf8_encode($matches[1][$mkey]),
-		'icon' => utf8_encode($match),
-		'slot' => utf8_encode($matches[2][$mkey]),
-		'lodestone' => utf8_encode($matches[3][$mkey]),
-		'item_level' => utf8_encode($matches[4][$mkey])
-	);
-}
-$finish = microtime(true);
-show("Parse items (regExp): " . ($finish - $start) . ' ms');
-*/
-
-$regExp = "#ic_class_wh24_box.*?<img.*?src=\"(.*?)\".*?>([^<]+?)<\/td[^<]*?<td[^>]*?>([\d]+?)<\/td[^<]*?<td[^>]*?>([\d-]+?)[^<\d-]+?([\d-]+?)<\/td#s";
-
-preg_match_all($regExp, $source, $matches);
-array_shift($matches);
 $classjobs = array();
-foreach($matches[0] as $mkey => $match) {
-	$classjobs[] = array(
-		'icon' => utf8_encode($matches[0][$mkey]),
-		'name' => utf8_encode($matches[1][$mkey]),
-		'level' => $matches[2][$mkey],
-		'exp_current' => $matches[3][$mkey],
-		'exp_total' => $matches[4][$mkey],
-	);
+$attributes = array();
+
+$start = microtime(true);
+
+// Items
+$regExp = "#item_detail_box.*?ic_reflection_box_64.*?<img.*?src=\"(?P<icon>[^\"]+?itemicon[^\"]+)\".*?class=\"item_name.*?>(?P<name>[^<]*?)</h2>.*?class=\"category_name\">(?P<slot>[^<]*?)</h3>.*?<a href=\"\/lodestone\/playguide\/db\/item\/(?P<lodestone>[\w\d]+?)\/\".*?class=\"pt3 pb3\">.+?\s(?P<item_level>[0-9]{1,3})</div>#s";
+
+preg_match_all($regExp, $html, $matches, PREG_SET_ORDER);
+
+array_shift($matches);
+foreach($matches as $mkey => $match) {
+	array_shift($match);
+	$items[] = $match;
 }
+// Classjobs
+$regExp = "#ic_class_wh24_box.*?<img.*?src=\"(?P<icon>.*?)\".*?>(?P<name>[^<]+?)<\/td[^<]*?<td[^>]*?>(?P<level>[\d-]+?)<\/td[^<]*?<td[^>]*?>(?P<exp_current>[\d-]+?)\s\/\s(?P<exp_total>[\d-]+?)<\/td#s";
+
+preg_match_all($regExp, $html, $matches, PREG_SET_ORDER);
+array_shift($matches);
+foreach($matches as $mkey => $match) {
+	array_shift($match);
+	$classjobs[] = $match;
+}
+
+$newHtml = trimHTML($html, 'param_left_area', 'param_power_area');
+
+// attributes
+$regExp = "#li class=\"(?P<attr>.*?)(?:\s?clearfix)?\">(?P<content>.*?)<\/li#s";
+
+preg_match_all($regExp, $newHtml, $matches, PREG_SET_ORDER);
+array_shift($matches);
+foreach($matches as $mkey => $match) {
+	array_shift($match);
+	$key = strtolower(str_ireplace(' ', '-', $match['attr']));
+	$value = $match['content'];
+	if($match['attr'] == "") {
+		preg_match('#<span class="left">(?<key>.*?)</span><span class="right">(?<value>.*?)</span>#s', $match['content'], $tmpMatch);
+		$key = strtolower(str_ireplace(' ', '-', $tmpMatch['key']));
+		$value = $tmpMatch['value'];
+	}elseif(stripos($match['content'], 'val') !== false) {
+		preg_match('#>(?<value>[\d-]*?)</span>#s', $match['content'], $tmpMatch);
+		$value = $tmpMatch['value'];
+	}
+	$attributes[$key] = $value;
+}
+
 $finish = microtime(true);
-show("Parse classjobs (regExp): " . ($finish - $start) . ' ms');
-echo "<h2>Viion Parser</h2>";
-show($character);
+show("Parse items&classjobs (regExp): " . ($finish - $start) . ' ms');
+//echo "<h2>Viion Parser</h2>";
+//show($character);
 echo "<h2>Regexp</h2>";
-show($classjobs);
+show(array('items' => $items, "classjobs" => $classjobs, 'attributes' => $attributes));
 
