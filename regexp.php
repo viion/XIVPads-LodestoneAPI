@@ -102,7 +102,7 @@ foreach($matches as $mkey => $match) {
 }
 
 $finish = microtime(true);
-show("Parse items&classjobs (regExp): " . ($finish - $start) . ' ms');
+show("Parse (regExp): " . ($finish - $start) . ' ms');
 //echo "<h2>Viion Parser</h2>";
 //show($character);
 echo "<h2>Regexp</h2>";
