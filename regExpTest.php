@@ -41,13 +41,13 @@ function oldConstruct($html)
 function newConstruct($html)
 {
 	// Building cleaned up on line html
-	$html = preg_replace(array('#\s\s+#s','#<!--.*?-->#s','#<script.*?>.*?<\/script>?#s','#[\n\t]#s'),'', $html);
+	$html = preg_replace(array('#\s\s+#s','#<!--.*?-->#s','#<script.*?>.*?</script>?#s','#[\n\t]#s'),'', $html);
 	/*
 	// Split
-	$htmlArray = preg_split('#(<\/?.*?>)#',$html,-1,PREG_SPLIT_NO_EMPTY|PREG_SPLIT_DELIM_CAPTURE);
+	$htmlArray = preg_split('#(</?.*?>)#',$html,-1,PREG_SPLIT_NO_EMPTY|PREG_SPLIT_DELIM_CAPTURE);
 	// Remove closingtags
 	foreach($htmlArray as $key => $value){
-		if(preg_match('#<(\/?[^\s]+?)>#',$value)){
+		if(preg_match('#<(/?[^\s]+?)>#',$value)){
 			unset($htmlArray[$key]);
 		}
 	}
@@ -138,18 +138,22 @@ $startAll = microtime(true);
 
 // Base Data
 $start = microtime(true);
-$regExp = "#player_name_thumb.*?src=\"(?<avatar>.*?)\".*?"
-		. "<a.*?>(?<name>.*?)<\/a>"
+$regExp = "#player_name_thumb.*?src=\"(?<avatar>.*?)\?.*?"
+		. "<a.*?>(?<name>.*?)</a>"
 		. "<span>\s*?\((?<server>.*?)\).*?"
 		. "<div class=\"chara_title\">(?<title>.*?)</div>.*?"
-		. "txt_selfintroduction\">(?<bio>.*?)<\/div>.*?"
-		. "chara_profile_title\">(?<raceClanGender>.*?)</div>.*?"
-		. "txt_name\">(?<nameday>.*?)<\/dd>.*?"
-		. "txt_name\">(?<Guardian>.*?)<\/dd>.*?"
-		. "txt_name\">(?<city>.*?)<\/dd>.*?"
-		. "txt_name\">(?<grandcompany>.*?)<\/dd>.*?"
+		. "txt_selfintroduction\">(?<bio>.*?)</div>.*?"
+		. "chara_profile_title\">(?<race>.*?)\s/\s(?<clan>.*?)\s/\s(?<gender>.*?)</div>.*?"
+		. "icon.*?img.*?src=\"(?<guardianIcon>.*?)\?.*?"
+		. "txt_name\">(?<nameday>.*?)</dd>.*?"
+		. "txt_name\">(?<Guardian>.*?)</dd>.*?"
+		. "icon.*?img.*?src=\"(?<cityIcon>.*?)\?.*?"
+		. "txt_name\">(?<city>.*?)</dd>.*?"
+		. "icon.*?img.*?src=\"(?<grandCompanyIcon>.*?)\?.*?"
+		. "txt_name\">(?<grandCompany>.*?)/(?<grandCompanyRank>.*?)</dd>.*?"
 		. "ic_crest_32.*?src=\"(?<freecompanyIcon1>.*?)\".*?src=\"(?<freecompanyIcon2>.*?)\".*?src=\"(?<freecompanyIcon3>.*?)\".*?"
-		. "txt_name\">.*?href=\".*?\/(?<freecompanyid>[\d]+?)\/\".*?>(?<freecompany>.*?)<\/a>.*?"
+		. "txt_name\">.*?href=\".*?/(?<freecompanyid>[\d]+?)/\".*?>(?<freecompany>.*?)</a>.*?"
+		. "bg_chara_264.*?img.*?src=\"(?<portrait>.*?)\?"
 		. "#";
 
 if(preg_match($regExp, $html, $matches)){
@@ -162,7 +166,7 @@ show("Parse Base: " . ($finish - $start) . ' ms');
 // attributes
 $start = microtime(true);
 $attrHtml = trimHTML($html, 'param_left_area', 'param_power_area');
-$regExp = "#li class=\"(?<attr>.*?)(?:\s?clearfix)?\">(?<content>.*?)<\/li#";
+$regExp = "#li class=\"(?<attr>.*?)(?:\s?clearfix)?\">(?<content>.*?)</li#";
 
 preg_match_all($regExp, $attrHtml, $matches, PREG_SET_ORDER);
 array_shift($matches);
@@ -180,14 +184,32 @@ foreach($matches as $mkey => $match) {
 	}
 	$attributes[$key] = $value;
 }
+$regExp = '#param_power_area.*?'
+		. 'class="hp">(?<hp>[\d]+)<.*?'
+		. '(?:class="mp">(?<mp>[\d]+)<.*?)?'
+		. '(?:class="cp">(?<cp>[\d]+)<.*?)?'
+		. '(?:class="gp">(?<gp>[\d]+)<.*?)?'
+		. 'class="tp">(?<tp>[\d]+)<.*?'
+		. '#';
+if(preg_match($regExp, $html, $matches)){
+	array_shift($matches);
+	$baseAttr = $matches;
+	$attributes['hp'] = $matches['hp'];
+	$attributes['mp'] = $matches['mp'];
+	$attributes['cp'] = $matches['cp'];
+	$attributes['gp'] = $matches['gp'];
+	$attributes['tp'] = $matches['tp'];
+}
+
 $finish = microtime(true);
 show("Parse Attributes: " . ($finish - $start) . ' ms');
 
 // Items
 $start = microtime(true);
-$regExp = "#item_detail_box.*?ic_reflection_box_64.*?<img.*?src=\"(?<icon>[^\"]+?itemicon[^\"]+)\".*?class=\"item_name.*?>(?<name>[^<]*?)</h2>.*?class=\"category_name\">(?<slot>[^<]*?)</h3>.*?<a href=\"\/lodestone\/playguide\/db\/item\/(?<lodestone>[\w\d]+?)\/\".*?class=\"pt3 pb3\">.+?\s(?<item_level>[0-9]{1,3})</div>#";
+$itemHtml = trimHTML($html, 'param_class_info_area', 'chara_content_title mb10');
+$regExp = "#item_detail_box.*?ic_reflection_box_64.*?<img.*?src=\"(?<icon>[^\"]+?itemicon[^\"]+)\?.*?class=\"item_name.*?>(?<name>[^<]*?)</h2>.*?class=\"category_name\">(?<slot>[^<]*?)</h3>.*?<a href=\"/lodestone/playguide/db/item/(?<lodestone>[\w\d]+?)/\".*?class=\"pt3 pb3\">.+?\s(?<item_level>[0-9]{1,3})</div>#";
 
-preg_match_all($regExp, $html, $matches, PREG_SET_ORDER);
+preg_match_all($regExp, $itemHtml, $matches, PREG_SET_ORDER);
 
 array_shift($matches);
 foreach($matches as $mkey => $match) {
@@ -198,11 +220,11 @@ $finish = microtime(true);
 show("Parse Items: " . ($finish - $start) . ' ms');
 
 // Classjobs
-
 $start = microtime(true);
-$regExp = "#ic_class_wh24_box.*?<img.*?src=\"(?<icon>.*?)\".*?>(?<name>[^<]+?)<\/td><td[^>]*?>(?<level>[\d-]+?)<\/td><td[^>]*?>(?<exp_current>[\d-]+?)\s\/\s(?<exp_total>[\d-]+?)<\/td#";
+$jobHtml = trimHTML($html, '<h4 class="class_fighter">', 'minion_box');
+$regExp = "#ic_class_wh24_box.*?<img.*?src=\"(?<icon>.*?)\?.*?>(?<name>[^<]+?)</td><td[^>]*?>(?<level>[\d-]+?)</td><td[^>]*?>(?<exp_current>[\d-]+?)\s/\s(?<exp_total>[\d-]+?)</td#";
 
-preg_match_all($regExp, $html, $matches, PREG_SET_ORDER);
+preg_match_all($regExp, $jobHtml, $matches, PREG_SET_ORDER);
 array_shift($matches);
 foreach($matches as $mkey => $match) {
 	array_shift($match);
