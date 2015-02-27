@@ -155,12 +155,12 @@ foreach($matches as $mkey => $match) {
 	$classjobs[] = $match;
 }
 
-$newHtml = trimHTML($html, 'param_left_area', 'param_power_area');
+$attrHtml = trimHTML($html, 'param_left_area', 'param_power_area');
 
 // attributes
 $regExp = "#li class=\"(?P<attr>.*?)(?:\s?clearfix)?\">(?P<content>.*?)<\/li#";
 
-preg_match_all($regExp, $newHtml, $matches, PREG_SET_ORDER);
+preg_match_all($regExp, $attrHtml, $matches, PREG_SET_ORDER);
 array_shift($matches);
 foreach($matches as $mkey => $match) {
 	array_shift($match);
@@ -177,9 +177,25 @@ foreach($matches as $mkey => $match) {
 	$attributes[$key] = $value;
 }
 
+// Base Data
+$regExp = "#player_name_thumb.*?src=\"(?P<avatar>.*?)\".*?"
+		. "<a.*?>(?P<name>.*?)<\/a>"
+		. "<span>\s*?\((?P<server>.*?)\).*?"
+		. "<div class=\"chara_title\">(?P<title>.*?)</div>.*?"
+		. "txt_selfintroduction\">(?P<bio>.*?)<\/div>.*?"
+		. "chara_profile_title\">(?P<raceClanGender>.*?)</div>.*?"
+		. "txt_name\">(?P<nameday>.*?)<\/dd>.*?"
+		. "txt_name\">(?P<Guardian>.*?)<\/dd>.*?"
+		. "txt_name\">(?P<city>.*?)<\/dd>.*?"
+		. "txt_name\">(?P<grandcompany>.*?)<\/dd>.*?"
+		. "ic_crest_32.*?src=\"(?P<freecompanyIcon1>.*?)\".*?src=\"(?P<freecompanyIcon2>.*?)\".*?src=\"(?P<freecompanyIcon3>.*?)\".*?"
+		. "txt_name\">.*?href=\".*?\/(?P<freecompanyid>[\d]+?)\/\".*?>(?P<freecompany>.*?)<\/a>.*?"
+		. "#";
+preg_match($regExp, $html, $matches);
+array_shift($matches);
 $finish = microtime(true);
 show("Parse (regExp): " . ($finish - $start) . ' ms');
 //echo "<h2>Viion Parser</h2>";
 //show($character);
 echo "<h2>Regexp</h2>";
-show(array('items' => $items, "classjobs" => $classjobs, 'attributes' => $attributes));
+show(array('items' => $items, "classjobs" => $classjobs, 'attributes' => $attributes, 'base' => $matches));
