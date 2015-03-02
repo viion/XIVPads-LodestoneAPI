@@ -36,6 +36,9 @@ class Achievements
      */
     public function clean()
     {
+        // Sort achievements by ID.
+        ksort($this->list);
+
         // Set hash
         $this->hash = sha1($this->dump(true));
     }

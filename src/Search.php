@@ -29,7 +29,6 @@ class Search
     {
         // if numeric, we dont search lodestone
         if (is_numeric($nameOrId)) {
-
             // If basic searching
             if ($this->basicParsing) {
                 return $this->basicCharacterSearch($nameOrId);
@@ -37,9 +36,9 @@ class Search
 
             // Advanced searching
             return $this->advancedCharacterSearch($nameOrId);
-        }
-        else
-        {
+
+        } else {
+
             $searchName = str_ireplace(' ', '+',  $nameOrId);
 
             // Generate url
@@ -49,15 +48,13 @@ class Search
             \phpQuery::newDocumentFileHTML($url);
 
             // go through results
-            foreach(pq('.table_black_border_bottom tr') as $i => $node)
-            {
+            foreach(pq('.table_black_border_bottom tr') as $i => $node) {
                 $node = pq($node);
                 $name = $node->find('h4.player_name_gold a')->text();
                 $id = filter_var($node->find('h4.player_name_gold a')->attr('href'), FILTER_SANITIZE_NUMBER_INT);
 
                 // match what was sent (lower both as could be user input)
-                if (strtolower($name) == strtolower($nameOrId) && is_numeric($id))
-                {
+                if (strtolower($name) == strtolower($nameOrId) && is_numeric($id)) {
                     // recurrsive callback
                     return $this->Character($id);
                 }
@@ -528,21 +525,15 @@ class Search
                 {
                     $node = new Parser($node);
 
-                    $id = explode('/', $node->find('bt_more')->attr('href'));
-                    if (!isset($id[6])) {
-                        show($node);
-                    }
-
-                    $id = $id['6'];
-
-                    $points = $node->find('achievement_point')->numbers();
-                    $time = $this->extractTime($node->find('getElementById')->html());
-                    $obtained = ($time) ? true : false;
+                    $id         = explode('/', $node->find('bt_more')->attr('href'))[6];
+                    $points     = $node->find('achievement_point')->numbers();
+                    $time       = $this->extractTime($node->find('getElementById')->html());
+                    $obtained   = ($time) ? true : false;
 
                     $achievement->list[$id] =
                     [
                         'id'        => $id,
-                        'icon'      => explode('?', $node->find('ic_achievement', 2)->attr('src'))[0],
+                        'icon'      => explode('?', $node->find('ic_achievement', ($kind == 13 ? 1 : 2))->attr('src'))[0],
                         'name'      => $node->find('achievement_name')->text(),
                         'time'      => $time,
                         'obtained'  => $obtained,
@@ -599,6 +590,9 @@ class Search
             }
         }
 
+        // Dust up
+        $achievement->clean();
+
         // return
         return $achievement;
     }
@@ -622,8 +616,7 @@ class Search
 		$achievement = new Achievements();
 
 		// loop through kinds
-		foreach($kinds as $kind => $type)
-		{
+		foreach($kinds as $kind => $type) {
 			// Skip if this is the legacy kind and character is not legacy
 			if ($kind == 13 && !$isLegacy) {
 				continue;
@@ -678,6 +671,9 @@ class Search
 				$achievement->countTotal = $achievement->countTotal + 1;
 			}
 		}
+
+        // Dust up
+        $achievement->clean();
 
         // return
         return $achievement;
