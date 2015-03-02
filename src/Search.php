@@ -43,15 +43,21 @@ class Search
 
             // Generate url
             $url = $this->urlGen('characterSearch', [ '{name}' => $searchName, '{world}' => $world ]);
+            $html = $this->trim($this->curl($url), '<!-- result -->', '<!-- /result -->');
 
-            // get doc
-            \phpQuery::newDocumentFileHTML($url);
+            $p = new Parser($html);
 
             // go through results
-            foreach(pq('.table_black_border_bottom tr') as $i => $node) {
-                $node = pq($node);
-                $name = $node->find('h4.player_name_gold a')->text();
-                $id = filter_var($node->find('h4.player_name_gold a')->attr('href'), FILTER_SANITIZE_NUMBER_INT);
+            foreach($p->findAll('thumb_cont_black_50', 'col3box_right') as $i => $node) {
+                $node = new Parser($node);
+
+                $data = explode(' (', $node->find('player_name_gold', 0)->text());
+
+                // Character
+                $id     = filter_var($node->find('player_name_gold', 0)->attr('href'), FILTER_SANITIZE_NUMBER_INT);
+                $name   = trim($data[0]);
+                $world  = trim(str_replace(')', null, $data[1]));
+                $avatar = explode('?', $node->find('thumb_cont_black_50', 1)->attr('src'))[0];
 
                 // match what was sent (lower both as could be user input)
                 if (strtolower($name) == strtolower($nameOrId) && is_numeric($id)) {

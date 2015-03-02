@@ -38,6 +38,8 @@ class Achievements
     {
         // Sort achievements by ID.
         ksort($this->list);
+        ksort($this->kinds);
+        ksort($this->kindsTotal);
 
         // Set hash
         $this->hash = sha1($this->dump(true));
