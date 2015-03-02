@@ -108,12 +108,16 @@ class Search
         $character->grandCompanyRank = explode('/', $p->find('chara_profile_left',16)->text())[1];
         $character->grandCompanyIcon = $p->find('chara_profile_left', 14)->attr('src');
         $character->freeCompany = $p->find('ic_crest_32', 6)->text();
-        $character->freeCompanyId = filter_var($p->find('ic_crest_32', 6)->attr('href'), FILTER_SANITIZE_NUMBER_INT);
-        $character->freeCompanyIcon = [
-            $p->find('ic_crest_32', 2)->attr('src'),
-            $p->find('ic_crest_32', 3)->attr('src'),
-            $p->find('ic_crest_32', 4)->attr('src')
-        ];
+
+        // Only proceed if caracter is in an Fc
+        if ($character->freeCompany) {
+            $character->freeCompanyId = filter_var($p->find('ic_crest_32', 6)->attr('href'), FILTER_SANITIZE_NUMBER_INT);
+            $character->freeCompanyIcon = [
+                $p->find('ic_crest_32', 2)->attr('src'),
+                $p->find('ic_crest_32', 3)->attr('src'),
+                $p->find('ic_crest_32', 4)->attr('src')
+            ];
+        }
 
         # Class/Jobs
 
@@ -311,10 +315,10 @@ class Search
 					}
 				}
 			}
-			
+
             $character->avatarLarge = str_ireplace('50x50', '96x96', $character->avatar);
             $character->portraitLarge = str_ireplace('264x360', '640x873', $character->portrait);
-			
+
 			$freeCompanyRegExp = "#ic_crest_32.*?src=\"(?<freecompanyIcon1>.*?)\".*?src=\"(?<freecompanyIcon2>.*?)\".*?src=\"(?<freecompanyIcon3>.*?)\".*?"
 								. "txt_name\">.*?href=\".*?/(?<freecompanyid>[\d]+?)/\".*?>(?<freecompany>.*?)</a>.*?#";
 			if(preg_match($freeCompanyRegExp, $html, $matches)){
@@ -428,7 +432,7 @@ class Search
 				$this->clearRegExpArray($match);
 				$character->mounts[] = $match;
 			}
-			
+
 			$minionHtml = $this->trim($html, '<!-- Minion -->', '<!-- //Minion -->');
 			$regExp = "#<a.*?title=\"(?<name>.*?)\".*?<img.*?src=\"(?<icon>.*?)\?.*?>#";
 
@@ -440,7 +444,7 @@ class Search
 
             // dust up
             $character->clean();
-			
+
 			return $character;
     }
 
