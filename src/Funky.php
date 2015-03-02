@@ -45,11 +45,12 @@ trait Funky
 
         return $html;
     }
-	
-	public function clearRegExpArray(&$array){
+
+	public function clearRegExpArray(&$array)
+    {
 		$tmp = array();
-		foreach($array as $key => $value){
-			if(!is_numeric($key)){
+		foreach($array as $key => $value) {
+			if(!is_numeric($key) ){
 				$tmp[$key] = $value;
 			}
 		}
