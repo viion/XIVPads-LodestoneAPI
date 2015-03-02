@@ -41,7 +41,7 @@ function oldConstruct($html)
 function newConstruct($html)
 {
 	// Building cleaned up on line html
-	$html = preg_replace(array('#\s\s+#s','#<!--.*?-->#s','#<script.*?>.*?</script>?#s','#[\n\t]#s'),'', $html);
+	$html = preg_replace(array('#\s\s+#s','#<script.*?>.*?</script>?#s','#[\n\t]#s'),'', $html);
 	/*
 	// Split
 	$htmlArray = preg_split('#(</?.*?>)#',$html,-1,PREG_SPLIT_NO_EMPTY|PREG_SPLIT_DELIM_CAPTURE);
@@ -133,6 +133,8 @@ $base = array();
 $items = array();
 $classjobs = array();
 $attributes = array();
+$mounts = array();
+$minions = array();
 
 $startAll = microtime(true);
 
@@ -207,7 +209,7 @@ show("Parse Attributes: " . ($finish - $start) . ' ms');
 // Items
 $start = microtime(true);
 $itemHtml = trimHTML($html, 'param_class_info_area', 'chara_content_title mb10');
-$regExp = "#item_detail_box.*?ic_reflection_box_64.*?<img.*?src=\"(?<icon>[^\"]+?itemicon[^\"]+)\?.*?class=\"item_name.*?>(?<name>[^<]*?)</h2>.*?class=\"category_name\">(?<slot>[^<]*?)</h3>.*?<a href=\"/lodestone/playguide/db/item/(?<lodestone>[\w\d]+?)/\".*?class=\"pt3 pb3\">.+?\s(?<item_level>[0-9]{1,3})</div>#";
+$regExp = "#item_detail_box.*?ic_reflection_box_64.*?<img.*?src=\"(?<icon>[^\"]+?itemicon[^\"]+)\?.*?<h2.*?class=\"item_name\s?(?<color>.*?)_item\".*?>(?<name>[^<]*?)</h2>.*?class=\"category_name\">(?<slot>[^<]*?)</h3>.*?<a href=\"/lodestone/playguide/db/item/(?<lodestone>[\w\d]+?)/\".*?class=\"pt3 pb3\">.+?\s(?<item_level>[0-9]{1,3})</div>#";
 
 preg_match_all($regExp, $itemHtml, $matches, PREG_SET_ORDER);
 
@@ -233,10 +235,38 @@ foreach($matches as $mkey => $match) {
 $finish = microtime(true);
 show("Parse Classjobs: " . ($finish - $start) . ' ms');
 
+// Mounts
+$start = microtime(true);
+$mountHtml = trimHTML($html, '<!-- Mount -->', '<!-- //Mount -->');
+$regExp = "#<a.*?title=\"(?<name>.*?)\".*?<img.*?src=\"(?<icon>.*?)\?.*?>#";
+
+preg_match_all($regExp, $mountHtml, $matches, PREG_SET_ORDER);
+array_shift($matches);
+foreach($matches as $mkey => $match) {
+	array_shift($match);
+	$mounts[] = $match;
+}
+$finish = microtime(true);
+show("Parse Mounts: " . ($finish - $start) . ' ms');
+
+// Minions
+$start = microtime(true);
+$minionHtml = trimHTML($html, '<!-- Minion -->', '<!-- //Minion -->');
+$regExp = "#<a.*?title=\"(?<name>.*?)\".*?<img.*?src=\"(?<icon>.*?)\?.*?>#";
+
+preg_match_all($regExp, $minionHtml, $matches, PREG_SET_ORDER);
+array_shift($matches);
+foreach($matches as $mkey => $match) {
+	array_shift($match);
+	$minions[] = $match;
+}
+$finish = microtime(true);
+show("Parse Mounts: " . ($finish - $start) . ' ms');
+
 
 $finishAll = microtime(true);
 show("Parse overall: " . ($finishAll - $startAll) . ' ms');
 //echo "<h2>Viion Parser</h2>";
 //show($character);
 echo "<h2>Regexp</h2>";
-show(array('base' => $base,'items' => $items, "classjobs" => $classjobs, 'attributes' => $attributes,));
+show(array('base' => $base,'items' => $items, "classjobs" => $classjobs, 'attributes' => $attributes, 'mounts' => $mounts, 'minions' => $minions,));
