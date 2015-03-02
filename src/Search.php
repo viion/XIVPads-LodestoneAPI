@@ -145,7 +145,7 @@ class Search
                     'name' => $name,
                     'level' =>  $level,
                     'exp_current' => intval($exp[0]),
-                    'exp_total' => intval($exp[1]),
+                    'exp_level' => intval($exp[1]),
                 ];
             }
 
@@ -352,7 +352,7 @@ class Search
             # Class/Jobs
 			$possibleClasses = array();
 			$jobHtml = $this->trim($html, '<h4 class="class_fighter">', 'minion_box');
-			$regExp = "#ic_class_wh24_box.*?<img.*?src=\"(?<icon>.*?)\?.*?>(?<name>[^<]+?)</td><td[^>]*?>(?<level>[\d-]+?)</td><td[^>]*?>(?<exp_current>[\d-]+?)\s/\s(?<exp_total>[\d-]+?)</td#";
+			$regExp = "#ic_class_wh24_box.*?<img.*?src=\"(?<icon>.*?)\?.*?>(?<name>[^<]+?)</td><td[^>]*?>(?<level>[\d-]+?)</td><td[^>]*?>(?<exp_current>[\d-]+?)\s/\s(?<exp_level>[\d-]+?)</td#";
 
 			preg_match_all($regExp, $jobHtml, $matches, PREG_SET_ORDER);
 			foreach($matches as $mkey => $match) {

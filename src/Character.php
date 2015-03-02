@@ -4,6 +4,7 @@ namespace Viion\Lodestone;
 class Character
 {
     use Funky;
+    use Data;
 
     public $id;
     public $name;
@@ -116,6 +117,22 @@ class Character
 
             // Reset
             $this->$param = $value;
+        }
+
+        $curve = $this->getExperiencePoints();
+
+        // Set max EXP
+        foreach($this->classjobs as $i => $d)
+        {
+            $temp = $curve;
+            $realTotal = 0;
+
+            if ($d['level'] > 0)
+            {
+                $realTotal = array_sum(array_splice($temp, 0, $d['level'])) + intval($d['exp_current']);
+            }
+
+            $this->classjobs[$i]['exp_total'] = $realTotal;
         }
 
         // Sort attributes

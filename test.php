@@ -26,23 +26,25 @@ if (isset($_GET['basic'])) {
     $api->useBasicParsing();
 }
 
-    //$character = $api->Search->Character('Premium Virtue', 'Hyperion');
+//$character = $api->Search->Character('Premium Virtue', 'Hyperion');
+
+$id = 730968;
+if (isset($_GET['id'])) {
+    $id = intval($_GET['id']);
+}
+$character = $api->Search->Character($id);
+
+show($character->dump());
+
 /*
-    $id = 730968;
-    if (isset($_GET['id'])) {
-        $id = intval($_GET['id']);
-    }
-    show($character->dump());
+//$worldStatus = $api->Search->Worldstatus('Chaos','Zodiark');
+//show($worldStatus);
 */
 
 /*
-    //$worldStatus = $api->Search->Worldstatus('Chaos','Zodiark');
-    //show($worldStatus);
+$achievements = $api->Search->Achievements(730968, true);
+show($achievements->dump());
 */
-
-    $achievements = $api->Search->Achievements(730968, true);
-    show($achievements->dump());
-
 
 show("Memory: ". cMem(memory_get_usage()) .' - after api->Search->Character');
 $finish = microtime(true);
