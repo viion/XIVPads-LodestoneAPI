@@ -329,6 +329,7 @@ class Search
 			}
 
             # Class/Jobs
+			$possibleClasses = array();
 			$jobHtml = $this->trim($html, '<h4 class="class_fighter">', 'minion_box');
 			$regExp = "#ic_class_wh24_box.*?<img.*?src=\"(?<icon>.*?)\?.*?>(?<name>[^<]+?)</td><td[^>]*?>(?<level>[\d-]+?)</td><td[^>]*?>(?<exp_current>[\d-]+?)\s/\s(?<exp_total>[\d-]+?)</td#";
 
@@ -336,6 +337,7 @@ class Search
 			foreach($matches as $mkey => $match) {
 				$this->clearRegExpArray($match);
 				$character->classjobs[] = $match;
+				$possibleClasses[] = $match['name'];
 			}
 
             # Gear
@@ -359,18 +361,19 @@ class Search
                     }
                 }
 
-                // active class
-				// TODO multilanguage
-                if ($i === 0) {
-                    $character->activeClass = preg_replace('#((one|two)\-handed\s?)?([\w]+)([^\w].*)?#iu','$3',$match['slot']);
-                }
-
                 // active job
 				// TODO multilanguage
                 if ($match['slot'] == 'Soul Crystal') {
                     $character->activeJob = str_ireplace('Soul of the ', null, $match['name']);
                 }
 				$i++;
+			}
+
+			// active class
+			// TODO multilanguage
+			$activeClassMatch= array();
+			if (preg_match('#('. implode('?|',$possibleClasses).')#i',$matches[0]['slot'],$activeClassMatch) === 1) {
+				$character->activeClass = $activeClassMatch[1];
 			}
 
             $character->gearStats = [
