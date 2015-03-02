@@ -22,8 +22,9 @@ show("Memory: ". cMem(memory_get_usage()) .' - after new api instance');
 // Get character
 
 
-
-
+if (isset($_GET['basic'])) {
+    $api->useBasicParsing();
+}
 
     //$character = $api->Search->Character('Premium Virtue', 'Hyperion');
 /*
