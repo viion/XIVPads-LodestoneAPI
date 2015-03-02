@@ -240,7 +240,7 @@ class Search
             }
         }
 
-        foreach($p->findAll('param_list', 4, 'param_list_elemental') as $i => $node) {
+        foreach($p->findAll('param_list', 10, 'param_list_elemental') as $i => $node) {
             // new node
             $node = new Parser($node);
 
@@ -249,8 +249,11 @@ class Search
                 $n = new Parser($n);
                 $name = strtolower(str_replace(range(0,9), null, $n->find('clearfix')->text()));
                 $name = str_replace(' ', '-', trim($name));
-                $value = $n->find('clearfix')->numbers();
-                $character->attributes[$name] = intval(trim($value));
+
+                if ($name) {
+                    $value = $n->find('clearfix')->numbers();
+                    $character->attributes[$name] = intval(trim($value));
+                }
             }
         }
 
