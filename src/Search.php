@@ -284,7 +284,7 @@ class Search
         // Generate url and get html
         $url = $this->urlGen('characterProfile', [ '{id}' => $id ]);
         $rawHtml = $this->trim($this->curl($url), '<!-- contents -->', '<!-- //Minion -->');
-        $html = preg_replace(array('#\s\s+#s','#<script.*?>.*?</script>?#s','#[\n\t]#s'),'', $rawHtml);
+        $html = html_entity_decode(preg_replace(array('#\s\s+#s','#<script.*?>.*?</script>?#s','#[\n\t]#s'),'', $rawHtml),ENT_QUOTES);
 
         // Base Data
         $regExp = "#player_name_thumb.*?src=\"(?<avatar>.*?)\?.*?"
@@ -345,7 +345,7 @@ class Search
             $iLevelTotal = 0;
             $iLevelArray = [];
 			$gearHtml = $this->trim($html, 'param_class_info_area', 'chara_content_title mb10');
-			$regExp = "#item_detail_box.*?ic_reflection_box_64.*?<img.*?src=\"(?<icon>[^\"]+?itemicon[^\"]+)\?.*?<h2.*?class=\"item_name\s?(?<color>.*?)_item\".*?>(?<name>[^<]*?)</h2>.*?class=\"category_name\">(?<slot>[^<]*?)</h3>.*?<a href=\"/lodestone/playguide/db/item/(?<id>[\w\d]+?)/\".*?class=\"pt3 pb3\">.+?\s(?<ilv>[0-9]{1,3})</div>#";
+			$regExp = "#item_detail_box.*?ic_reflection_box_64.*?<img.*?src=\"(?<icon>[^\"]+?itemicon[^\"]+)\?.*?<h2.*?class=\"item_name\s?(?<color>.*?)_item\".*?>(?<name>[^<]*?)</h2>.*?class=\"category_name\">(?<slot>[\w\-\s\']*?)</h3>.*?<a href=\"/lodestone/playguide/db/item/(?<id>[\w\d]+?)/\".*?class=\"pt3 pb3\">.+?\s(?<ilv>[0-9]{1,3})</div>#u";
 
 			preg_match_all($regExp, $gearHtml, $matches, PREG_SET_ORDER);
 			foreach($matches as $mkey => $match) {
