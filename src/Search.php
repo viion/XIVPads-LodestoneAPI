@@ -108,12 +108,16 @@ class Search
         $character->grandCompanyRank = explode('/', $p->find('chara_profile_left',16)->text())[1];
         $character->grandCompanyIcon = $p->find('chara_profile_left', 14)->attr('src');
         $character->freeCompany = $p->find('ic_crest_32', 6)->text();
-        $character->freeCompanyId = filter_var($p->find('ic_crest_32', 6)->attr('href'), FILTER_SANITIZE_NUMBER_INT);
-        $character->freeCompanyIcon = [
-            $p->find('ic_crest_32', 2)->attr('src'),
-            $p->find('ic_crest_32', 3)->attr('src'),
-            $p->find('ic_crest_32', 4)->attr('src')
-        ];
+
+        // Only proceed if caracter is in an Fc
+        if ($character->freeCompany) {
+            $character->freeCompanyId = filter_var($p->find('ic_crest_32', 6)->attr('href'), FILTER_SANITIZE_NUMBER_INT);
+            $character->freeCompanyIcon = [
+                $p->find('ic_crest_32', 2)->attr('src'),
+                $p->find('ic_crest_32', 3)->attr('src'),
+                $p->find('ic_crest_32', 4)->attr('src')
+            ];
+        }
 
         # Class/Jobs
 
@@ -127,11 +131,16 @@ class Search
             if ($name) {
                 $exp    = explode(' / ', $node->find('ic_class_wh24_box', 2)->text());
                 $icon   = explode('?', $node->find('ic_class_wh24_box')->attr("src"))[0];
+                $level  = $node->find('ic_class_wh24_box', 1)->numbers();
+
+                if (!$level) {
+                    $level = 0;
+                }
 
                 $character->classjobs[] = [
                     'icon' => $icon,
                     'name' => $name,
-                    'level' =>  $node->find('ic_class_wh24_box', 1)->numbers(),
+                    'level' =>  $level,
                     'exp_current' => intval($exp[0]),
                     'exp_total' => intval($exp[1]),
                 ];
@@ -205,7 +214,13 @@ class Search
             'perception' => null
         ];
 
-        foreach($p->FindAll('param_list_attributes', 6) as $i => $node) {
+        $character->attributes['hp'] = $p->find('class="hp"')->numbers();
+        $character->attributes['mp'] = $p->find('class="mp"')->numbers();
+        $character->attributes['tp'] = $p->find('class="tp"')->numbers();
+        $character->attributes['cp'] = $p->find('class="cp"')->numbers();
+        $character->attributes['gp'] = $p->find('class="gp"')->numbers();
+
+        foreach($p->findAll('param_list_attributes', 6) as $i => $node) {
             // new node
             $node = new Parser($node);
             $attr = ['str', 'dex', 'vit', 'int', 'mnd'];
@@ -215,7 +230,7 @@ class Search
             }
         }
 
-        foreach($p->FindAll('param_list_elemental', 8) as $i => $node) {
+        foreach($p->findAll('param_list_elemental', 8) as $i => $node) {
             // new node
             $node = new Parser($node);
             $attr = ['fire', 'ice', 'wind', 'earth', 'thunder', 'water'];
@@ -225,7 +240,7 @@ class Search
             }
         }
 
-        foreach($p->findAll('param_list', 4, 'param_list_elemental') as $i => $node) {
+        foreach($p->findAll('param_list', 10, 'param_list_elemental') as $i => $node) {
             // new node
             $node = new Parser($node);
 
@@ -234,8 +249,11 @@ class Search
                 $n = new Parser($n);
                 $name = strtolower(str_replace(range(0,9), null, $n->find('clearfix')->text()));
                 $name = str_replace(' ', '-', trim($name));
-                $value = $n->find('clearfix')->numbers();
-                $character->attributes[$name] = intval(trim($value));
+
+                if ($name) {
+                    $value = $n->find('clearfix')->numbers();
+                    $character->attributes[$name] = intval(trim($value));
+                }
             }
         }
 
@@ -250,7 +268,7 @@ class Search
 
                 $data = [
                     'name' => str_ireplace('>', null, $n->find('ic_reflection_box')->attr('title')),
-                    'icon' => $n->find('ic_reflection_box', 1)->attr('src'),
+                    'icon' => explode('?', $n->find('ic_reflection_box', 1)->attr('src'))[0],
                 ];
 
                 if ($i == 0) {
@@ -311,10 +329,10 @@ class Search
 					}
 				}
 			}
-			
+
             $character->avatarLarge = str_ireplace('50x50', '96x96', $character->avatar);
             $character->portraitLarge = str_ireplace('264x360', '640x873', $character->portrait);
-			
+
 			$freeCompanyRegExp = "#ic_crest_32.*?src=\"(?<freecompanyIcon1>.*?)\".*?src=\"(?<freecompanyIcon2>.*?)\".*?src=\"(?<freecompanyIcon3>.*?)\".*?"
 								. "txt_name\">.*?href=\".*?/(?<freecompanyid>[\d]+?)/\".*?>(?<freecompany>.*?)</a>.*?#";
 			if(preg_match($freeCompanyRegExp, $html, $matches)){
@@ -428,7 +446,7 @@ class Search
 				$this->clearRegExpArray($match);
 				$character->mounts[] = $match;
 			}
-			
+
 			$minionHtml = $this->trim($html, '<!-- Minion -->', '<!-- //Minion -->');
 			$regExp = "#<a.*?title=\"(?<name>.*?)\".*?<img.*?src=\"(?<icon>.*?)\?.*?>#";
 
@@ -440,7 +458,7 @@ class Search
 
             // dust up
             $character->clean();
-			
+
 			return $character;
     }
 

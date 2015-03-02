@@ -118,6 +118,9 @@ class Character
             $this->$param = $value;
         }
 
+        // Sort attributes
+        ksort($this->attributes);
+
         // Set hash
         $this->hash = sha1($this->dump(true));
     }
