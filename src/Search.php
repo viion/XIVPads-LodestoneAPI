@@ -131,11 +131,16 @@ class Search
             if ($name) {
                 $exp    = explode(' / ', $node->find('ic_class_wh24_box', 2)->text());
                 $icon   = explode('?', $node->find('ic_class_wh24_box')->attr("src"))[0];
+                $level  = $node->find('ic_class_wh24_box', 1)->numbers();
+
+                if (!$level) {
+                    $level = 0;
+                }
 
                 $character->classjobs[] = [
                     'icon' => $icon,
                     'name' => $name,
-                    'level' =>  $node->find('ic_class_wh24_box', 1)->numbers(),
+                    'level' =>  $level,
                     'exp_current' => intval($exp[0]),
                     'exp_total' => intval($exp[1]),
                 ];
