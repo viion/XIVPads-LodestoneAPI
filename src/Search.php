@@ -209,7 +209,13 @@ class Search
             'perception' => null
         ];
 
-        foreach($p->FindAll('param_list_attributes', 6) as $i => $node) {
+        $character->attributes['hp'] = $p->find('class="hp"')->numbers();
+        $character->attributes['mp'] = $p->find('class="mp"')->numbers();
+        $character->attributes['tp'] = $p->find('class="tp"')->numbers();
+        $character->attributes['cp'] = $p->find('class="cp"')->numbers();
+        $character->attributes['gp'] = $p->find('class="gp"')->numbers();
+
+        foreach($p->findAll('param_list_attributes', 6) as $i => $node) {
             // new node
             $node = new Parser($node);
             $attr = ['str', 'dex', 'vit', 'int', 'mnd'];
@@ -219,7 +225,7 @@ class Search
             }
         }
 
-        foreach($p->FindAll('param_list_elemental', 8) as $i => $node) {
+        foreach($p->findAll('param_list_elemental', 8) as $i => $node) {
             // new node
             $node = new Parser($node);
             $attr = ['fire', 'ice', 'wind', 'earth', 'thunder', 'water'];
@@ -254,7 +260,7 @@ class Search
 
                 $data = [
                     'name' => str_ireplace('>', null, $n->find('ic_reflection_box')->attr('title')),
-                    'icon' => $n->find('ic_reflection_box', 1)->attr('src'),
+                    'icon' => explode('?', $n->find('ic_reflection_box', 1)->attr('src'))[0],
                 ];
 
                 if ($i == 0) {

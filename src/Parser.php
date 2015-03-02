@@ -63,6 +63,7 @@ class Parser
      */
     public function find($string, $offset = 0)
     {
+        $this->found = null;
         $found = null;
 
         foreach($this->html as $i =>$code)
@@ -157,7 +158,13 @@ class Parser
 
     public function numbers()
     {
-        return trim(filter_var($this->found, FILTER_SANITIZE_NUMBER_INT));
+        $numbers = trim(filter_var($this->found, FILTER_SANITIZE_NUMBER_INT));
+
+        if (is_numeric($numbers)) {
+            return $numbers;
+        }
+
+        return false;
     }
 
     public function attr($attribute)
