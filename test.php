@@ -12,6 +12,7 @@ function cMem($size) { $tmp = array('b','kb','mb','gb','tb','pb'); return @round
 //require 'vendor/autoload.php';
 show("Memory: ". cMem(memory_get_usage()) .' - before autoloader');
 require 'api-autoloader.php';
+require '_old/phpQuery.php';
 use Viion\Lodestone\LodestoneAPI;
 show("Memory: ". cMem(memory_get_usage()) .' - after autoloader');
 
@@ -21,6 +22,8 @@ show("Memory: ". cMem(memory_get_usage()) .' - after new api instance');
 
 // Get character
 
+
+/*
 //    $character = $api->Search->Character('Premium Virtue', 'Hyperion');
     $id = 730968;
     if (isset($_GET['id'])) {
@@ -32,12 +35,10 @@ show("Memory: ". cMem(memory_get_usage()) .' - after new api instance');
 
     //$worldStatus = $api->Search->Worldstatus('Chaos','Zodiark');
     //show($worldStatus);
-
-/*
+*/
 // Get achievements
 $achievements = $api->Search->Achievements(730968, true);
 show($achievements->dump());
-*/
 show("Memory: ". cMem(memory_get_usage()) .' - after api->Search->Character');
 $finish = microtime(true);
 

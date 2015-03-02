@@ -550,6 +550,82 @@ class Search
     }
 
     /**
+     * - Achievements
+     */
+    public function advancedAchievements($id)
+    {
+		// If legacy or not.
+		$isLegacy = false;
+
+		// get kinds
+		$kinds = $this->getAchievementKinds();
+
+		// New character object
+		$achievement = new Achievements();
+
+		// loop through kinds
+		foreach($kinds as $kind => $type)
+		{
+			// Skip if this is the legacy kind and character is not legacy
+			if ($kind == 13 && !$isLegacy) {
+				continue;
+			}
+
+			// Generate url
+			$url = $this->urlGen('achievementsKind', [ '{id}' => $id, '{kind}' => $kind ]);
+			$rawHtml = $this->trim($this->curl($url), '<!-- #main -->', '<!-- //#main -->');
+			$html = html_entity_decode(preg_replace(array('#\s\s+#s','#[\n\t]#s'),'', $rawHtml),ENT_QUOTES);
+			$achievement->legacy = (preg_match('#class="legacy"#',$html) === 1);
+			$isLegacy = $achievement->legacy;
+			# Achievments
+			$possibleClasses = array();
+			$regExp = "#<li><div class=\"(?<achieved>.*?)\">.*?src=\"(?<icon>.+?)\?.*?achievement_name.*?>(?<name>.*?)</span>(?<dateHTML>.*?)achievement_point.*?>(?<points>[\d]+)</div>.*?<a.*?href=\"/lodestone/character/[\d]+/achievement/detail/(?<id>[\d]+)/\".*?</li>#";
+			
+			$achievmentMatches = array();
+			preg_match_all($regExp, $html, $achievmentMatches, PREG_SET_ORDER);
+			foreach($achievmentMatches as $mkey => $match) {
+				$obtained = $match['achieved'] == "already" ? true : false;
+				if($match['achieved'] == "already"){
+					preg_match('#ldst_strftime\(([\d\.]+),#',$match['dateHTML'],$dateMatch);
+					$time = filter_var($dateMatch[1], FILTER_SANITIZE_NUMBER_INT);
+				}else{
+					$time = 0;
+				}
+				$points = filter_var($match['points'], FILTER_SANITIZE_NUMBER_INT);
+				$achievement->list[] =
+				[
+					'id' => $match['id'],
+					'icon' => $match['icon'],
+					'name' => $match['name'],
+					'time' => $time,
+					'obtained' =>$obtained,
+					'points' =>  $match['points'],
+					'kind' => $type,
+					'kind_id' => $kind,
+				];
+
+				// prevent php notices
+				if (!isset($achievement->kinds[$type])) { $achievement->kinds[$type] = 0; }
+				if (!isset($achievement->kindsTotal[$type])) { $achievement->kindsTotal[$type] = 0; }
+
+				// Increment kinds
+				$achievement->kindsTotal[$type] = $achievement->kindsTotal[$type] + $points;
+				if ($obtained) {
+					$achievement->kinds[$type] = $achievement->kinds[$type] + $points;
+					$achievement->countCurrent = $achievement->countCurrent + 1;
+				}
+
+				// Increment overall total
+				$achievement->pointsTotal = $achievement->pointsTotal + $points;
+				$achievement->countTotal = $achievement->countTotal + 1;
+			}
+		}
+
+        // return
+        return $achievement;
+    }
+
+    /**
      * Get onlinestatus of server(s)
      * @param string $datacenter
      * @param string $server

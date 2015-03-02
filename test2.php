@@ -21,6 +21,7 @@ show("Memory: ". cMem(memory_get_usage()) .' - after new api instance');
 
 // Get character
 
+/*
 //    $character = $api->Search->Character('Premium Virtue', 'Hyperion');
     $id = 730968;
     if (isset($_GET['id'])) {
@@ -32,12 +33,12 @@ show("Memory: ". cMem(memory_get_usage()) .' - after new api instance');
     //$worldStatus = $api->Search->Worldstatus('Chaos','Zodiark');
     //show($worldStatus);
 
-/*
-// Get achievements
-$achievements = $api->Search->Achievements(730968, true);
-show($achievements->dump());
 */
-show("Memory: ". cMem(memory_get_usage()) .' - after api->Search->Character');
+// Get achievements
+$achievements = $api->Search->advancedAchievements(730968, true);
+show($achievements->dump());
+
+show("Memory: ". cMem(memory_get_usage()) .' - after api->Search->advancedAchievements (Count: '.count($achievements->list).')');
 $finish = microtime(true);
 
 unset($api);
