@@ -97,7 +97,7 @@ $options = array(
 	CURLOPT_HTTPHEADER => array('Content-type: text/html; charset=utf-8', 'Accept-Language: en'),
 );
 
-$ch = curl_init("http://eu.finalfantasyxiv.com/lodestone/character/9284891/");
+$ch = curl_init("http://eu.finalfantasyxiv.com/lodestone/character/730968/");
 curl_setopt_array($ch, $options);
 curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-type: text/html; charset=utf-8'));
 $source = curl_exec($ch);
@@ -168,17 +168,18 @@ show("Parse Base: " . ($finish - $start) . ' ms');
 
 // attributes
 $start = microtime(true);
-$attrHtml = trimHTML($html, 'param_left_area', 'param_power_area');
+$attrHtml = trimHTML($html, 'param_left_area', 'class_fighter');
 $regExp = "#li class=\"(?<attr>.*?)(?:\s?clearfix)?\">(?<content>.*?)</li#";
 
 preg_match_all($regExp, $attrHtml, $matches, PREG_SET_ORDER);
-array_shift($matches);
 foreach($matches as $mkey => $match) {
 	array_shift($match);
 	$key = strtolower(str_ireplace(' ', '-', $match['attr']));
 	$value = $match['content'];
 	if($match['attr'] == "") {
 		preg_match('#<span class="left">(?<key>.*?)</span><span class="right">(?<value>.*?)</span>#', $match['content'], $tmpMatch);
+		if(!array_key_exists('key', $tmpMatch))
+			continue;
 		$key = strtolower(str_ireplace(' ', '-', $tmpMatch['key']));
 		$value = $tmpMatch['value'];
 	}elseif(stripos($match['content'], 'val') !== false) {

@@ -354,17 +354,18 @@ class Search
             ];
 
             # Attributes
-			$attrHtml = $this->trim($html, 'param_left_area', 'param_power_area');
+			$attrHtml = $this->trim($html, 'param_left_area', 'class_fighter');
 			$regExp = "#li class=\"(?<attr>.*?)(?:\s?clearfix)?\">(?<content>.*?)</li#";
 
 			preg_match_all($regExp, $attrHtml, $matches, PREG_SET_ORDER);
-			array_shift($matches);
 			foreach($matches as $mkey => $match) {
 				array_shift($match);
 				$key = strtolower(str_ireplace(' ', '-', $match['attr']));
 				$value = $match['content'];
 				if($match['attr'] == "") {
 					preg_match('#<span class="left">(?<key>.*?)</span><span class="right">(?<value>.*?)</span>#', $match['content'], $tmpMatch);
+					if(!array_key_exists('key', $tmpMatch))
+						continue;
 					$key = strtolower(str_ireplace(' ', '-', $tmpMatch['key']));
 					$value = $tmpMatch['value'];
 				}elseif(stripos($match['content'], 'val') !== false) {
