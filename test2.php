@@ -26,7 +26,7 @@ show("Memory: ". cMem(memory_get_usage()) .' - after new api instance');
     if (isset($_GET['id'])) {
         $id = intval($_GET['id']);
     }
-    $character = $api->Search->CharacterRegExp($id);
+    $character = $api->Search->Character($id);
     show($character->dump());
 
     //$worldStatus = $api->Search->Worldstatus('Chaos','Zodiark');
