@@ -36,6 +36,7 @@ class Achievements
      */
     public function clean()
     {
-
+        // Set hash
+        $this->hash = sha1($this->dump(true));
     }
 }

@@ -70,16 +70,16 @@ class Search
     /**
      * Parse character data, does it using basic methods, Slower.
      *
-     * @param $id
+     * @param $characterId - character id
      * @return Array - character data
      */
-    private function basicCharacterSearch($id)
+    private function basicCharacterSearch($characterId)
     {
         // New character object
         $character = new Character();
 
         // Setup url and get html
-        $url = $this->urlGen('characterProfile', [ '{id}' => $id ]);
+        $url = $this->urlGen('characterProfile', [ '{id}' => $characterId ]);
         $html = $this->trim($this->curl($url), '<!-- contents -->', '<!-- //Minion -->');
 
         $p = new Parser($html);
@@ -291,16 +291,16 @@ class Search
     /**
      * Parse character data, does it using regex, Faster
      *
-     * @param $id
+     * @param $characterId - character id
      * @return Array - character data
      */
-    private function advancedCharacterSearch($id)
+    private function advancedCharacterSearch($characterId)
     {
         // New character object
         $character = new Character();
 
         // Generate url and get html
-        $url = $this->urlGen('characterProfile', [ '{id}' => $id ]);
+        $url = $this->urlGen('characterProfile', [ '{id}' => $characterId ]);
         $rawHtml = $this->trim($this->curl($url), '<!-- contents -->', '<!-- //Minion -->');
         $html = html_entity_decode(preg_replace(array('#\s\s+#s','#<script.*?>.*?</script>?#s','#[\n\t]#s'),'', $rawHtml),ENT_QUOTES);
 
@@ -463,9 +463,35 @@ class Search
     }
 
     /**
-     * - Achievements
+     * Get achievements for a character
+     *
+     * @param $characterId - the id of the character
+     * @param $all - all achievements or summary?
+     * @return Achievement - an achievement object
      */
-    public function Achievements($id, $all = false)
+    public function Achievements($characterId, $all = false)
+    {
+        // if numeric, we dont search lodestone
+        if (is_numeric($characterId)) {
+
+            // If basic searching
+            if ($this->basicParsing) {
+                return $this->basicAchievements($characterId, $all);
+            }
+
+            // Advanced searching
+            return $this->advancedCharacterSearch($characterId, $all);
+        }
+    }
+
+    /**
+     * Parse achievement data, does it using basic methods, Slower.
+     *
+     * @param $characterId - the character id
+     * @param $all - all achievements or summary?
+     * @return Achievement - an achievement object
+     */
+    private function basicAchievements($characterId, $all)
     {
         if ($all)
         {
@@ -487,33 +513,42 @@ class Search
                 }
 
                 // Generate url
-                $url = $this->urlGen('achievementsKind', [ '{id}' => $id, '{kind}' => $kind ]);
+                $url = $this->urlGen('achievementsKind', [ '{id}' => $characterId, '{kind}' => $kind ]);
+                $html = $this->trim($this->curl($url), '<!-- tab menu -->', '<!-- //base -->');
 
                 // get doc
-                \phpQuery::newDocumentFileHTML($url);
+                $p = new Parser($html);
 
                 // Begin parsing/populating character
-                $achievement->pointsCurrent = filter_var(pq('.total_point')->text(), FILTER_SANITIZE_NUMBER_INT);
-                $achievement->legacy = (strlen(pq('.legacy')->html()) > 0) ? true : false;
+                $achievement->pointsCurrent = $p->find('txt_yellow')->numbers();
+                $achievement->legacy = (strlen($p->find('legacy')->html()) > 0) ? true : false;
                 $isLegacy = $achievement->legacy;
 
-                foreach(pq('.achievement_cnts ul.mt10 li') as $i => $node)
+                foreach($p->findAll('ic_achievement', 'button bt_more') as $i => $node)
                 {
-                    $node = pq($node);
+                    $node = new Parser($node);
 
-                    $points = filter_var($node->find('.achievement_point'), FILTER_SANITIZE_NUMBER_INT);
-                    $obtained = (strlen($node->find('.achievement_date script')->text()) > 1) ? true : false;
+                    $id = explode('/', $node->find('bt_more')->attr('href'));
+                    if (!isset($id[6])) {
+                        show($node);
+                    }
 
-                    $achievement->list[] =
+                    $id = $id['6'];
+
+                    $points = $node->find('achievement_point')->numbers();
+                    $time = $this->extractTime($node->find('getElementById')->html());
+                    $obtained = ($time) ? true : false;
+
+                    $achievement->list[$id] =
                     [
-                        'id' => explode('/', $node->find('a.button.bt_more')->attr('href'))[6],
-                        'icon' => $node->find('.ic_achievement img')->attr('src'),
-                        'name' => $node->find('.achievement_name')->text(),
-                        'time' => $this->extractTime($node->find('.achievement_date script')->text()),
-                        'obtained' => $obtained,
-                        'points' => $points,
-                        'kind' => $type,
-                        'kind_id' => $kind,
+                        'id'        => $id,
+                        'icon'      => explode('?', $node->find('ic_achievement', 2)->attr('src'))[0],
+                        'name'      => $node->find('achievement_name')->text(),
+                        'time'      => $time,
+                        'obtained'  => $obtained,
+                        'points'    => $points,
+                        'kind'      => $type,
+                        'kind_id'   => $kind,
                     ];
 
                     // prevent php notices
@@ -535,30 +570,31 @@ class Search
         }
         else
         {
-            // Generate url
-            $url = $this->urlGen('achievements', [ '{id}' => $id ]);
-
-            // get doc
-            \phpQuery::newDocumentFileHTML($url);
-
             // New character object
             $achievement = new Achievements();
 
+            // Setup url and get html
+            $url = $this->urlGen('achievements', [ '{id}' => $id ]);
+            $html = $this->trim($this->curl($url), '<!-- tab menu -->', '<!-- //base -->');
+
+            $p = new Parser($html);
+
             // Begin parsing/populating character
-            $achievement->pointsCurrent = filter_var(pq('.total_point')->text(), FILTER_SANITIZE_NUMBER_INT);
-            $achievement->legacy = (strlen(pq('.legacy')->html()) > 0) ? true : false;
+            $achievement->pointsCurrent = $p->find('txt_yellow')->numbers();
+            $achievement->legacy = (strlen($p->find('legacy')->html()) > 0) ? true : false;
 
             // Recent
-            foreach(pq('.achievement_list li') as $i => $node)
+            foreach($p->findAll('ic_achievement', 'achievement_area_footer') as $i => $node)
             {
-                $node = pq($node);
+                $node = new Parser($node);
+                $id = explode('/', $node->find('ic_achievement', 1)->html())[6];
 
-                $achievement->recent[] =
+                $achievement->recent[$id] =
                 [
-                    'id'   => explode('/', $node->find('.ic_achievement a')->attr('href'))[6],
-                    'icon' => $node->find('.ic_achievement a img')->attr('src'),
-                    'name' => $node->find('.achievement_txt a')->text(),
-                    'time' => $this->extractTime($node->find('.achievement_date script')->text()),
+                    'id'   => $id,
+                    'icon' => explode('?', $node->find('ic_achievement', 3)->attr('src'))[0],
+                    'name' => $node->find('achievement_date', 4)->text(),
+                    'time' => $this->extractTime($node->find('getElementById', 0)->html()),
                 ];
             }
         }
@@ -568,9 +604,13 @@ class Search
     }
 
     /**
-     * - Achievements
+     * Parse achievement data, does it using regex, Faster
+     *
+     * @param $characterId - the character id
+     * @param $all - all achievements or summary?
+     * @return Achievement - an achievement object
      */
-    public function advancedAchievements($id)
+    public function advancedAchievements($id, $all)
     {
 		// If legacy or not.
 		$isLegacy = false;
@@ -598,7 +638,7 @@ class Search
 			# Achievments
 			$possibleClasses = array();
 			$regExp = "#<li><div class=\"(?<achieved>.*?)\">.*?src=\"(?<icon>.+?)\?.*?achievement_name.*?>(?<name>.*?)</span>(?<dateHTML>.*?)achievement_point.*?>(?<points>[\d]+)</div>.*?<a.*?href=\"/lodestone/character/[\d]+/achievement/detail/(?<id>[\d]+)/\".*?</li>#";
-			
+
 			$achievmentMatches = array();
 			preg_match_all($regExp, $html, $achievmentMatches, PREG_SET_ORDER);
 			foreach($achievmentMatches as $mkey => $match) {

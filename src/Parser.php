@@ -68,8 +68,25 @@ class Parser
 
         foreach($this->html as $i =>$code)
         {
-
             if (strpos(html_entity_decode($code), $string)) {
+
+                // if offset is string, treat a bit differently
+                if (is_string($offset)) {
+                    $temp = array_slice($this->html, $i);
+
+                    // loop through temp to find offset
+                    foreach ($temp as $j => $c) {
+                        if (strpos(html_entity_decode($c), $offset) !== false) {
+                            // replace offset with new index
+                            break;
+                        }
+                    }
+
+                    // replace on $j
+                    $found = array_slice($this->html, $i, ($j + 1));
+                    break;
+                }
+
                 $found = $i + $offset;
                 break;
             }
@@ -128,7 +145,7 @@ class Parser
                     }
 
                     // replace on $j
-                    $found[] = array_slice($this->html, $i, $j);
+                    $found[] = array_slice($this->html, $i, ($j + 1));
 
                     continue;
                 }

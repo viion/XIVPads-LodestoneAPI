@@ -12,7 +12,6 @@ function cMem($size) { $tmp = array('b','kb','mb','gb','tb','pb'); return @round
 //require 'vendor/autoload.php';
 show("Memory: ". cMem(memory_get_usage()) .' - before autoloader');
 require 'api-autoloader.php';
-require '_old/phpQuery.php';
 use Viion\Lodestone\LodestoneAPI;
 show("Memory: ". cMem(memory_get_usage()) .' - after autoloader');
 
@@ -37,6 +36,7 @@ show("Memory: ". cMem(memory_get_usage()) .' - after new api instance');
     //show($worldStatus);
 */
 // Get achievements
+$api->useBasicParsing();
 $achievements = $api->Search->Achievements(730968, true);
 show($achievements->dump());
 show("Memory: ". cMem(memory_get_usage()) .' - after api->Search->Character');
