@@ -295,7 +295,7 @@ class Search
                 . "chara_profile_title\">(?<race>.*?)\s/\s(?<clan>.*?)\s/\s(?<gender>.*?)</div>.*?"
                 . "icon.*?img.*?src=\"(?<guardianIcon>.*?)\?.*?"
                 . "txt_name\">(?<nameday>.*?)</dd>.*?"
-                . "txt_name\">(?<Guardian>.*?)</dd>.*?"
+                . "txt_name\">(?<guardian>.*?)</dd>.*?"
                 . "icon.*?img.*?src=\"(?<cityIcon>.*?)\?.*?"
                 . "txt_name\">(?<city>.*?)</dd>.*?"
                 . "icon.*?img.*?src=\"(?<grandCompanyIcon>.*?)\?.*?"
@@ -303,42 +303,81 @@ class Search
                 . "class=\"level\".*?(?<activeLevel>[\d]{1,2})</.*?"
                 . "bg_chara_264.*?img.*?src=\"(?<portrait>.*?)\?"
                 . "#";
+			$matches = array();
+			if(preg_match($regExp, $html, $matches)){
+				foreach($matches as $key => $value){
+					if(!is_numeric($key) && property_exists($character, $key)){
+						$character->$key = $value;
+					}
+				}
+			}
+			
+            $character->avatarLarge = str_ireplace('50x50', '96x96', $character->avatar);
+            $character->portraitLarge = str_ireplace('264x360', '640x873', $character->portrait);
+			
+			$freeCompanyRegExp = "#ic_crest_32.*?src=\"(?<freecompanyIcon1>.*?)\".*?src=\"(?<freecompanyIcon2>.*?)\".*?src=\"(?<freecompanyIcon3>.*?)\".*?"
+								. "txt_name\">.*?href=\".*?/(?<freecompanyid>[\d]+?)/\".*?>(?<freecompany>.*?)</a>.*?#";
+			if(preg_match($freeCompanyRegExp, $html, $matches)){
+				array_shift($matches);
+				$character->freecompanyid = $matches['freecompanyid'];
+				$character->freecompany = $matches['freecompany'];
+				$character->freeCompanyIcon = [
+					$matches['freecompanyIcon1'],
+					$matches['freecompanyIcon2'],
+					$matches['freecompanyIcon3']
+				];
+			}
 
-        $matches = array();
-        if(preg_match($regExp, $html, $matches)){
-            foreach($matches as $key => $value){
-                if(!is_numeric($key) && property_exists($character, $key)){
-                    $character->$key = $value;
+            # Class/Jobs
+			$jobHtml = $this->trim($html, '<h4 class="class_fighter">', 'minion_box');
+			$regExp = "#ic_class_wh24_box.*?<img.*?src=\"(?<icon>.*?)\?.*?>(?<name>[^<]+?)</td><td[^>]*?>(?<level>[\d-]+?)</td><td[^>]*?>(?<exp_current>[\d-]+?)\s/\s(?<exp_total>[\d-]+?)</td#";
+
+			preg_match_all($regExp, $jobHtml, $matches, PREG_SET_ORDER);
+			foreach($matches as $mkey => $match) {
+				$this->clearRegExpArray($match);
+				$character->classjobs[] = $match;
+			}
+
+            # Gear
+            $i = 0;
+            $iLevelTotal = 0;
+            $iLevelArray = [];
+			$gearHtml = $this->trim($html, 'param_class_info_area', 'chara_content_title mb10');
+			$regExp = "#item_detail_box.*?ic_reflection_box_64.*?<img.*?src=\"(?<icon>[^\"]+?itemicon[^\"]+)\?.*?<h2.*?class=\"item_name\s?(?<color>.*?)_item\".*?>(?<name>[^<]*?)</h2>.*?class=\"category_name\">(?<slot>[^<]*?)</h3>.*?<a href=\"/lodestone/playguide/db/item/(?<id>[\w\d]+?)/\".*?class=\"pt3 pb3\">.+?\s(?<ilv>[0-9]{1,3})</div>#";
+
+			preg_match_all($regExp, $gearHtml, $matches, PREG_SET_ORDER);
+			foreach($matches as $mkey => $match) {
+				$this->clearRegExpArray($match);
+				$character->gear[] = $match;
+
+                if ($match['slot'] != 'Soul Crystal') {
+                    $iLevelTotal = $iLevelTotal + $match['ilv'];
+                    $iLevelArray[] = $match['ilv'];
+
+                    if (in_array($match['slot'], $this->getTwoHandedItems())) {
+                        $iLevelArray[] = $match['ilv'];
+                    }
                 }
-            }
-        }
 
-        $character->avatarLarge = str_ireplace('50x50', '96x96', $character->avatar);
-        $character->portraitLarge = str_ireplace('264x360', '640x873', $character->portrait);
+                // active class
+				// TODO multilanguage
+                if ($i === 0) {
+                    $character->activeClass = preg_replace('#((one|two)\-handed\s?)?([\w]+)([^\w].*)?#iu','$3',$match['slot']);
+                }
 
-        $freeCompanyRegExp = "#ic_crest_32.*?src=\"(?<freecompanyIcon1>.*?)\".*?src=\"(?<freecompanyIcon2>.*?)\".*?src=\"(?<freecompanyIcon3>.*?)\".*?"
-                            . "txt_name\">.*?href=\".*?/(?<freecompanyid>[\d]+?)/\".*?>(?<freecompany>.*?)</a>.*?#";
+                // active job
+				// TODO multilanguage
+                if ($match['slot'] == 'Soul Crystal') {
+                    $character->activeJob = str_ireplace('Soul of the ', null, $match['name']);
+                }
+				$i++;
+			}
 
-        if(preg_match($freeCompanyRegExp, $html, $matches)){
-            array_shift($matches);
-            $character->freecompanyid = $matches['freecompanyid'];
-            $character->freecompany = $matches['freecompany'];
-            $character->freeCompanyIcon = [
-                $matches['freecompanyIcon1'],
-                $matches['freecompanyIcon2'],
-                $matches['freecompanyIcon3']
+            $character->gearStats = [
+                'total' => $iLevelTotal,
+                'average' => floor(array_sum($iLevelArray) / 13),
+                'array' => $iLevelArray,
             ];
-        }
-
-        # Class/Jobs
-        $jobHtml = $this->trim($html, '<h4 class="class_fighter">', 'minion_box');
-        $regExp = "#ic_class_wh24_box.*?<img.*?src=\"(?<icon>.*?)\?.*?>(?<name>[^<]+?)</td><td[^>]*?>(?<level>[\d-]+?)</td><td[^>]*?>(?<exp_current>[\d-]+?)\s/\s(?<exp_total>[\d-]+?)</td#";
-
-        preg_match_all($regExp, $jobHtml, $matches, PREG_SET_ORDER);
-        array_shift($matches);
-        foreach($matches as $mkey => $match) {
-            $this->clearRegExpArray($match);
-            $character->classjobs[] = $match;
 
             # Attributes
 			$attrHtml = $this->trim($html, 'param_left_area', 'class_fighter');
@@ -382,17 +421,15 @@ class Search
 			$regExp = "#<a.*?title=\"(?<name>.*?)\".*?<img.*?src=\"(?<icon>.*?)\?.*?>#";
 
 			preg_match_all($regExp, $mountHtml, $matches, PREG_SET_ORDER);
-			array_shift($matches);
 			foreach($matches as $mkey => $match) {
 				$this->clearRegExpArray($match);
 				$character->mounts[] = $match;
 			}
-
+			
 			$minionHtml = $this->trim($html, '<!-- Minion -->', '<!-- //Minion -->');
 			$regExp = "#<a.*?title=\"(?<name>.*?)\".*?<img.*?src=\"(?<icon>.*?)\?.*?>#";
 
 			preg_match_all($regExp, $minionHtml, $matches, PREG_SET_ORDER);
-			array_shift($matches);
 			foreach($matches as $mkey => $match) {
 				$this->clearRegExpArray($match);
 				$character->minions[] = $match;
@@ -400,116 +437,8 @@ class Search
 
             // dust up
             $character->clean();
-
-            // return
-            return $character;
-        }
-
-        # Gear
-        $i = 0;
-        $iLevelTotal = 0;
-        $iLevelArray = [];
-        $gearHtml = $this->trim($html, 'param_class_info_area', 'chara_content_title mb10');
-        $regExp = "#item_detail_box.*?ic_reflection_box_64.*?<img.*?src=\"(?<icon>[^\"]+?itemicon[^\"]+)\?.*?<h2.*?class=\"item_name\s?(?<color>.*?)_item\".*?>(?<name>[^<]*?)</h2>.*?class=\"category_name\">(?<slot>[^<]*?)</h3>.*?<a href=\"/lodestone/playguide/db/item/(?<id>[\w\d]+?)/\".*?class=\"pt3 pb3\">.+?\s(?<ilv>[0-9]{1,3})</div>#";
-
-        preg_match_all($regExp, $gearHtml, $matches, PREG_SET_ORDER);
-
-        array_shift($matches);
-        foreach($matches as $mkey => $match) {
-            $this->clearRegExpArray($match);
-            $character->gear[] = $match;
-
-            if ($match['slot'] != 'Soul Crystal') {
-                $iLevelTotal = $iLevelTotal + $match['ilv'];
-                $iLevelArray[] = $match['ilv'];
-
-                if (in_array($match['slot'], $this->getTwoHandedItems())) {
-                    $iLevelArray[] = $match['ilv'];
-                }
-            }
-
-            // active class
-            if ($i == 0) {
-                $character->activeClass = explode("'", str_ireplace(['Two-Handed ', 'One-Handed'], null, $match['slot']))[0];
-            }
-
-            // active job
-            if ($match['slot'] == 'Soul Crystal') {
-                $character->activeJob = str_ireplace('Soul of the ', null, $match['name']);
-            }
-            $i++;
-        }
-
-        $character->gearStats = [
-            'total' => $iLevelTotal,
-            'average' => floor(array_sum($iLevelArray) / 13),
-            'array' => $iLevelArray,
-        ];
-
-        # Attributes
-        $attrHtml = $this->trim($html, 'param_left_area', 'param_power_area');
-        $regExp = "#li class=\"(?<attr>.*?)(?:\s?clearfix)?\">(?<content>.*?)</li#";
-
-        preg_match_all($regExp, $attrHtml, $matches, PREG_SET_ORDER);
-        array_shift($matches);
-        foreach($matches as $mkey => $match) {
-            array_shift($match);
-            $key = strtolower(str_ireplace(' ', '-', $match['attr']));
-            $value = $match['content'];
-            if($match['attr'] == "") {
-                preg_match('#<span class="left">(?<key>.*?)</span><span class="right">(?<value>.*?)</span>#', $match['content'], $tmpMatch);
-                $key = strtolower(str_ireplace(' ', '-', $tmpMatch['key']));
-                $value = $tmpMatch['value'];
-            }elseif(stripos($match['content'], 'val') !== false) {
-                preg_match('#>(?<value>[\d-]*?)</span>#', $match['content'], $tmpMatch);
-                $value = $tmpMatch['value'];
-            }
-            $character->attributes[$key] = intval($value);
-        }
-
-        $regExp = '#param_power_area.*?'
-                . 'class="hp">(?<hp>[\d]+)<.*?'
-                . '(?:class="mp">(?<mp>[\d]+)<.*?)?'
-                . '(?:class="cp">(?<cp>[\d]+)<.*?)?'
-                . '(?:class="gp">(?<gp>[\d]+)<.*?)?'
-                . 'class="tp">(?<tp>[\d]+)<.*?'
-                . '#';
-
-        if(preg_match($regExp, $html, $matches)){
-            $this->clearRegExpArray($matches);
-            $character->attributes['hp'] = intval($matches['hp']);
-            $character->attributes['mp'] = intval($matches['mp']);
-            $character->attributes['cp'] = intval($matches['cp']);
-            $character->attributes['gp'] = intval($matches['gp']);
-            $character->attributes['tp'] = intval($matches['tp']);
-        }
-
-        # Minions and Mounts
-        $mountHtml = $this->trim($html, '<!-- Mount -->', '<!-- //Mount -->');
-        $regExp = "#<a.*?title=\"(?<name>.*?)\".*?<img.*?src=\"(?<icon>.*?)\?.*?>#";
-
-        preg_match_all($regExp, $mountHtml, $matches, PREG_SET_ORDER);
-        array_shift($matches);
-        foreach($matches as $mkey => $match) {
-            $this->clearRegExpArray($match);
-            $character->mounts[] = $match;
-        }
-
-        $minionHtml = $this->trim($html, '<!-- Minion -->', '<!-- //Minion -->');
-        $regExp = "#<a.*?title=\"(?<name>.*?)\".*?<img.*?src=\"(?<icon>.*?)\?.*?>#";
-
-        preg_match_all($regExp, $minionHtml, $matches, PREG_SET_ORDER);
-        array_shift($matches);
-        foreach($matches as $mkey => $match) {
-            $this->clearRegExpArray($match);
-            $character->minions[] = $match;
-        }
-
-        // dust up
-        $character->clean();
-
-        // return
-        return $character;
+			
+			return $character;
     }
 
     /**
