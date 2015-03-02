@@ -339,6 +339,70 @@ class Search
         foreach($matches as $mkey => $match) {
             $this->clearRegExpArray($match);
             $character->classjobs[] = $match;
+
+            # Attributes
+			$attrHtml = $this->trim($html, 'param_left_area', 'class_fighter');
+			$regExp = "#li class=\"(?<attr>.*?)(?:\s?clearfix)?\">(?<content>.*?)</li#";
+
+			preg_match_all($regExp, $attrHtml, $matches, PREG_SET_ORDER);
+			foreach($matches as $mkey => $match) {
+				array_shift($match);
+				$key = strtolower(str_ireplace(' ', '-', $match['attr']));
+				$value = $match['content'];
+				if($match['attr'] == "") {
+					preg_match('#<span class="left">(?<key>.*?)</span><span class="right">(?<value>.*?)</span>#', $match['content'], $tmpMatch);
+					if(!array_key_exists('key', $tmpMatch))
+						continue;
+					$key = strtolower(str_ireplace(' ', '-', $tmpMatch['key']));
+					$value = $tmpMatch['value'];
+				}elseif(stripos($match['content'], 'val') !== false) {
+					preg_match('#>(?<value>[\d-]*?)</span>#', $match['content'], $tmpMatch);
+					$value = $tmpMatch['value'];
+				}
+				$character->attributes[$key] = intval($value);
+			}
+			$regExp = '#param_power_area.*?'
+					. 'class="hp">(?<hp>[\d]+)<.*?'
+					. '(?:class="mp">(?<mp>[\d]+)<.*?)?'
+					. '(?:class="cp">(?<cp>[\d]+)<.*?)?'
+					. '(?:class="gp">(?<gp>[\d]+)<.*?)?'
+					. 'class="tp">(?<tp>[\d]+)<.*?'
+					. '#';
+			if(preg_match($regExp, $html, $matches)){
+				$this->clearRegExpArray($matches);
+				$character->attributes['hp'] = intval($matches['hp']);
+				$character->attributes['mp'] = intval($matches['mp']);
+				$character->attributes['cp'] = intval($matches['cp']);
+				$character->attributes['gp'] = intval($matches['gp']);
+				$character->attributes['tp'] = intval($matches['tp']);
+			}
+
+            # Minions and Mounts
+			$mountHtml = $this->trim($html, '<!-- Mount -->', '<!-- //Mount -->');
+			$regExp = "#<a.*?title=\"(?<name>.*?)\".*?<img.*?src=\"(?<icon>.*?)\?.*?>#";
+
+			preg_match_all($regExp, $mountHtml, $matches, PREG_SET_ORDER);
+			array_shift($matches);
+			foreach($matches as $mkey => $match) {
+				$this->clearRegExpArray($match);
+				$character->mounts[] = $match;
+			}
+
+			$minionHtml = $this->trim($html, '<!-- Minion -->', '<!-- //Minion -->');
+			$regExp = "#<a.*?title=\"(?<name>.*?)\".*?<img.*?src=\"(?<icon>.*?)\?.*?>#";
+
+			preg_match_all($regExp, $minionHtml, $matches, PREG_SET_ORDER);
+			array_shift($matches);
+			foreach($matches as $mkey => $match) {
+				$this->clearRegExpArray($match);
+				$character->minions[] = $match;
+			}
+
+            // dust up
+            $character->clean();
+
+            // return
+            return $character;
         }
 
         # Gear
