@@ -163,11 +163,15 @@ class Parser
     public function attr($attribute)
     {
         $html = html_entity_decode($this->found);
-
         preg_match_all('/('. $attribute .')=("[^"]*")/i', $html, $result);
-        $result = str_ireplace([$attribute .'=', '"'], null, $result[0][0]);
 
-        // return
-        return html_entity_decode($result, ENT_QUOTES, 'UTF-8');
+        if (isset($result[0][0])) {
+            $result = str_ireplace([$attribute .'=', '"'], null, $result[0][0]);
+
+            // return
+            return html_entity_decode($result, ENT_QUOTES, 'UTF-8');
+        }
+
+        return null;
     }
 }
