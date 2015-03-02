@@ -646,10 +646,10 @@ class Search
 					preg_match('#ldst_strftime\(([\d\.]+),#',$match['dateHTML'],$dateMatch);
 					$time = filter_var($dateMatch[1], FILTER_SANITIZE_NUMBER_INT);
 				}else{
-					$time = 0;
+					$time = null;
 				}
 				$points = filter_var($match['points'], FILTER_SANITIZE_NUMBER_INT);
-				$achievement->list[] =
+				$achievement->list[$match['id']] =
 				[
 					'id' => $match['id'],
 					'icon' => $match['icon'],
