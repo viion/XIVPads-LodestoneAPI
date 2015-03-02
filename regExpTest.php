@@ -141,7 +141,7 @@ $startAll = microtime(true);
 // Base Data
 $start = microtime(true);
 $regExp = "#player_name_thumb.*?src=\"(?<avatar>.*?)\?.*?"
-		. "<a.*?>(?<name>.*?)</a>"
+		. "<a.*?href=\"/lodestone/character/(?<id>[\w\d]+?)/\".*?>(?<name>.*?)</a>"
 		. "<span>\s*?\((?<server>.*?)\).*?"
 		. "<div class=\"chara_title\">(?<title>.*?)</div>.*?"
 		. "txt_selfintroduction\">(?<bio>.*?)</div>.*?"
@@ -155,6 +155,7 @@ $regExp = "#player_name_thumb.*?src=\"(?<avatar>.*?)\?.*?"
 		. "txt_name\">(?<grandCompany>.*?)/(?<grandCompanyRank>.*?)</dd>.*?"
 		. "ic_crest_32.*?src=\"(?<freecompanyIcon1>.*?)\".*?src=\"(?<freecompanyIcon2>.*?)\".*?src=\"(?<freecompanyIcon3>.*?)\".*?"
 		. "txt_name\">.*?href=\".*?/(?<freecompanyid>[\d]+?)/\".*?>(?<freecompany>.*?)</a>.*?"
+		. "class=\"level\".*?(?<activeLevel>[\d]{1,2})</.*?"
 		. "bg_chara_264.*?img.*?src=\"(?<portrait>.*?)\?"
 		. "#";
 
