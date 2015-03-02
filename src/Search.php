@@ -479,11 +479,11 @@ class Search
 
             // If basic searching
             if ($this->basicParsing) {
-                return $this->basicAchievements($characterId, $all);
+                return $this->basicAchievementsParse($characterId, $all);
             }
 
             // Advanced searching
-            return $this->advancedCharacterSearch($characterId, $all);
+            return $this->advancedAchievementsParse($characterId, $all);
         }
     }
 
@@ -494,7 +494,7 @@ class Search
      * @param $all - all achievements or summary?
      * @return Achievement - an achievement object
      */
-    private function basicAchievements($characterId, $all)
+    private function basicAchievementsParse($characterId, $all)
     {
         if ($all)
         {
@@ -610,7 +610,7 @@ class Search
      * @param $all - all achievements or summary?
      * @return Achievement - an achievement object
      */
-    public function advancedAchievements($id, $all)
+    public function advancedAchievementsParse($id, $all)
     {
 		// If legacy or not.
 		$isLegacy = false;
