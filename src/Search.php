@@ -308,10 +308,19 @@ class Search
         $html = html_entity_decode(preg_replace(array('#\s\s+#s','#<script.*?>.*?</script>?#s','#[\n\t]#s'),'', $rawHtml),ENT_QUOTES);
 
         // Base Data
+		
+		/*
+		<div class="chara_title">Erleuchterin der Dunkelheit</div><a href="/lodestone/character/9284878/">Divein Sar</a><span> (Zodiark)</span>
+		<a href="/lodestone/character/8805967/">Cassandra Ashford</a><span> (Cactuar)</span> 
+		<a href="/lodestone/character/9284878/">Divein Sar</a><span> (Zodiark)</span><div class="chara_title">Of the Silver Lining</div>
+		 * 
+		 * <h2>(?:<div class="chara_title">(?<titleBefore>.*)</div>)?(?:<a href=".*?/(?<id>\d+)/">(?<name>.*?)</a>)(?:<span>\s?\((?<world>.*)\)</span>)(?:<div class="chara_title">(?<titleAfter>.*)</div>)?</h2>
+		 */
         $regExp = "#player_name_thumb.*?src=\"(?<avatar>.*?)\?.*?"
-                . "<a.*?href=\"/lodestone/character/(?<id>[\w\d]+?)/\".*?>(?<name>.*?)</a>"
-                . "<span>\s*?\((?<world>.*?)\).*?"
-                . "<div class=\"chara_title\">(?<title>.*?)</div>.*?"
+				. "<h2>(?:<div class=\"chara_title\">(?<titleBefore>.*)</div>)?"
+				. "(?:<a href=\".*?/(?<id>\d+)/\">(?<name>.*?)</a>)"
+				. "(?:<span>\s?\((?<world>.*)\)</span>)"
+				. "(?:<div class=\"chara_title\">(?<titleAfter>.*)</div>)?</h2>.*?"
                 . "txt_selfintroduction\">(?<bio>.*?)</div>.*?"
                 . "chara_profile_title\">(?<race>.*?)\s/\s(?<clan>.*?)\s/\s(?<gender>.*?)</div>.*?"
                 . "icon.*?img.*?src=\"(?<guardianIcon>.*?)\?.*?"
@@ -326,6 +335,7 @@ class Search
                 . "#";
 			$matches = array();
 			if(preg_match($regExp, $html, $matches)){
+				$matches['title'] = (array_key_exists('titleAfter', $matches) === true && $matches['titleAfter'] != "") ? $matches['titleAfter'] : $matches['titleBefore'];
 				foreach($matches as $key => $value){
 					if(!is_numeric($key) && property_exists($character, $key)){
 						$character->$key = $value;
