@@ -306,7 +306,7 @@ class Search
         $url = $this->urlGen('characterProfile', [ '{id}' => $characterId ]);
         $rawHtml = $this->trim($this->curl($url), '<!-- contents -->', '<!-- //Minion -->');
         $html = html_entity_decode(preg_replace(array('#\s\s+#s','#<script.*?>.*?</script>?#s','#[\n\t]#s'),'', $rawHtml),ENT_QUOTES);
-
+		
         // Base Data
 		
 		/*
@@ -316,6 +316,8 @@ class Search
 		 * 
 		 * <h2>(?:<div class="chara_title">(?<titleBefore>.*)</div>)?(?:<a href=".*?/(?<id>\d+)/">(?<name>.*?)</a>)(?:<span>\s?\((?<world>.*)\)</span>)(?:<div class="chara_title">(?<titleAfter>.*)</div>)?</h2>
 		 */
+		$baseHtml = $this->trim($html, 'player_name_thumb', 'param_img_cover');
+		echo htmlentities($baseHtml);
         $regExp = "#player_name_thumb.*?src=\"(?<avatar>.*?)\?.*?"
 				. "<h2>(?:<div class=\"chara_title\">(?<titleBefore>.*)</div>)?"
 				. "(?:<a href=\".*?/(?<id>\d+)/\">(?<name>.*?)</a>)"
@@ -329,13 +331,20 @@ class Search
                 . "icon.*?img.*?src=\"(?<cityIcon>.*?)\?.*?"
                 . "txt_name\">(?<city>.*?)</dd>.*?"
                 . "icon.*?img.*?src=\"(?<grandCompanyIcon>.*?)\?.*?"
-                . "txt_name\">(?<grandCompany>.*?)/(?<grandCompanyRank>.*?)</dd>.*?"
+                . "txt_name\">(?<grandCompany>.*?)/(?<grandCompanyRank>.*?)</dd></dl>"
+				. "(?(?=<dl).*?<div class=\"ic_crest_32\"><span><img src=\"(?<freeCompanyIcon1>.*?)\".*?><img src=\"(?<freeCompanyIcon2>.*?)\".*?><img src=\"(?<freeCompanyIcon3>.*?)\".*?></span></div>.*?"
+				. "<dd class=\"txt_name\"><a href=\".*?/(?<freeCompanyId>\d+?)/\" class=\"txt_yellow\">(?<freeCompany>.*?)</a></dd>).*?"
                 . "class=\"level\".*?(?<activeLevel>[\d]{1,2})</.*?"
                 . "bg_chara_264.*?img.*?src=\"(?<portrait>.*?)\?"
                 . "#";
 			$matches = array();
-			if(preg_match($regExp, $html, $matches)){
+			if(preg_match($regExp, $baseHtml, $matches)){
 				$matches['title'] = (array_key_exists('titleAfter', $matches) === true && $matches['titleAfter'] != "") ? $matches['titleAfter'] : $matches['titleBefore'];
+				$character->freeCompanyIcon = [
+					$matches['freeCompanyIcon1'],
+					$matches['freeCompanyIcon2'],
+					$matches['freeCompanyIcon3']
+				];
 				foreach($matches as $key => $value){
 					if(!is_numeric($key) && property_exists($character, $key)){
 						$character->$key = $value;
@@ -345,19 +354,6 @@ class Search
 
             $character->avatarLarge = str_ireplace('50x50', '96x96', $character->avatar);
             $character->portraitLarge = str_ireplace('264x360', '640x873', $character->portrait);
-
-			$freeCompanyRegExp = "#ic_crest_32.*?src=\"(?<freecompanyIcon1>.*?)\".*?src=\"(?<freecompanyIcon2>.*?)\".*?src=\"(?<freecompanyIcon3>.*?)\".*?"
-								. "txt_name\">.*?href=\".*?/(?<freecompanyid>[\d]+?)/\".*?>(?<freecompany>.*?)</a>.*?#";
-			if(preg_match($freeCompanyRegExp, $html, $matches)){
-				array_shift($matches);
-				$character->freecompanyid = $matches['freecompanyid'];
-				$character->freecompany = $matches['freecompany'];
-				$character->freeCompanyIcon = [
-					$matches['freecompanyIcon1'],
-					$matches['freecompanyIcon2'],
-					$matches['freecompanyIcon3']
-				];
-			}
 
             # Class/Jobs
 			$possibleClasses = array();
