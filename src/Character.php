@@ -44,6 +44,7 @@ class Character
     public $mounts = [];
 
     public $hash;
+    public $events;
 
     /**
      * - dump
