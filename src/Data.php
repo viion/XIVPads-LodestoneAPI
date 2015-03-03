@@ -13,6 +13,42 @@ trait Data
         ];
     }
 
+    public function getClassListFull()
+    {
+        return [
+            1 => 'gladiator',
+            2 => 'pugilist',
+            3 => 'marauder',
+            4 => 'lancer',
+            5 => 'archer',
+            6 => 'conjurer',
+            7 => 'thaumaturge',
+            8 => 'carpenter',
+            9 => 'blacksmith',
+            10 => 'armorer',
+            11 => 'goldsmith',
+            12 => 'leatherworker',
+            13 => 'weaver',
+            14 => 'alchemist',
+            15 => 'culinarian',
+            16 => 'miner',
+            17 => 'botanist',
+            18 => 'fisher',
+            19 => 'paladin',
+            20 => 'monk',
+            21 => 'warrior',
+            22 => 'dragoon',
+            23 => 'bard',
+            24 => 'white mage',
+            25 => 'black mage',
+            26 => 'arcanist',
+            27 => 'summoner',
+            28 => 'scholar',
+            29 => 'rogue',
+            30 => 'ninja',
+        ];
+    }
+
     public function getAchievementKinds()
     {
         return [

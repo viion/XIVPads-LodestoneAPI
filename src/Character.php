@@ -120,10 +120,12 @@ class Character
         }
 
         $curve = $this->getExperiencePoints();
+        $jobclass = $this->getClassListFull();
 
         // Set max EXP
         foreach($this->classjobs as $i => $d)
         {
+            // Handle classjobs
             $temp = $curve;
             $realTotal = 0;
 
@@ -133,6 +135,14 @@ class Character
             }
 
             $this->classjobs[$i]['exp_total'] = $realTotal;
+
+            // Handle classjob id
+            $this->classjobs[$i]['id'] = array_search(strtolower($d['name']), $jobclass);
+
+            // Handle blanks
+            if ($d['level'] == '-') { $this->classjobs[$i]['level'] = 0; }
+            if ($d['exp_current'] == '-') { $this->classjobs[$i]['exp_current'] = 0; }
+            if ($d['exp_level'] == '-') { $this->classjobs[$i]['exp_level'] = 0; }
         }
 
         // Sort attributes
