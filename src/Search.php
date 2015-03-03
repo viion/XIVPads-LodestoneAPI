@@ -308,16 +308,8 @@ class Search
         $html = html_entity_decode(preg_replace(array('#\s\s+#s','#<script.*?>.*?</script>?#s','#[\n\t]#s'),'', $rawHtml),ENT_QUOTES);
 		
         // Base Data
-		
-		/*
-		<div class="chara_title">Erleuchterin der Dunkelheit</div><a href="/lodestone/character/9284878/">Divein Sar</a><span> (Zodiark)</span>
-		<a href="/lodestone/character/8805967/">Cassandra Ashford</a><span> (Cactuar)</span> 
-		<a href="/lodestone/character/9284878/">Divein Sar</a><span> (Zodiark)</span><div class="chara_title">Of the Silver Lining</div>
-		 * 
-		 * <h2>(?:<div class="chara_title">(?<titleBefore>.*)</div>)?(?:<a href=".*?/(?<id>\d+)/">(?<name>.*?)</a>)(?:<span>\s?\((?<world>.*)\)</span>)(?:<div class="chara_title">(?<titleAfter>.*)</div>)?</h2>
-		 */
 		$baseHtml = $this->trim($html, 'player_name_thumb', 'param_img_cover');
-		echo htmlentities($baseHtml);
+		
         $regExp = "#player_name_thumb.*?src=\"(?<avatar>.*?)\?.*?"
 				. "<h2>(?:<div class=\"chara_title\">(?<titleBefore>.*)</div>)?"
 				. "(?:<a href=\".*?/(?<id>\d+)/\">(?<name>.*?)</a>)"
