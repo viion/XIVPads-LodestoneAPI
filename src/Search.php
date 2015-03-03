@@ -632,10 +632,13 @@ class Search
 			$url = $this->urlGen('achievementsKind', [ '{id}' => $id, '{kind}' => $kind ]);
 			$rawHtml = $this->trim($this->curl($url), '<!-- #main -->', '<!-- //#main -->');
 			$html = html_entity_decode(preg_replace(array('#\s\s+#s','#[\n\t]#s'),'', $rawHtml),ENT_QUOTES);
-			$achievement->legacy = (preg_match('#class="legacy"#',$html) === 1);
+			
+			$achievementMatch = array();
+			preg_match('#class="txt_yellow">(?<pointsCurrent>\d+)</strong>.*?(?<legacy>(?<=.)legacy|\#main)#',$html,$achievementMatch);
+			$achievement->pointsCurrent = $achievementMatch['pointsCurrent'];
+			$achievement->legacy = ($achievementMatch['legacy'] == "legacy");
 			$isLegacy = $achievement->legacy;
 			# Achievments
-			$possibleClasses = array();
 			$regExp = "#<li><div class=\"(?<achieved>.*?)\">.*?src=\"(?<icon>.+?)\?.*?achievement_name.*?>(?<name>.*?)</span>(?<dateHTML>.*?)achievement_point.*?>(?<points>[\d]+)</div>.*?<a.*?href=\"/lodestone/character/[\d]+/achievement/detail/(?<id>[\d]+)/\".*?</li>#";
 
 			$achievmentMatches = array();
@@ -686,46 +689,28 @@ class Search
     }
 
     /**
-     * Get onlinestatus of server(s)
-     * @param string $datacenter
-     * @param string $server
+     * Get onlinestatus of servers
      * @return array
      */
-    public function Worldstatus($datacenter = null, $server = null) {
+    public function Worldstatus() {
         $worldStatus = array();
-        $url = $this->urlGen('worldstatus', []);
-        // Get Data from URL
-        \phpQuery::newDocumentFileHTML($url);
 
-        if(!is_null($datacenter)) {
-            $datacenterNode = pq(sprintf("#server_status div.area_body:contains('%s')", $datacenter));
-            if(!is_null($server)) {
-                $worldStatus[$datacenter][$server] = trim($datacenterNode->next('div.area_inner_header')->find(sprintf('tr.worldstatus_1:contains("%s") td:eq(1)', $server))->text());
-            }else {
-                $pqTable = $datacenterNode->next('div.area_inner_header')->find('table');
-                foreach($pqTable->find('tr.worldstatus_1') as $tableRow) {
-                    $pqTableRow = pq($tableRow);
-                    $server = trim($pqTableRow->find('td:first>div')->text());
-                    $status = trim($pqTableRow->find('td:last>span')->text());
-                    $worldStatus[$datacenter][$server] = trim($status);
-                }
-            }
-        }else {
-            $dataArray = [];
-            // Loop it
-            foreach(pq('#server_status div.area_body') as $node) {
-                $pqNode = pq($node);
-                $datacenter = trim(str_replace("Data Center: ", "", $pqNode->find('div.text-headline:first')->text()));
-                $pqTable = $pqNode->next('div.area_inner_header')->find('table');
-                foreach($pqTable->find('tr.worldstatus_1') as $tableRow) {
-                    $pqTableRow = pq($tableRow);
-                    $server = trim($pqTableRow->find('td:first>div')->text());
-                    $status = trim($pqTableRow->find('td:last>span')->text());
-                    $dataArray[$datacenter][$server] = trim($status);
-                }
-            }
-            $worldStatus = $dataArray;
-        }
+		// Generate url
+		$url = $this->urlGen('worldstatus', []);
+		$rawHtml = $this->trim($this->curl($url), '<!-- #main -->', '<!-- //#main -->');
+        $html = html_entity_decode(preg_replace(array('#\s\s+#s','#<script.*?>.*?</script>?#s','#[\n\t]#s'),'', $rawHtml),ENT_QUOTES);
+		
+		$regExp = '#text-headline.*?span>(?<datacenter>[\w]+)</div>.*?(?<tableHTML><table.*?</table>).*?area_body#';
+			
+		$datacenterMatches = array();
+		preg_match_all($regExp, $html, $datacenterMatches, PREG_SET_ORDER);
+		foreach($datacenterMatches as $key => $data){
+			$regExp = '#relative">(?<server>\w+)</div>.*?ic_worldstatus_1">(?<status>[\w\s]+)</span>#';
+			$serverMatches = array();
+			preg_match_all($regExp, $data['tableHTML'], $serverMatches, PREG_SET_ORDER);
+			$this->clearRegExpArray($serverMatches);
+			$worldStatus[$data['datacenter']] = $serverMatches;
+		}
         return $worldStatus;
     }
 }

@@ -50,11 +50,14 @@ trait Funky
     {
 		$tmp = array();
 		foreach($array as $key => $value) {
-			if(!is_numeric($key) ){
+			if(is_array($value)){
+				$tmp[$key] = $this->clearRegExpArray($value);
+			}else if(!is_numeric($key) ){
 				$tmp[$key] = $value;
 			}
 		}
 		$array = $tmp;
+		return $array;
 	}
 
     public function uniord($u)
