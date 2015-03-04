@@ -739,7 +739,7 @@ class Search
      * @param $freeCompanyId - the id of the freecompany
      * @param $members - with memberlist
      */
-    public function advancedFreecompanyParse($freeCompanyId, $all = false) {
+    public function advancedFreecompanyParse($freeCompanyId, $members = false) {
 
 		// Generate url
 		$url = $this->urlGen('freecompany', ['{id}' => $freeCompanyId]);
@@ -785,7 +785,44 @@ class Search
 				'icon' => $match['icon'],
 			];
 		}
+		
+		if($members === true){
+			$freeCompany->members = array();
+			$url = $this->urlGen('freecompanyMember', ['{id}' => $freeCompanyId]);
+			$rawHtml = $this->trim($this->curl($url), '<!-- Member List -->', '<!-- //Member List -->');
+			$html = html_entity_decode(preg_replace(array('#\s\s+#s', '#[\n\t]#s','#<script.*?>.*?</script>?#s', '#<!--\s*-->#s'), '', $rawHtml), ENT_QUOTES);
+			
+			$maxPerPage = strip_tags($this->trim($html,'<span class="show_end">','</span>'));
+			$pages = ceil($freeCompany->activeMember/$maxPerPage);
+			for($page = 1;$page<=$pages;$page++){
+				if($page == 1){
+					$memberHtml = $this->trim($html, 'table_black_border_bottom', '<!-- pager -->');
+				}else{
+					$pageUrl = $this->urlGen('freecompanyMemberPage', ['{id}' => $freeCompanyId, '{page}' => $page]);
+					$rawPageHtml = $this->trim($this->curl($pageUrl), '<!-- Member List -->', '<!-- //Member List -->');
+					$pageHtml = html_entity_decode(preg_replace(array('#\s\s+#s', '#[\n\t]#s','#<script.*?>.*?</script>?#s', '#<!--\s*-->#s'), '', $rawPageHtml), ENT_QUOTES);
+					$memberHtml .= $this->trim($pageHtml, 'table_black_border_bottom', '<!-- pager -->');
+				}
+			}
+			$freeCompany->members = $this->_advancedFcMemberParse($memberHtml);				
+		}
+		
 		return $freeCompany;
+	}
+	
+	private function _advancedFcMemberParse($html){
+		$regExp = '#<tr\s?>.*?<a href="/lodestone/character/(?<id>\d+)/">'
+				. '<img src="(?<avatar>.+?)\?.*?'
+				. '<a .*?>(?<name>.+?)</a><span>\s?\((?<world>.+?)\)</span>.*?'
+				. '<div class="fc_member_status"><img src="(?<rankIcon>.+?)\?.*?>(?<rankName>.+?)</div>.*?'
+				. '<div class="ic_box"><img src="(?<classIcon>.+?)\?.*?></div>'
+				. '<div class="lv_class">(?<classLevel>\d+?)</div></div>'
+				. '(?:<div class="ic_gc"><div><img src="(?<gcIcon>.+?)\?.*?></div>'
+				. '<div>(?<gcName>[^/]+?)/(?<gcRank>[^/]+?)</div>)?.*?</tr>#';
+		$memberMatch= array();
+		preg_match_all($regExp, $html, $memberMatch, PREG_SET_ORDER);
+		$this->clearRegExpArray($memberMatch);
+		return $memberMatch;	
 	}
 
 }

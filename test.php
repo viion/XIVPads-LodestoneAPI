@@ -38,7 +38,7 @@ show($character->dump());
 */
 
 
-$freecompany = $api->Search->Freecompany($id);
+$freecompany = $api->Search->Freecompany($id,true);
 show($freecompany);
 
 
