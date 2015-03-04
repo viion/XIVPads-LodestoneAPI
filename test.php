@@ -30,11 +30,18 @@ if (isset($_GET['basic'])) {
 
 $id = 730968;
 if (isset($_GET['id'])) {
-    $id = intval($_GET['id']);
+    $id = $_GET['id'];
 }
+/*
 $character = $api->Search->Character($id);
-
 show($character->dump());
+*/
+
+
+$freecompany = $api->Search->Freecompany($id);
+show($freecompany);
+
+
 
 /*
 //$worldStatus = $api->Search->Worldstatus('Chaos','Zodiark');

@@ -12,7 +12,8 @@ trait Urls
             'achievements' => 'character/{id}/achievement/',
             'achievementsKind' => 'character/{id}/achievement/kind/{kind}/',
             'sixthAstral' => 'character/{id}/sixth_astral_era/',
-            'worldstatus'	=> 'worldstatus/'
+            'worldstatus'	=> 'worldstatus/',
+			'freecompany' => 'freecompany/{id}'
         ];
     }
 

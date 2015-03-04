@@ -71,6 +71,27 @@ class Search
     }
 
     /**
+     * Search for a freecompany
+     *
+     * @param $nameOrId
+     * @param $member
+     */
+    public function Freecompany($nameOrId, $member = null)
+    {
+        // if numeric, we dont search lodestone
+        if (is_numeric($nameOrId)) {
+            // If basic searching
+//            if ($this->basicParsing) {
+//                return $this->basicFreecompanySearch($nameOrId);
+//            }
+
+            // Advanced searching
+            return $this->advancedFreecompanyParse($nameOrId,$member);
+
+        }
+    }
+
+    /**
      * Parse character data, does it using basic methods, Slower.
      *
      * @param $characterId - character id
@@ -711,4 +732,60 @@ class Search
 		}
         return $worldStatus;
     }
+
+    /**
+     * Get freecompany
+     *
+     * @param $freeCompanyId - the id of the freecompany
+     * @param $members - with memberlist
+     */
+    public function advancedFreecompanyParse($freeCompanyId, $all = false) {
+
+		// Generate url
+		$url = $this->urlGen('freecompany', ['{id}' => $freeCompanyId]);
+		$rawHtml = $this->trim($this->curl($url), '<!-- #main -->', '<!-- //#main -->');
+		$html = html_entity_decode(preg_replace(array('#\s\s+#s', '#[\n\t]#s', '#<!--\s*-->#s'), '', $rawHtml), ENT_QUOTES);
+
+		$freeCompany = new \stdClass();
+		$baseHtml = $this->trim($html, '<!-- Company Profile -->', '<!-- //Company Profile -->');
+
+		$regExp = '#<td class="vm"><span class="txt_yellow">(?<name>.*?)</span><br>«(?<shortname>.*?)»</td>.*?'
+				. 'ldst_strftime\((?<formed>[\d\.]+),.*?'
+				. '<td>(?<activeMember>[\d]+)</td>.*?'
+				. '<td>(?<rank>[\d]+)</td>.*?'
+				// Weekly&Monthly
+				. '</th><td>.*?(?<weeklyRank>[\d]+).*?(?<monthlyRank>[\d]+).*?</td>.*?'
+				. '</th><td>(?<slogan>.*?)</td>.*?'
+				// Skip Focus && Seeking
+				. '<tr>.*?</tr><tr>.*?</tr>.*?'
+				//
+				. '<td>(?!<ul>)(?<active>.*?)</td>.*?'
+				. '<td>(?<recruitment>.*?)</td>.*?'
+				// Estate
+				. '<td><div class="txt_yellow mb10">(?<estateTitle>.*?)</div>.*?'
+				. '<p class="mb10">(?<estateAddress>.*?)</p>.*?'
+				. '<p class="mb10">(?<estateGreeting>.*?)</p></td>.*?'
+				. '#';
+		$matches = array();
+		if(preg_match($regExp, $baseHtml, $matches)) {
+			array_shift($matches);
+			foreach($matches as $key => $value) {
+				if(!is_numeric($key)) {
+					$freeCompany->$key = $value;
+				}
+			}
+		}
+		// Focus & Seeking
+		$regExp = '#<img src="(?<icon>.*?/ic/(?<type>focus|roles)/.*?)\?.*?title="(?<name>.*?)">#';
+		$FocusOrSeekingMatches = array();
+		preg_match_all($regExp, $baseHtml, $FocusOrSeekingMatches, PREG_SET_ORDER);
+		foreach($FocusOrSeekingMatches as $key => $match){
+			$freeCompany->{$match['type']}[] = [
+				'name' => $match['name'],
+				'icon' => $match['icon'],
+			];
+		}
+		return $freeCompany;
+	}
+
 }
