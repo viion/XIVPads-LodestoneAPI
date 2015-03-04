@@ -958,7 +958,7 @@ class Search
 				// fcData
 				. '(?:(?<=<div class="ic_crest_32">)<span><img src="(?<fcIcon1>.*?)".*?><img src="(?<fcIcon2>.*?)".*?>(?:<img src="(?<fcIcon3>.*?)".*?>)?</span></div></div><div class="txt_gc"><a href="/lodestone/freecompany/(?<fcId>\d+)/">(?<fcName>.*?)</a></div>|</td>).*?'
 				. '</tr>#';
-		echo htmlentities($regExp);
+		
 		$memberMatch= array();
 		preg_match_all($regExp, $html, $memberMatch, PREG_SET_ORDER);
 		$members = array();

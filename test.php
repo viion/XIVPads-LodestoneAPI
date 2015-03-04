@@ -39,11 +39,6 @@ show($character->dump());
 
 
 $Linkshell = $api->Search->Linkshell($id,true);
-echo "<hr>";
-foreach($Linkshell->members as $key => $member){
-	echo $key+1 . " ".$member['name']."<br />";
-}
-echo "<hr>";
 show($Linkshell);
 
 
