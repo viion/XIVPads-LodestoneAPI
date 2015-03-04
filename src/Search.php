@@ -747,9 +747,28 @@ class Search
 		$html = html_entity_decode(preg_replace(array('#\s\s+#s', '#[\n\t]#s', '#<!--\s*-->#s'), '', $rawHtml), ENT_QUOTES);
 
 		$freeCompany = new \stdClass();
+		
+		$headerHtml = $this->trim($html, '<!-- playname -->', '<!-- //playname -->');
+		
+		$headerRegExp = '#<img src="(?<fcIcon1>.*?)".*?'
+						. '<img src="(?<fcIcon2>.*?)".*?'
+						. '<img src="(?<fcIcon3>.*?)".*?'
+						. '.*?crest_id.*?>(?<company>.*?)\s?<.*?<span>\s?\((?<world>.+?)\)</span>#';
+		$headerMatches = array();
+		if(preg_match($headerRegExp, $headerHtml, $headerMatches)) {
+			$freeCompany->emblum = array(
+				$headerMatches['fcIcon1'],
+				$headerMatches['fcIcon2'],
+				$headerMatches['fcIcon3'],
+				);
+			$freeCompany->company = $headerMatches['company'];
+			$freeCompany->server = $headerMatches['world'];
+			
+		}
+		
 		$baseHtml = $this->trim($html, '<!-- Company Profile -->', '<!-- //Company Profile -->');
 
-		$regExp = '#<td class="vm"><span class="txt_yellow">(?<name>.*?)</span><br>«(?<shortname>.*?)»</td>.*?'
+		$regExp = '#<td class="vm"><span class="txt_yellow">(?<name>.*?)</span><br>«(?<tag>.*?)»</td>.*?'
 				. 'ldst_strftime\((?<formed>[\d\.]+),.*?'
 				. '<td>(?<activeMember>[\d]+)</td>.*?'
 				. '<td>(?<rank>[\d]+)</td>.*?'
@@ -762,38 +781,51 @@ class Search
 				. '<td>(?!<ul>)(?<active>.*?)</td>.*?'
 				. '<td>(?<recruitment>.*?)</td>.*?'
 				// Estate
-				. '<td><div class="txt_yellow mb10">(?<estateTitle>.*?)</div>.*?'
+				. '<td><div class="txt_yellow mb10">(?<estateZone>.*?)</div>.*?'
 				. '<p class="mb10">(?<estateAddress>.*?)</p>.*?'
 				. '<p class="mb10">(?<estateGreeting>.*?)</p></td>.*?'
 				. '#';
 		$matches = array();
 		if(preg_match($regExp, $baseHtml, $matches)) {
-			array_shift($matches);
-			foreach($matches as $key => $value) {
-				if(!is_numeric($key)) {
-					$freeCompany->$key = $value;
-				}
-			}
+			$freeCompany->name = $matches['name'];
+			$freeCompany->tag = $matches['tag'];
+			$freeCompany->formed = $matches['formed'];
+			$freeCompany->id = $freeCompanyId;
+			$freeCompany->memberCount = $matches['activeMember'];
+			$freeCompany->slogan = $matches['slogan'];
+			$freeCompany->active = $matches['active'];
+			$freeCompany->recruitment = $matches['recruitment'];
+			$freeCompany->ranking = array(
+				'current' => $matches['rank'],
+				'weekly' => $matches['weeklyRank'],
+				'monthly' => $matches['monthlyRank'],
+			);
+			$freeCompany->estate = array(
+				'zone' => $matches['estateZone'],
+				'address' => $matches['estateAddress'],
+				'message' => $matches['estateGreeting'],
+			);
 		}
 		// Focus & Seeking
-		$regExp = '#<img src="(?<icon>.*?/ic/(?<type>focus|roles)/.*?)\?.*?title="(?<name>.*?)">#';
+		$regExp = '#<li(?: class="icon_(?<active>off?)")?><img src="(?<icon>.*?/ic/(?<type>focus|roles)/.*?)\?.*?title="(?<name>.*?)">#';
 		$FocusOrSeekingMatches = array();
 		preg_match_all($regExp, $baseHtml, $FocusOrSeekingMatches, PREG_SET_ORDER);
 		foreach($FocusOrSeekingMatches as $key => $match){
 			$freeCompany->{$match['type']}[] = [
 				'name' => $match['name'],
 				'icon' => $match['icon'],
+				'active' => $match['active'] != "" ? false : true,
 			];
 		}
 		
 		if($members === true){
 			$freeCompany->members = array();
-			$url = $this->urlGen('freecompanyMember', ['{id}' => $freeCompanyId]);
+			$url = $this->urlGen('freecompanyMember', ['{id}' => $freeCompany->id]);
 			$rawHtml = $this->trim($this->curl($url), '<!-- Member List -->', '<!-- //Member List -->');
 			$html = html_entity_decode(preg_replace(array('#\s\s+#s', '#[\n\t]#s','#<script.*?>.*?</script>?#s', '#<!--\s*-->#s'), '', $rawHtml), ENT_QUOTES);
 			
 			$maxPerPage = strip_tags($this->trim($html,'<span class="show_end">','</span>'));
-			$pages = ceil($freeCompany->activeMember/$maxPerPage);
+			$pages = ceil($freeCompany->memberCount/$maxPerPage);
 			for($page = 1;$page<=$pages;$page++){
 				if($page == 1){
 					$memberHtml = $this->trim($html, 'table_black_border_bottom', '<!-- pager -->');
@@ -821,8 +853,30 @@ class Search
 				. '<div>(?<gcName>[^/]+?)/(?<gcRank>[^/]+?)</div>)?.*?</tr>#';
 		$memberMatch= array();
 		preg_match_all($regExp, $html, $memberMatch, PREG_SET_ORDER);
-		$this->clearRegExpArray($memberMatch);
-		return $memberMatch;	
+		$members = array();
+		foreach($memberMatch as $key => $member){
+			$members[$key] = array(
+				'avatar' => $member['avatar'],
+				'name' => $member['name'],
+				'id' => $member['id'],
+				'rank' => array(
+					'title' => $member['rankName'],
+					'image' => $member['rankIcon'],
+					),
+				'class' => array(
+					'image' => $member['classIcon'],
+					'level' => $member['classLevel']
+				)
+			);
+			if(array_key_exists('gcIcon', $member)){
+				$members[$key]['grandcompany'] = array(
+					'image' => $member['gcIcon'],
+					'name' => $member['gcName'],
+					'rank' => $member['gcRank']
+				);
+			}
+		}
+		return $members;	
 	}
 
 }
