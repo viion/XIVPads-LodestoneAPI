@@ -15,7 +15,9 @@ trait Urls
             'worldstatus'	=> 'worldstatus/',
 			'freecompany' => 'freecompany/{id}',
 			'freecompanyMember' => 'freecompany/{id}/member',
-			'freecompanyMemberPage' => 'freecompany/{id}/member/?page={page}'
+			'freecompanyMemberPage' => 'freecompany/{id}/member/?page={page}',
+			'linkshell' => 'linkshell/{id}',
+			'linkshellPage' => 'linkshell/{id}/?page={page}'
         ];
     }
 

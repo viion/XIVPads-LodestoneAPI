@@ -38,8 +38,13 @@ show($character->dump());
 */
 
 
-$freecompany = $api->Search->Freecompany($id,true);
-show($freecompany);
+$Linkshell = $api->Search->Linkshell($id,true);
+echo "<hr>";
+foreach($Linkshell->members as $key => $member){
+	echo $key+1 . " ".$member['name']."<br />";
+}
+echo "<hr>";
+show($Linkshell);
 
 
 
