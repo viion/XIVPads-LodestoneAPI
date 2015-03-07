@@ -37,10 +37,10 @@ $character = $api->Search->Character($id);
 show($character->dump());
 */
 
-
+/*
 $Linkshell = $api->Search->Linkshell($id,true);
 show($Linkshell);
-
+*/
 
 
 /*
@@ -48,10 +48,9 @@ show($Linkshell);
 //show($worldStatus);
 */
 
-/*
-$achievements = $api->Search->Achievements(730968, true);
+
+$achievements = $api->Search->Achievements($id, true);
 show($achievements->dump());
-*/
 
 show("Memory: ". cMem(memory_get_usage()) .' - after api->Search->Character');
 $finish = microtime(true);
