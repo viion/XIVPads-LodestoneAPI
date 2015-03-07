@@ -79,4 +79,15 @@ trait Funky
         $time = filter_var($time, FILTER_SANITIZE_NUMBER_INT);
         return $time;
     }
+
+    public function hashed($string)
+    {
+        $string = trim(strip_tags(htmlspecialchars_decode(trim($string), ENT_QUOTES)));
+        $string = strtolower($string);
+        $string = preg_replace('/[^\w]/', null, $string);
+        $string = sha1($string);
+
+        return $string;
+    }
+
 }
