@@ -5,6 +5,7 @@ class Character
 {
     use Funky;
     use Data;
+    use Urls;
 
     public $id;
     public $name;
@@ -12,6 +13,7 @@ class Character
     public $title;
     public $avatar;
     public $avatarLarge;
+    public $avatarHash;
     public $portrait;
     public $portraitLarge;
     public $bio;
@@ -45,6 +47,7 @@ class Character
 
     public $hash;
     public $events;
+    public $all50;
 
     /**
      * - dump
@@ -120,10 +123,15 @@ class Character
             $this->$param = $value;
         }
 
+        // Avatar hash
+        $this->avatarHash = str_ireplace(['http://img2.finalfantasyxiv.com/f/', '_50x50.jpg'], null, $this->avatar);
+
+        // Set basic stuff
         $curve = $this->getExperiencePoints();
         $jobclass = $this->getClassListFull();
 
         // Set max EXP
+        $this->all50 = true;
         foreach($this->classjobs as $i => $d)
         {
             // Handle classjobs
@@ -144,6 +152,10 @@ class Character
             if ($d['level'] == '-') { $this->classjobs[$i]['level'] = 0; }
             if ($d['exp_current'] == '-') { $this->classjobs[$i]['exp_current'] = 0; }
             if ($d['exp_level'] == '-') { $this->classjobs[$i]['exp_level'] = 0; }
+
+            if ($d['level'] < CURRENT_MAX_LEVEL) {
+                $this->all50 = false;
+            }
         }
 
         // Sort attributes
@@ -151,5 +163,15 @@ class Character
 
         // Set hash
         $this->hash = sha1($this->dump(true));
+
+        // Get item ids
+        $xivdb = json_decode($this->curl($this->urls()['xivdb'] . '?type=item&name=all'), true);
+        foreach($this->gear as $i => $g)
+        {
+            $hash = $this->hashed($g['name']);
+            if (isset($xivdb[$hash])) {
+                $this->gear[$i]['realId'] = $xivdb[$hash];
+            }
+        }
     }
 }
