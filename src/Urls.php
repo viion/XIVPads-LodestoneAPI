@@ -6,6 +6,7 @@ trait Urls
     public function urls()
     {
         return [
+            'xivdb' => 'http://45.56.73.127/api/',
             'base' => 'http://eu.finalfantasyxiv.com/lodestone/',
             'characterSearch' => 'character/?q={name}&worldname={world}',
             'characterProfile' => 'character/{id}',
