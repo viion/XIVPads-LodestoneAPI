@@ -156,6 +156,9 @@ class Character
             if ($d['level'] < CURRENT_MAX_LEVEL) {
                 $this->all50 = false;
             }
+
+            // real id
+            $this->classjobs[$i]['real_id'] = array_search(strtolower(str_ireplace(' ', null, $d['name'])), $this->getClassListFull());
         }
 
         // Sort attributes
@@ -168,6 +171,7 @@ class Character
         $xivdb = json_decode($this->curl($this->urls()['xivdb'] . '?type=item&name=all'), true);
         foreach($this->gear as $i => $g)
         {
+            // Real ID
             $hash = $this->hashed($g['name']);
             if (isset($xivdb[$hash])) {
                 $this->gear[$i]['realId'] = $xivdb[$hash];
