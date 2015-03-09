@@ -197,6 +197,7 @@ class Search
 
         $iLevelTotal = 0;
         $iLevelArray = [];
+        $iLevelCalculated = [];
         foreach($p->findAll('item_detail_box', 35, 'param_power_area') as $i => $node) {
             // new node
             $node = new Parser($node);
@@ -216,9 +217,10 @@ class Search
             if ($slot != 'Soul Crystal') {
                 $iLevelTotal = $iLevelTotal + $ilv;
                 $iLevelArray[] = $ilv;
+                $iLevelCalculated[] = $ilv;
 
                 if (in_array($slot, $this->getTwoHandedItems())) {
-                    $iLevelArray[] = $ilv;
+                    $iLevelCalculated[] = $ilv;
                 }
             }
 
@@ -235,7 +237,7 @@ class Search
 
         $character->gearStats = [
             'total' => $iLevelTotal,
-            'average' => floor(array_sum($iLevelArray) / 13),
+            'average' => floor(array_sum($iLevelCalculated) / 13),
             'array' => $iLevelArray,
         ];
 
