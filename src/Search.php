@@ -347,10 +347,10 @@ class Search
         $url = $this->urlGen('characterProfile', [ '{id}' => $characterId ]);
         $rawHtml = $this->trim($this->curl($url), '<!-- contents -->', '<!-- //Minion -->');
         $html = html_entity_decode(preg_replace(array('#\s\s+#s','#<script.*?>.*?</script>?#s','#[\n\t]#s'),'', $rawHtml),ENT_QUOTES);
-		
+
         // Base Data
 		$baseHtml = $this->trim($html, 'player_name_thumb', 'param_img_cover');
-		
+
         $regExp = "#player_name_thumb.*?src=\"(?<avatar>.*?)\?.*?"
 				. "<h2>(?:<div class=\"chara_title\">(?<titleBefore>.*)</div>)?"
 				. "(?:<a href=\".*?/(?<id>\d+)/\">(?<name>.*?)</a>)"
@@ -671,7 +671,7 @@ class Search
 			$url = $this->urlGen('achievementsKind', [ '{id}' => $id, '{kind}' => $kind ]);
 			$rawHtml = $this->trim($this->curl($url), '<!-- #main -->', '<!-- //#main -->');
 			$html = html_entity_decode(preg_replace(array('#\s\s+#s','#[\n\t]#s'),'', $rawHtml),ENT_QUOTES);
-			
+
 			$achievementMatch = array();
 			preg_match('#class="txt_yellow">(?<pointsCurrent>\d+)</strong>.*?(?<legacy>(?<=.)legacy|\#main)#',$html,$achievementMatch);
 			$achievement->pointsCurrent = $achievementMatch['pointsCurrent'];
@@ -738,9 +738,9 @@ class Search
 		$url = $this->urlGen('worldstatus', []);
 		$rawHtml = $this->trim($this->curl($url), '<!-- #main -->', '<!-- //#main -->');
         $html = html_entity_decode(preg_replace(array('#\s\s+#s','#<script.*?>.*?</script>?#s','#[\n\t]#s'),'', $rawHtml),ENT_QUOTES);
-		
+
 		$regExp = '#text-headline.*?span>(?<datacenter>[\w]+)</div>.*?(?<tableHTML><table.*?</table>).*?area_body#';
-			
+
 		$datacenterMatches = array();
 		preg_match_all($regExp, $html, $datacenterMatches, PREG_SET_ORDER);
 		foreach($datacenterMatches as $key => $data){
@@ -767,9 +767,9 @@ class Search
 		$html = html_entity_decode(preg_replace(array('#\s\s+#s', '#[\n\t]#s', '#<!--\s*-->#s'), '', $rawHtml), ENT_QUOTES);
 
 		$freeCompany = new \stdClass();
-		
+
 		$headerHtml = $this->trim($html, '<!-- playname -->', '<!-- //playname -->');
-		
+
 		$headerRegExp = '#<img src="(?<fcIcon1>.*?)".*?'
 						. '<img src="(?<fcIcon2>.*?)".*?'
 						. '<img src="(?<fcIcon3>.*?)".*?'
@@ -783,9 +783,9 @@ class Search
 				);
 			$freeCompany->company = $headerMatches['company'];
 			$freeCompany->server = $headerMatches['world'];
-			
+
 		}
-		
+
 		$baseHtml = $this->trim($html, '<!-- Company Profile -->', '<!-- //Company Profile -->');
 
 		$regExp = '#<td class="vm"><span class="txt_yellow">(?<name>.*?)</span><br>«(?<tag>.*?)»</td>.*?'
@@ -837,13 +837,13 @@ class Search
 				'active' => $match['active'] != "" ? false : true,
 			];
 		}
-		
+
 		if($members === true){
 			$freeCompany->members = array();
 			$url = $this->urlGen('freecompanyMember', ['{id}' => $freeCompany->id]);
 			$rawHtml = $this->trim($this->curl($url), '<!-- Member List -->', '<!-- //Member List -->');
 			$html = html_entity_decode(preg_replace(array('#\s\s+#s', '#[\n\t]#s','#<script.*?>.*?</script>?#s', '#<!--\s*-->#s'), '', $rawHtml), ENT_QUOTES);
-			
+
 			$maxPerPage = strip_tags($this->trim($html,'<span class="show_end">','</span>'));
 			$pages = ceil($freeCompany->memberCount/$maxPerPage);
 			for($page = 1;$page<=$pages;$page++){
@@ -856,12 +856,12 @@ class Search
 					$memberHtml .= $this->trim($pageHtml, 'table_black_border_bottom', '<!-- pager -->');
 				}
 			}
-			$freeCompany->members = $this->_advancedFcMemberParse($memberHtml);				
+			$freeCompany->members = $this->_advancedFcMemberParse($memberHtml);
 		}
-		
+
 		return $freeCompany;
 	}
-	
+
 	private function _advancedFcMemberParse($html){
 		$regExp = '#<tr\s?>.*?<a href="/lodestone/character/(?<id>\d+)/">'
 				. '<img src="(?<avatar>.+?)\?.*?'
@@ -896,7 +896,7 @@ class Search
 				);
 			}
 		}
-		return $members;	
+		return $members;
 	}
 
     /**
@@ -912,9 +912,9 @@ class Search
 		$html = html_entity_decode(preg_replace(array('#\s\s+#s', '#[\n\t]#s', '#<!--\s*-->#s'), '', $rawHtml), ENT_QUOTES);
 
 		$linkshell = new \stdClass();
-		
+
 		$headerHtml = $this->trim($html, '<!-- playname -->', '<!-- narrowdown -->');
-		
+
 		$headerRegExp = '#<h2.*?>(?<name>.*?)<span>\s?\((?<world>.+?)\)</span></h2>.*?<h3 class="ic_silver">.*?\((?<memberCount>\d+).*?</h3>#';
 		$headerMatches = array();
 		if(preg_match($headerRegExp, $headerHtml, $headerMatches)) {
@@ -922,9 +922,9 @@ class Search
 			$linkshell->name = $headerMatches['name'];
 			$linkshell->server = $headerMatches['world'];
 			$linkshell->memberCount = $headerMatches['memberCount'];
-			
+
 		}
-		
+
 		$linkshell->members = array();
 		$url = $this->urlGen('linkshellPage', ['{id}' => $linkshell->id]);
 		$rawHtml = $this->trim($this->curl($url), '<!-- base_inner -->', '<!-- //base_inner -->');
@@ -943,11 +943,11 @@ class Search
 			}
 		}
 		$linkshell->members = $this->_advancedLsMemberParse($memberHtml);
-		
-		
+
+
 		return $linkshell;
 	}
-	
+
 	private function _advancedLsMemberParse($html){
 		$regExp = '#<tr\s?>.*?<a href="/lodestone/character/(?<id>\d+)/">'
 				. '<img src="(?<avatar>.+?)\?.*?'
@@ -958,7 +958,7 @@ class Search
 				// fcData
 				. '(?:(?<=<div class="ic_crest_32">)<span><img src="(?<fcIcon1>.*?)".*?><img src="(?<fcIcon2>.*?)".*?>(?:<img src="(?<fcIcon3>.*?)".*?>)?</span></div></div><div class="txt_gc"><a href="/lodestone/freecompany/(?<fcId>\d+)/">(?<fcName>.*?)</a></div>|</td>).*?'
 				. '</tr>#';
-		
+
 		$memberMatch= array();
 		preg_match_all($regExp, $html, $memberMatch, PREG_SET_ORDER);
 		$members = array();
@@ -991,7 +991,7 @@ class Search
 				);
 			}
 		}
-		return $members;	
+		return $members;
 	}
 
 }
