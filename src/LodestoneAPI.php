@@ -7,6 +7,8 @@ namespace Viion\Lodestone;
  */
 class LodestoneAPI
 {
+    use Data;
+
     /**
      * SearchObject
      * @var Search
