@@ -1,6 +1,4 @@
 <?php
-
-
 $start = microtime(true);
 show("Memory: ". cMem(memory_get_usage()) .' - start');
 
@@ -19,46 +17,50 @@ show("Memory: ". cMem(memory_get_usage()) .' - after autoloader');
 $api = new LodestoneAPI();
 show("Memory: ". cMem(memory_get_usage()) .' - after new api instance');
 
-// Get character
-
+# -------------------------------
 
 if (isset($_GET['basic'])) {
     $api->useBasicParsing();
 }
 
-//$character = $api->Search->Character('Premium Virtue', 'Hyperion');
-
 $id = 730968;
 if (isset($_GET['id'])) {
     $id = $_GET['id'];
 }
-/*
-$character = $api->Search->Character($id);
-show($character->dump());
-*/
-
-/*
-$Linkshell = $api->Search->Linkshell($id,true);
-show($Linkshell);
-*/
 
 
-/*
-//$worldStatus = $api->Search->Worldstatus('Chaos','Zodiark');
-//show($worldStatus);
-*/
+if (isset($_GET['achievements']))
+{
+    $achievements = $api->Search->Achievements($id, true);
+    show($achievements->dump());
+}
+else if (isset($_GET['worldstatus']))
+{
+    $worldStatus = $api->Search->Worldstatus(trim($_GET['dc']), trim($_GET['server']));
+    show($worldStatus);
+}
+else if (isset($_GET['linkshell']))
+{
+    $Linkshell = $api->Search->Linkshell($id,true);
+    show($Linkshell);
+}
+else if (isset($_GET['search']))
+{
+    $character = $api->Search->Character(trim(urldecode($_GET['name'])), trim($_GET['server']));
+}
+else
+{
+    $character = $api->Search->Character($id);
+    show($character->dump());
+}
 
-
-$achievements = $api->Search->Achievements($id, true);
-show($achievements->dump());
+# -------------------------------
 
 show("Memory: ". cMem(memory_get_usage()) .' - after api->Search->Character');
 $finish = microtime(true);
 
 unset($api);
 show("Memory: ". cMem(memory_get_usage()) .' - unset API');
-
 show("Duration: ". ($finish - $start) .' ms');
 show("Memory Peak: ". cMem(memory_get_peak_usage()));
-
 show("Memory: ". cMem(memory_get_usage()) .' - end');
