@@ -1,5 +1,6 @@
 <?php
 namespace Viion\Lodestone;
+DEFINE ('CURRENT_MAX_LEVEL',50);
 
 class Character
 {
