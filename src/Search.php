@@ -579,6 +579,13 @@ class Search
                 $achievement->legacy = (strlen($p->find('legacy')->html()) > 0) ? true : false;
                 $isLegacy = $achievement->legacy;
 
+                if ($achievement->pointsCurrent) {
+                    $achievement->public = true;
+                } else {
+                    // end, not public
+                    break;
+                }
+
                 foreach($p->findAll('ic_achievement', 'button bt_more') as $i => $node)
                 {
                     $node = new Parser($node);
@@ -631,6 +638,10 @@ class Search
             // Begin parsing/populating character
             $achievement->pointsCurrent = $p->find('txt_yellow')->numbers();
             $achievement->legacy = (strlen($p->find('legacy')->html()) > 0) ? true : false;
+
+            if ($achievement->pointsCurrent) {
+                $achievement->public = true;
+            }
 
             // Recent
             foreach($p->findAll('ic_achievement', 'achievement_area_footer') as $i => $node)

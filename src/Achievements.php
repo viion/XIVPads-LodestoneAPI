@@ -8,6 +8,7 @@ class Achievements
     public $countTotal = 0;
     public $countCurrent = 0;
 
+    public $public = false;
     public $legacy;
     public $recent;
     public $kinds;
