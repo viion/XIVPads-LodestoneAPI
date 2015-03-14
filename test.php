@@ -31,7 +31,7 @@ if (isset($_GET['id'])) {
 
 if (isset($_GET['achievements']))
 {
-    $achievements = $api->Search->Achievements($id, true);
+    $achievements = $api->Search->Achievements($id, isset($_GET['all']) ? true : false );
     show($achievements->dump());
 }
 else if (isset($_GET['worldstatus']))
@@ -41,7 +41,7 @@ else if (isset($_GET['worldstatus']))
 }
 else if (isset($_GET['linkshell']))
 {
-    $Linkshell = $api->Search->Linkshell($id,true);
+    $Linkshell = $api->Search->Linkshell($id, isset($_GET['all']) ? true : false );
     show($Linkshell);
 }
 else if (isset($_GET['search']))
