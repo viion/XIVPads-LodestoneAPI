@@ -134,6 +134,7 @@ class Search
         $character->title = $p->find('chara_title')->text();
         $character->avatar = $p->find('player_name_thumb', 2)->attr('src');
         $character->avatarLarge = str_ireplace('50x50', '96x96', $character->avatar);
+	$character->avatar64 = str_ireplace('50x50', '64x64', $character->avatar);
 
         $character->portrait = $p->find('bg_chara_264', 1)->attr('src');
         $character->portraitLarge = str_ireplace('264x360', '640x873', $character->portrait);
@@ -388,6 +389,7 @@ class Search
 			}
 
             $character->avatarLarge = str_ireplace('50x50', '96x96', $character->avatar);
+            $character->avatar64 = str_ireplace('50x50', '64x64', $character->avatar);
             $character->portraitLarge = str_ireplace('264x360', '640x873', $character->portrait);
 
             # Class/Jobs

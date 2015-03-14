@@ -14,6 +14,7 @@ class Character
     public $title;
     public $avatar;
     public $avatarLarge;
+    public $avatar64;
     public $avatarHash;
     public $portrait;
     public $portraitLarge;
@@ -111,6 +112,7 @@ class Character
                 // Remove timestamp from images
                 case 'avatar':
                 case 'avatarLarge':
+                case 'avatar64':
                 case 'portrait':
                 case 'portraitLarge':
                 case 'guardianIcon':
