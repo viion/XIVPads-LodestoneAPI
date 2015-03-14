@@ -150,8 +150,16 @@ class Search
         $character->city = $p->find('chara_profile_left', 12)->text();
         $character->cityIcon = $p->find('chara_profile_left', 10)->attr('src');
         $character->grandCompany = explode('/', $p->find('chara_profile_left',16)->text())[0];
-        $character->grandCompanyRank = explode('/', $p->find('chara_profile_left',16)->text())[1];
-        $character->grandCompanyIcon = $p->find('chara_profile_left', 14)->attr('src');
+
+        if ($character->grandCompany[0] == '-') {
+            $character->grandCompany = null;
+        }
+
+        if ($character->grandCompany)
+        {
+            $character->grandCompanyRank = explode('/', $p->find('chara_profile_left',16)->text())[1];
+            $character->grandCompanyIcon = $p->find('chara_profile_left', 14)->attr('src');
+        }
         $character->freeCompany = $p->find('ic_crest_32', 6)->text();
 
         // Only proceed if caracter is in an Fc
