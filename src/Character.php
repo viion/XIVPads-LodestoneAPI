@@ -1,6 +1,5 @@
 <?php
 namespace Viion\Lodestone;
-DEFINE ('CURRENT_MAX_LEVEL',50);
 
 class Character
 {
@@ -156,7 +155,7 @@ class Character
             if ($d['exp_current'] == '-') { $this->classjobs[$i]['exp_current'] = 0; }
             if ($d['exp_level'] == '-') { $this->classjobs[$i]['exp_level'] = 0; }
 
-            if ($d['level'] < CURRENT_MAX_LEVEL) {
+            if ($d['level'] < $this->getMaxLevel()) {
                 $this->all50 = false;
             }
 
