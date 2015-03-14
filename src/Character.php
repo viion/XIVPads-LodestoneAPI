@@ -14,6 +14,7 @@ class Character
     public $title;
     public $avatar;
     public $avatarLarge;
+    public $avatar64;
     public $avatarHash;
     public $portrait;
     public $portraitLarge;
