@@ -210,13 +210,14 @@ class Search
         foreach($p->findAll('item_detail_box', 35, 'param_power_area') as $i => $node) {
             // new node
             $node = new Parser($node);
+
             $ilv = filter_var($node->find('pt3 pb3')->text(), FILTER_SANITIZE_NUMBER_INT);
-            $slot = $node->find('ex_bind', 5)->text();
-            $name = str_ireplace('">', null, $node->find('ex_bind', 4)->text());
+            $slot = $node->find('category_name')->text();
+            $name = str_ireplace('">', null, $node->find('category_name', -1)->text());
 
             $character->gear[] = [
                 'icon'  => explode('?', $node->find('itemicon')->attr('src'))[0],
-                'color' => explode('_', $node->find('ex_bind', 3)->text())[0],
+                'color' => explode('_', $node->find('category_name', -2)->text())[0],
                 'name'  => $name,
                 'slot'  => $slot,
                 'id'    => explode('/', $node->find('bt_db_item_detai', 1)->html())[5],
