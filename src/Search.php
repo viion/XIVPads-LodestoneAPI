@@ -623,7 +623,7 @@ class Search
             $achievement = new Achievements();
 
             // Setup url and get html
-            $url = $this->urlGen('achievements', [ '{id}' => $id ]);
+            $url = $this->urlGen('achievements', [ '{id}' => $characterId ]);
             $html = $this->trim($this->curl($url), '<!-- tab menu -->', '<!-- //base -->');
 
             $p = new Parser($html);
