@@ -37,9 +37,12 @@ class Achievements
     public function clean()
     {
         // Sort achievements by ID.
-        ksort($this->list);
-        ksort($this->kinds);
-        ksort($this->kindsTotal);
+        if (isset($this->list) && $this->list)
+        {
+            ksort($this->list);
+            ksort($this->kinds);
+            ksort($this->kindsTotal);
+        }
 
         // Set hash
         $this->hash = sha1($this->dump(true));
