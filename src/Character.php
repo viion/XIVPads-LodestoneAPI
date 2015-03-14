@@ -112,6 +112,7 @@ class Character
                 // Remove timestamp from images
                 case 'avatar':
                 case 'avatarLarge':
+                case 'avatar64':
                 case 'portrait':
                 case 'portraitLarge':
                 case 'guardianIcon':
