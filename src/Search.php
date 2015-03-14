@@ -389,6 +389,7 @@ class Search
 			}
 
             $character->avatarLarge = str_ireplace('50x50', '96x96', $character->avatar);
+            $character->avatarLarge = str_ireplace('50x50', '64x64', $character->avatar);
             $character->portraitLarge = str_ireplace('264x360', '640x873', $character->portrait);
 
             # Class/Jobs
