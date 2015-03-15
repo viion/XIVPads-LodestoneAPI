@@ -10,6 +10,8 @@ class Achievements
 
     public $public = false;
     public $legacy;
+    public $legacyPoints = 0;
+    public $legacyPointsTotal = 0;
     public $recent;
     public $kinds;
     public $kindsTotal;

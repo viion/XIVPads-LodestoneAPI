@@ -614,13 +614,20 @@ class Search
                     // Increment kinds
                     $achievement->kindsTotal[$type] = $achievement->kindsTotal[$type] + $points;
                     if ($obtained) {
-                        $achievement->kinds[$type] = $achievement->kinds[$type] + $points;
-                        $achievement->countCurrent = $achievement->countCurrent + 1;
+                        $achievement->kinds[$type] += $points;
+                        $achievement->countCurrent += 1;
                     }
 
                     // Increment overall total
-                    $achievement->pointsTotal = $achievement->pointsTotal + $points;
-                    $achievement->countTotal = $achievement->countTotal + 1;
+                    $achievement->pointsTotal += $points;
+                    $achievement->countTotal += 1;
+
+                    if ($kind == 13) {
+                        $achievement->legacyPointsTotal += $points;
+                        if ($obtained) {
+                            $achievement->legacyPoints += $points;
+                        }
+                    }
                 }
             }
         }
