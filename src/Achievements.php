@@ -8,7 +8,10 @@ class Achievements
     public $countTotal = 0;
     public $countCurrent = 0;
 
+    public $public = false;
     public $legacy;
+    public $legacyPoints = 0;
+    public $legacyPointsTotal = 0;
     public $recent;
     public $kinds;
     public $kindsTotal;
@@ -37,9 +40,12 @@ class Achievements
     public function clean()
     {
         // Sort achievements by ID.
-        ksort($this->list);
-        ksort($this->kinds);
-        ksort($this->kindsTotal);
+        if (isset($this->list) && $this->list)
+        {
+            ksort($this->list);
+            ksort($this->kinds);
+            ksort($this->kindsTotal);
+        }
 
         // Set hash
         $this->hash = sha1($this->dump(true));

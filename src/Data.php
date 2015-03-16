@@ -3,6 +3,16 @@ namespace Viion\Lodestone;
 
 trait Data
 {
+    public function getMaxLevel()
+    {
+        return 50;
+    }
+
+    public function getMaxExp()
+    {
+        return 7734000;
+    }
+
     public function getClassList()
     {
         return [

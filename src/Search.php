@@ -134,6 +134,7 @@ class Search
         $character->title = $p->find('chara_title')->text();
         $character->avatar = $p->find('player_name_thumb', 2)->attr('src');
         $character->avatarLarge = str_ireplace('50x50', '96x96', $character->avatar);
+        $character->avatarMedium = str_ireplace('50x50', '64x64', $character->avatar);
 
         $character->portrait = $p->find('bg_chara_264', 1)->attr('src');
         $character->portraitLarge = str_ireplace('264x360', '640x873', $character->portrait);
@@ -149,8 +150,16 @@ class Search
         $character->city = $p->find('chara_profile_left', 12)->text();
         $character->cityIcon = $p->find('chara_profile_left', 10)->attr('src');
         $character->grandCompany = explode('/', $p->find('chara_profile_left',16)->text())[0];
-        $character->grandCompanyRank = explode('/', $p->find('chara_profile_left',16)->text())[1];
-        $character->grandCompanyIcon = $p->find('chara_profile_left', 14)->attr('src');
+
+        if ($character->grandCompany[0] == '-') {
+            $character->grandCompany = null;
+        }
+
+        if ($character->grandCompany)
+        {
+            $character->grandCompanyRank = explode('/', $p->find('chara_profile_left',16)->text())[1];
+            $character->grandCompanyIcon = $p->find('chara_profile_left', 14)->attr('src');
+        }
         $character->freeCompany = $p->find('ic_crest_32', 6)->text();
 
         // Only proceed if caracter is in an Fc
@@ -201,13 +210,14 @@ class Search
         foreach($p->findAll('item_detail_box', 35, 'param_power_area') as $i => $node) {
             // new node
             $node = new Parser($node);
+
             $ilv = filter_var($node->find('pt3 pb3')->text(), FILTER_SANITIZE_NUMBER_INT);
-            $slot = $node->find('ex_bind', 5)->text();
-            $name = str_ireplace('">', null, $node->find('ex_bind', 4)->text());
+            $slot = $node->find('category_name')->text();
+            $name = str_ireplace('">', null, $node->find('category_name', -1)->text());
 
             $character->gear[] = [
                 'icon'  => explode('?', $node->find('itemicon')->attr('src'))[0],
-                'color' => explode('_', $node->find('ex_bind', 3)->text())[0],
+                'color' => explode('_', $node->find('category_name', -2)->text())[0],
                 'name'  => $name,
                 'slot'  => $slot,
                 'id'    => explode('/', $node->find('bt_db_item_detai', 1)->html())[5],
@@ -388,6 +398,7 @@ class Search
 			}
 			
             $character->avatarLarge = str_ireplace('50x50', '96x96', $character->avatar);
+            $character->avatarMedium = str_ireplace('50x50', '64x64', $character->avatar);
             $character->portraitLarge = str_ireplace('264x360', '640x873', $character->portrait);
 
             # Class/Jobs
@@ -568,6 +579,13 @@ class Search
                 $achievement->legacy = (strlen($p->find('legacy')->html()) > 0) ? true : false;
                 $isLegacy = $achievement->legacy;
 
+                if ($achievement->pointsCurrent) {
+                    $achievement->public = true;
+                } else {
+                    // end, not public
+                    break;
+                }
+
                 foreach($p->findAll('ic_achievement', 'button bt_more') as $i => $node)
                 {
                     $node = new Parser($node);
@@ -596,13 +614,20 @@ class Search
                     // Increment kinds
                     $achievement->kindsTotal[$type] = $achievement->kindsTotal[$type] + $points;
                     if ($obtained) {
-                        $achievement->kinds[$type] = $achievement->kinds[$type] + $points;
-                        $achievement->countCurrent = $achievement->countCurrent + 1;
+                        $achievement->kinds[$type] += $points;
+                        $achievement->countCurrent += 1;
                     }
 
                     // Increment overall total
-                    $achievement->pointsTotal = $achievement->pointsTotal + $points;
-                    $achievement->countTotal = $achievement->countTotal + 1;
+                    $achievement->pointsTotal += $points;
+                    $achievement->countTotal += 1;
+
+                    if ($kind == 13) {
+                        $achievement->legacyPointsTotal += $points;
+                        if ($obtained) {
+                            $achievement->legacyPoints += $points;
+                        }
+                    }
                 }
             }
         }
@@ -612,7 +637,7 @@ class Search
             $achievement = new Achievements();
 
             // Setup url and get html
-            $url = $this->urlGen('achievements', [ '{id}' => $id ]);
+            $url = $this->urlGen('achievements', [ '{id}' => $characterId ]);
             $html = $this->trim($this->curl($url), '<!-- tab menu -->', '<!-- //base -->');
 
             $p = new Parser($html);
@@ -620,6 +645,10 @@ class Search
             // Begin parsing/populating character
             $achievement->pointsCurrent = $p->find('txt_yellow')->numbers();
             $achievement->legacy = (strlen($p->find('legacy')->html()) > 0) ? true : false;
+
+            if ($achievement->pointsCurrent) {
+                $achievement->public = true;
+            }
 
             // Recent
             foreach($p->findAll('ic_achievement', 'achievement_area_footer') as $i => $node)
