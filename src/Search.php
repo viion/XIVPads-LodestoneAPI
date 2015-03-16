@@ -352,25 +352,25 @@ class Search
 
         // Base Data
 		$baseHtml = $this->trim($html, 'player_name_thumb', 'param_img_cover');
-
-        $regExp = "#player_name_thumb.*?src=\"(?<avatar>.*?)\?.*?"
+		
+        $regExp = "#player_name_thumb.*?" . $this->getRegExp('image','avatar') . ".*?"
 				. "<h2>(?:<div class=\"chara_title\">(?<titleBefore>.*)</div>)?"
 				. "(?:<a href=\".*?/(?<id>\d+)/\">(?<name>.*?)</a>)"
 				. "(?:<span>\s?\((?<world>.*)\)</span>)"
 				. "(?:<div class=\"chara_title\">(?<titleAfter>.*)</div>)?</h2>.*?"
                 . "txt_selfintroduction\">(?<bio>.*?)</div>.*?"
                 . "chara_profile_title\">(?<race>.*?)\s/\s(?<clan>.*?)\s/\s(?<gender>.*?)</div>.*?"
-                . "icon.*?img.*?src=\"(?<guardianIcon>.*?)\?.*?"
+                . "icon.*?" . $this->getRegExp('image','guardianIcon') . ".*?"
                 . "txt_name\">(?<nameday>.*?)</dd>.*?"
                 . "txt_name\">(?<guardian>.*?)</dd>.*?"
-                . "icon.*?img.*?src=\"(?<cityIcon>.*?)\?.*?"
-                . "txt_name\">(?<city>.*?)</dd>.*?"
-                . "icon.*?img.*?src=\"(?<grandCompanyIcon>.*?)\?.*?"
-                . "txt_name\">(?<grandCompany>.*?)/(?<grandCompanyRank>.*?)</dd></dl>"
-				. "(?(?=<dl).*?<div class=\"ic_crest_32\"><span><img src=\"(?<freeCompanyIcon1>.*?)\".*?><img src=\"(?<freeCompanyIcon2>.*?)\".*?><img src=\"(?<freeCompanyIcon3>.*?)\".*?></span></div>.*?"
+                . "icon.*?" . $this->getRegExp('image','cityIcon') . ".*?"
+                . "txt_name\">(?<city>.*?)</dd></dl>.*?"
+				. "(?(?=<dl).*?<dt class=\"icon\">" . $this->getRegExp('image','grandCompanyIcon') . "</dt>.*?"
+				. "txt_name\">(?<grandCompany>.*?)/(?<grandCompanyRank>.*?)</dd></dl>).*?"
+				. "(?(?=<dl).*?<div class=\"ic_crest_32\"><span>" . $this->getRegExp('image','freeCompanyIcon1') . $this->getRegExp('image','freeCompanyIcon2') . $this->getRegExp('image','freeCompanyIcon3') . "</span></div>.*?"
 				. "<dd class=\"txt_name\"><a href=\".*?/(?<freeCompanyId>\d+?)/\" class=\"txt_yellow\">(?<freeCompany>.*?)</a></dd>).*?"
                 . "class=\"level\".*?(?<activeLevel>[\d]{1,2})</.*?"
-                . "bg_chara_264.*?img.*?src=\"(?<portrait>.*?)\?"
+                . "bg_chara_264.*?" . $this->getRegExp('image','portrait') . ""
                 . "#";
 			$matches = array();
 			if(preg_match($regExp, $baseHtml, $matches)){
@@ -386,14 +386,14 @@ class Search
 					}
 				}
 			}
-
+			
             $character->avatarLarge = str_ireplace('50x50', '96x96', $character->avatar);
             $character->portraitLarge = str_ireplace('264x360', '640x873', $character->portrait);
 
             # Class/Jobs
 			$possibleClasses = array();
 			$jobHtml = $this->trim($html, '<h4 class="class_fighter">', 'minion_box');
-			$regExp = "#ic_class_wh24_box.*?<img.*?src=\"(?<icon>.*?)\?.*?>(?<name>[^<]+?)</td><td[^>]*?>(?<level>[\d-]+?)</td><td[^>]*?>(?<exp_current>[\d-]+?)\s/\s(?<exp_level>[\d-]+?)</td#";
+			$regExp = "#ic_class_wh24_box.*?" . $this->getRegExp('image','icon') . "(?<name>[^<]+?)</td><td[^>]*?>(?<level>[\d-]+?)</td><td[^>]*?>(?<exp_current>[\d-]+?)\s/\s(?<exp_level>[\d-]+?)</td#";
 
 			preg_match_all($regExp, $jobHtml, $matches, PREG_SET_ORDER);
 			foreach($matches as $mkey => $match) {
@@ -483,7 +483,7 @@ class Search
 
             # Minions and Mounts
 			$mountHtml = $this->trim($html, '<!-- Mount -->', '<!-- //Mount -->');
-			$regExp = "#<a.*?title=\"(?<name>.*?)\".*?<img.*?src=\"(?<icon>.*?)\?.*?>#";
+			$regExp = "#<a.*?title=\"(?<name>.*?)\".*?" . $this->getRegExp('image','icon') . "#";
 
 			preg_match_all($regExp, $mountHtml, $matches, PREG_SET_ORDER);
 			foreach($matches as $mkey => $match) {
@@ -492,7 +492,7 @@ class Search
 			}
 
 			$minionHtml = $this->trim($html, '<!-- Minion -->', '<!-- //Minion -->');
-			$regExp = "#<a.*?title=\"(?<name>.*?)\".*?<img.*?src=\"(?<icon>.*?)\?.*?>#";
+			$regExp = "#<a.*?title=\"(?<name>.*?)\".*?" . $this->getRegExp('image','icon') . "#";
 
 			preg_match_all($regExp, $minionHtml, $matches, PREG_SET_ORDER);
 			foreach($matches as $mkey => $match) {
@@ -680,7 +680,7 @@ class Search
 			$achievement->legacy = ($achievementMatch['legacy'] == "legacy");
 			$isLegacy = $achievement->legacy;
 			# Achievments
-			$regExp = "#<li><div class=\"(?<achieved>.*?)\">.*?src=\"(?<icon>.+?)\?.*?achievement_name.*?>(?<name>.*?)</span>(?<dateHTML>.*?)achievement_point.*?>(?<points>[\d]+)</div>.*?<a.*?href=\"/lodestone/character/[\d]+/achievement/detail/(?<id>[\d]+)/\".*?</li>#";
+			$regExp = "#<li><div class=\"(?<achieved>.*?)\">.*?" . $this->getRegExp('image','icon') . ".*?achievement_name.*?>(?<name>.*?)</span>(?<dateHTML>.*?)achievement_point.*?>(?<points>[\d]+)</div>.*?<a.*?href=\"/lodestone/character/[\d]+/achievement/detail/(?<id>[\d]+)/\".*?</li>#";
 
 			$achievmentMatches = array();
 			preg_match_all($regExp, $html, $achievmentMatches, PREG_SET_ORDER);
@@ -697,6 +697,7 @@ class Search
 				[
 					'id' => $match['id'],
 					'icon' => $match['icon'],
+					'iconTimestanp' => $match['iconTimestamp'],
 					'name' => $match['name'],
 					'time' => $time,
 					'obtained' =>$obtained,
@@ -772,9 +773,9 @@ class Search
 
 		$headerHtml = $this->trim($html, '<!-- playname -->', '<!-- //playname -->');
 
-		$headerRegExp = '#<img src="(?<fcIcon1>.*?)".*?'
-						. '<img src="(?<fcIcon2>.*?)".*?'
-						. '<img src="(?<fcIcon3>.*?)".*?'
+		$headerRegExp = '#' . $this->getRegExp('image','fcIcon1') . '.*?'
+						. $this->getRegExp('image','fcIcon2') . '.*?'
+						. $this->getRegExp('image','fcIcon3') . '.*?'
 						. '.*?crest_id.*?>(?<company>.*?)\s?<.*?<span>\s?\((?<world>.+?)\)</span>#';
 		$headerMatches = array();
 		if(preg_match($headerRegExp, $headerHtml, $headerMatches)) {
@@ -866,12 +867,12 @@ class Search
 
 	private function _advancedFcMemberParse($html){
 		$regExp = '#<tr\s?>.*?<a href="/lodestone/character/(?<id>\d+)/">'
-				. '<img src="(?<avatar>.+?)\?.*?'
+				. $this->getRegExp('image','avatar') . '.*?'
 				. '<a .*?>(?<name>.+?)</a><span>\s?\((?<world>.+?)\)</span>.*?'
-				. '<div class="fc_member_status"><img src="(?<rankIcon>.+?)\?.*?>(?<rankName>.+?)</div>.*?'
-				. '<div class="ic_box"><img src="(?<classIcon>.+?)\?.*?></div>'
+				. '<div class="fc_member_status">' . $this->getRegExp('image','rankIcon') . '(?<rankName>.+?)</div>.*?'
+				. '<div class="ic_box">' . $this->getRegExp('image','classIcon') . '</div>'
 				. '<div class="lv_class">(?<classLevel>\d+?)</div></div>'
-				. '(?:<div class="ic_gc"><div><img src="(?<gcIcon>.+?)\?.*?></div>'
+				. '(?:<div class="ic_gc"><div>' . $this->getRegExp('image','gcIcon') . '</div>'
 				. '<div>(?<gcName>[^/]+?)/(?<gcRank>[^/]+?)</div>)?.*?</tr>#';
 		$memberMatch= array();
 		preg_match_all($regExp, $html, $memberMatch, PREG_SET_ORDER);
@@ -952,13 +953,13 @@ class Search
 
 	private function _advancedLsMemberParse($html){
 		$regExp = '#<tr\s?>.*?<a href="/lodestone/character/(?<id>\d+)/">'
-				. '<img src="(?<avatar>.+?)\?.*?'
+				. $this->getRegExp('image','avatar') . '.*?'
 				. '<a .*?>(?<name>.+?)</a><span>\s?\((?<world>.+?)\)</span>.*?'
-				. '<div class="col3box">.*?<img src="(?<classIcon>.+?)\?.*?></div>'
+				. '<div class="col3box">.*?' . $this->getRegExp('image','classIcon') . '</div>'
 				. '<div>(?<classLevel>\d+?)</div></div>.*?'
-				. '(?:(?<=<div class="col3box_center">)<div><img src="(?<gcRankIcon>.+?/gcrank/.+?)\?.*?><div>(?<gcName>[^/]+?)/(?<gcRank>[^/]+?)</div>|</div>).*?'
+				. '(?:(?<=<div class="col3box_center">)<div>' . $this->getRegExp('image','gcRankIcon') . '<div>(?<gcName>[^/]+?)/(?<gcRank>[^/]+?)</div>|</div>).*?'
 				// fcData
-				. '(?:(?<=<div class="ic_crest_32">)<span><img src="(?<fcIcon1>.*?)".*?><img src="(?<fcIcon2>.*?)".*?>(?:<img src="(?<fcIcon3>.*?)".*?>)?</span></div></div><div class="txt_gc"><a href="/lodestone/freecompany/(?<fcId>\d+)/">(?<fcName>.*?)</a></div>|</td>).*?'
+				. '(?:(?<=<div class="ic_crest_32">)<span>' . $this->getRegExp('image','fcIcon1') . $this->getRegExp('image','fcIcon2') . '(?:' . $this->getRegExp('image','fcIcon3') . ')?</span></div></div><div class="txt_gc"><a href="/lodestone/freecompany/(?<fcId>\d+)/">(?<fcName>.*?)</a></div>|</td>).*?'
 				. '</tr>#';
 
 		$memberMatch= array();

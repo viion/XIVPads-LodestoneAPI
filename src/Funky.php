@@ -89,5 +89,12 @@ trait Funky
 
         return $string;
     }
+	
+	public function getRegExp($type,$name=""){
+		$types = array(
+			'image' => '<img.+?src="(?<%1$s>[^\?"]+)(?:\?(?(?=[\d]+)(?<%1$sTimestamp>[\d^\?"]+)|(?<%1$sQueryString>[^\?"=]+=[^\?"]+?)))?".*?>'
+		);
+		return sprintf($types[$type],$name);
+	}
 
 }
