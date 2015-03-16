@@ -359,16 +359,28 @@ class Search
         $url = $this->urlGen('characterProfile', [ '{id}' => $characterId ]);
         $rawHtml = $this->trim($this->curl($url), '<!-- contents -->', '<!-- //Minion -->');
         $html = html_entity_decode(preg_replace(array('#\s\s+#s','#<script.*?>.*?</script>?#s','#[\n\t]#s'),'', $rawHtml),ENT_QUOTES);
-
-        // Base Data
-		$baseHtml = $this->trim($html, 'player_name_thumb', 'param_img_cover');
 		
-        $regExp = "#player_name_thumb.*?" . $this->getRegExp('image','avatar') . ".*?"
-				. "<h2>(?:<div class=\"chara_title\">(?<titleBefore>.*)</div>)?"
-				. "(?:<a href=\".*?/(?<id>\d+)/\">(?<name>.*?)</a>)"
-				. "(?:<span>\s?\((?<world>.*)\)</span>)"
-				. "(?:<div class=\"chara_title\">(?<titleAfter>.*)</div>)?</h2>.*?"
-                . "txt_selfintroduction\">(?<bio>.*?)</div>.*?"
+		///// NAMESECTION
+		// Build Namesectionpattern
+		$namePattern = '<a href=".*?/(?<id>\d+)/">(?<name>[^<]+?)</a>';
+		$worldPattern = '<span>\s?\((?<world>[^<]+?)\)\s?</span>';
+		$titlePattern = '<div class="chara_title">(?<title>[^<]+?)</div>'; 
+		$avatarPattern = '<div class="player_name_thumb"><a.+?>' . $this->getRegExp('image','avatar') . '</a></div>';
+		// Build complete Expression and use condition to identify if title is before or after name
+		$Namesection = sprintf('#(?J:%4$s<h2>(?:(?=<div)(?:%1$s)?%2$s%3$s|%2$s%3$s(?:%1$s)?)</h2>)#',$titlePattern,$namePattern,$worldPattern,$avatarPattern);
+		$namesectionHtml = $this->trim($html, '<!-- playname -->', '<!-- //playname -->');
+		if(preg_match($Namesection, $namesectionHtml, $matches)){
+			$character->id = $matches['id'];
+			$character->name = $matches['name'];
+			$character->title = $matches['title'];
+			$character->world = $matches['world'];
+			$character->avatar = $matches['avatar'];
+		}
+		
+
+        ///// PROFILESECTION
+		$profileHtml = $this->trim($html, 'txt_selfintroduction', 'param_img_cover');
+        $profileSection = "#txt_selfintroduction\">(?<bio>.*?)</div>.*?"
                 . "chara_profile_title\">(?<race>.*?)\s/\s(?<clan>.*?)\s/\s(?<gender>.*?)</div>.*?"
                 . "icon.*?" . $this->getRegExp('image','guardianIcon') . ".*?"
                 . "txt_name\">(?<nameday>.*?)</dd>.*?"
@@ -381,10 +393,9 @@ class Search
 				. "<dd class=\"txt_name\"><a href=\".*?/(?<freeCompanyId>\d+?)/\" class=\"txt_yellow\">(?<freeCompany>.*?)</a></dd>).*?"
                 . "class=\"level\".*?(?<activeLevel>[\d]{1,2})</.*?"
                 . "bg_chara_264.*?" . $this->getRegExp('image','portrait') . ""
-                . "#";
+                . "#u";
 			$matches = array();
-			if(preg_match($regExp, $baseHtml, $matches)){
-				$matches['title'] = (array_key_exists('titleAfter', $matches) === true && $matches['titleAfter'] != "") ? $matches['titleAfter'] : $matches['titleBefore'];
+			if(preg_match($profileSection, $profileHtml, $matches)){
 				$character->freeCompanyIcon = [
 					$matches['freeCompanyIcon1'],
 					$matches['freeCompanyIcon2'],
