@@ -64,7 +64,7 @@ trait Data
         return [
             1 => 'battle',
             2 => 'character',
-            4 => 'item',
+            4 => 'items',
             5 => 'synthesis',
             6 => 'gathering',
             8 => 'quests',
