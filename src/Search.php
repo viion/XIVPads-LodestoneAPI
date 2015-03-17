@@ -823,6 +823,100 @@ class Search
 			return $topicMatches;
 		}
 	}
+	
+	/**
+	 * get notices
+	 * @TODO detailparse
+	 */
+	public function Notices($hash=null){
+        $noticeMatches = array();
+
+		if(is_null($hash)){
+			// Generate url
+			$url = $this->urlGen('notices', []);
+			$rawHtml = $this->trim($this->curl($url), '<!-- news -->', '<!-- pager -->');
+			$html = html_entity_decode(preg_replace(array('#\s\s+#s','#[\n\t]#s'),'', $rawHtml),ENT_QUOTES);
+			$regExp = '#<dl.*?'
+					. '<script>.*?ldst_strftime\((?<date>[\d]+?),.*?'
+					. '<a href="/lodestone/news/detail/(?<linkHash>[\w\d]+)".*?>(?<body>.*?)</a>.*?'
+					. '</dl>#';
+			
+			preg_match_all($regExp, $html, $noticeMatches, PREG_SET_ORDER);
+			$this->clearRegExpArray($noticeMatches);
+			return $noticeMatches;
+		}
+	}
+	
+	/**
+	 * get maintenance
+	 * @TODO detailparse
+	 */
+	public function Maintenance($hash=null){
+        $maintenanceMatches = array();
+
+		if(is_null($hash)){
+			// Generate url
+			$url = $this->urlGen('maintenance', []);
+			$rawHtml = $this->trim($this->curl($url), '<!-- news -->', '<!-- pager -->');
+			$html = html_entity_decode(preg_replace(array('#\s\s+#s','#[\n\t]#s'),'', $rawHtml),ENT_QUOTES);
+			$regExp = '#<dl.*?'
+					. '<script>.*?ldst_strftime\((?<date>[\d]+?),.*?'
+					. '<span class="tag">\[(?<type>.*?)\]</span>'
+					. '<a href="/lodestone/news/detail/(?<linkHash>[\w\d]+)".*?>(?<body>.*?)</a>.*?'
+					. '</dl>#';
+			
+			preg_match_all($regExp, $html, $maintenanceMatches, PREG_SET_ORDER);
+			$this->clearRegExpArray($maintenanceMatches);
+			return $maintenanceMatches;
+		}
+	}
+	
+	/**
+	 * get updates
+	 * @TODO detailparse
+	 */
+	public function Updates($hash=null){
+        $updatesMatches = array();
+
+		if(is_null($hash)){
+			// Generate url
+			$url = $this->urlGen('updates', []);
+			$rawHtml = $this->trim($this->curl($url), '<!-- news -->', '<!-- pager -->');
+			$html = html_entity_decode(preg_replace(array('#\s\s+#s','#[\n\t]#s'),'', $rawHtml),ENT_QUOTES);
+			$regExp = '#<dl.*?'
+					. '<script>.*?ldst_strftime\((?<date>[\d]+?),.*?'
+					. '<a href="/lodestone/news/detail/(?<linkHash>[\w\d]+)".*?>(?<body>.*?)</a>.*?'
+					. '</dl>#';
+			
+			preg_match_all($regExp, $html, $updatesMatches, PREG_SET_ORDER);
+			$this->clearRegExpArray($updatesMatches);
+			return $updatesMatches;
+		}
+	}
+	
+	/**
+	 * get status
+	 * @TODO detailparse
+	 */
+	public function Status($hash=null){
+        $statusMatches = array();
+
+		if(is_null($hash)){
+			// Generate url
+			$url = $this->urlGen('status', []);
+			$rawHtml = $this->trim($this->curl($url), '<!-- news -->', '<!-- pager -->');
+			$html = html_entity_decode(preg_replace(array('#\s\s+#s','#[\n\t]#s'),'', $rawHtml),ENT_QUOTES);
+			$regExp = '#<dl.*?'
+					. '<script>.*?ldst_strftime\((?<date>[\d]+?),.*?'
+					. '(?:<span class="tag">\[(?<type>.*?)\]</span>)?'
+					. '<a href="/lodestone/news/detail/(?<linkHash>[\w\d]+)".*?>(?<body>.*?)</a>.*?'
+					. '</dl>#';
+			
+			preg_match_all($regExp, $html, $statusMatches, PREG_SET_ORDER);
+			$this->clearRegExpArray($statusMatches);
+			return $statusMatches;
+		}
+	}
 
     /**
      * Get freecompany
