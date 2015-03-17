@@ -795,6 +795,34 @@ class Search
 		}
         return $worldStatus;
     }
+	
+	/**
+	 * get topics
+	 * @TODO detailparse
+	 */
+	public function Topics($hash=null){
+        $topicMatches = array();
+
+		if(is_null($hash)){
+			// Generate url
+			$url = $this->urlGen('topics', []);
+			$rawHtml = $this->trim($this->curl($url), '<!-- topics -->', '<!-- //topics -->');
+			$html = html_entity_decode(preg_replace(array('#\s\s+#s','#[\n\t]#s'),'', $rawHtml),ENT_QUOTES);
+
+			$regExp = '#<li class="clearfix">.*?'
+					. '<script>.*?ldst_strftime\((?<date>[\d]+?),.*?'
+					. '<a href="/lodestone/topics/detail/(?<linkHash>[\w\d]+)">(?<headline>.*?)</a>.*?'
+					. '<div class="area_inner_cont">'
+					. '<a.*?>' . $this->getRegExp('image','teaser') . '</a>'
+					. '(?<bodyHTML>.*?)'
+					. '</div><div class="right_cont.*?'
+					. '</li>#';
+			
+			preg_match_all($regExp, $html, $topicMatches, PREG_SET_ORDER);
+			$this->clearRegExpArray($topicMatches);
+			return $topicMatches;
+		}
+	}
 
     /**
      * Get freecompany

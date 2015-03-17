@@ -18,7 +18,9 @@ trait Urls
 			'freecompanyMember' => 'freecompany/{id}/member',
 			'freecompanyMemberPage' => 'freecompany/{id}/member/?page={page}',
 			'linkshell' => 'linkshell/{id}',
-			'linkshellPage' => 'linkshell/{id}/?page={page}'
+			'linkshellPage' => 'linkshell/{id}/?page={page}',
+			'topics' => 'topics/',
+			'topicDetail' => 'topics/detail/{hash}'
         ];
     }
 
