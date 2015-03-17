@@ -870,14 +870,13 @@ class Search
                         . '</li>#';
             }else{
                 $rawHtml = $this->trim($this->curl($url), '<!-- news -->', '<!-- pager -->');
-                $html = html_entity_decode(preg_replace(array('#\s\s+#s','#[\n\t]#s'),'', $rawHtml),ENT_QUOTES);
                 $regExp = '#<dl.*?'
                         . '<script>.*?ldst_strftime\((?<date>[\d]+?),.*?'
                         . '(?:<span class="tag">\[(?<type>.*?)\]</span>)?'
                         . '<a href="/lodestone/news/detail/(?<linkHash>[\w\d]+)".*?>(?<body>.*?)</a>.*?'
                         . '</dl>#';
             }
-            
+            $html = html_entity_decode(preg_replace(array('#\s\s+#s','#[\n\t]#s'),'', $rawHtml),ENT_QUOTES);
             preg_match_all($regExp, $html, $matches, PREG_SET_ORDER);
             $this->clearRegExpArray($matches);
             return $matches;
