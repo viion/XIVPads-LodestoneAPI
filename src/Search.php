@@ -897,9 +897,9 @@ class Search
         $html = html_entity_decode(preg_replace(array('#\s\s+#s', '#[\n\t]#s', '#<!--\s*-->#s'), '', $rawHtml), ENT_QUOTES);
 
         $freeCompany = new \stdClass();
-
         $headerHtml = $this->trim($html, '<!-- playname -->', '<!-- //playname -->');
-
+		
+		$freeCompany->id = $freeCompanyId;
         $headerRegExp = '#' . $this->getRegExp('image','fcIcon1') . '.*?'
                         . $this->getRegExp('image','fcIcon2') . '.*?'
                         . $this->getRegExp('image','fcIcon3') . '.*?'
@@ -923,7 +923,7 @@ class Search
                 . '<td>(?<activeMember>[\d]+)</td>.*?'
                 . '<td>(?<rank>[\d]+)</td>.*?'
                 // Weekly&Monthly
-                . '</th><td>.*?(?<weeklyRank>[\d]+).*?(?<monthlyRank>[\d]+).*?</td>.*?'
+                . '</th><td>.*?:\s*(?<weeklyRank>[\d\-]+)\s*.*?<br>.*?:\s*(?<monthlyRank>[\d\-]+).*?</td>.*?'
                 . '</th><td>(?<slogan>.*?)</td>.*?'
                 // Skip Focus && Seeking
                 . '<tr>.*?</tr><tr>.*?</tr>.*?'
@@ -931,9 +931,12 @@ class Search
                 . '<td>(?!<ul>)(?<active>.*?)</td>.*?'
                 . '<td>(?<recruitment>.*?)</td>.*?'
                 // Estate
-                . '<td><div class="txt_yellow mb10">(?<estateZone>.*?)</div>.*?'
-                . '<p class="mb10">(?<estateAddress>.*?)</p>.*?'
-                . '<p class="mb10">(?<estateGreeting>.*?)</p></td>.*?'
+                . '<td>'
+				. '(?(?=<div)'
+				. '<div class="txt_yellow.*?">(?<estateZone>.*?)</div>.*?'
+                . '<p class="mb10.*?">(?<estateAddress>.*?)</p>.*?'
+                . '<p class="mb10.*?">(?<estateGreeting>.*?)</p>'
+				. ').*?</td>.*?'
                 . '#';
         $matches = array();
         if(preg_match($regExp, $baseHtml, $matches)) {
@@ -950,11 +953,13 @@ class Search
                 'weekly' => $matches['weeklyRank'],
                 'monthly' => $matches['monthlyRank'],
             );
-            $freeCompany->estate = array(
-                'zone' => $matches['estateZone'],
-                'address' => $matches['estateAddress'],
-                'message' => $matches['estateGreeting'],
-            );
+			if(array_key_exists('estateZone', $matches)){
+				$freeCompany->estate = array(
+					'zone' => $matches['estateZone'],
+					'address' => $matches['estateAddress'],
+					'message' => $matches['estateGreeting'],
+				);
+			}
         }
         // Focus & Seeking
         $regExp = '#<li(?: class="icon_(?<active>off?)")?><img src="(?<icon>.*?/ic/(?<type>focus|roles)/.*?)\?.*?title="(?<name>.*?)">#';
@@ -976,9 +981,10 @@ class Search
 
             $maxPerPage = strip_tags($this->trim($html,'<span class="show_end">','</span>'));
             $pages = ceil($freeCompany->memberCount/$maxPerPage);
+			$memberHtml = "";
             for($page = 1;$page<=$pages;$page++){
                 if($page == 1){
-                    $memberHtml = $this->trim($html, 'table_black_border_bottom', '<!-- pager -->');
+                    $memberHtml .= $this->trim($html, 'table_black_border_bottom', '<!-- pager -->');
                 }else{
                     $pageUrl = $this->urlGen('freecompanyMemberPage', ['{id}' => $freeCompanyId, '{page}' => $page]);
                     $rawPageHtml = $this->trim($this->curl($pageUrl), '<!-- Member List -->', '<!-- //Member List -->');
