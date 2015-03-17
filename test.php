@@ -31,27 +31,32 @@ if (isset($_GET['id'])) {
 
 if (isset($_GET['achievements']))
 {
-    $achievements = $api->Search->Achievements($id, isset($_GET['all']) ? true : false );
-    show($achievements->dump());
+    $data = $api->Search->Achievements($id, isset($_GET['all']) ? true : false );
+    show($data->dump());
 }
 else if (isset($_GET['worldstatus']))
 {
-    $worldStatus = $api->Search->Worldstatus(trim($_GET['dc']), trim($_GET['server']));
-    show($worldStatus);
+    $data = $api->Search->Worldstatus(trim($_GET['dc']), trim($_GET['server']));
+    show($data);
+}
+else if (isset($_GET['freecompany']))
+{
+    $data = $api->Search->FreeCompany($id, isset($_GET['all']) ? true : false );
+    show($data->dump());
 }
 else if (isset($_GET['linkshell']))
 {
-    $Linkshell = $api->Search->Linkshell($id, isset($_GET['all']) ? true : false );
-    show($Linkshell);
+    $data = $api->Search->Linkshell($id, isset($_GET['all']) ? true : false );
+    show($data);
 }
 else if (isset($_GET['search']))
 {
-    $character = $api->Search->Character(trim(urldecode($_GET['name'])), trim($_GET['server']));
+    $data = $api->Search->Character(trim(urldecode($_GET['name'])), trim($_GET['server']));
 }
 else
 {
-    $character = $api->Search->Character($id);
-    show($character->dump());
+    $data = $api->Search->Character($id);
+    show($data->dump());
 }
 
 # -------------------------------
