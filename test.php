@@ -42,7 +42,7 @@ else if (isset($_GET['worldstatus']))
 else if (isset($_GET['freecompany']))
 {
     $data = $api->Search->FreeCompany($id, isset($_GET['all']) ? true : false );
-    show($data->dump());
+    show($data);
 }
 else if (isset($_GET['linkshell']))
 {
