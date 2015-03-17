@@ -54,6 +54,7 @@ else if (isset($_GET['search']))
     $data = $api->Search->Character(trim(urldecode($_GET['name'])), trim($_GET['server']));
 }
 else if (isset($_GET['news'])){
+	// $_GET['func'] should be Topics, Maintenance, Status, Updates or Notices
 	$func = isset($_GET['func']) ? $_GET['func'] : 'Topics';
 	$data = $api->Search->{$func}();
 	show($data);
