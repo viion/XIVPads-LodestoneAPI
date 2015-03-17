@@ -774,27 +774,34 @@ class Search
      * Get onlinestatus of servers
      * @return array
      */
-    public function Worldstatus() {
+    public function Worldstatus($datacenter=null,$server=null) {
         $worldStatus = array();
 
         // Generate url
         $url = $this->urlGen('worldstatus', []);
         $rawHtml = $this->trim($this->curl($url), '<!-- #main -->', '<!-- //#main -->');
         $html = html_entity_decode(preg_replace(array('#\s\s+#s','#<script.*?>.*?</script>?#s','#[\n\t]#s'),'', $rawHtml),ENT_QUOTES);
-
-        $regExp = '#text-headline.*?span>(?<datacenter>[\w]+)</div>.*?(?<tableHTML><table.*?</table>).*?area_body#';
-
-        $datacenterMatches = array();
-        preg_match_all($regExp, $html, $datacenterMatches, PREG_SET_ORDER);
-        foreach($datacenterMatches as $key => $data){
-            $regExp = '#relative">(?<server>\w+)</div>.*?ic_worldstatus_1">(?<status>[\w\s]+)</span>#';
-            $serverMatches = array();
-            preg_match_all($regExp, $data['tableHTML'], $serverMatches, PREG_SET_ORDER);
-            $this->clearRegExpArray($serverMatches);
-            $worldStatus[$data['datacenter']] = $serverMatches;
-        }
+		$datacenterMatches = array();
+		$datacenterRegExp = is_null($datacenter) ? ".*?" : $datacenter;
+		$regExp = '#text-headline.*?</span>(?<datacenter>'.$datacenterRegExp.')</div>.*?(?<tableHTML><table.*?</table>)#';
+		preg_match_all($regExp, $html, $datacenterMatches, PREG_SET_ORDER);
+		foreach($datacenterMatches as $key => $data){
+			$serverStatus = $this->_parseServerstatus($data['tableHTML']);
+			$worldStatus[$data['datacenter']] = $serverStatus;
+		}
+		if(!is_null($datacenter)){
+			return array_shift($worldStatus);
+		}
         return $worldStatus;
     }
+	
+	private function _parseServerstatus($datacenterTableHTML){
+		$serverMatches = array();
+		$regExp = '#relative">(?<server>\w+)</div>.*?ic_worldstatus_1">(?<status>[\w\s]+)</span>#';
+		preg_match_all($regExp, $datacenterTableHTML, $serverMatches, PREG_SET_ORDER);
+		$this->clearRegExpArray($serverMatches);
+		return $serverMatches;
+	}
     
     /**
      * get topics
