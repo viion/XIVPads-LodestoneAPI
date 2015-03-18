@@ -20,15 +20,12 @@ trait Urls
 			'linkshell' => 'linkshell/{id}',
 			'linkshellPage' => 'linkshell/{id}/?page={page}',
 			'topics' => 'topics/',
-			'topicDetail' => 'topics/detail/{hash}',
+			'topicsDetail' => 'topics/detail/{hash}',
+			'newsDetail' => 'news/detail/{hash}',
 			'notices' => 'news/category/1',
-			'noticesDetail' => 'news/category/1/{hash}',
 			'maintenance' => 'news/category/2',
-			'maintenanceDetail' => 'news/category/2/{hash}',
 			'updates' => 'news/category/3',
-			'updatesDetail' => 'news/category/3/{hash}',
 			'status' => 'news/category/4',
-			'statusDetail' => 'news/category/4/{hash}'
         ];
     }
 

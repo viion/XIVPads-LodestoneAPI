@@ -820,7 +820,9 @@ class Search
     public function Topics($hash=null){
         if(is_null($hash)){
             return $this->_newsParser('topics');
-        }
+        }else{
+            return $this->_newsDetailParser('topics',$hash);	
+		}
     }
     
     /**
@@ -830,7 +832,9 @@ class Search
     public function Notices($hash=null){
         if(is_null($hash)){
             return $this->_newsParser('notices');
-        }
+        }else{
+            return $this->_newsDetailParser('notices',$hash);	
+		}
     }
     
     /**
@@ -840,7 +844,9 @@ class Search
     public function Maintenance($hash=null){
         if(is_null($hash)){
             return $this->_newsParser('maintenance');
-        }
+        }else{
+            return $this->_newsDetailParser('maintenance',$hash);	
+		}
     }
     
     /**
@@ -850,7 +856,9 @@ class Search
     public function Updates($hash=null){
         if(is_null($hash)){
             return $this->_newsParser('updates');
-        }
+        }else{
+            return $this->_newsDetailParser('updates',$hash);	
+		}
     }
     
     /**
@@ -860,44 +868,67 @@ class Search
     public function Status($hash=null){
         if(is_null($hash)){
             return $this->_newsParser('status');
-        }
+        }else{
+            return $this->_newsDetailParser('status',$hash);	
+		}
     }
     
     /**
      * get news
      * @TODO detailparse
      */
-    private function _newsParser($type,$hash=null){
+    private function _newsParser($type){
         $matches = array();
-        
-        if(is_null($hash)){
-            // Generate url
-            $url = $this->urlGen($type, []);
-            
-            // Special Regexp for topics-section
-            if($type == 'topics'){
-                $rawHtml = $this->trim($this->curl($url), '<!-- topics -->', '<!-- //topics -->');
-                $regExp = '#<li class="clearfix">.*?'
-                        . '<script>.*?ldst_strftime\((?<date>[\d]+?),.*?'
-                        . '<a href="/lodestone/topics/detail/(?<linkHash>[\w\d]+)">(?<headline>.*?)</a>.*?'
-                        . '<div class="area_inner_cont">'
-                        . '<a.*?>' . $this->getRegExp('image','teaser') . '</a>'
-                        . '(?<bodyHTML>.*?)'
-                        . '</div><div class="right_cont.*?'
-                        . '</li>#';
-            }else{
-                $rawHtml = $this->trim($this->curl($url), '<!-- news -->', '<!-- pager -->');
-                $regExp = '#<dl.*?'
-                        . '<script>.*?ldst_strftime\((?<date>[\d]+?),.*?'
-                        . '(?:<span class="tag">\[(?<type>.*?)\]</span>)?'
-                        . '<a href="/lodestone/news/detail/(?<linkHash>[\w\d]+)".*?>(?<body>.*?)</a>.*?'
-                        . '</dl>#';
-            }
-            $html = html_entity_decode(preg_replace(array('#\s\s+#s','#[\n\t]#s'),'', $rawHtml),ENT_QUOTES);
-            preg_match_all($regExp, $html, $matches, PREG_SET_ORDER);
-            $this->clearRegExpArray($matches);
-            return $matches;
-        }
+		// Generate url
+		$url = $this->urlGen($type, []);
+
+		// Special Regexp for topics-section
+		if($type == 'topics'){
+			$rawHtml = $this->trim($this->curl($url), '<!-- topics -->', '<!-- //topics -->');
+			$regExp = '#<li class="clearfix">.*?'
+					. '<script>.*?ldst_strftime\((?<date>[\d]+?),.*?'
+					. '<a href="/lodestone/topics/detail/(?<linkHash>[\w\d]+)">(?<headline>.*?)</a>.*?'
+					. '<div class="area_inner_cont">'
+					. '<a.*?>' . $this->getRegExp('image','teaser') . '</a>'
+					. '(?<bodyHTML>.*?)'
+					. '</div><div class="right_cont.*?'
+					. '</li>#';
+		}else{
+			$rawHtml = $this->trim($this->curl($url), '<!-- news -->', '<!-- pager -->');
+			$regExp = '#<dl.*?'
+					. '<script>.*?ldst_strftime\((?<date>[\d]+?),.*?'
+					. '(?:<span class="tag">\[(?<type>.*?)\]</span>)?'
+					. '<a href="/lodestone/news/detail/(?<linkHash>[\w\d]+)".*?>(?<body>.*?)</a>.*?'
+					. '</dl>#';
+		}
+		$html = html_entity_decode(preg_replace(array('#\s\s+#s','#[\n\t]#s'),'', $rawHtml),ENT_QUOTES);
+		preg_match_all($regExp, $html, $matches, PREG_SET_ORDER);
+		$this->clearRegExpArray($matches);
+		return $matches;
+    }
+    
+    /**
+     * get news
+     * @TODO detailparse
+     */
+    private function _newsDetailParser($type,$hash){
+        $match = array();
+		// Generate url
+		$urlType = $type == 'topics' ? 'topicsDetail' : 'newsDetail';
+		$url = $this->urlGen($urlType, ['{hash}' => $hash]);
+
+		$rawHtml = $this->trim($this->curl($url), '<!-- #main -->', '<!-- //#main -->');
+		$imgRegexp = ($type == 'topics') ? '<center>' . $this->getRegExp('image','teaser') . '</center><br>' : '';
+		
+		$regExp = '#<script>.*?ldst_strftime\((?<date>[\d]+?),.*?'
+				. '<div class="topics_detail_txt">(?:<span class="topics_detail_tag">\[(?<type>.*?)\]</span>)?(?<headline>.*?)</div>.*?'
+				. '<div.*?>'.$imgRegexp.'(?<body>.*?)</div>'
+				. '(?:</div></div></div><div class="(?:diary_nav|area_body)|<!-- social buttons -->)#';
+		
+		$html = html_entity_decode(preg_replace(array('#\s\s+#s','#[\n\t]#s'),'', $rawHtml),ENT_QUOTES);
+		preg_match($regExp, $html, $match);
+		$this->clearRegExpArray($match);
+		return $match;
     }
 
     /**

@@ -1,3 +1,4 @@
+<meta charset="UTF-8">
 <?php
 $start = microtime(true);
 show("Memory: ". cMem(memory_get_usage()) .' - start');
@@ -60,7 +61,8 @@ else if (isset($_GET['search']))
 else if (isset($_GET['news'])){
 	// $_GET['func'] should be Topics, Maintenance, Status, Updates or Notices
 	$func = isset($_GET['func']) ? $_GET['func'] : 'Topics';
-	$data = $api->Search->{$func}();
+	$detailHash = isset($_GET['hash']) ? $_GET['hash'] : null;
+	$data = $api->Search->{$func}($detailHash);
 	show($data);
 }
 else
