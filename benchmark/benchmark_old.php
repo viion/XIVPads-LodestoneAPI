@@ -71,12 +71,12 @@ foreach($idList as $i => $id)
     if ($character && $character->getName())
     {
         $success++;
-        echo '<span class="box">'. $character->getName() .'</span> ';
+        echo '<span class="box">['. $i .'] '. $character->getName() .'</span> ';
     }
     else
     {
         $errors++;
-        echo '<span class="box error">Failed: '. $id .'</span> ';
+        echo '<span class="box error">['. $i .'] Failed: '. $id .'</span> ';
     }
 
 
