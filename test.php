@@ -36,7 +36,9 @@ if (isset($_GET['achievements']))
 }
 else if (isset($_GET['worldstatus']))
 {
-    $data = $api->Search->Worldstatus(trim($_GET['dc']), trim($_GET['server']));
+	$dc = isset($_GET['dc']) ? trim($_GET['dc']) : null;
+	$server = isset($_GET['server']) ? trim($_GET['server']) : null;
+    $data = $api->Search->Worldstatus($dc, $server);
     show($data);
 }
 else if (isset($_GET['freecompany']))
@@ -51,7 +53,9 @@ else if (isset($_GET['linkshell']))
 }
 else if (isset($_GET['search']))
 {
-    $data = $api->Search->Character(trim(urldecode($_GET['name'])), trim($_GET['server']));
+	$name = isset($_GET['name']) ? trim(urldecode($_GET['name'])) : null;
+	$server = isset($_GET['server']) ? trim($_GET['server']) : null;
+    $data = $api->Search->Character($name, $server);
 }
 else if (isset($_GET['news'])){
 	// $_GET['func'] should be Topics, Maintenance, Status, Updates or Notices

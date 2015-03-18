@@ -776,6 +776,11 @@ class Search
      */
     public function Worldstatus($datacenter=null,$server=null) {
         $worldStatus = array();
+		
+		// Set server null if datacenter null to avoid errors
+		if(is_null($datacenter) || $server == ""){
+			$server = null;
+		}
 
         // Generate url
         $url = $this->urlGen('worldstatus', []);
@@ -786,18 +791,23 @@ class Search
 		$regExp = '#text-headline.*?</span>(?<datacenter>'.$datacenterRegExp.')</div>.*?(?<tableHTML><table.*?</table>)#';
 		preg_match_all($regExp, $html, $datacenterMatches, PREG_SET_ORDER);
 		foreach($datacenterMatches as $key => $data){
-			$serverStatus = $this->_parseServerstatus($data['tableHTML']);
+			$serverStatus = $this->_parseServerstatus($data['tableHTML'],$server);
 			$worldStatus[$data['datacenter']] = $serverStatus;
 		}
 		if(!is_null($datacenter)){
-			return array_shift($worldStatus);
+			$return = array_shift($worldStatus);
+			if(!is_null($server)){
+				return $return[0]['status'];
+			}
+			return $return;
 		}
         return $worldStatus;
     }
 	
-	private function _parseServerstatus($datacenterTableHTML){
+	private function _parseServerstatus($datacenterTableHTML,$server=null){
 		$serverMatches = array();
-		$regExp = '#relative">(?<server>\w+)</div>.*?ic_worldstatus_1">(?<status>[\w\s]+)</span>#';
+		$serverRegExp = is_null($server) ? '\w+?' : $server;
+		$regExp = '#relative">(?<server>'.$serverRegExp.')</div>.*?ic_worldstatus_1">(?<status>[\w\s]+)</span>#';
 		preg_match_all($regExp, $datacenterTableHTML, $serverMatches, PREG_SET_ORDER);
 		$this->clearRegExpArray($serverMatches);
 		return $serverMatches;
