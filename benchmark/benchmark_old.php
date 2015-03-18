@@ -27,8 +27,9 @@ $log = [ 'mem' => [], 'memInc' => [], 'times' => [] ];
 $allStart = microtime(true);
 
 // get api
-require '../api-autoloader.php';
-use Viion\Lodestone\LodestoneAPI;
+include "../_oldev/api.php";
+include "../_oldev/apilogger.php";
+$API_Logger = new LodestoneLogger();
 
 // new API
 $api = new LodestoneAPI();
@@ -64,13 +65,13 @@ foreach($idList as $i => $id)
     $start = microtime(true);
 
     // get character
-    $character = $api->Search->Character($id);
+    $character = $api->get([ 'id' => $id ]);
 
     // verify name
-    if ($character && $character->name)
+    if ($character && $character->getName())
     {
         $success++;
-        echo '<span class="box">'. $character->name .'</span> ';
+        echo '<span class="box">'. $character->getName() .'</span> ';
     }
     else
     {
