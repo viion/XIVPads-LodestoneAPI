@@ -163,6 +163,9 @@ class Character
             $this->classjobs[$i]['real_id'] = array_search(strtolower(str_ireplace(' ', null, $d['name'])), $this->getClassListFull());
         }
 
+        unset($curve);
+        unset($jobclass);
+
         // Sort attributes
         ksort($this->attributes);
 
@@ -172,11 +175,8 @@ class Character
         // Get item ids
         // http://xivdb.com/api/?type=item&name=all
         // $xivdb = json_decode($this->curl($this->urls()['xivdb'] . '?type=item&name=all'), true);
-        $xivdb = [];
-        $xivdbItems = __DIR__ .'/xivdb.txt';
-        if (file_exists($xivdbItems)) {
-            $xivdb = json_decode(file_get_contents($xivdbItems), true);
-        }
+        $xivdb = require __DIR__ .'/xivdb.php';
+        $xivdb = json_decode($xivdb, true);
 
         // Mape real id to array
         foreach($this->gear as $i => $g)
@@ -187,5 +187,6 @@ class Character
                 $this->gear[$i]['realId'] = $xivdb[$hash];
             }
         }
+        unset($xivdb);
     }
 }
