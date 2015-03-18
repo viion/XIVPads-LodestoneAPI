@@ -5,6 +5,10 @@ trait Funky
 {
     public function curl($url)
     {
+        $start = microtime(true);
+        //show('curl: '. $url);
+        //show('curl start: '. $start);
+
         $options = array(
             CURLOPT_RETURNTRANSFER  => true,            // return web page
             CURLOPT_HEADER          => false,           // return headers
@@ -23,6 +27,10 @@ trait Funky
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-type: text/html; charset=utf-8'));
         $source = curl_exec($ch);
         curl_close($ch);
+
+        $finish = microtime(true);
+        //show('curl finish: '. $finish);
+        //show('curl duration: '. ($finish - $start));
 
         return $source;
     }
@@ -89,7 +97,7 @@ trait Funky
 
         return $string;
     }
-	
+
 	public function getRegExp($type,$name=""){
 		$types = array(
 			'image' => '<img.+?src="(?<%1$s>[^\?"]+)(?:\?(?(?=[\d]+)(?<%1$sTimestamp>[\d^\?"]+)|(?<%1$sQueryString>[^\?"=]+=[^\?"]+?)))?".*?>'
