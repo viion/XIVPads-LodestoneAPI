@@ -28,16 +28,23 @@ class Search
     public function Character($nameOrId, $world = null)
     {
         // if numeric, we dont search lodestone
-        if (is_numeric($nameOrId)) {
-            // If basic searching
+        if (is_numeric($nameOrId))
+        {
             if ($this->basicParsing) {
-                return $this->basicCharacterSearch($nameOrId);
+                $character = $this->basicCharacterSearch($nameOrId);
+            } else {
+                $character = $this->advancedCharacterSearch($nameOrId);
             }
 
-            // Advanced searching
-            return $this->advancedCharacterSearch($nameOrId);
+            // basic check
+            if (empty($character->name)) {
+                return false;
+            }
 
-        } else {
+            return $character;
+        }
+        else
+        {
 
             $searchName = str_ireplace(' ', '+',  $nameOrId);
 
@@ -361,14 +368,15 @@ class Search
 		if($rawHtml == "<!-- contents -->" || $rawHtml == ""){
 			return false;
 		}
-		
+
         $html = html_entity_decode(preg_replace(array('#\s\s+#s','#<script.*?>.*?</script>?#s','#[\n\t]#s'),'', $rawHtml),ENT_QUOTES);
-        
+        unset($rawHtml);
+
         ///// NAMESECTION
         // Build Namesectionpattern
         $namePattern = '<a href=".*?/(?<id>\d+)/">(?<name>[^<]+?)</a>';
         $worldPattern = '<span>\s?\((?<world>[^<]+?)\)\s?</span>';
-        $titlePattern = '<div class="chara_title">(?<title>[^<]+?)</div>'; 
+        $titlePattern = '<div class="chara_title">(?<title>[^<]+?)</div>';
         $avatarPattern = '<div class="player_name_thumb"><a.+?>' . $this->getRegExp('image','avatar') . '</a></div>';
         // Build complete Expression and use condition to identify if title is before or after name
         $Namesection = sprintf('#(?J:%4$s<h2>(?:(?=<div)(?:%1$s)?%2$s%3$s|%2$s%3$s(?:%1$s)?)</h2>)#',$titlePattern,$namePattern,$worldPattern,$avatarPattern);
@@ -380,7 +388,7 @@ class Search
             $character->world = $matches['world'];
             $character->avatar = $matches['avatar'];
         }
-        
+
 
         ///// PROFILESECTION
         $profileHtml = $this->trim($html, 'txt_selfintroduction', 'param_img_cover');
@@ -411,7 +419,7 @@ class Search
                     }
                 }
             }
-            
+
             $character->avatarLarge = str_ireplace('50x50', '96x96', $character->avatar);
             $character->avatarMedium = str_ireplace('50x50', '64x64', $character->avatar);
             $character->portraitLarge = str_ireplace('264x360', '640x873', $character->portrait);
@@ -525,6 +533,17 @@ class Search
                 $this->clearRegExpArray($match);
                 $character->minions[] = $match;
             }
+
+            // every little helps!?
+            unset($profileHtml);
+            unset($matches);
+            unset($html);
+            unset($jobHtml);
+            unset($gearHtml);
+            unset($attrHtml);
+            unset($mountHtml);
+            unset($minionHtml);
+            unset($regExp);
 
             // dust up
             $character->clean();
@@ -780,7 +799,7 @@ class Search
      */
     public function Worldstatus($datacenter=null,$server=null) {
         $worldStatus = array();
-		
+
 		// Set server null if datacenter null to avoid errors
 		if(is_null($datacenter) || $server == ""){
 			$server = null;
@@ -807,7 +826,7 @@ class Search
 		}
         return $worldStatus;
     }
-	
+
 	private function _parseServerstatus($datacenterTableHTML,$server=null){
 		$serverMatches = array();
 		$serverRegExp = is_null($server) ? '\w+?' : $server;
@@ -816,7 +835,7 @@ class Search
 		$this->clearRegExpArray($serverMatches);
 		return $serverMatches;
 	}
-    
+
     /**
      * get topics
      */
@@ -824,10 +843,10 @@ class Search
         if(is_null($hash)){
             return $this->_newsParser('topics');
         }else{
-            return $this->_newsDetailParser('topics',$hash);	
+            return $this->_newsDetailParser('topics',$hash);
 		}
     }
-    
+
     /**
      * get notices
      */
@@ -835,10 +854,10 @@ class Search
         if(is_null($hash)){
             return $this->_newsParser('notices');
         }else{
-            return $this->_newsDetailParser('notices',$hash);	
+            return $this->_newsDetailParser('notices',$hash);
 		}
     }
-    
+
     /**
      * get maintenance
      */
@@ -846,10 +865,10 @@ class Search
         if(is_null($hash)){
             return $this->_newsParser('maintenance');
         }else{
-            return $this->_newsDetailParser('maintenance',$hash);	
+            return $this->_newsDetailParser('maintenance',$hash);
 		}
     }
-    
+
     /**
      * get updates
      */
@@ -857,10 +876,10 @@ class Search
         if(is_null($hash)){
             return $this->_newsParser('updates');
         }else{
-            return $this->_newsDetailParser('updates',$hash);	
+            return $this->_newsDetailParser('updates',$hash);
 		}
     }
-    
+
     /**
      * get status
      */
@@ -868,10 +887,10 @@ class Search
         if(is_null($hash)){
             return $this->_newsParser('status');
         }else{
-            return $this->_newsDetailParser('status',$hash);	
+            return $this->_newsDetailParser('status',$hash);
 		}
     }
-    
+
     /**
      * get news
      */
@@ -904,7 +923,7 @@ class Search
 		$this->clearRegExpArray($matches);
 		return $matches;
     }
-    
+
     /**
      * get news
      */
@@ -916,12 +935,12 @@ class Search
 
 		$rawHtml = $this->trim($this->curl($url), '<!-- #main -->', '<!-- //#main -->');
 		$imgRegexp = ($type == 'topics') ? '<center>' . $this->getRegExp('image','teaser') . '</center><br>' : '';
-		
+
 		$regExp = '#<script>.*?ldst_strftime\((?<date>[\d]+?),.*?'
 				. '<div class="topics_detail_txt">(?:<span class="topics_detail_tag">\[(?<type>.*?)\]</span>)?(?<headline>.*?)</div>.*?'
 				. '<div.*?>'.$imgRegexp.'(?<body>.*?)</div>'
 				. '(?:</div></div></div><div class="(?:diary_nav|area_body)|<!-- social buttons -->)#';
-		
+
 		$html = html_entity_decode(preg_replace(array('#\s\s+#s','#[\n\t]#s'),'', $rawHtml),ENT_QUOTES);
 		preg_match($regExp, $html, $match);
 		$this->clearRegExpArray($match);
@@ -943,7 +962,7 @@ class Search
 
         $freeCompany = new \stdClass();
         $headerHtml = $this->trim($html, '<!-- playname -->', '<!-- //playname -->');
-		
+
 		$freeCompany->id = $freeCompanyId;
         $headerRegExp = '#' . $this->getRegExp('image','fcIcon1') . '.*?'
                         . $this->getRegExp('image','fcIcon2') . '.*?'
