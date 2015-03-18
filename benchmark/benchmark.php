@@ -1,3 +1,4 @@
+<?php ini_set('max_execution_time', 300); ?>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js"></script>
 <style>
 html, body { font-family: Arial; font-size: 13px; }
@@ -44,7 +45,19 @@ $idList = [
 
 // debug function
 function show($data) { echo '<pre>'. print_r($data, true) .'</pre>'; }
-function cMem($size, $type = false) { $tmp = array('b','kb','mb','gb','tb','pb'); $v = @round($size/pow(1024,($i=floor(log($size,1024)))),2); if ($type) { $v .= $tmp[$i]; } return $v; }
+function cMem($size, $type = false) {
+    $tmp = array('b','kb','mb','gb','tb','pb');
+    $v = @round($size/pow(1024,($i=floor(log($size,1024)))),2);
+    if ($type) {
+        $v .= ' '. $tmp[$i];
+    } else {
+        if ($tmp[$i] == 'kb') {
+            $v = '0.'. ceil($v);
+        }
+    }
+
+    return $v;
+}
 function aMem($key) { global $memory; $memory[$key] = [ cMem(memory_get_usage(), true), cMem(memory_get_usage(true), true) ]; }
 
 // Turn off buffering

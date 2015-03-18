@@ -3487,8 +3487,8 @@
                 CURLOPT_FOLLOWLOCATION  => false,           // follow redirects
                 CURLOPT_ENCODING        => "",              // handle all encodings
                 CURLOPT_AUTOREFERER     => true,            // set referer on redirect
-                CURLOPT_CONNECTTIMEOUT  => 15,              // timeout on connects
-                CURLOPT_TIMEOUT         => 15,              // timeout on response
+                CURLOPT_CONNECTTIMEOUT  => 5,              // timeout on connects
+                CURLOPT_TIMEOUT         => 5,              // timeout on response
                 CURLOPT_MAXREDIRS       => 5,               // stop after 10 redirects
                 CURLOPT_USERAGENT       => "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/27.0.1453.110 Safari/537.36",
                 CURLOPT_HTTPHEADER      => array('Content-type: text/html; charset=utf-8', 'Accept-Language: en'),
