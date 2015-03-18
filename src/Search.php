@@ -358,6 +358,10 @@ class Search
         // Generate url and get html
         $url = $this->urlGen('characterProfile', [ '{id}' => $characterId ]);
         $rawHtml = $this->trim($this->curl($url), '<!-- contents -->', '<!-- //Minion -->');
+		if($rawHtml == "<!-- contents -->" || $rawHtml == ""){
+			return false;
+		}
+		
         $html = html_entity_decode(preg_replace(array('#\s\s+#s','#<script.*?>.*?</script>?#s','#[\n\t]#s'),'', $rawHtml),ENT_QUOTES);
         
         ///// NAMESECTION
@@ -815,7 +819,6 @@ class Search
     
     /**
      * get topics
-     * @TODO detailparse
      */
     public function Topics($hash=null){
         if(is_null($hash)){
@@ -827,7 +830,6 @@ class Search
     
     /**
      * get notices
-     * @TODO detailparse
      */
     public function Notices($hash=null){
         if(is_null($hash)){
@@ -839,7 +841,6 @@ class Search
     
     /**
      * get maintenance
-     * @TODO detailparse
      */
     public function Maintenance($hash=null){
         if(is_null($hash)){
@@ -851,7 +852,6 @@ class Search
     
     /**
      * get updates
-     * @TODO detailparse
      */
     public function Updates($hash=null){
         if(is_null($hash)){
@@ -863,7 +863,6 @@ class Search
     
     /**
      * get status
-     * @TODO detailparse
      */
     public function Status($hash=null){
         if(is_null($hash)){
@@ -875,7 +874,6 @@ class Search
     
     /**
      * get news
-     * @TODO detailparse
      */
     private function _newsParser($type){
         $matches = array();
@@ -909,7 +907,6 @@ class Search
     
     /**
      * get news
-     * @TODO detailparse
      */
     private function _newsDetailParser($type,$hash){
         $match = array();
