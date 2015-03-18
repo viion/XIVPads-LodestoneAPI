@@ -3,36 +3,36 @@ namespace Viion\Lodestone;
 
 trait Funky
 {
-    public function curl($url)
+    public function curl($url, $timeout = 5)
     {
-        $start = microtime(true);
-        //show('curl: '. $url);
-        //show('curl start: '. $start);
+        $handle = curl_init();
 
-        $options = array(
-            CURLOPT_RETURNTRANSFER  => true,            // return web page
-            CURLOPT_HEADER          => false,           // return headers
-            CURLOPT_FOLLOWLOCATION  => false,           // follow redirects
-            CURLOPT_ENCODING        => "",              // handle all encodings
-            CURLOPT_AUTOREFERER     => true,            // set referer on redirect
-            CURLOPT_CONNECTTIMEOUT  => 15,              // timeout on connects
-            CURLOPT_TIMEOUT         => 15,              // timeout on response
-            CURLOPT_MAXREDIRS       => 5,               // stop after 10 redirects
-            CURLOPT_USERAGENT       => "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/27.0.1453.110 Safari/537.36",
-            CURLOPT_HTTPHEADER      => array('Content-type: text/html; charset=utf-8', 'Accept-Language: en'),
-        );
+        curl_setopt($handle, CURLOPT_URL, $url);
+        curl_setopt($handle, CURLOPT_POST, false);
+        curl_setopt($handle, CURLOPT_BINARYTRANSFER, false);
+        curl_setopt($handle, CURLOPT_HEADER, true);
+        curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($handle, CURLOPT_CONNECTTIMEOUT, $timeout);
+        curl_setopt($handle, CURLOPT_TIMEOUT, $timeout);
+        curl_setopt($handle, CURLOPT_MAXREDIRS, 2);
+        curl_setopt($handle, CURLOPT_HTTPHEADER, ['Content-type: text/html; charset=utf-8', 'Accept-Language: en']);
+        curl_setopt($handle, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.0.0 Safari/537.36');
+        curl_setopt($handle, CURLOPT_ENCODING, '');
 
-        $ch = curl_init($url);
-        curl_setopt_array($ch, $options);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-type: text/html; charset=utf-8'));
-        $source = curl_exec($ch);
-        curl_close($ch);
+        $response = curl_exec($handle);
+        $hlength  = curl_getinfo($handle, CURLINFO_HEADER_SIZE);
+        $httpCode = curl_getinfo($handle, CURLINFO_HTTP_CODE);
+        $data     = substr($response, $hlength);
 
-        $finish = microtime(true);
-        //show('curl finish: '. $finish);
-        //show('curl duration: '. ($finish - $start));
+        curl_close($handle);
+        unset($handle);
 
-        return $source;
+        // not found or no response
+        if ($httpCode == 404 || $httpCode == 204) {
+            return false;
+        }
+
+        return $data;
     }
 
     public function trim($html, $start, $end)
