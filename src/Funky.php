@@ -65,6 +65,7 @@ trait Funky
 			}
 		}
 		$array = $tmp;
+		unset($tmp);
 		return $array;
 	}
 

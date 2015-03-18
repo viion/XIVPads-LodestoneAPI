@@ -544,6 +544,8 @@ class Search
             unset($mountHtml);
             unset($minionHtml);
             unset($regExp);
+			unset($possibleClasses);
+            unset($iLevelArray);
 
             // dust up
             $character->clean();
