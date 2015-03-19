@@ -611,7 +611,7 @@ class Search
 		$i = 0;
 		$iLevelTotal = 0;
 		$iLevelArray = [];
-		$bonusRegExp = '#<li>(?<type>.*?)\s(?<value>(?:\+|-)\d+)</li>#i';
+		$bonusRegExp = '#<li>(?<type>.*?)\s\+?(?<value>\-?\d+)</li>#i';
 		foreach($itemsMatch as $match) {
 			$this->clearRegExpArray($match);
 			// Basestats
