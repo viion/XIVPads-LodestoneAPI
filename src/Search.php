@@ -595,7 +595,7 @@ class Search
 				. '.*?<div class="pt3 pb3">.+?\s(?<ilv>[0-9]{1,3})</div>.*?'
 				. '<span class="class_ok">(?<classes>[^<]*?)</span><br>'
 				. '<span class="gear_level">[^\d]*?(?<gearlevel>[\d]+?)</span>.*?'
-				. '(?:<ul class="basic_bonus">(?<bonuses>.*?)</ul>)?.*?'
+				. '(?(?=<ul class="basic_bonus")<ul class="basic_bonus">(?<bonuses>.*?)</ul>.*?)'
 				. '<li class="clearfix".*?><div>(?<durability>.*?)%</div></li>'
 				. '<li class="clearfix".*?><div>(?<spiritbond>.*?)%</div></li>'
 				. '<li class="clearfix".*?><div>(?<repairClass>[\w]+?)\s[\w\.]+?\s(?<repairLevel>\d*?)</div></li>'
