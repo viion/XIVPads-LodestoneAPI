@@ -586,11 +586,13 @@ class Search
 				. '</div>)'
 				//
 				. '<h3 class="category_name">(?<slot>[^<]*?)</h3>.*?'
-				. '<a href="/lodestone/playguide/db/item/(?<id>[\w\d]+?)/".*?>.*?'
-				. '<div class="parameter.*?"><strong>(?<parameter1>[^<]*?)</strong></div>'
-				. '<div class="parameter.*?"><strong>(?<parameter2>[^<]*?)</strong></div>.*?'
-				. '(?:<div class="parameter"><strong>(?<parameter3>[^<]*?)</strong></div>)?.*?'
-				. '<div class="pt3 pb3">.+?\s(?<ilv>[0-9]{1,3})</div>.*?'
+				. '<a href="/lodestone/playguide/db/item/(?<id>[\w\d]+?)/".*?>.*?</a></div>'
+				. '(?(?=<div class="popup_w412_body_inner mb10">).*?'
+				. '<div class="parameter\s?.*?"><strong>(?<parameter1>[^<]+?)</strong></div>'
+				. '<div class="parameter"><strong>(?<parameter2>[^<]+?)</strong></div>'
+				. '(?:<div class="parameter"><strong>(?<parameter3>[^<]+?)</strong></div>)?'
+				. '</div>)'
+				. '.*?<div class="pt3 pb3">.+?\s(?<ilv>[0-9]{1,3})</div>.*?'
 				. '<span class="class_ok">(?<classes>[^<]*?)</span><br>'
 				. '<span class="gear_level">[^\d]*?(?<gearlevel>[\d]+?)</span>.*?'
 				. '<ul class="basic_bonus">(?<bonuses>.*?)</ul>.*?'
@@ -612,6 +614,21 @@ class Search
 		$bonusRegExp = '#<li>(?<type>.*?)\s(?<value>(?:\+|-)\d+)</li>#i';
 		foreach($itemsMatch as $match) {
 			$this->clearRegExpArray($match);
+			// Basestats
+			if($match['slot'] == 'Shield'){ // Shield
+				$match['block_strength'] = $match['parameter1'];
+				$match['block_rate'] = $match['parameter2'];
+			}else if($match['parameter3'] == ""){ // Normalitem
+				$match['defense'] = $match['parameter1'];
+				$match['magical_defense'] = $match['parameter2'];
+			}else{ // Weapon
+				$match['damage'] = $match['parameter1'];
+				$match['auto_attack'] = $match['parameter2'];
+				$match['delay'] = $match['parameter3'];
+			}
+			unset($match['parameter1']);
+			unset($match['parameter2']);
+			unset($match['parameter3']);
 			// HighQualityItem
 			$match['hq'] = ($match['hq'] == "") ? false : true;
 			//Bonuses
