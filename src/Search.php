@@ -572,8 +572,8 @@ class Search
 		$itemsMatch = array();
 		$gearRegExp = '#'
 				. '<div class="item_detail_box"[^>]*?>.*?'
-				. '<div class="name_area[^>].*?>'
-				. '(?:<div class="(?<mirage>mirage)_staining (?<mirageType>unpaitable|painted_cover|no_paint)"></div>)?'
+				. '<div class="name_area[^>].*?>.*?'
+				. '(?:<div class="(?<mirage>mirage)_staining (?<mirageType>unpaitable|painted_cover|no_paint)"(?: style="background\-color:\s?(?<miragePaintColor>\#[a-fA-F0-9]{6});")?></div>)?'
 				. '<img[^>]+?>' . $this->getRegExp('image','icon') . '.*?'
 				. '<div class="item_name_right">'
 				. '<div class="item_element[^"]*?">'
