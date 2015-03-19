@@ -185,6 +185,10 @@ class Character
             $hash = $this->hashed($g['name']);
             if (isset($xivdb[$hash])) {
                 $this->gear[$i]['realId'] = $xivdb[$hash];
+				if($g['mirageItemName'] != ""){
+					$mirageHash = $this->hashed($g['mirageItemName']);
+					$this->gear[$i]['mirageItemRealId'] = isset($xivdb[$mirageHash]) ? $xivdb[$mirageHash] : null;
+				}
             }
         }
         unset($xivdb);
