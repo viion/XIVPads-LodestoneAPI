@@ -570,25 +570,38 @@ class Search
 	
 	private function _parseGear(Character &$character,$gearHtml){
 		$itemsMatch = array();
-		$gearRegExp = '#'
-				. '<div class="item_detail_box"[^>]*?>.*?'
+		$gearRegExp = '#<!-- ITEM Detail -->.*?'
 				. '<div class="name_area[^>].*?>.*?'
 				. '(?:<div class="(?<mirage>mirage)_staining (?<mirageType>unpaitable|painted_cover|no_paint)"(?: style="background\-color:\s?(?<miragePaintColor>\#[a-fA-F0-9]{6});")?></div>)?'
 				. '<img[^>]+?>' . $this->getRegExp('image','icon') . '.*?'
 				. '<div class="item_name_right">'
 				. '<div class="item_element[^"]*?">'
 				. '<span class="rare">(?<rare>[^<]*?)</span>'
-				. '<span class="ex_bind">(?<binding>[^<]*?)</span></div>'
-				. '<h2 class="item_name\s?(?<color>[^_]*?)_item">(?<name>[^<]+?)</h2>.*?'
+				. '<span class="ex_bind">\s*(?<binding>[^<]*?)\s*</span></div>'
+				. '<h2 class="item_name\s?(?<color>[^_]*?)_item">(?<name>[^<]+?)(?<hq><img.*?>)?</h2>.*?'
 				// Glamoured?
 				. '(?(?=<div)(<div class="mirageitem.*?">)'
 				. '<div class="mirageitem_ic">' . $this->getRegExp('image','mirageItemIcon') . '.*?'
 				. '<p>(?<mirageItemName>[^<]+?)<a.*?href="/lodestone/playguide/db/item/(?<mirageItemId>[\w\d^/]+)/".*?></a></p>'
 				. '</div>)'
 				//
-				. '<h3 class="category_name">(?<slot>[^<]*?)</h3>'
-				. '.*?<a href=\"/lodestone/playguide/db/item/(?<id>[\w\d]+?)/\".*?class=\"pt3 pb3\">.+?\s(?<ilv>[0-9]{1,3})</div>'
-				. '#u';
+				. '<h3 class="category_name">(?<slot>[^<]*?)</h3>.*?'
+				. '<a href="/lodestone/playguide/db/item/(?<id>[\w\d]+?)/".*?>.*?'
+				. '<div class="parameter.*?"><strong>(?<parameter1>[^<]*?)</strong></div>'
+				. '<div class="parameter.*?"><strong>(?<parameter2>[^<]*?)</strong></div>.*?'
+				. '(?:<div class="parameter"><strong>(?<parameter3>[^<]*?)</strong></div>)?.*?'
+				. '<div class="pt3 pb3">.+?\s(?<ilv>[0-9]{1,3})</div>.*?'
+				. '<span class="class_ok">(?<classes>[^<]*?)</span><br>'
+				. '<span class="gear_level">[^\d]*?(?<gearlevel>[\d]+?)</span>.*?'
+				. '<ul class="basic_bonus">(?<bonuses>.*?)</ul>.*?'
+				. '<li class="clearfix".*?><div>(?<durability>.*?)%</div></li>'
+				. '<li class="clearfix".*?><div>(?<spiritbond>.*?)%</div></li>'
+				. '<li class="clearfix".*?><div>(?<repairClass>[\w]+?)\s[\w\.]+?\s(?<repairLevel>\d*?)</div></li>'
+				. '<li class="clearfix".*?><div>(?<materials>.*?)<\/div><\/li>.*?'
+				/** @TODO mutlilanguage **/
+				. '<ul class="ml12"><li>[\s\w]+?:\s(?<convertible>Yes|No)[\s\w]+?:\s(?<projectable>Yes|No)[\s\w]+?:\s(?<desynthesizable>Yes|No)[\s\w]*?<\/li><\/ul>.*?'
+				. '<span class="sys_nq_element">(?<sellable>.*?)</span>'
+				. '.*?<!-- //ITEM Detail -->#u';
 		
 		preg_match_all($gearRegExp, $gearHtml, $itemsMatch, PREG_SET_ORDER);
 
@@ -596,8 +609,16 @@ class Search
 		$i = 0;
 		$iLevelTotal = 0;
 		$iLevelArray = [];
-		foreach($itemsMatch as $mkey => $match) {
+		$bonusRegExp = '#<li>(?<type>.*?)\s(?<value>(?:\+|-)\d+)</li>#i';
+		foreach($itemsMatch as $match) {
 			$this->clearRegExpArray($match);
+			// HighQualityItem
+			$match['hq'] = ($match['hq'] == "") ? false : true;
+			//Bonuses
+			$bonusMatch = array();
+			preg_match_all($bonusRegExp,$match['bonuses'],$bonusMatch, PREG_SET_ORDER);
+			$match['bonuses'] = $this->clearRegExpArray($bonusMatch);
+			
 			$character->gear[] = $match;
 
 			if ($match['slot'] != 'Soul Crystal') {
