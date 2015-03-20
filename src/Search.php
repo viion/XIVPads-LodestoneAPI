@@ -1362,112 +1362,126 @@ class Search
 	
 	
 	
-	public function ItemDB($ids=null){
-		$itemIds = array();
+	public function ItemDB($withDetails = false, $ids=null){
+		$items = array();
 		$itemsData = array();
 		if(is_null($ids)){
 			// Generate url
 			//$url = $this->urlGen('linkshell', ['{id}' => $linkshellId]);
-			$url = 'http://eu.finalfantasyxiv.com/lodestone/playguide/db/item/?category2=1';
+			$url = 'http://eu.finalfantasyxiv.com/lodestone/playguide/db/item/?category2=3';
 			$rawHtml = $this->trim($this->curl($url), '<table class="col_left_w300" id="character">', '</table>');
 			$html = html_entity_decode(preg_replace(array('#\s\s+#s', '#[\n\t]#s', '#<!--\s*-->#s'), '', $rawHtml), ENT_QUOTES);
 
-			$regExp = '#<tr>.*?<a href="/lodestone/playguide/db/item/(?<itemIds>[\d\w]+?)/">.*?</tr>#';
-			preg_match_all($regExp, $html, $itemIds);	
-		}else{
-			$itemIds['itemIds'] = is_array($ids) ? $ids : array($ids);
-		}
-		
-		
-		
-		$bonusRegExp = '#<li>(?<type>.*?)\s\+?(?<value>\-?\d+)</li>#i';
-		$setBonusRegExp = '#<li class="set_bonus">\s*?(?<require>[^\s].*?):(?<type>.*?)\s\+?(?<value>\-?\d+)</li>#i';
-		foreach($itemIds['itemIds'] as $id){
-			$jsUrl = sprintf('http://img.finalfantasyxiv.com/lds/pc/tooltip/1425544641/eu/item/%s.js',$id);
-			$jsResponse = $this->curl($jsUrl);
-			$Json = preg_replace('#eorzeadb\.pushup\((\{.*\})\)#','$1',$jsResponse);
-			$data = json_decode($Json);
-			$html = html_entity_decode(preg_replace(array('#\s\s+#s', '#[\n\t]#s', '#<!--\s*-->#s'), '', $data->html), ENT_QUOTES);
-			
-			$gearRegExp = '#.*?'
-					. '<div class="name_area[^>].*?>.*?'
+			$regExp = '#<tr>.*?'
 					. '(?:(?<staining>staining)"></div>)?'
-					. '<img[^>]+?>' . $this->getRegExp('image','icon') . '<div.*?'
-					. '<div class="item_element[^"]*?">'
-					. '<span class="rare">(?<rare>[^<]*?)</span>'
-					. '<span class="ex_bind">\s*(?<binding>[^<]*?)\s*</span></div>'
-					. '<h2 class="item_name\s?(?<color>[^_]*?)_item">(?<name>[^<]+?)(?<hq><img.*?>)?</h2>(?<slot>[^<]*?)</div>.*?'
-					. '<a href=".*?/item/(?<id>[\w\d]+?)/".*?>.*?</a></div>'
-					. '(?(?=<div class="popup_w412_body_inner eorzeadb_tooltip_mb10">).*?'
-					. '<div class="parameter\s?.*?"><strong>(?<parameter1>[^<]+?)</strong></div>'
-					. '<div class="parameter\s?.*?"><strong>(?<parameter2>[^<]+?)</strong></div>'
-					. '(?:<div class="parameter\s?.*?"><strong>(?<parameter3>[^<]+?)</strong></div>)?'
-					. '</div>)'
-					. '.*?<div class="eorzeadb_tooltip_pt3 eorzeadb_tooltip_pb3">.+?\s(?<ilv>[0-9]{1,3})</div>.*?'
-					. '<div class="class_ok">(?<classes>[^<]*?)</div>'
-					. '<div class="gear_level">[^\d]*?(?<gearlevel>[\d]+?)</div>.*?'
-					. '<div class="list_1col eorzeadb_tooltip_mb10 clearfix">'
-					. '(?(?=<ul class="basic_bonus")<ul class="basic_bonus">(?<bonuses>.*?)</ul></div>)'
-					. '(?:<h3 class="eorzeadb_tooltip_ml12 eorzeadb_tooltip_txt_green">(?<set>.*?)</h3>'
-					. '<ul class="list_1col eorzeadb_tooltip_mb10">(?<setBonuses>.*?)</ul>)?'
-					. '</div>.*?'
-					. '<li class="clearfix".*?><div>(?<repairClass>[\w]+?)\s[\w\.]+?\s(?<repairLevel>\d*?)</div></li>'
-					. '<li class="clearfix".*?><div>(?<materials>.*?)<\/div><\/li>'
-					. '(?:<li class="clearfix".*?><div>(?<meldingClass>[\w]+?)\s[\w\.]+?\s(?<meldingLevel>\d*?)</div></li>)?.*?'
-					. '<ul class="eorzeadb_tooltip_ml12"><li>[\s\w]+?:\s(?<convertible>Yes|No)[\s\w]+?:\s(?<projectable>Yes|No)[\s\w]+?:\s(?<desynthesizable>Yes|No)[\s\w]*?</li></ul>'
-					. '<ul class="eorzeadb_tooltip_ml12"><li>[\s\w]+?:\s(?<dyeable>Yes|No)[\s\w\-]+?:\s(?<crestWorthy>Yes|No)[\s\w]*?</li></ul>.*?'
-					. '<div class="eorzeadb_tooltip_ml4">(?<sellable>.*?)</div>'
-					. '.*?#u';
-			$itemMatch = array();
-			preg_match($gearRegExp, $html, $itemMatch);
-			
-			if(count($itemMatch) <=0)
-				echo $id."<br />";
-			
-			$this->clearRegExpArray($itemMatch);
-			// Basestats
-			if($itemMatch['slot'] == 'Shield'){ // Shield
-				$itemMatch['block_strength'] = $itemMatch['parameter1'];
-				$itemMatch['block_rate'] = $itemMatch['parameter2'];
-			}else if($itemMatch['parameter3'] == ""){ // Normalitem
-				$itemMatch['defense'] = $itemMatch['parameter1'];
-				$itemMatch['magical_defense'] = $itemMatch['parameter2'];
-			}else{ // Weapon
-				$itemMatch['damage'] = $itemMatch['parameter1'];
-				$itemMatch['auto_attack'] = $itemMatch['parameter2'];
-				$itemMatch['delay'] = $itemMatch['parameter3'];
-			}
-			unset($itemMatch['parameter1']);
-			unset($itemMatch['parameter2']);
-			unset($itemMatch['parameter3']);
-			// HighQualityItem
-			$itemMatch['hq'] = ($itemMatch['hq'] == "") ? false : true;
-			
-			//Bonuses
-			if($itemMatch['bonuses'] != ""){
-				$bonusMatch = array();
-				preg_match_all($bonusRegExp,$itemMatch['bonuses'],$bonusMatch, PREG_SET_ORDER);
-				$itemMatch['bonuses'] = $this->clearRegExpArray($bonusMatch);
-			}else{
-				$itemMatch['bonuses'] = null;
-			}
-			
-			//Set Bonuses
-			if($itemMatch['setBonuses'] != ""){
-				$setBonusMatch = array();
-				preg_match_all($setBonusRegExp,$itemMatch['setBonuses'],$setBonusMatch, PREG_SET_ORDER);
-				$itemMatch['setBonuses'] = $this->clearRegExpArray($setBonusMatch);
-			}else{
-				$itemMatch['setBonuses'] = null;
-			}
-			
-			
-			$itemsData['items'][$id]['data'] = $itemMatch;
-			$itemsData['items'][$id]['html'] = htmlentities($html);
-			$itemsData['items'][$id]['regExp'] = htmlentities($gearRegExp);
-			
+					. $this->getRegExp('image','icon') . '<div.*?'
+					. '<span class="small">'
+					. '(?:<a.*?>(?<category1>.*?)</a>)?.*?'
+					. '(?:<a.*?>(?<category2>.*?)</a>)?.*?'
+					. '</span>.*?'
+					. '<a.*?href="/lodestone/playguide/db/item/(?<itemIds>[\d\w]+?)/".*?>(?<name>.*?)</a>.*?'
+					. '<td class="col_center tc">(?<itemLvl>.*?)</td>'
+					. '<td class="col_right tc">(?<gearLevel>.*?)</td>'
+					. '</tr>#';
+			$order = ($withDetails !== true) ? PREG_SET_ORDER : PREG_PATTERN_ORDER;
+			preg_match_all($regExp, $html, $items, $order);	
+		}else{
+			$items['itemIds'] = is_array($ids) ? $ids : array($ids);
 		}
 		
+		
+		if($withDetails !== true){
+			$this->clearRegExpArray($items);
+			$itemsData['items'] = $items;
+		}else{
+			$bonusRegExp = '#<li>(?<type>.*?)\s\+?(?<value>\-?\d+)</li>#i';
+			$setBonusRegExp = '#<li class="set_bonus">\s*?(?<require>[^\s].*?):(?<type>.*?)\s\+?(?<value>\-?\d+)</li>#i';
+			foreach($items['itemIds'] as $id){
+				$jsUrl = sprintf('http://img.finalfantasyxiv.com/lds/pc/tooltip/1425544641/eu/item/%s.js',$id);
+				$jsResponse = $this->curl($jsUrl);
+				$Json = preg_replace('#eorzeadb\.pushup\((\{.*\})\)#','$1',$jsResponse);
+				$data = json_decode($Json);
+				$html = html_entity_decode(preg_replace(array('#\s\s+#s', '#[\n\t]#s', '#<!--\s*-->#s'), '', $data->html), ENT_QUOTES);
+
+				$gearRegExp = '#.*?'
+						. '<div class="name_area[^>].*?>.*?'
+						. '(?:(?<staining>staining)"></div>)?'
+						. '<img[^>]+?>' . $this->getRegExp('image','icon') . '<div.*?'
+						. '<div class="item_element[^"]*?">'
+						. '<span class="rare">(?<rare>[^<]*?)</span>'
+						. '<span class="ex_bind">\s*(?<binding>[^<]*?)\s*</span></div>'
+						. '<h2 class="item_name\s?(?<color>[^_]*?)_item">(?<name>[^<]+?)(?<hq><img.*?>)?</h2>(?<slot>[^<]*?)</div>.*?'
+						. '<a href=".*?/item/(?<id>[\w\d]+?)/".*?>.*?</a></div>'
+						. '(?(?=<div class="popup_w412_body_inner eorzeadb_tooltip_mb10">).*?'
+						. '<div class="parameter\s?.*?"><strong>(?<parameter1>[^<]+?)</strong></div>'
+						. '<div class="parameter\s?.*?"><strong>(?<parameter2>[^<]+?)</strong></div>'
+						. '(?:<div class="parameter\s?.*?"><strong>(?<parameter3>[^<]+?)</strong></div>)?'
+						. '</div>)'
+						. '.*?<div class="eorzeadb_tooltip_pt3 eorzeadb_tooltip_pb3">.+?\s(?<ilv>[0-9]{1,3})</div>.*?'
+						. '<div class="class_ok">(?<classes>[^<]*?)</div>'
+						. '<div class="gear_level">[^\d]*?(?<gearlevel>[\d]+?)</div>.*?'
+						. '<div class="list_1col eorzeadb_tooltip_mb10 clearfix">'
+						. '(?(?=<ul class="basic_bonus")<ul class="basic_bonus">(?<bonuses>.*?)</ul></div>)'
+						. '(?:<h3 class="eorzeadb_tooltip_ml12 eorzeadb_tooltip_txt_green">(?<set>.*?)</h3>'
+						. '<ul class="list_1col eorzeadb_tooltip_mb10">(?<setBonuses>.*?)</ul>)?'
+						. '</div>.*?'
+						. '<li class="clearfix".*?><div>(?<repairClass>[\w]+?)\s[\w\.]+?\s(?<repairLevel>\d*?)</div></li>'
+						. '<li class="clearfix".*?><div>(?<materials>.*?)<\/div><\/li>'
+						. '(?:<li class="clearfix".*?><div>(?<meldingClass>[\w]+?)\s[\w\.]+?\s(?<meldingLevel>\d*?)</div></li>)?.*?'
+						. '<ul class="eorzeadb_tooltip_ml12"><li>[\s\w]+?:\s(?<convertible>Yes|No)[\s\w]+?:\s(?<projectable>Yes|No)[\s\w]+?:\s(?<desynthesizable>Yes|No)[\s\w]*?</li></ul>'
+						. '<ul class="eorzeadb_tooltip_ml12"><li>[\s\w]+?:\s(?<dyeable>Yes|No)[\s\w\-]+?:\s(?<crestWorthy>Yes|No)[\s\w]*?</li></ul>.*?'
+						. '<div class="eorzeadb_tooltip_ml4"><span class="sys_nq_element">(?<sellable>.*?)</span>.*?</div>'
+						. '.*?#u';
+				$itemMatch = array();
+				preg_match($gearRegExp, $html, $itemMatch);
+
+				if(count($itemMatch) <=0)
+					$itemsData['failed'][] = $id;
+
+				$this->clearRegExpArray($itemMatch);
+				// Basestats
+				if($itemMatch['slot'] == 'Shield'){ // Shield
+					$itemMatch['block_strength'] = $itemMatch['parameter1'];
+					$itemMatch['block_rate'] = $itemMatch['parameter2'];
+				}else if($itemMatch['parameter3'] == ""){ // Normalitem
+					$itemMatch['defense'] = $itemMatch['parameter1'];
+					$itemMatch['magical_defense'] = $itemMatch['parameter2'];
+				}else{ // Weapon
+					$itemMatch['damage'] = $itemMatch['parameter1'];
+					$itemMatch['auto_attack'] = $itemMatch['parameter2'];
+					$itemMatch['delay'] = $itemMatch['parameter3'];
+				}
+				unset($itemMatch['parameter1']);
+				unset($itemMatch['parameter2']);
+				unset($itemMatch['parameter3']);
+				// HighQualityItem
+				$itemMatch['hq'] = ($itemMatch['hq'] == "") ? false : true;
+
+				//Bonuses
+				if($itemMatch['bonuses'] != ""){
+					$bonusMatch = array();
+					preg_match_all($bonusRegExp,$itemMatch['bonuses'],$bonusMatch, PREG_SET_ORDER);
+					$itemMatch['bonuses'] = $this->clearRegExpArray($bonusMatch);
+				}else{
+					$itemMatch['bonuses'] = null;
+				}
+
+				//Set Bonuses
+				if($itemMatch['setBonuses'] != ""){
+					$setBonusMatch = array();
+					preg_match_all($setBonusRegExp,$itemMatch['setBonuses'],$setBonusMatch, PREG_SET_ORDER);
+					$itemMatch['setBonuses'] = $this->clearRegExpArray($setBonusMatch);
+				}else{
+					$itemMatch['setBonuses'] = null;
+				}
+
+
+				$itemsData['items'][$id]['data'] = $itemMatch;
+				$itemsData['items'][$id]['html'] = htmlentities($html);
+				$itemsData['items'][$id]['regExp'] = htmlentities($gearRegExp);
+
+			}
+		}
 		$itemsData['itemcount'] = count($itemsData['items']);
 		return $itemsData;
 	}
