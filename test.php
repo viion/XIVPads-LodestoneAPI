@@ -69,6 +69,10 @@ else if (isset($_GET['devtracker'])){
 	$data = $api->Search->Devtracker();
 	show($data);
 }
+else if (isset($_GET['items'])){
+	$data = $api->Search->ItemDB();
+	show($data);
+}
 else
 {
     $data = $api->Search->Character($id);

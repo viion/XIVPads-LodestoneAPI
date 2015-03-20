@@ -101,7 +101,7 @@ trait Funky
 
 	public function getRegExp($type,$name=""){
 		$types = array(
-			'image' => '<img.+?src="(?<%1$s>[^\?"]+)(?:\?(?(?=[\d]+)(?<%1$sTimestamp>[\d^\?"]+)|(?<%1$sQueryString>[^\?"=]+=[^\?"]+?)))?".*?>'
+			'image' => '<img.+?src="(?<%1$s>[^\?"]+)(?:\?(?(?=[\d\w]+")(?<%1$sTimestamp>[\d\w^\?"]+)|(?<%1$sQueryString>[^\?"=]+=[^\?"]+?)))?".*?>'
 		);
 		return sprintf($types[$type],$name);
 	}
