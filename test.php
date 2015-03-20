@@ -71,7 +71,8 @@ else if (isset($_GET['devtracker'])){
 }
 else if (isset($_GET['items'])){
 	$ids = (isset($_GET['ids'])) ? explode(',',$_GET['ids']) : null;
-	$data = $api->Search->ItemDB($ids);
+	$all = (isset($_GET['all'])) ? true : false;
+	$data = $api->Search->ItemDB($all,$ids);
 	show($data);
 }
 else
