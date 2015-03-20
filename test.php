@@ -70,7 +70,8 @@ else if (isset($_GET['devtracker'])){
 	show($data);
 }
 else if (isset($_GET['items'])){
-	$data = $api->Search->ItemDB();
+	$ids = (isset($_GET['ids'])) ? explode(',',$_GET['ids']) : null;
+	$data = $api->Search->ItemDB($ids);
 	show($data);
 }
 else

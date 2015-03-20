@@ -1362,19 +1362,26 @@ class Search
 	
 	
 	
-	public function ItemDB(){
+	public function ItemDB($ids=null){
 		$itemIds = array();
 		$itemsData = array();
-        // Generate url
-        //$url = $this->urlGen('linkshell', ['{id}' => $linkshellId]);
-		$url = 'http://eu.finalfantasyxiv.com/lodestone/playguide/db/item/?category2=1';
-        $rawHtml = $this->trim($this->curl($url), '<table class="col_left_w300" id="character">', '</table>');
-        $html = html_entity_decode(preg_replace(array('#\s\s+#s', '#[\n\t]#s', '#<!--\s*-->#s'), '', $rawHtml), ENT_QUOTES);
+		if(is_null($ids)){
+			// Generate url
+			//$url = $this->urlGen('linkshell', ['{id}' => $linkshellId]);
+			$url = 'http://eu.finalfantasyxiv.com/lodestone/playguide/db/item/?category2=1';
+			$rawHtml = $this->trim($this->curl($url), '<table class="col_left_w300" id="character">', '</table>');
+			$html = html_entity_decode(preg_replace(array('#\s\s+#s', '#[\n\t]#s', '#<!--\s*-->#s'), '', $rawHtml), ENT_QUOTES);
+
+			$regExp = '#<tr>.*?<a href="/lodestone/playguide/db/item/(?<itemIds>[\d\w]+?)/">.*?</tr>#';
+			preg_match_all($regExp, $html, $itemIds);	
+		}else{
+			$itemIds['itemIds'] = is_array($ids) ? $ids : array($ids);
+		}
 		
-		$regExp = '#<tr>.*?<a href="/lodestone/playguide/db/item/(?<itemIds>[\d\w]+?)/">.*?</tr>#';
-		preg_match_all($regExp, $html, $itemIds);	
+		
 		
 		$bonusRegExp = '#<li>(?<type>.*?)\s\+?(?<value>\-?\d+)</li>#i';
+		$setBonusRegExp = '#<li class="set_bonus">\s*?(?<require>[^\s].*?):(?<type>.*?)\s\+?(?<value>\-?\d+)</li>#i';
 		foreach($itemIds['itemIds'] as $id){
 			$jsUrl = sprintf('http://img.finalfantasyxiv.com/lds/pc/tooltip/1425544641/eu/item/%s.js',$id);
 			$jsResponse = $this->curl($jsUrl);
@@ -1389,7 +1396,7 @@ class Search
 					. '<div class="item_element[^"]*?">'
 					. '<span class="rare">(?<rare>[^<]*?)</span>'
 					. '<span class="ex_bind">\s*(?<binding>[^<]*?)\s*</span></div>'
-					. '<h2 class="item_name\s?(?<color>[^_]*?)_item">(?<name>[^<]+?)</h2>(?<slot>[^<]*?)</div>.*?'
+					. '<h2 class="item_name\s?(?<color>[^_]*?)_item">(?<name>[^<]+?)(?<hq><img.*?>)?</h2>(?<slot>[^<]*?)</div>.*?'
 					. '<a href=".*?/item/(?<id>[\w\d]+?)/".*?>.*?</a></div>'
 					. '(?(?=<div class="popup_w412_body_inner eorzeadb_tooltip_mb10">).*?'
 					. '<div class="parameter\s?.*?"><strong>(?<parameter1>[^<]+?)</strong></div>'
@@ -1400,7 +1407,10 @@ class Search
 					. '<div class="class_ok">(?<classes>[^<]*?)</div>'
 					. '<div class="gear_level">[^\d]*?(?<gearlevel>[\d]+?)</div>.*?'
 					. '<div class="list_1col eorzeadb_tooltip_mb10 clearfix">'
-					. '(?(?=<ul class="basic_bonus")<ul class="basic_bonus">(?<bonuses>.*?)</ul></div></div>).*?'
+					. '(?(?=<ul class="basic_bonus")<ul class="basic_bonus">(?<bonuses>.*?)</ul></div>)'
+					. '(?:<h3 class="eorzeadb_tooltip_ml12 eorzeadb_tooltip_txt_green">(?<set>.*?)</h3>'
+					. '<ul class="list_1col eorzeadb_tooltip_mb10">(?<setBonuses>.*?)</ul>)?'
+					. '</div>.*?'
 					. '<li class="clearfix".*?><div>(?<repairClass>[\w]+?)\s[\w\.]+?\s(?<repairLevel>\d*?)</div></li>'
 					. '<li class="clearfix".*?><div>(?<materials>.*?)<\/div><\/li>'
 					. '(?:<li class="clearfix".*?><div>(?<meldingClass>[\w]+?)\s[\w\.]+?\s(?<meldingLevel>\d*?)</div></li>)?.*?'
@@ -1410,8 +1420,10 @@ class Search
 					. '.*?#u';
 			$itemMatch = array();
 			preg_match($gearRegExp, $html, $itemMatch);
+			
 			if(count($itemMatch) <=0)
 				echo $id."<br />";
+			
 			$this->clearRegExpArray($itemMatch);
 			// Basestats
 			if($itemMatch['slot'] == 'Shield'){ // Shield
@@ -1428,11 +1440,26 @@ class Search
 			unset($itemMatch['parameter1']);
 			unset($itemMatch['parameter2']);
 			unset($itemMatch['parameter3']);
+			// HighQualityItem
+			$itemMatch['hq'] = ($itemMatch['hq'] == "") ? false : true;
 			
 			//Bonuses
-			$bonusMatch = array();
-			preg_match_all($bonusRegExp,$itemMatch['bonuses'],$bonusMatch, PREG_SET_ORDER);
-			$itemMatch['bonuses'] = $this->clearRegExpArray($bonusMatch);
+			if($itemMatch['bonuses'] != ""){
+				$bonusMatch = array();
+				preg_match_all($bonusRegExp,$itemMatch['bonuses'],$bonusMatch, PREG_SET_ORDER);
+				$itemMatch['bonuses'] = $this->clearRegExpArray($bonusMatch);
+			}else{
+				$itemMatch['bonuses'] = null;
+			}
+			
+			//Set Bonuses
+			if($itemMatch['setBonuses'] != ""){
+				$setBonusMatch = array();
+				preg_match_all($setBonusRegExp,$itemMatch['setBonuses'],$setBonusMatch, PREG_SET_ORDER);
+				$itemMatch['setBonuses'] = $this->clearRegExpArray($setBonusMatch);
+			}else{
+				$itemMatch['setBonuses'] = null;
+			}
 			
 			
 			$itemsData['items'][$id]['data'] = $itemMatch;
