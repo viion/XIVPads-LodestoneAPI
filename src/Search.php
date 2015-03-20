@@ -1374,6 +1374,7 @@ class Search
 		$regExp = '#<tr>.*?<a href="/lodestone/playguide/db/item/(?<itemIds>[\d\w]+?)/">.*?</tr>#';
 		preg_match_all($regExp, $html, $itemIds);	
 		
+		$bonusRegExp = '#<li>(?<type>.*?)\s\+?(?<value>\-?\d+)</li>#i';
 		foreach($itemIds['itemIds'] as $id){
 			$jsUrl = sprintf('http://img.finalfantasyxiv.com/lds/pc/tooltip/1425544641/eu/item/%s.js',$id);
 			$jsResponse = $this->curl($jsUrl);
@@ -1401,19 +1402,45 @@ class Search
 					. '<div class="list_1col eorzeadb_tooltip_mb10 clearfix">'
 					. '(?(?=<ul class="basic_bonus")<ul class="basic_bonus">(?<bonuses>.*?)</ul></div></div>).*?'
 					. '<li class="clearfix".*?><div>(?<repairClass>[\w]+?)\s[\w\.]+?\s(?<repairLevel>\d*?)</div></li>'
-					. '<li class="clearfix".*?><div>(?<materials>.*?)<\/div><\/li>.*?'
+					. '<li class="clearfix".*?><div>(?<materials>.*?)<\/div><\/li>'
+					. '(?:<li class="clearfix".*?><div>(?<meldingClass>[\w]+?)\s[\w\.]+?\s(?<meldingLevel>\d*?)</div></li>)?.*?'
 					. '<ul class="eorzeadb_tooltip_ml12"><li>[\s\w]+?:\s(?<convertible>Yes|No)[\s\w]+?:\s(?<projectable>Yes|No)[\s\w]+?:\s(?<desynthesizable>Yes|No)[\s\w]*?</li></ul>'
 					. '<ul class="eorzeadb_tooltip_ml12"><li>[\s\w]+?:\s(?<dyeable>Yes|No)[\s\w\-]+?:\s(?<crestWorthy>Yes|No)[\s\w]*?</li></ul>.*?'
 					. '<div class="eorzeadb_tooltip_ml4">(?<sellable>.*?)</div>'
 					. '.*?#u';
-
+			$itemMatch = array();
 			preg_match($gearRegExp, $html, $itemMatch);
+			if(count($itemMatch) <=0)
+				echo $id."<br />";
 			$this->clearRegExpArray($itemMatch);
+			// Basestats
+			if($itemMatch['slot'] == 'Shield'){ // Shield
+				$itemMatch['block_strength'] = $itemMatch['parameter1'];
+				$itemMatch['block_rate'] = $itemMatch['parameter2'];
+			}else if($itemMatch['parameter3'] == ""){ // Normalitem
+				$itemMatch['defense'] = $itemMatch['parameter1'];
+				$itemMatch['magical_defense'] = $itemMatch['parameter2'];
+			}else{ // Weapon
+				$itemMatch['damage'] = $itemMatch['parameter1'];
+				$itemMatch['auto_attack'] = $itemMatch['parameter2'];
+				$itemMatch['delay'] = $itemMatch['parameter3'];
+			}
+			unset($itemMatch['parameter1']);
+			unset($itemMatch['parameter2']);
+			unset($itemMatch['parameter3']);
+			
+			//Bonuses
+			$bonusMatch = array();
+			preg_match_all($bonusRegExp,$itemMatch['bonuses'],$bonusMatch, PREG_SET_ORDER);
+			$itemMatch['bonuses'] = $this->clearRegExpArray($bonusMatch);
+			
+			
 			$itemsData['items'][$id]['data'] = $itemMatch;
 			$itemsData['items'][$id]['html'] = htmlentities($html);
 			$itemsData['items'][$id]['regExp'] = htmlentities($gearRegExp);
 			
 		}
+		
 		$itemsData['itemcount'] = count($itemsData['items']);
 		return $itemsData;
 	}
