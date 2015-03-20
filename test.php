@@ -65,6 +65,10 @@ else if (isset($_GET['news'])){
 	$data = $api->Search->{$func}($detailHash);
 	show($data);
 }
+else if (isset($_GET['devtracker'])){
+	$data = $api->Search->Devtracker();
+	show($data);
+}
 else
 {
     $data = $api->Search->Character($id);

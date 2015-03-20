@@ -25,7 +25,7 @@ trait Urls
 			'notices' => 'news/category/1',
 			'maintenance' => 'news/category/2',
 			'updates' => 'news/category/3',
-			'status' => 'news/category/4',
+			'status' => 'news/category/4'
         ];
     }
 

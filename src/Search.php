@@ -1325,4 +1325,37 @@ class Search
         return $members;
     }
 
+	public function Devtracker(){
+        $devtrackerMatch = array();
+        $articles = array();
+		// Generate url
+		$url = 'http://forum.square-enix.com/ffxiv/forum.php';
+
+		$rawHtml = $this->trim($this->curl($url), 'block_newposts_', '</ul>');
+		$html = html_entity_decode(preg_replace(array('#\s\s+#s','#[\n\t]#s'),'', $rawHtml),ENT_QUOTES);
+		
+		$regExp = '#<li.*?>.*?'
+				. '<a class="smallavatar.*?href="(?<authorLink>.*?-(?<author>[^\?]*?)(?:\?.*?)?)">' . $this->getRegExp('image','avatar') . '</a>.*?'
+				. '<p class="widget_post_content">(?<article>.*?)</p>'
+				. '<h5 class="widget_post_header"><a href="(?<articleLink>.*?)" class="title">(?<articleHeadline>.*?)</a></h5>'
+				. '<div class="meta">(?<date>.*?)<span class="time">(?<time>[APM\:\d\s]+?)</span>.*?'
+				. '</li>#';
+		preg_match_all($regExp, $html, $devtrackerMatch, PREG_SET_ORDER);
+		foreach($devtrackerMatch as $articleArray){
+			$this->clearRegExpArray($articleArray);
+			$dateString = str_replace('-','/',$articleArray['date'])." " . $articleArray['time'];
+			$timestamp = strtotime($dateString);
+			$articles[$timestamp] = array(
+				'date' => $timestamp,
+				'avatar' => $articleArray['avatar'],
+				'author' => $articleArray['author'],
+				'authorLink' => $articleArray['authorLink'],
+				'headline' => $articleArray['articleHeadline'],
+				'article' => $articleArray['article'],
+				'link' => $articleArray['articleLink'],
+			);
+		}
+		unset($devtrackerMatch);
+		return $articles;
+	}
 }
