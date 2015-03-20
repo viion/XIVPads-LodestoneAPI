@@ -1336,8 +1336,8 @@ class Search
 		
 		$regExp = '#<li.*?>.*?'
 				. '<a class="smallavatar.*?href="(?<authorLink>.*?-(?<author>[^\?]*?)(?:\?.*?)?)">' . $this->getRegExp('image','avatar') . '</a>.*?'
-				. '<p class="widget_post_content">(?<article>.*?)</p>'
-				. '<h5 class="widget_post_header"><a href="(?<articleLink>.*?)" class="title">(?<articleHeadline>.*?)</a></h5>'
+				. '<p class="widget_post_content">(?<teaser>.*?)</p>'
+				. '<h5 class="widget_post_header"><a href="(?<teaserLink>.*?)" class="title">(?<teaserHeadline>.*?)</a></h5>'
 				. '<div class="meta">(?<date>.*?)<span class="time">(?<time>[APM\:\d\s]+?)</span>.*?'
 				. '</li>#';
 		preg_match_all($regExp, $html, $devtrackerMatch, PREG_SET_ORDER);
@@ -1350,9 +1350,9 @@ class Search
 				'avatar' => $articleArray['avatar'],
 				'author' => $articleArray['author'],
 				'authorLink' => $articleArray['authorLink'],
-				'headline' => $articleArray['articleHeadline'],
-				'article' => $articleArray['article'],
-				'link' => $articleArray['articleLink'],
+				'headline' => $articleArray['teaserHeadline'],
+				'teaser' => $articleArray['teaser'],
+				'link' => $articleArray['teaserLink'],
 			);
 		}
 		unset($devtrackerMatch);
