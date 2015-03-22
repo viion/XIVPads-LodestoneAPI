@@ -478,9 +478,7 @@ class Search
                 $achievement->legacy = (strlen($p->find('legacy')->html()) > 0) ? true : false;
                 $isLegacy = $achievement->legacy;
 
-                if ($achievement->pointsCurrent) {
-                    $achievement->public = true;
-                } else {
+                if (!$achievement->pointsCurrent) {
                     // end, not public
                     break;
                 }
@@ -919,7 +917,7 @@ class Search
 
 		$rawHtml = $this->trim($this->curl($url), 'block_newposts_', '</ul>');
 		$html = html_entity_decode(preg_replace(array('#\s\s+#s','#[\n\t]#s'),'', $rawHtml),ENT_QUOTES);
-		
+
 		$regExp = '#<li.*?>.*?'
 				. '<a class="smallavatar.*?href="(?<authorLink>.*?-(?<author>[^\?]*?)(?:\?.*?)?)">' . $this->getRegExp('image','avatar') . '</a>.*?'
 				. '<p class="widget_post_content">(?<teaser>.*?)</p>'
@@ -944,10 +942,10 @@ class Search
 		unset($devtrackerMatch);
 		return $articles;
 	}
-	
-	
-	
-	
+
+
+
+
 	public function ItemDB($withDetails = false, $ids=null){
 		$items = array();
 		$itemsData = array();
@@ -970,12 +968,12 @@ class Search
 					. '<td class="col_right tc">(?<gearLevel>.*?)</td>'
 					. '</tr>#';
 			$order = ($withDetails !== true) ? PREG_SET_ORDER : PREG_PATTERN_ORDER;
-			preg_match_all($regExp, $html, $items, $order);	
+			preg_match_all($regExp, $html, $items, $order);
 		}else{
 			$items['itemIds'] = is_array($ids) ? $ids : array($ids);
 		}
-		
-		
+
+
 		if($withDetails !== true){
 			$this->clearRegExpArray($items);
 			$itemsData['items'] = $items;
@@ -1071,5 +1069,5 @@ class Search
 		$itemsData['itemcount'] = count($itemsData['items']);
 		return $itemsData;
 	}
-	
+
 }

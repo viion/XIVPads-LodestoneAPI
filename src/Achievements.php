@@ -39,6 +39,10 @@ class Achievements
      */
     public function clean()
     {
+        if ($this->pointsCurrent) {
+            $this->public = true;
+        }
+
         // Sort achievements by ID.
         if (isset($this->list) && $this->list)
         {
