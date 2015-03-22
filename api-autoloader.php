@@ -15,7 +15,7 @@ class AutoLoad
     {
         $file = explode('\\', $classname);
         $file = $file[count($file) - 1];
-        $file = __DIR__ .'/src/'. $file .'.php';
+        $file = __DIR__ .'/src/'. strtolower($file) .'.php';
 
         require $file;
     }
