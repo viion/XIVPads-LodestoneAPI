@@ -602,8 +602,8 @@ class Search
 
             $achievementMatch = array();
             preg_match('#class="txt_yellow">(?<pointsCurrent>\d+)</strong>.*?(?<legacy>(?<=.)legacy|\#main)#',$html,$achievementMatch);
-            $achievement->pointsCurrent = $achievementMatch['pointsCurrent'];
-            $achievement->legacy = ($achievementMatch['legacy'] == "legacy");
+            $achievement->pointsCurrent = isset($achievementMatch['pointsCurrent']) ? $achievementMatch['pointsCurrent'] : null;
+            $achievement->legacy = isset($achievementMatch['legacy']) ? true : false;
             $isLegacy = $achievement->legacy;
             # Achievments
             $regExp = "#<li><div class=\"(?<achieved>.*?)\">.*?" . $this->getRegExp('image','icon') . ".*?achievement_name.*?>(?<name>.*?)</span>(?<dateHTML>.*?)achievement_point.*?>(?<points>[\d]+)</div>.*?<a.*?href=\"/lodestone/character/[\d]+/achievement/detail/(?<id>[\d]+)/\".*?</li>#";
@@ -646,7 +646,14 @@ class Search
                 // Increment overall total
                 $achievement->pointsTotal = $achievement->pointsTotal + $points;
                 $achievement->countTotal = $achievement->countTotal + 1;
-            }
+
+                if ($kind == 13) {
+                    $achievement->legacyPointsTotal += $points;
+                    if ($obtained) {
+                        $achievement->legacyPoints += $points;
+                    }
+                }
+        }
         }
 
         // Dust up
