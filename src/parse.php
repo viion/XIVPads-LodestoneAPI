@@ -40,7 +40,7 @@ trait Parse
                 . "txt_name\">(?<city>.*?)</dd></dl>.*?"
                 . "(?(?=<dl).*?<dt class=\"icon\">" . $this->getRegExp('image','grandCompanyIcon') . "</dt>.*?"
                 . "txt_name\">(?<grandCompany>.*?)/(?<grandCompanyRank>.*?)</dd></dl>).*?"
-                . "(?(?=<dl).*?<div class=\"ic_crest_32\"><span>" . $this->getRegExp('image','freeCompanyIcon1') . $this->getRegExp('image','freeCompanyIcon2') . $this->getRegExp('image','freeCompanyIcon3') . "</span></div>.*?"
+                . "(?(?=<dl).*?<div class=\"ic_crest_32\"><span>" . $this->getRegExp('image','freeCompanyIcon1') . $this->getRegExp('image','freeCompanyIcon2') . '(?:' . $this->getRegExp('image','freeCompanyIcon3') . ')?' . "</span></div>.*?"
                 . "<dd class=\"txt_name\"><a href=\".*?/(?<freeCompanyId>\d+?)/\" class=\"txt_yellow\">(?<freeCompany>.*?)</a></dd>).*?"
                 . "class=\"level\".*?(?<activeLevel>[\d]{1,2})</.*?"
                 . "bg_chara_264.*?" . $this->getRegExp('image','portrait') . ""
