@@ -184,12 +184,13 @@ trait Parse
                 . '<span class="class_ok">(?<classes>[^<]*?)</span><br>'
                 . '<span class="gear_level">[^\d]*?(?<gearlevel>[\d]+?)</span>.*?'
                 . '(?(?=<ul class="basic_bonus")<ul class="basic_bonus">(?<bonuses>.*?)</ul>.*?)'
-                . '<li class="clearfix".*?><div>(?<durability>.*?)%</div></li>'
+                . '(?(?=<ul class="list_1col)<ul class="list_1col.*?>'
+				. '<li class="clearfix".*?><div>(?<durability>.*?)%</div></li>'
                 . '<li class="clearfix".*?><div>(?<spiritbond>.*?)%</div></li>'
                 . '<li class="clearfix".*?><div>(?<repairClass>[\w]+?)\s[\w\.]+?\s(?<repairLevel>\d*?)</div></li>'
-                . '<li class="clearfix".*?><div>(?<materials>.*?)<\/div><\/li>.*?'
+                . '<li class="clearfix".*?><div>(?<materials>.*?)<\/div><\/li>.*?)'
                 /** @TODO mutlilanguage **/
-                . '<ul class="ml12"><li>[\s\w]+?:\s(?<convertible>Yes|No)[\s\w]+?:\s(?<projectable>Yes|No)[\s\w]+?:\s(?<desynthesizable>Yes|No)[\s\w]*?<\/li><\/ul>.*?'
+                . '(?(?=<ul class="ml12")<ul class="ml12"><li>[\s\w]+?:\s(?<convertible>Yes|No)[\s\w]+?:\s(?<projectable>Yes|No)[\s\w]+?:\s(?<desynthesizable>Yes|No)[\s\w]*?<\/li><\/ul>.*?)'
                 . '<span class="sys_nq_element">(?<sellable>.*?)</span>'
                 . '.*?<!-- //ITEM Detail -->#u';
 
