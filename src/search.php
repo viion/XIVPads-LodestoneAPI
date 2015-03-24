@@ -46,7 +46,8 @@ class Search
         }
         else
         {
-
+            $nameOrId = ucwords($nameOrId);
+            $world = ucwords($world);
             $searchName = str_ireplace(' ', '+',  $nameOrId);
 
             // Generate url
@@ -56,7 +57,8 @@ class Search
             $p = new Parser($html);
 
             // go through results
-            foreach($p->findAll('thumb_cont_black_50', 'col3box_right') as $i => $node) {
+            foreach($p->findAll('thumb_cont_black_50', 'col3box_right') as $i => $node)
+            {
                 $node = new Parser($node);
 
                 $data = explode(' (', $node->find('player_name_gold', 0)->text());
@@ -68,7 +70,8 @@ class Search
                 $avatar = explode('?', $node->find('thumb_cont_black_50', 1)->attr('src'))[0];
 
                 // match what was sent (lower both as could be user input)
-                if (strtolower($name) == strtolower($nameOrId) && is_numeric($id)) {
+                if (strtolower($name) == strtolower($nameOrId) && is_numeric($id))
+                {
                     // recurrsive callback
                     return $this->Character($id);
                 }
