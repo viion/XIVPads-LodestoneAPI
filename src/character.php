@@ -194,6 +194,10 @@ class Character
         unset($xivdb);
     }
 	
+	/**
+	 * Returns an array of stats, calculated out of the gearbonus
+	 * @return array
+	 */
 	public function getGearBonus(){
 		$bonus = [];
 		foreach($this->gear as $g){
