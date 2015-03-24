@@ -193,4 +193,20 @@ class Character
         }
         unset($xivdb);
     }
+	
+	public function getGearBonus(){
+		$bonus = [];
+		foreach($this->gear as $g){
+			if(array_key_exists('bonuses', $g)){
+				foreach($g['bonuses'] as $b){
+					$keyCleaned = strtolower(str_ireplace(' ', '-', $b['type']));
+					if(!array_key_exists($keyCleaned, $bonus)){
+						$bonus[$keyCleaned] = 0;
+					}
+					$bonus[$keyCleaned] += intval($b['value']);
+				}
+			}
+		}
+		return $bonus;
+	}
 }

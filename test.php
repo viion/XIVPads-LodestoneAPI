@@ -79,6 +79,7 @@ else
 {
     $data = $api->Search->Character($id);
     show($data->dump());
+    show($data->getGearBonus());
 }
 
 # -------------------------------
