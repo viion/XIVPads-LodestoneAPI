@@ -29,7 +29,6 @@ if (isset($_GET['id'])) {
     $id = $_GET['id'];
 }
 
-
 if (isset($_GET['achievements']))
 {
     $data = $api->Search->Achievements($id, isset($_GET['all']) ? true : false );
@@ -78,8 +77,12 @@ else if (isset($_GET['items'])){
 else
 {
     $data = $api->Search->Character($id);
-    show($data->dump());
-    show($data->getGearBonus());
+    if ($api->Search->isMaintenance()) {
+        show('Lodestone is under maintenance');
+    } else {
+        show($data->dump());
+        show($data->getGearBonus());
+    }
 }
 
 # -------------------------------

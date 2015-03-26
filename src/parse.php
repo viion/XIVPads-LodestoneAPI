@@ -251,13 +251,16 @@ trait Parse
         foreach($character->classjobs as $job){
             $possibleClasses[] = $job['name'];
         }
-        if (preg_match('#('. implode('?|',$possibleClasses).')#i',$itemsMatch[0]['slot'],$activeClassMatch) === 1) {
-            $character->activeClass = $activeClassMatch[1];
+
+        if (isset($itemsMatch[0])) {
+            if (preg_match('#('. implode('?|',$possibleClasses).')#i',$itemsMatch[0]['slot'],$activeClassMatch) === 1) {
+                $character->activeClass = $activeClassMatch[1];
+            }
         }
 
         $character->gearStats = [
             'total' => $iLevelTotal,
-            'average' => floor(array_sum($iLevelCalculated) / 13),
+            'average' => isset($iLevelCalculated) ? floor(array_sum($iLevelCalculated) / 13) : 0,
             'array' => $iLevelArray,
         ];
         //Unsets

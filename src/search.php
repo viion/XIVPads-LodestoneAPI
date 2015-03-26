@@ -11,12 +11,22 @@ class Search
     // Set true to use basic parsing, otherwise uses advanced regex
     private $basicParsing = false;
 
+    // if maint is on or not
+    private $isMaintenance = false;
+
     /**
      * Switch to basic searching method
      */
     public function useBasicParsing()
     {
         $this->basicParsing = true;
+    }
+
+    /**
+     * Is maintenance or not
+     */
+    public function isMaintenance() {
+        return $this->isMaintenance;
     }
 
     /**
@@ -368,10 +378,17 @@ class Search
 
         // Generate url and get html
         $url = $this->urlGen('characterProfile', [ '{id}' => $characterId ]);
-        $rawHtml = $this->trim($this->curl($url), '<!-- contents -->', '<!-- //Minion -->');
+        $html = $this->curl($url);
+        $rawHtml = $this->trim($html, '<!-- contents -->', '<!-- //Minion -->');
 		if($rawHtml == "<!-- contents -->" || $rawHtml == ""){
 			return false;
 		}
+
+        // maint check
+        if (stripos($html, 'h1.error_maintenance.na') !== false) {
+            $this->isMaintenance = true;
+            return false;
+        }
 
         $html = html_entity_decode(preg_replace(array('#\s\s+#s','#<script.*?>.*?</script>?#s','#[\n\t]#s'),'', $rawHtml),ENT_QUOTES);
         unset($rawHtml);
