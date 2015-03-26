@@ -205,9 +205,16 @@ class Character
 				foreach($g['bonuses'] as $b){
 					$keyCleaned = strtolower(str_ireplace(' ', '-', $b['type']));
 					if(!array_key_exists($keyCleaned, $bonus)){
-						$bonus[$keyCleaned] = 0;
+						$bonus[$keyCleaned] = [
+							'total' => 0,
+							'items' => []
+						];
 					}
-					$bonus[$keyCleaned] += intval($b['value']);
+					$bonus[$keyCleaned]['total'] += intval($b['value']);
+					$bonus[$keyCleaned]['items'][] = [
+						'value' => intval($b['value']),
+						'name' => $g['name']
+					];
 				}
 			}
 		}
