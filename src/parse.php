@@ -224,6 +224,22 @@ trait Parse
             $bonusMatch = array();
             preg_match_all($bonusRegExp,$match['bonuses'],$bonusMatch, PREG_SET_ORDER);
             $match['bonuses'] = $this->clearRegExpArray($bonusMatch);
+			if(array_key_exists('bonuses', $match)){
+				foreach($match['bonuses'] as $b){
+					$keyCleaned = strtolower(str_ireplace(' ', '-', $b['type']));
+					if(!array_key_exists($keyCleaned, $character->gearBonus)){
+						$character->gearBonus[$keyCleaned] = [
+							'total' => 0,
+							'items' => []
+						];
+					}
+					$character->gearBonus[$keyCleaned]['total'] += intval($b['value']);
+					$character->gearBonus[$keyCleaned]['items'][] = [
+						'value' => intval($b['value']),
+						'name' => $match['name']
+					];
+				}
+			}
 
             $character->gear[] = $match;
 

@@ -36,6 +36,7 @@ class Character
 
     public $classjobs = [];
     public $gear = [];
+    public $gearBonus = [];
     public $gearStats = [];
     public $attributes = [];
 
@@ -193,31 +194,4 @@ class Character
         }
         unset($xivdb);
     }
-	
-	/**
-	 * Returns an array of stats, calculated out of the gearbonus
-	 * @return array
-	 */
-	public function getGearBonus(){
-		$bonus = [];
-		foreach($this->gear as $g){
-			if(array_key_exists('bonuses', $g)){
-				foreach($g['bonuses'] as $b){
-					$keyCleaned = strtolower(str_ireplace(' ', '-', $b['type']));
-					if(!array_key_exists($keyCleaned, $bonus)){
-						$bonus[$keyCleaned] = [
-							'total' => 0,
-							'items' => []
-						];
-					}
-					$bonus[$keyCleaned]['total'] += intval($b['value']);
-					$bonus[$keyCleaned]['items'][] = [
-						'value' => intval($b['value']),
-						'name' => $g['name']
-					];
-				}
-			}
-		}
-		return $bonus;
-	}
 }
