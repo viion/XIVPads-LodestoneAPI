@@ -294,7 +294,14 @@ trait Parse
     private function _parseServerstatus($datacenterTableHTML,$server=null){
         $serverMatches = array();
         $serverRegExp = is_null($server) ? '\w+?' : $server;
-        $regExp = '#relative">(?<server>'.$serverRegExp.')</div>.*?ic_worldstatus_1">(?<status>[\w\s]+)</span>#';
+        /**
+         * @todo find out which statusnumber is for what
+         */
+        $statusNumber = array(
+            1 => "online",
+            3 => "maintenance"
+        );
+        $regExp = '#relative">(?<server>'.$serverRegExp.')</div>.*?ic_worldstatus_(?<statusNumber>\d+)">(?<status>[\w\s]+)</span>#';
         preg_match_all($regExp, $datacenterTableHTML, $serverMatches, PREG_SET_ORDER);
         $this->clearRegExpArray($serverMatches);
         return $serverMatches;
