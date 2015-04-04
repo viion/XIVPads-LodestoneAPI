@@ -220,6 +220,22 @@ trait Parse
             $bonusMatch = array();
             preg_match_all($bonusRegExp,$match['bonuses'],$bonusMatch, PREG_SET_ORDER);
             $match['bonuses'] = $this->clearRegExpArray($bonusMatch);
+			if(array_key_exists('bonuses', $match)){
+				foreach($match['bonuses'] as $b){
+					$keyCleaned = strtolower(str_ireplace(' ', '-', $b['type']));
+					if(!array_key_exists($keyCleaned, $character->gearBonus)){
+						$character->gearBonus[$keyCleaned] = [
+							'total' => 0,
+							'items' => []
+						];
+					}
+					$character->gearBonus[$keyCleaned]['total'] += intval($b['value']);
+					$character->gearBonus[$keyCleaned]['items'][] = [
+						'value' => intval($b['value']),
+						'name' => $match['name']
+					];
+				}
+			}
 
             $character->gear[] = $match;
 
@@ -274,7 +290,14 @@ trait Parse
     private function _parseServerstatus($datacenterTableHTML,$server=null){
         $serverMatches = array();
         $serverRegExp = is_null($server) ? '\w+?' : $server;
-        $regExp = '#relative">(?<server>'.$serverRegExp.')</div>.*?ic_worldstatus_1">(?<status>[\w\s]+)</span>#';
+        /**
+         * @todo find out which statusnumber is for what
+         */
+        $statusNumber = array(
+            1 => "online",
+            3 => "maintenance"
+        );
+        $regExp = '#relative">(?<server>'.$serverRegExp.')</div>.*?ic_worldstatus_(?<statusNumber>\d+)">(?<status>[\w\s]+)</span>#';
         preg_match_all($regExp, $datacenterTableHTML, $serverMatches, PREG_SET_ORDER);
         $this->clearRegExpArray($serverMatches);
         return $serverMatches;

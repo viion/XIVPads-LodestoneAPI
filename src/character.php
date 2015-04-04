@@ -33,6 +33,7 @@ class Character
 
     public $classjobs = [];
     public $gear = [];
+    public $gearBonus = [];
     public $gearStats = [];
     public $attributes = [];
 
