@@ -12,11 +12,8 @@ class Character
     public $world;
     public $title;
     public $avatar;
-    public $avatarLarge;
-    public $avatarMedium;
     public $avatarHash;
     public $portrait;
-    public $portraitLarge;
     public $bio;
     public $race;
     public $clan;
@@ -110,10 +107,7 @@ class Character
 
                 // Remove timestamp from images
                 case 'avatar':
-                case 'avatarLarge':
-                case 'avatarMedium':
                 case 'portrait':
-                case 'portraitLarge':
                 case 'guardianIcon':
                 case 'cityIcon':
                 case 'grandCompanyIcon':
@@ -126,7 +120,7 @@ class Character
         }
 
         // Avatar hash
-        $this->avatarHash = str_ireplace(['http://img2.finalfantasyxiv.com/f/', '_50x50.jpg'], null, $this->avatar);
+        $this->avatarHash = str_ireplace(['http://img2.finalfantasyxiv.com/f/', '_50x50.jpg', '_96x96.jpg', '_64x64.jpg'], null, $this->avatar);
 
         // Set basic stuff
         $curve = $this->getExperiencePoints();
@@ -193,7 +187,7 @@ class Character
         }
         unset($xivdb);
     }
-	
+
 	/**
 	 * Returns an array of stats, calculated out of the gearbonus
 	 * @return array
