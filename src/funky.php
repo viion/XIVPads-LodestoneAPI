@@ -95,6 +95,7 @@ trait Funky
         $string = strtolower($string);
         $string = preg_replace('/[^\w]/', null, $string);
         $string = sha1($string);
+        $string = substr($string, 0, 10);
 
         return $string;
     }
