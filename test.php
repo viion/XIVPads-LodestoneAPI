@@ -20,12 +20,14 @@ show("Memory: ". cMem(memory_get_usage()) .' - after new api instance');
 
 # -------------------------------
 
-if (isset($_GET['basic'])) {
+if (isset($_GET['basic']))
+{
     $api->useBasicParsing();
 }
 
 $id = 730968;
-if (isset($_GET['id'])) {
+if (isset($_GET['id']))
+{
     $id = $_GET['id'];
 }
 
@@ -56,15 +58,18 @@ else if (isset($_GET['search']))
 	$name = isset($_GET['name']) ? trim(urldecode($_GET['name'])) : null;
 	$server = isset($_GET['server']) ? trim($_GET['server']) : null;
     $data = $api->Search->Character($name, $server);
+    show($data);
 }
-else if (isset($_GET['news'])){
+else if (isset($_GET['news']))
+{
 	// $_GET['func'] should be Topics, Maintenance, Status, Updates or Notices
 	$func = isset($_GET['func']) ? $_GET['func'] : 'Topics';
 	$detailHash = isset($_GET['hash']) ? $_GET['hash'] : null;
 	$data = $api->Search->{$func}($detailHash);
 	show($data);
 }
-else if (isset($_GET['devtracker'])){
+else if (isset($_GET['devtracker']))
+{
 	$data = $api->Search->Devtracker();
 	show($data);
 }
@@ -77,9 +82,12 @@ else if (isset($_GET['items'])){
 else
 {
     $data = $api->Search->Character($id);
-    if ($api->Search->isMaintenance()) {
+    if ($api->Search->isMaintenance())
+    {
         show('Lodestone is under maintenance');
-    } else {
+    }
+    else
+    {
         show($data->dump());
         show($data->getGearBonus());
     }
