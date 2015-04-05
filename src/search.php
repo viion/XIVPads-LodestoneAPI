@@ -34,9 +34,10 @@ class Search
      *
      * @param $nameOrId - the name or id of the character
      * @param $world - the world/server of the character, string
+     * @param $recurrsive = if true, the else wont fire, prevents recurrsion loops
      * @return Character - new character object.
      */
-    public function Character($nameOrId, $world = null)
+    public function Character($nameOrId, $world = null, $recurrsive = false)
     {
         // if numeric, we dont search lodestone
         if (is_numeric($nameOrId))
@@ -54,10 +55,10 @@ class Search
 
             return $character;
         }
-        else
+        else if (!$recurrsive)
         {
-            $nameOrId = ucwords($nameOrId);
-            $world = ucwords($world);
+            $nameOrId = ucwords(strtolower($nameOrId));
+            $world = ucwords(strtolower($world));
             $searchName = str_ireplace(' ', '+',  $nameOrId);
 
             // Generate url
@@ -67,28 +68,36 @@ class Search
             $p = new Parser($html);
 
             // go through results
+            $results = [];
             foreach($p->findAll('thumb_cont_black_50', 'col3box_right') as $i => $node)
             {
                 $node = new Parser($node);
 
+                $id = filter_var($node->find('player_name_gold', 0)->attr('href'), FILTER_SANITIZE_NUMBER_INT);
                 $data = explode(' (', $node->find('player_name_gold', 0)->text());
+                $name = trim($data[0]);
 
                 // Character
-                $id     = filter_var($node->find('player_name_gold', 0)->attr('href'), FILTER_SANITIZE_NUMBER_INT);
-                $name   = trim($data[0]);
-                $world  = trim(str_replace(')', null, $data[1]));
-                $avatar = explode('?', $node->find('thumb_cont_black_50', 1)->attr('src'))[0];
+                $results[] =
+                [
+                    'id' => $id,
+                    'name' => $name,
+                    'world' => trim(str_replace(')', null, $data[1])),
+                    'avatar' => explode('?', $node->find('thumb_cont_black_50', 1)->attr('src'))[0],
+                ];
 
                 // match what was sent (lower both as could be user input)
                 if (strtolower($name) == strtolower($nameOrId) && is_numeric($id))
                 {
                     // recurrsive callback
-                    return $this->Character($id);
+                    return $this->Character($id, null, true);
                 }
             }
 
-            return false;
+            return $results;
         }
+
+        return false;
     }
 
     /**
