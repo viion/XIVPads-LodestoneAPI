@@ -71,6 +71,8 @@ $api = new Viion\Lodestone\LodestoneAPI();
 
 ### Character
 
+Example on getting character data
+
 ```php
 <?php
 require 'api-autoloader.php';
@@ -89,6 +91,51 @@ var_dump( $character->dump() );
 echo $character->name;
 echo $character->world;
 var_dump( $character->classjobs );
+```
+
+Accessible data
+
+```php
+id
+name
+world
+title
+avatar
+avatarHash
+portrait
+bio
+race
+clan
+gender
+nameday
+
+guardian
+guardianIcon
+city
+cityIcon
+grandCompany
+grandCompanyRank
+grandCompanyIcon
+freeCompany
+freeCompanyId
+freeCompanyIcon
+
+classjobs (array)
+gear (array)
+gearBonus (array)
+gearStats (array)
+attributes (array)
+
+activeClass
+activeJob
+activeLevel
+
+minions (array)
+mounts (array)
+
+hash
+events
+all50
 ```
 
 # work in progres
