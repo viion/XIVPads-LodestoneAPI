@@ -2,7 +2,7 @@
 namespace Viion\Lodestone;
 
 /*  --------------------------------------------------
- *  XIVPads.com (v5) - Lodestone API
+ *  XIVPads.com (v5) - Lodestone API (PHP)
  *  --------------------------------------------------
  */
 class LodestoneAPI
