@@ -37,7 +37,7 @@ class Search
      * @param $recurrsive = if true, the else wont fire, prevents recurrsion loops
      * @return Character - new character object.
      */
-    public function Character($nameOrId, $world = null, $recurrsive = false)
+    public function Character($nameOrId, $world = null, $results = false, $recurrsive = false)
     {
         // if numeric, we dont search lodestone
         if (is_numeric($nameOrId))
@@ -67,8 +67,8 @@ class Search
 
             $p = new Parser($html);
 
-            // go through results
-            $results = [];
+            // go through found
+            $found = [];
             foreach($p->findAll('thumb_cont_black_50', 'col3box_right') as $i => $node)
             {
                 $node = new Parser($node);
@@ -78,7 +78,7 @@ class Search
                 $name = trim($data[0]);
 
                 // Character
-                $results[] =
+                $found[] =
                 [
                     'id' => $id,
                     'name' => $name,
@@ -87,14 +87,15 @@ class Search
                 ];
 
                 // match what was sent (lower both as could be user input)
-                if (strtolower($name) == strtolower($nameOrId) && is_numeric($id))
+                if (!$results && strtolower($name) == strtolower($nameOrId) && is_numeric($id))
                 {
                     // recurrsive callback
-                    return $this->Character($id, null, true);
+                    return $this->Character($id, null, false, true);
                 }
             }
 
-            return $results;
+            // return found
+            return $found;
         }
 
         return false;
@@ -110,11 +111,6 @@ class Search
     {
         // if numeric, we dont search lodestone
         if (is_numeric($nameOrId)) {
-            // If basic searching
-//            if ($this->basicParsing) {
-//                return $this->basicFreecompanySearch($nameOrId);
-//            }
-
             // Advanced searching
             return $this->advancedFreecompanyParse($nameOrId,$member);
 
@@ -130,14 +126,31 @@ class Search
     {
         // if numeric, we dont search lodestone
         if (is_numeric($nameOrId)) {
-            // If basic searching
-//            if ($this->basicParsing) {
-//                return $this->basicFreecompanySearch($nameOrId);
-//            }
-
             // Advanced searching
             return $this->advancedLinkshellParse($nameOrId);
 
+        }
+    }
+
+    /**
+     * Get achievements for a character
+     *
+     * @param $characterId - the id of the character
+     * @param $all - all achievements or summary?
+     * @return Achievement - an achievement object
+     */
+    public function Achievements($characterId, $all = false)
+    {
+        // if numeric, we dont search lodestone
+        if (is_numeric($characterId)) {
+
+            // If basic searching
+            if ($this->basicParsing) {
+                return $this->basicAchievementsParse($characterId, $all);
+            }
+
+            // Advanced searching
+            return $this->advancedAchievementsParse($characterId, $all);
         }
     }
 
@@ -446,28 +459,6 @@ class Search
     }
 
     /**
-     * Get achievements for a character
-     *
-     * @param $characterId - the id of the character
-     * @param $all - all achievements or summary?
-     * @return Achievement - an achievement object
-     */
-    public function Achievements($characterId, $all = false)
-    {
-        // if numeric, we dont search lodestone
-        if (is_numeric($characterId)) {
-
-            // If basic searching
-            if ($this->basicParsing) {
-                return $this->basicAchievementsParse($characterId, $all);
-            }
-
-            // Advanced searching
-            return $this->advancedAchievementsParse($characterId, $all);
-        }
-    }
-
-    /**
      * Parse achievement data, does it using basic methods, Slower.
      *
      * @param $characterId - the character id
@@ -606,7 +597,7 @@ class Search
      * @param $all - all achievements or summary?
      * @return Achievement - an achievement object
      */
-    public function advancedAchievementsParse($id, $all)
+    private function advancedAchievementsParse($id, $all)
     {
         // If legacy or not.
         $isLegacy = false;
@@ -693,102 +684,13 @@ class Search
     }
 
     /**
-     * Get onlinestatus of servers
-     * @return array
-     */
-    public function Worldstatus($datacenter=null,$server=null) {
-        $worldStatus = array();
-
-		// Set server null if datacenter null to avoid errors
-		if(is_null($datacenter) || $server == ""){
-			$server = null;
-		}
-
-        // Generate url
-        $url = $this->urlGen('worldstatus', []);
-        $rawHtml = $this->trim($this->curl($url), '<!-- #main -->', '<!-- //#main -->');
-        $html = html_entity_decode(preg_replace(array('#\s\s+#s','#<script.*?>.*?</script>?#s','#[\n\t]#s'),'', $rawHtml),ENT_QUOTES);
-		$datacenterMatches = array();
-		$datacenterRegExp = is_null($datacenter) ? ".*?" : $datacenter;
-		$regExp = '#text-headline.*?</span>(?<datacenter>'.$datacenterRegExp.')</div>.*?(?<tableHTML><table.*?</table>)#';
-		preg_match_all($regExp, $html, $datacenterMatches, PREG_SET_ORDER);
-		foreach($datacenterMatches as $key => $data){
-			$serverStatus = $this->_parseServerstatus($data['tableHTML'],$server);
-			$worldStatus[$data['datacenter']] = $serverStatus;
-		}
-		if(!is_null($datacenter)){
-			$return = array_shift($worldStatus);
-			if(!is_null($server)){
-				return $return[0]['status'];
-			}
-			return $return;
-		}
-        return $worldStatus;
-    }
-
-    /**
-     * get topics
-     */
-    public function Topics($hash=null){
-        if(is_null($hash)){
-            return $this->_newsParser('topics');
-        }else{
-            return $this->_newsDetailParser('topics',$hash);
-		}
-    }
-
-    /**
-     * get notices
-     */
-    public function Notices($hash=null){
-        if(is_null($hash)){
-            return $this->_newsParser('notices');
-        }else{
-            return $this->_newsDetailParser('notices',$hash);
-		}
-    }
-
-    /**
-     * get maintenance
-     */
-    public function Maintenance($hash=null){
-        if(is_null($hash)){
-            return $this->_newsParser('maintenance');
-        }else{
-            return $this->_newsDetailParser('maintenance',$hash);
-		}
-    }
-
-    /**
-     * get updates
-     */
-    public function Updates($hash=null){
-        if(is_null($hash)){
-            return $this->_newsParser('updates');
-        }else{
-            return $this->_newsDetailParser('updates',$hash);
-		}
-    }
-
-    /**
-     * get status
-     */
-    public function Status($hash=null){
-        if(is_null($hash)){
-            return $this->_newsParser('status');
-        }else{
-            return $this->_newsDetailParser('status',$hash);
-		}
-    }
-
-    /**
      * Get freecompany
      *
      * @param $freeCompanyId - the id of the freecompany
      * @param $members - with memberlist
      */
-    public function advancedFreecompanyParse($freeCompanyId, $members = false) {
-
+    private function advancedFreecompanyParse($freeCompanyId, $members = false)
+    {
         // Generate url
         $url = $this->urlGen('freecompany', ['{id}' => $freeCompanyId]);
         $rawHtml = $this->trim($this->curl($url), '<!-- #main -->', '<!-- //#main -->');
@@ -797,7 +699,7 @@ class Search
         $freeCompany = new \stdClass();
         $headerHtml = $this->trim($html, '<!-- playname -->', '<!-- //playname -->');
 
-		$freeCompany->id = $freeCompanyId;
+        $freeCompany->id = $freeCompanyId;
         $headerRegExp = '#' . $this->getRegExp('image','fcIcon1') . '.*?'
                         . $this->getRegExp('image','fcIcon2') . '.*?'
                         . $this->getRegExp('image','fcIcon3') . '.*?'
@@ -830,11 +732,11 @@ class Search
                 . '<td>(?<recruitment>.*?)</td>.*?'
                 // Estate
                 . '<td>'
-				. '(?(?=<div)'
-				. '<div class="txt_yellow.*?">(?<estateZone>.*?)</div>.*?'
+                . '(?(?=<div)'
+                . '<div class="txt_yellow.*?">(?<estateZone>.*?)</div>.*?'
                 . '<p class="mb10.*?">(?<estateAddress>.*?)</p>.*?'
                 . '<p class="mb10.*?">(?<estateGreeting>.*?)</p>'
-				. ').*?</td>.*?'
+                . ').*?</td>.*?'
                 . '#';
         $matches = array();
         if(preg_match($regExp, $baseHtml, $matches)) {
@@ -851,13 +753,13 @@ class Search
                 'weekly' => $matches['weeklyRank'],
                 'monthly' => $matches['monthlyRank'],
             );
-			if(array_key_exists('estateZone', $matches)){
-				$freeCompany->estate = array(
-					'zone' => $matches['estateZone'],
-					'address' => $matches['estateAddress'],
-					'message' => $matches['estateGreeting'],
-				);
-			}
+            if(array_key_exists('estateZone', $matches)){
+                $freeCompany->estate = array(
+                    'zone' => $matches['estateZone'],
+                    'address' => $matches['estateAddress'],
+                    'message' => $matches['estateGreeting'],
+                );
+            }
         }
         // Focus & Seeking
         $regExp = '#<li(?: class="icon_(?<active>off?)")?><img src="(?<icon>.*?/ic/(?<type>focus|roles)/.*?)\?.*?title="(?<name>.*?)">#';
@@ -879,7 +781,7 @@ class Search
 
             $maxPerPage = strip_tags($this->trim($html,'<span class="show_end">','</span>'));
             $pages = ceil($freeCompany->memberCount/$maxPerPage);
-			$memberHtml = "";
+            $memberHtml = "";
             for($page = 1;$page<=$pages;$page++){
                 if($page == 1){
                     $memberHtml .= $this->trim($html, 'table_black_border_bottom', '<!-- pager -->');
@@ -901,8 +803,8 @@ class Search
      *
      * @param $linkshellId - the id of the freecompany
      */
-    public function advancedLinkshellParse($linkshellId) {
-
+    private function advancedLinkshellParse($linkshellId)
+    {
         // Generate url
         $url = $this->urlGen('linkshell', ['{id}' => $linkshellId]);
         $rawHtml = $this->trim($this->curl($url), '<!-- #main -->', '<!-- //#main -->');
@@ -945,7 +847,103 @@ class Search
         return $linkshell;
     }
 
-	public function Devtracker(){
+    /**
+     * Get onlinestatus of servers
+     * @return array
+     */
+    public function Worldstatus($datacenter = null, $server = null)
+    {
+        $worldStatus = array();
+
+		// Set server null if datacenter null to avoid errors
+		if(is_null($datacenter) || $server == ""){
+			$server = null;
+		}
+
+        // Generate url
+        $url = $this->urlGen('worldstatus', []);
+        $rawHtml = $this->trim($this->curl($url), '<!-- #main -->', '<!-- //#main -->');
+        $html = html_entity_decode(preg_replace(array('#\s\s+#s','#<script.*?>.*?</script>?#s','#[\n\t]#s'),'', $rawHtml),ENT_QUOTES);
+		$datacenterMatches = array();
+		$datacenterRegExp = is_null($datacenter) ? ".*?" : $datacenter;
+		$regExp = '#text-headline.*?</span>(?<datacenter>'.$datacenterRegExp.')</div>.*?(?<tableHTML><table.*?</table>)#';
+		preg_match_all($regExp, $html, $datacenterMatches, PREG_SET_ORDER);
+		foreach($datacenterMatches as $key => $data){
+			$serverStatus = $this->_parseServerstatus($data['tableHTML'],$server);
+			$worldStatus[$data['datacenter']] = $serverStatus;
+		}
+		if(!is_null($datacenter)){
+			$return = array_shift($worldStatus);
+			if(!is_null($server)){
+				return $return[0]['status'];
+			}
+			return $return;
+		}
+        return $worldStatus;
+    }
+
+    /**
+     * get topics
+     */
+    public function Topics($hash = null)
+    {
+        if (is_null($hash)){
+            return $this->_newsParser('topics');
+        }
+
+        return $this->_newsDetailParser('topics',$hash);
+    }
+
+    /**
+     * get notices
+     */
+    public function Notices($hash = null)
+    {
+        if (is_null($hash)){
+            return $this->_newsParser('notices');
+        }
+
+        return $this->_newsDetailParser('notices',$hash);
+    }
+
+    /**
+     * get maintenance
+     */
+    public function Maintenance($hash = null)
+    {
+        if (is_null($hash)){
+            return $this->_newsParser('maintenance');
+        }
+
+        return $this->_newsDetailParser('maintenance',$hash);
+    }
+
+    /**
+     * get updates
+     */
+    public function Updates($hash = null)
+    {
+        if (is_null($hash)){
+            return $this->_newsParser('updates');
+        }
+
+        return $this->_newsDetailParser('updates',$hash);
+    }
+
+    /**
+     * get status
+     */
+    public function Status($hash = null)
+    {
+        if (is_null($hash)){
+            return $this->_newsParser('status');
+        }
+
+        return $this->_newsDetailParser('status',$hash);
+    }
+
+	public function Devtracker()
+    {
         $devtrackerMatch = array();
         $articles = array();
 		// Generate url
@@ -979,10 +977,8 @@ class Search
 		return $articles;
 	}
 
-
-
-
-	public function ItemDB($withDetails = false, $ids=null){
+	public function ItemDB($withDetails = false, $ids = null)
+    {
 		$items = array();
 		$itemsData = array();
 		if(is_null($ids)){
@@ -1105,5 +1101,4 @@ class Search
 		$itemsData['itemcount'] = count($itemsData['items']);
 		return $itemsData;
 	}
-
 }

@@ -57,7 +57,9 @@ else if (isset($_GET['search']))
 {
 	$name = isset($_GET['name']) ? trim(urldecode($_GET['name'])) : null;
 	$server = isset($_GET['server']) ? trim($_GET['server']) : null;
-    $data = $api->Search->Character($name, $server);
+    $results = isset($_GET['results']) ? true : false;
+
+    $data = $api->Search->Character($name, $server, $results);
     show($data);
 }
 else if (isset($_GET['news']))
