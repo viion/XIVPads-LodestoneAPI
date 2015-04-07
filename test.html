@@ -141,7 +141,7 @@ $(function() {
                         ilv = Character.gear[i].gearStats.average,
                         g = i.split('-'),
                         c = g[0].toUpperCase(),
-                        j = g[1].toUpperCase();
+                        j = (typeof g[1] == 'undefined') ? '' : g[1].toUpperCase();
 
                     // gear title
                     $data.append('Gear for: '+ c +' + '+ j +'  Item Level: '+ ilv +'<br>');
@@ -150,6 +150,7 @@ $(function() {
                         g = set[j];
                         $data.append('    ('+ g.slot +') '+ g.name +'<br>');
                     }
+                    $data.append('<br>');
                 }
 
                 // fin
