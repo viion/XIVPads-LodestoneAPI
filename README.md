@@ -27,9 +27,8 @@ An API for parsing lodestone data, designed and maintained by XIVPads.com and XI
 - If you are looking for the old API, have a wonder to the ``` _old ``` directory. This will be deleted when the FFXIV expansion goes live. Or maybe sooner.
 
 **Javascript Version**
-There is a Javascript version of the API, instead of parsing Lodestone it parses XIVSync. This could be faster for you as our XIVSync server is in Japan. It also fetches all the information that XIVPads gathers such as Events and includes Achievements without additional page loads. This is still quite beta so test it to get used to it. There is a test.html file included in the repo which you can use to test/try and see how it works. I've included an example in there.
-
-You can also find the file at: http://xivsync.com/lodestoneapi.js (minified: http://xivsync.com/lodestoneapi.min.js)
+- There is a Javascript version of the API, instead of parsing Lodestone it parses XIVSync. This could be faster for you as our XIVSync server is in Japan. It also fetches all the information that XIVPads gathers such as Events and includes Achievements without additional page loads. This is still quite beta so test it to get used to it. There is a test.html file included in the repo which you can use to test/try and see how it works. I've included an example in there.
+- You can host it yourself or it can also find the file at: http://xivsync.com/lodestoneapi.js (minified: http://xivsync.com/lodestoneapi.min.js)
 
 **Example / Tests**
 - View ``` test.php ``` for some good examples and tests. Below is the basics.
