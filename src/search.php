@@ -696,7 +696,7 @@ class Search
         $rawHtml = $this->trim($this->curl($url), '<!-- #main -->', '<!-- //#main -->');
         $html = html_entity_decode(preg_replace(array('#\s\s+#s', '#[\n\t]#s', '#<!--\s*-->#s'), '', $rawHtml), ENT_QUOTES);
 
-        $freeCompany = new \stdClass();
+        $freeCompany = new FreeCompany();
         $headerHtml = $this->trim($html, '<!-- playname -->', '<!-- //playname -->');
 
         $freeCompany->id = $freeCompanyId;
