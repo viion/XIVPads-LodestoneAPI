@@ -17,7 +17,7 @@ class FreeCompany
     public $ranking;
     public $estate;
     public $focus;
-    public $seeking;
+    public $roles;
     public $members;
 
     /**
