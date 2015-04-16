@@ -795,6 +795,9 @@ class Search
             $freeCompany->members = $this->_advancedFcMemberParse($memberHtml);
         }
 
+		// dust up
+		$freeCompany->clean();
+
         return $freeCompany;
     }
 
