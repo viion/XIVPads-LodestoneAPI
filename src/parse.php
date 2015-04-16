@@ -379,16 +379,16 @@ trait Parse
                 'id' => $member['id'],
                 'rank' => array(
                     'title' => $member['rankName'],
-                    'image' => $member['rankIcon'],
+                    'icon' => $member['rankIcon'],
                     ),
                 'class' => array(
-                    'image' => $member['classIcon'],
+                    'icon' => $member['classIcon'],
                     'level' => $member['classLevel']
                 )
             );
             if(array_key_exists('gcIcon', $member)){
                 $members[$key]['grandcompany'] = array(
-                    'image' => $member['gcIcon'],
+                    'icon' => $member['gcIcon'],
                     'name' => $member['gcName'],
                     'rank' => $member['gcRank']
                 );
@@ -417,20 +417,20 @@ trait Parse
                 'name' => $member['name'],
                 'id' => $member['id'],
                 'class' => array(
-                    'image' => $member['classIcon'],
+                    'icon' => $member['classIcon'],
                     'level' => $member['classLevel']
                 )
             );
             if(array_key_exists('gcRankIcon', $member)){
                 $members[$key]['grandcompany'] = array(
-                    'image' => $member['gcRankIcon'],
+                    'icon' => $member['gcRankIcon'],
                     'name' => $member['gcName'],
                     'rank' => $member['gcRank']
                 );
             }
             if(array_key_exists('fcName', $member)){
                 $members[$key]['freecompany'] = array(
-                    'image' => array(
+                    'icon' => array(
                         $member['fcIcon1'],
                         $member['fcIcon2'],
                         $member['fcIcon3']
