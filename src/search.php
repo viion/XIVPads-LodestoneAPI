@@ -702,7 +702,7 @@ class Search
         $freeCompany->id = $freeCompanyId;
         $headerRegExp = '#' . $this->getRegExp('image','fcIcon1') . '.*?'
                         . $this->getRegExp('image','fcIcon2') . '.*?'
-                        . $this->getRegExp('image','fcIcon3') . '.*?'
+                        . '(?:' . $this->getRegExp('image','fcIcon3') . '.*?)?'
                         . '.*?crest_id.*?>(?<company>.*?)\s?<.*?<span>\s?\((?<world>.+?)\)</span>#';
         $headerMatches = array();
         if(preg_match($headerRegExp, $headerHtml, $headerMatches)) {
