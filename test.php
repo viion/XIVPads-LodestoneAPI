@@ -36,6 +36,12 @@ if (isset($_GET['achievements']))
     $data = $api->Search->Achievements($id, isset($_GET['all']) ? true : false );
     show($data->dump());
 }
+
+if (isset($_GET['last_achievements']))
+{
+    $data = $api->Search->Achievements($id, isset($_GET['all']) ? true : false,true );
+    show($data);
+}
 else if (isset($_GET['worldstatus']))
 {
 	$dc = isset($_GET['dc']) ? trim($_GET['dc']) : null;

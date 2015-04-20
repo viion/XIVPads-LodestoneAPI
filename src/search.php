@@ -139,7 +139,7 @@ class Search
      * @param $all - all achievements or summary?
      * @return Achievement - an achievement object
      */
-    public function Achievements($characterId, $all = false)
+    public function Achievements($characterId, $all = false,$lastOnly=false)
     {
         // if numeric, we dont search lodestone
         if (is_numeric($characterId)) {
@@ -148,7 +148,10 @@ class Search
             if ($this->basicParsing) {
                 return $this->basicAchievementsParse($characterId, $all);
             }
-
+			if($lastOnly===true){
+				// Advanced searching
+				return $this->advancedLastAchievementsParse($characterId);
+			}
             // Advanced searching
             return $this->advancedAchievementsParse($characterId, $all);
         }
@@ -679,6 +682,43 @@ class Search
         // Dust up
         $achievement->clean();
 
+        // return
+        return $achievement;
+    }
+
+    /**
+     * Parse last achievement data, does it using regex, Faster
+     *
+     * @param $characterId - the character id
+     * @param $all - all achievements or summary?
+     * @return Achievement - an achievement object
+     */
+    private function advancedLastAchievementsParse($id)
+    {
+		$achievement = new \stdClass();
+		// Generate url
+		$url = $this->urlGen('achievements', [ '{id}' => $id]);
+		$rawHtml = $this->trim($this->curl($url), '<!-- #main -->', '<!-- //#main -->');
+		$html = html_entity_decode(preg_replace(array('#\s\s+#s','#[\n\t]#s'),'', $rawHtml),ENT_QUOTES);
+
+		$achievementMatch = array();
+		preg_match('#class="txt_yellow">(?<pointsCurrent>\d+)</strong>.*?(?<legacy>(?<=.)legacy|\#main)#',$html,$achievementMatch);
+		$achievement->pointsCurrent = (array_key_exists('pointsCurrent',$achievementMatch) && $achievementMatch['pointsCurrent'] > 0 ) ? $achievementMatch['pointsCurrent'] : null;
+		# Achievments
+        $achievmentHtml = $this->trim($html, '<ul class="achievement_list">', '</ul>');
+		$regExp = "#<li><div class=\"achievement_area_footer\">.*?<a.*?href=\"/lodestone/character/[\d]+/achievement/detail/(?<id>[\d]+)/\".*?" . $this->getRegExp('image','icon') . ".*?achievement_txt.*?>.*?<script>(?<dateHTML>.*?)</script>.*?</li>#";
+
+		$achievmentMatches = array();
+		preg_match_all($regExp, $achievmentHtml, $achievmentMatches, PREG_SET_ORDER);
+		$this->clearRegExpArray($achievmentMatches);
+		foreach($achievmentMatches as $mkey => $match) {
+			$dateMatch = [];
+			preg_match('#ldst_strftime\(([\d\.]+),#',$match['dateHTML'],$dateMatch);
+			$time = filter_var($dateMatch[1], FILTER_SANITIZE_NUMBER_INT);
+			unset($achievmentMatches[$mkey]['dateHTML']);
+			$achievmentMatches[$mkey]['time'] = $time;
+		}
+		$achievement->last = $achievmentMatches;
         // return
         return $achievement;
     }
