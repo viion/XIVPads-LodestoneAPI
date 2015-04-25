@@ -19,6 +19,8 @@ var LodestoneAPI =
         sync: 'http://xivsync.com',
         search: '/search/character',
         character: '/character/get',
+        achievement: '/achievements/get',
+        freecompany: '/freecompany/get',
     },
 
     // Initialize
@@ -145,6 +147,42 @@ var LodestoneAPI =
                 });
             }
         },
+
+        Achievements: function(id, callback)
+        {
+            if (!callback || typeof callback !== 'function') {
+                console.error('Callback function not defined.');
+                return;
+            }
+
+            if (!id) {
+                console.error('Name or ID is empty');
+                return callback(false);
+            }
+
+            if ($.isNumeric(id))
+            {
+                LodestoneAPI.log('search > achievements > isNumeric = true =', id);
+
+                var url = LodestoneAPI.paths.sync + LodestoneAPI.paths.achievement,
+                    data = { lodestone: id }
+
+                LodestoneAPI.get(url, data, function(data)
+                {
+                    // if empty
+                    if (data.length == 0) {
+                        return callback(false);
+                    }
+
+                    return callback(data);
+                });
+            }
+            else
+            {
+                console.error('ID is not numeric');
+                return callback(false);
+            }
+        }
     },
 }
 LodestoneAPI.init();

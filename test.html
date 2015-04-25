@@ -11,9 +11,9 @@ pre {
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 <script src="src/lodestoneapi.js"></script>
 
-<form>
+<form id="character">
     <fieldset>
-        <legend>Search:</legend>
+        <legend>Search Character:</legend>
         <input name="name" id="name" type="text" value="Premium Virtue" placeholder="Character Name or ID">
         <select name="server" id="server">
             <option value="Adamantoise">Adamantoise</option>
@@ -85,6 +85,15 @@ pre {
     </fieldset>
 </form>
 
+<form id="achievements">
+    <fieldset>
+        <legend>Search Achievements:</legend>
+        <input name="id" id="id" type="text" value="730968" placeholder="Character ID">
+        <input type="submit">
+    </fieldset>
+</form>
+
+
 <h1>Data Result</h1>
 <pre id="data"></pre>
 
@@ -98,7 +107,7 @@ $(function() {
         $data = $('#data');
 
     // handle form submit
-    $('form').on('submit', function(e)
+    $('form#character').on('submit', function(e)
     {
         e.preventDefault();
 
@@ -158,6 +167,39 @@ $(function() {
             }
 
             $data.html('Could not find character');
+        });
+    });
+
+    // handle form submit
+    $('form#achievements').on('submit', function(e)
+    {
+        e.preventDefault();
+
+        var id = $(this).find('#id').val().trim();
+
+        $data.text('Getting achievements for: ' + id);
+
+        // Lodestone Search
+        LodestoneAPI.Search.Achievements(id, function(Achievements)
+        {
+            if (Achievements)
+            {
+                console.log(Achievements);
+
+                // print data
+                $data.empty();
+                $data.append('Points: ' + parseInt(Achievements.pointsCurrent) +'<br>');
+                $data.append('----------------------<br>');
+
+                // print json
+                var json = JSON.stringify(Achievements, null, 4);
+                $results.text(json);
+
+                // fin
+                return;
+            }
+
+            $data.html('Could not find achievementss');
         });
     });
 });
