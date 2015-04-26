@@ -1002,7 +1002,9 @@ class Search
 				. '<div class="meta">(?<date>.*?)<span class="time">(?<time>[APM\:\d\s]+?)</span>.*?'
 				. '</li>#';
 		preg_match_all($regExp, $html, $devtrackerMatch, PREG_SET_ORDER);
-		foreach($devtrackerMatch as $articleArray){
+        $breaks = array("<br />","<br>","<br/>", "\n");
+		foreach($devtrackerMatch as $articleArray)
+        {
 			$this->clearRegExpArray($articleArray);
 			$dateString = str_replace('-','/',$articleArray['date'])." " . $articleArray['time'];
 			$timestamp = strtotime($dateString);
@@ -1011,7 +1013,7 @@ class Search
 				'avatar' => $articleArray['avatar'],
 				'author' => $articleArray['author'],
 				'authorLink' => $articleArray['authorLink'],
-				'headline' => $articleArray['teaserHeadline'],
+				'headline' => strip_tags(str_ireplace($breaks, " ", $articleArray['teaserHeadline'])),
 				'teaser' => $articleArray['teaser'],
 				'link' => $articleArray['teaserLink'],
 			);
