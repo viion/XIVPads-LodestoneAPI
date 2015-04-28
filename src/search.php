@@ -995,8 +995,8 @@ class Search
 		$rawHtml = $this->trim($this->curl($url), 'block_newposts_', '</ul>');
 		$html = html_entity_decode(preg_replace(array('#\s\s+#s','#[\n\t]#s'),'', $rawHtml),ENT_QUOTES);
 
-		$regExp = '#<li.*?>.*?'
-				. '<a class="smallavatar.*?href="(?<authorLink>.*?-(?<author>[^\?]*?)(?:\?.*?)?)">' . $this->getRegExp('image','avatar') . '</a>.*?'
+		$regExp = '#<li class=".*?widget_post_bit[^"]*">.*?'
+				. '<a class="smallavatar comments_member_avatar_link".*?href="(?<authorLink>.*?-(?<author>[^\?]*?)(?:\?[^"]*)?)">' . $this->getRegExp('image','avatar') . '</a></div>.*?'
 				. '<p class="widget_post_content">(?<teaser>.*?)</p>'
 				. '<h5 class="widget_post_header"><a href="(?<teaserLink>.*?)" class="title">(?<teaserHeadline>.*?)</a></h5>'
 				. '<div class="meta">(?<date>.*?)<span class="time">(?<time>[APM\:\d\s]+?)</span>.*?'
