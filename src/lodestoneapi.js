@@ -182,6 +182,42 @@ var LodestoneAPI =
                 console.error('ID is not numeric');
                 return callback(false);
             }
+        },
+
+        FreeCompany: function(id, callback)
+        {
+            if (!callback || typeof callback !== 'function') {
+                console.error('Callback function not defined.');
+                return;
+            }
+
+            if (!id) {
+                console.error('Name or ID is empty');
+                return callback(false);
+            }
+
+            if (id.length > 1)
+            {
+                LodestoneAPI.log('search > free company > isNumeric = true =', id);
+
+                var url = LodestoneAPI.paths.sync + LodestoneAPI.paths.freecompany,
+                    data = { lodestone: id }
+
+                LodestoneAPI.get(url, data, function(data)
+                {
+                    // if empty
+                    if (data.length == 0) {
+                        return callback(false);
+                    }
+
+                    return callback(data);
+                });
+            }
+            else
+            {
+                console.error('ID is too short?');
+                return callback(false);
+            }
         }
     },
 }
