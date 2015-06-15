@@ -12,8 +12,10 @@ class Character
     public $world;
     public $title;
     public $avatar;
+    public $avatarTimestamp;
     public $avatarHash;
     public $portrait;
+    public $portraitTimestamp;
     public $bio;
     public $race;
     public $clan;

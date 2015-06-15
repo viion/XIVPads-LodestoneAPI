@@ -20,6 +20,7 @@ trait Parse
             $character->title = $nameMatches['title'];
             $character->world = $nameMatches['world'];
             $character->avatar = $nameMatches['avatar'];
+            $character->avatarTimestamp = $nameMatches['avatarTimestamp'];
         }
 
         unset($nameHtml);
@@ -57,6 +58,7 @@ trait Parse
                     $character->$key = $value;
                 }
             }
+            $character->portraitTimestamp = $profileMatches["portraitTimestamp"];
         }
 
         unset($profileHtml);
