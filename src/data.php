@@ -18,6 +18,7 @@ trait Data
         return [
             'gladiator', 'pugilist', 'marauder', 'lancer', 'archer', 'rogue',
             'conjurer', 'thaumaturge', 'arcanist',
+            'machinist', 'darkknight', 'astrologian',
             'carpenter', 'blacksmith', 'armorer', 'goldsmith', 'leatherworker', 'weaver', 'alchemist', 'culinarian',
             'miner', 'botanist', 'fisher',
         ];
@@ -56,6 +57,9 @@ trait Data
             28 => 'scholar',
             29 => 'rogue',
             30 => 'ninja',
+            31 => 'machinist',
+            32 => 'darkknight',
+            33 => 'astrologian'
         ];
     }
 
@@ -94,6 +98,9 @@ trait Data
             "Two-handed Conjurer's Arm",
             "Arcanist's Grimoire",
             "Fisher's Primary Tool",
+            "Dark Knight's Arm",
+            "Machinist's Arm",
+            "Astrologian's Arm",
         ];
     }
 
@@ -150,7 +157,17 @@ trait Data
             47 => 467500,
             48 => 498000,
             49 => 529000,
-            50 => 0
+            50 => 864000,
+            51 => 1058400,
+            52 => 1267200,
+            53 => 1555200,
+            54 => 1872000,
+            55 => 2217600,
+            56 => 2592000
+            57 => 2995200,
+            58 => 3427200,
+            59 => 3888000,
+            60 => 0, //4389120
         ];
     }
 }
