@@ -5,12 +5,12 @@ trait Data
 {
     public function getMaxLevel()
     {
-        return 50;
+        return 60;
     }
 
     public function getMaxExp()
     {
-        return 7734000;
+        return 29470800;
     }
 
     public function getClassList()
@@ -163,7 +163,7 @@ trait Data
             53 => 1555200,
             54 => 1872000,
             55 => 2217600,
-            56 => 2592000
+            56 => 2592000,
             57 => 2995200,
             58 => 3427200,
             59 => 3888000,
