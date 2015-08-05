@@ -67,8 +67,10 @@ For composer:
 
 then within your code:
 
-``` use Viion\Lodestone\LodestoneAPI; ```
-``` $api = new LodestoneAPI(); ```
+```php
+use Viion\Lodestone\LodestoneAPI;
+$api = new LodestoneAPI();
+ ```
 
 or if you prefer:
 
