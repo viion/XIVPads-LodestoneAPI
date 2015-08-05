@@ -59,13 +59,28 @@ var_dump($character->dump());
 
 ## Getting Started
 
-(Composer not been tested yet and may not work)
+### Composer
 
-- Include the autoloader, and that should be it!
+For composer:
+
+``` composer require viion/xivpads-lodestoneapi ```
+
+then within your code:
+
+``` use Viion\Lodestone\LodestoneAPI; ```
+``` $api = new LodestoneAPI(); ```
+
+or if you prefer:
+
+``` $api = new Viion\Lodestone\LodestoneAPI(); ```
+
+### Without composer
+
+If you are not using composer, then edit the ```path/to/api/``` to where you have the api files and include the ```api-autoloader.php``` file.
 
 ```php
 <?php
-require 'api-autoloader.php';
+require 'path/to/api/api-autoloader.php';
 $api = new Viion\Lodestone\LodestoneAPI();
 ```
 
