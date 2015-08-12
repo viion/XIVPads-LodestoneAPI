@@ -1146,4 +1146,123 @@ class Search
 		$itemsData['itemcount'] = count($itemsData['items']);
 		return $itemsData;
 	}
+
+    public function ItemDBSearch($name)
+    {
+        $url = 'http://eu.finalfantasyxiv.com/lodestone/playguide/db/item/?db_search_category=item&category2=&q=%s';
+        $url = sprintf($url, urlencode($name));
+
+        $html = $this->trim($this->curl($url), '<!-- #main -->', '<!-- //#main -->');
+
+        // get doc
+        $p = new Parser($html);
+
+        // get item id
+        $foundItemId = null;
+        foreach($p->findAll('db_popup highlight', 1) as $n)
+        {
+            $n = new Parser($n);
+
+            $foundName = trim($n->find('db_popup')->text());
+            if ($foundName == $name) {
+                $foundItemId = trim($n->find('db_popup')->attr('href'));
+            }
+        }
+
+        if (!$foundItemId) {
+            return null;
+        }
+
+        $foundItemId = explode('/', $foundItemId);
+        return isset($foundItemId[5]) ? $this->getItemFromLodestoneBasic($foundItemId[5]) : false;
+    }
+
+    private function getItemFromLodestoneBasic($id)
+    {
+        $url = 'http://eu.finalfantasyxiv.com/lodestone/playguide/db/item/%s/';
+        $url = sprintf($url, trim($id));
+
+        $html = $this->trim($this->curl($url), '<!-- #main -->', '<!-- //#main -->');
+        $p = new Parser($html);
+
+        //$p->show();
+
+        $isUnique = strlen($p->find('class="rare"', 1)->text()) > 0 ? 1 : 0;
+        $isEx = strlen($p->find('class="ex_bind"', 1)->text()) > 0 ? 1 : 0;
+        $isReducible = strlen($p->find('Aetherial Reduction')->text()) > 0 ? 1 : 0;
+
+        $redarr = false;
+        if ($isReducible) {
+            $reducibleText = $p->find('Aetherial Reduction')->text();
+            $reducibleText = explode(' ', $reducibleText);
+            $reducibleClass = trim(str_ireplace('Lv.', null, $reducibleText[3]));
+            $reducibleLevel = intval(trim(filter_var($reducibleText[4], FILTER_SANITIZE_NUMBER_INT)));
+            $reducibleClassId = array_search(strtolower($reducibleClass), $this->getClassListFull());
+
+            $redarr = [
+                'class' => $reducibleClass,
+                'level' => $reducibleLevel,
+                'classId' => $reducibleClassId,
+            ];
+        }
+
+        $name = $p->find('h2 class="item_name', 2)->text();
+        $name = trim(substr($name, 2));
+
+        $nqIcon = $p->find('finalfantasyxiv.com/lds/pc/global/images/itemicon')->attr('src');
+        $hqIcon = $p->find('finalfantasyxiv.com/lds/pc/global/images/itemicon', 1)->attr('src');
+        $nqIcon = str_ireplace('http://img.finalfantasyxiv.com/lds/pc/global/images/itemicon/', null, $nqIcon);
+        $hqIcon = str_ireplace('http://img.finalfantasyxiv.com/lds/pc/global/images/itemicon/', null, $hqIcon);
+        $nqIcon = explode('.', $nqIcon)[0];
+        $hqIcon = explode('.', $hqIcon)[0];
+
+        $constraintsOne = $p->find('ul class="eorzeadb_tooltip_ml12"', 2)->text();
+        $constraintsTwo = $p->find('ul class="eorzeadb_tooltip_ml12"', 5)->html();
+        $constraintsTwo = str_ireplace('&amp;nbsp;', ' ', $constraintsTwo);
+        $constraints = array_merge(explode(" ", $constraintsOne), explode(" ", $constraintsTwo));
+        $constraints = array_values(array_filter($constraints));
+
+        $sellsForNq = $p->find('span class="sys_nq_element"', 1)->numbers();
+        $sellsForHq = $p->find('span class="sys_nq_element"', 3)->numbers();
+
+        if ($hqIcon && !$nqIcon) {
+            $nqIcon = $hqIcon;
+            $hqIcon = null;
+        }
+
+        if (!$constraintsOne) {
+            $constraintsOne = $p->find('eorzeadb_tooltip_ml4 eorzeadb_tooltip_mb10')->text();
+            if ($constraintsOne) {
+                $constraintsOne = explode(' ', $constraintsOne);
+                $constraints[5] = trim($constraintsOne['1']);
+            }
+        }
+
+        $arr = [
+            'unique' => $isUnique,
+            'untradable' => $isEx,
+            'reducible' => $isReducible,
+            'convertible' => isset($constraints[1]) && trim($constraints[1]) == 'Yes' ? 1 : 0,
+            'projectable' => isset($constraints[3]) && trim($constraints[3]) == 'Yes' ? 1 : 0,
+            'desynthesizable' => isset($constraints[5]) && trim($constraints[5]) == 'Yes' ? 1 : 0,
+            'dyeable' => isset($constraints[7]) && trim($constraints[7]) == 'Yes' ? 1 : 0,
+            'crestable' => isset($constraints[9]) && trim($constraints[9]) == 'Yes' ? 1 : 0,
+        ];
+
+        $data = [
+            'id' => $id,
+            'name' => $name,
+            'icon' => $nqIcon,
+            'icon_hq' => $hqIcon,
+            'sell' => $sellsForNq,
+            'sell_hq' => $sellsForHq,
+            'constraints' => $arr,
+            'reducible' => $redarr,
+        ];
+
+        //show($data);
+        //$p->show();
+
+        return $data;
+    }
 }
