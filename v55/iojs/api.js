@@ -6,7 +6,10 @@ var $ = null,
     server = new hapi.Server();
 
 // Server connections
-server.connection({ port: 3000 });
+server.connection({
+    host: 'xivsync.com',
+    port: 3000
+});
 
 // - - - - - - - - - - - - - - - - - - - - - - - - -
 // Routes
@@ -19,11 +22,16 @@ server.route(
 
     handler: function (request, reply)
     {
-        var id = parseInt(request.params.id),
-            html = '',
+        var id = parseInt(request.params.id);
+        if (!id) {
+            reply('Need an ID');
+            return;
+        }
+
+        var html = '',
             options = {
                 host: 'eu.finalfantasyxiv.com',
-                path: '/lodestone/character/730968',
+                path: '/lodestone/character/' + id,
                 port: 80,
             };
 
