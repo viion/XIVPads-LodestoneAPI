@@ -17,8 +17,8 @@ $.get('dev-html.html', function(data) {
     var data =
     {
         name: $box.find('.item_name_area h2').text(),
-        color: $box.find('.item_name_area h2').attr('class').split(' ')[1],
-        category: $box.find('.item_name_area').clone().children().remove().end().text(),
+        color: $box.find('.item_name_area h2').attr('class').replace("\n", '').split(' ')[4].trim().split('_')[0],
+        category: $box.find('.item_name_area').text().split("\n")[16].trim(),
     }
 
 
