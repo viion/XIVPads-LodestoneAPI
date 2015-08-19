@@ -10,15 +10,23 @@ var api =
 {
     reply: null,
 
+    memory: function()
+    {
+        return process.memoryUsage().heapUsed;
+    },
+
     /**
      * Get html from a web page
      *
-     * @param options - options for http.get
+     * @param url - url for options for http.get
      * @param callback - function to callback on
      */
-    get: function(options, callback)
+    get: function(url, callback)
     {
-        console.log('Get Path:', options.path);
+        console.log('Get Path:', url);
+
+        options.host = 'eu.finalfantasyxiv.com';
+        options.port = 80;
 
         // get
         var html = '',
@@ -56,10 +64,16 @@ var api =
     searchItem: function(name)
     {
         console.log('Searching for Item:', name);
-
-        // start
-        api.get(apiItems.getSearchOptions(name), function($) {
+        api.get(apiItems.getUrl('search', name), function($) {
             api.reply(apiItems.getSearchResults($));
+        });
+    }
+
+    getItem: function(id)
+    {
+        console.log('Getting item for ID:', id);
+        api.get(apiItems.getUrl('item', id), function($) {
+            api.reply(apiItems.getItemData($));
         });
     }
 }

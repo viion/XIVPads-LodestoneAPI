@@ -20,7 +20,7 @@ server.route(
 
     handler: function (request, reply)
     {
-        console.log(process.memoryUsage().heapUsed);
+        console.log(api.memory());
 
         // get name
         var name = request.params.name;
@@ -31,7 +31,7 @@ server.route(
         api.reply = reply;
         api.searchItem(name);
 
-        console.log(process.memoryUsage().heapUsed);
+        console.log(api.memory());
     }
 });
 

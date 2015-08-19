@@ -10,13 +10,15 @@ Array.prototype.clean = function(deleteValue) {
 
 var apiItems =
 {
-    getSearchOptions: function(name)
-    {
-        return {
-            host: 'eu.finalfantasyxiv.com',
-            path: '/lodestone/playguide/db/item/?db_search_category=item&category2=&q={name}'.replace('{name}', name),
-            port: 80,
+    getUrl: function(type, string) {
+
+        var urls =
+        {
+            search: '/lodestone/playguide/db/item/?db_search_category=item&category2=&q={string}'.replace('{string}', string),
+            item: 'http://eu.finalfantasyxiv.com/lodestone/playguide/db/item/{string}/'.replace('{string}', string),
         }
+
+        return urls[type];
     },
 
     getSearchResults: function($)
@@ -84,56 +86,108 @@ var apiItems =
         }
 
         // related duties
-        var $footer = $('.w480_footer.mt10');
-        if ($footer.find('h3').text() == 'Related Duties')
-        {
-            data.duties = [];
+        var $footers = $('.w480_footer.mt10');
+        $footers.each(function() {
+            $footer = $(this);
 
-            $footer.find('table tbody tr').each(function() {
-                var $row1 = $(this).find('td:nth-child(1)'),
-                    $name = $row1.find('a.db_popup'),
-                    $kind = $row1.find('.small a:nth-child(1)'),
-                    $category = $row1.find('.small a:nth-child(2)');
+            // related duties
+            if ($footer.find('h3').text() == 'Related Duties')
+            {
+                data.duties = [];
 
-                var id = $name.attr('href').split('/').clean('')[4];
+                $footer.find('table tbody tr').each(function() {
+                    var $row1 = $(this).find('td:nth-child(1)'),
+                        $name = $row1.find('a.db_popup'),
+                        $kind = $row1.find('.small a:nth-child(1)'),
+                        $category = $row1.find('.small a:nth-child(2)');
 
-                data.duties.push({
-                    id: id,
-                    name: $name.text().trim(),
-                    url: $name.attr('href'),
-                    kind_name: $kind.text().trim(),
-                    kind_url: $kind.attr('href'),
-                    category_name: $category.text().trim(),
-                    category_url: $category.attr('href').trim(),
+                    var id = $name.attr('href').split('/').clean('')[4];
+
+                    data.duties.push({
+                        id: id,
+                        name: $name.text().trim(),
+                        url: $name.attr('href'),
+                        kind_name: $kind.text().trim(),
+                        kind_url: $kind.attr('href'),
+                        category_name: $category.text().trim(),
+                        category_url: $category.attr('href').trim(),
+                    });
                 });
-            });
-        }
+            }
 
-        // related crafting logs
-        var $footer = $('.w480_footer.mt10');
-        if ($footer.find('h3').text() == 'Crafting Log')
-        {
-            data.craftinglog = [];
+            // crafting logs
+            if ($footer.find('h3').text() == 'Crafting Log')
+            {
+                data.craftinglog = [];
 
-            $footer.find('table tbody tr').each(function() {
-                var $row1 = $(this).find('td:nth-child(1)'),
-                    $row2 = $(this).find('td:nth-child(2)'),
-                    $row3 = $(this).find('td:nth-child(3)'),
-                    $name = $row1.find('a');
+                $footer.find('table tbody tr').each(function() {
+                    var $row1 = $(this).find('td:nth-child(1)'),
+                        $row2 = $(this).find('td:nth-child(2)'),
+                        $row3 = $(this).find('td:nth-child(3)'),
+                        $name = $row1.find('a');
 
-                var id = $name.attr('href').split('/').clean('')[4];
+                    var id = $name.attr('href').split('/').clean('')[4];
 
-                data.craftinglog.push({
-                    id: id,
-                    icon: $row1.find('img').attr('src'),
-                    name: $name.text().trim(),
-                    link: $name.attr('href'),
-                    recipe_level: parseInt($row2.text().trim()),
-                    recipe_stars: parseInt($row2.find('.ic_recipe_star_02').length),
-                    item_level: parseInt($row3.text().trim()),
+                    console.log($row2.text().trim());
+
+                    data.craftinglog.push({
+                        id: id,
+                        icon: $row1.find('img').attr('src'),
+                        name: $name.text().trim(),
+                        link: $name.attr('href'),
+                        recipe_level: ($row2.text().trim() != '-') ? parseInt($row2.text().trim()) : false,
+                        recipe_stars: parseInt($row2.find('.ic_recipe_star_02').length),
+                        item_level: ($row3.text().trim() != '-') ? parseInt($row3.text().trim()) : false,
+                    });
                 });
-            });
-        }
+            }
+
+            // selling npcs
+            if ($footer.find('h3').text() == 'Selling NPC')
+            {
+                data.selling = [];
+
+                $footer.find('table tbody tr').each(function() {
+                    var $row1 = $(this).find('td:nth-child(1)'),
+                        $row2 = $(this).find('td:nth-child(2)');
+
+                    data.selling.push({
+                        npc_name: $row1.find('a').text(),
+                        npc_link: $row1.find('a').attr('href'),
+                        npc_id: $row1.find('a').attr('href').split('/').clean('')[5],
+                        area_name: $row2.find('a').text(),
+                        area_link: $row2.find('a').attr('href'),
+                        area_id: parseInt($row2.find('a').attr('href').split('=').clean('')[2]),
+                        // area id matches in game ID
+                    });
+                });
+            }
+
+            // quests
+            if ($footer.find('h3').text() == 'Related Quests')
+            {
+                data.quests = [];
+
+                $footer.find('table tbody tr').each(function() {
+                    var $row1 = $(this).find('td:nth-child(1)'),
+                        $row2 = $(this).find('td:nth-child(2)'),
+                        $row3 = $(this).find('td:nth-child(3)');
+
+                    data.quests.push({
+                        kind_name: $row1.find('a:nth-child(1)').text(),
+                        kind_url: $row1.find('a:nth-child(1)').attr('href'),
+                        kind_id: parseInt($row1.find('a:nth-child(1)').attr('href').split('=').clean('')[1]),
+
+                        category_name: $row1.find('a:nth-child(2)').text(),
+                        category_url: $row1.find('a:nth-child(2)').attr('href'),
+                        category_id: parseInt($row1.find('a:nth-child(2)').attr('href').split('=').clean('')[2]),
+
+                        area_name: $row2.text(),
+                        level: parseInt($row3.text()),
+                    });
+                });
+            }
+        });
     },
 }
 
