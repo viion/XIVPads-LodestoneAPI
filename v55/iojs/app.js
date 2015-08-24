@@ -43,7 +43,7 @@ server.route(
     method: 'GET',
     path: '/',
     handler: function (request, reply) {
-        fs.readFile('/css/styles.css', 'utf8', function (err,data) {
+        fs.readFile('css/styles.css', 'utf8', function (err,data) {
             console.log(data);
             reply.view('index', {
                 css: data
