@@ -1,0 +1,17 @@
+var config =
+{
+    host: 'xivsync.com',
+    port: 443,
+
+    db:
+    {
+        host:   'localhost',
+        user:   'xivsync',
+        pass:   'xivsync',
+        table:  'xivsync',
+        debug:  false,
+    },
+}
+
+// Export it
+module.exports = config;

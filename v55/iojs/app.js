@@ -1,17 +1,32 @@
 // Setup
 var api = require('./api/api'),
+    config = require('./config'),
     hapi = require('hapi'),
+    path = require('path');
     server = new hapi.Server();
 
 // Server connections
 server.connection({
-    // host: 'xivsync.com',
-    port: 3000
+    host: config.host,
+    port: config.port,
+});
+
+// Register vision
+server.register(require('vision'), function (err) {
+    Hoek.assert(!err, err);
+    server.views({
+        engines: {
+            html: require('handlebars')
+        },
+        relativeTo: __dirname,
+        path: './views',
+    });
 });
 
 // - - - - - - - - - - - - - - - - - - - - - - - - -
 // Routes
 //
+//      / - home!
 //      /character/search/{name}
 //      /character/get/{id}
 //      /character/get/{id}/achievements/
@@ -21,6 +36,16 @@ server.connection({
 //      /item/get/{id}
 //
 // - - - - - - - - - - - - - - - - - - - - - - - - -
+
+// character search
+server.route(
+{
+    method: 'GET',
+    path: '/',
+    handler: function (request, reply) {
+        reply.view('index');
+    }
+});
 
 // character search
 server.route(
