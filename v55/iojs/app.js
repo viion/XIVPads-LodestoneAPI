@@ -44,6 +44,7 @@ server.route(
     path: '/',
     handler: function (request, reply) {
         fs.readFile('/css/styles.css', 'utf8', function (err,data) {
+            console.log(data);
             reply.view('index', {
                 css: data
             });
