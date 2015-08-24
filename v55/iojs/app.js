@@ -55,12 +55,12 @@ server.route(
 server.route(
 {
     method: 'GET',
-    path: '/character/search/{name}/{server?}',
+    path: '/character/search',
 
     handler: function (request, reply)
     {
-        var name = request.params.name,
-            server = request.params.server ? request.params.server : '';
+        var name = request.query.name ? request.query.name : '',
+            server = request.query.server ? request.params.server : '';
 
         api.reply = reply;
         api.searchCharacter(name, server);
