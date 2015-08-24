@@ -6,6 +6,7 @@ html, body {
     font-size: 16px;
     color: #333;
     line-height: 20px;
+    font-weight: 500;
 }
 body { margin: 50px 250px; margin-bottom: 300px; }
 hr {
@@ -21,6 +22,14 @@ a { text-decoration: none; color: #2979FF; }
 li { margin: 10px 0; }
 a:hover { color: #82B1FF; }
 em { color: #EF6C00; font-style: normal; }
+.help-text {
+    font-size: 13px;
+    color: #777;
+    margin: 5px 0 25px 0;
+    padding: 3px 10px;
+    border-radius: 50px;
+    border: solid 1px #eee;
+}
 </style>
 
 <h1>XIVSync API</h1>
@@ -37,6 +46,12 @@ em { color: #EF6C00; font-style: normal; }
 <h3><a href="/character/get/730968">/character/get/<em>{id}</em></a></h3>
 <ul>
     <li><strong>Example:</strong> &nbsp; <a href="/character/get/730968">/character/get/<em>730968</em></a></li>
+    <li><strong>Parameter:</strong> &nbsp; restrict - <a href="/character/get/730968?restrict=name,server">/character/get/<em>730968</em>?<em>restrict</em>=name,server</a>
+        <div class="help-text">Restricts the returned json to the specified columns.</div>
+    </li>
+    <li><strong>Parameter:</strong> &nbsp; ignore - <a href="/character/get/730968?ignore=minions,mounts">/character/get/<em>730968</em>?<em>ignore</em>=minions,mounts</a>
+        <div class="help-text">Ignores the specified columns from the returned json.</div>
+    </li>
 </ul>
 
 <hr>
