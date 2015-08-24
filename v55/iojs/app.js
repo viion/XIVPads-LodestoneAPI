@@ -123,11 +123,11 @@ server.route(
 server.route(
 {
     method: 'GET',
-    path: '/item/search/{name}',
+    path: '/item/search',
 
     handler: function (request, reply)
     {
-        var name = request.params.name;
+        var name = request.query.name ? request.query.name : '',
 
         api.reply = reply;
         api.searchItem(name);
