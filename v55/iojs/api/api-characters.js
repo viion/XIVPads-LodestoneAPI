@@ -219,7 +219,7 @@ var apiCharacters =
                 value = parseInt($(this).text().trim());
 
             data.stats.core[attribute.toLowerCase()] = {
-                abbr: attribute.toUpperCase(),
+                name: attribute.toUpperCase(),
                 value: value,
             };
         });
@@ -242,7 +242,7 @@ var apiCharacters =
             }
 
             data.stats.attributes[attribute.toLowerCase()] = {
-                abbr: attribute,
+                name: attribute,
                 //help: help,
                 value: value,
             };
@@ -259,7 +259,7 @@ var apiCharacters =
 
 
             data.stats.elemental[shortname] = {
-                abbr: attribute,
+                name: attribute,
                 //help: help,
                 value: value,
                 icon: icon,
@@ -277,7 +277,7 @@ var apiCharacters =
                     value = parseInt($(this).find('.right').text().trim());
 
                 data.stats.properties[shortname] = {
-                    abbr: attribute,
+                    name: attribute,
                     //help: help,
                     value: value,
                 };
@@ -293,7 +293,7 @@ var apiCharacters =
                 value = parseInt($(this).find('.right').text().trim());
 
             data.stats.resistances[shortname] = {
-                abbr: attribute,
+                name: attribute,
                 //help: help,
                 value: value,
             };
