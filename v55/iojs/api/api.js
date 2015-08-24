@@ -25,6 +25,13 @@ var api =
         return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
     },
 
+    ucwords: function(string)
+    {
+        return (string + '').replace(/^([a-z\u00E0-\u00FC])|\s+([a-z\u00E0-\u00FC])/g, function($1) {
+            return $1.toUpperCase();
+        });
+    },
+
     /**
      * Get html from a web page
      *

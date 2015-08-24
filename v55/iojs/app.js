@@ -60,7 +60,7 @@ server.route(
     handler: function (request, reply)
     {
         var name = request.query.name ? request.query.name : '',
-            server = request.query.server ? request.query.server : '';
+            server = request.query.server ? api.ucwords(request.query.server) : '';
 
         api.reply = reply;
         api.searchCharacter(name, server);
