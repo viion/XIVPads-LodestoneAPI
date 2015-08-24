@@ -21,9 +21,9 @@ var apiItems =
         return urls[type];
     },
 
-    getSearchResults: function($)
+    getSearch: function($)
     {
-        var items = [];
+        var data = [];
             $rows = $('.table_black #character tbody tr');
 
         // loop through search results
@@ -33,7 +33,7 @@ var apiItems =
             var link = $dom.find('.db_popup.highlight').attr('href');
                 item_id = link.split('/')[5];
 
-            items.push({
+            data.push({
                 id: item_id,
                 link: link,
                 name: $dom.find('td:nth-child(1) .db_popup.highlight').text(),
@@ -45,10 +45,10 @@ var apiItems =
             });
         });
 
-        return items;
+        return data;
     },
 
-    getItemData: function($)
+    getData: function($)
     {
         // detail box
         var $box = $('.item_detail_box');
@@ -188,6 +188,8 @@ var apiItems =
                 });
             }
         });
+
+        return data;
     },
 }
 
