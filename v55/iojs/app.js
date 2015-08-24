@@ -1,5 +1,6 @@
 // Setup
-var api = require('./api/api'),
+var fs = require('fs'),
+    api = require('./api/api'),
     config = require('./config'),
     hapi = require('hapi'),
     path = require('path');
@@ -42,7 +43,11 @@ server.route(
     method: 'GET',
     path: '/',
     handler: function (request, reply) {
-        reply.view('index');
+        fs.readFile('/css/styles.css', 'utf8', function (err,data) {
+            reply.view('index', {
+                css: data
+            });
+        });
     }
 });
 
