@@ -13,7 +13,6 @@ server.connection({
 
 // Register vision
 server.register(require('vision'), function (err) {
-    Hoek.assert(!err, err);
     server.views({
         engines: {
             html: require('handlebars')
