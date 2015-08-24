@@ -127,7 +127,7 @@ server.route(
 
     handler: function (request, reply)
     {
-        var name = request.query.name ? request.query.name : '',
+        var name = request.query.name ? request.query.name : '';
 
         api.reply = reply;
         api.searchItem(name);
