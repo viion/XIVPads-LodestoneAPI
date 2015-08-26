@@ -2,7 +2,8 @@ var cheerio = require('cheerio'),
     http = require('http'),
     apiItems = require('./api-items'),
     apiCharacters = require('./api-characters'),
-    apiAchievements = require('./api-achievements');
+    apiAchievements = require('./api-achievements'),
+    apiLodestone = require('./api-lodestone');
 
 // - - - - - - - - - - - - - - - - - - - -
 // Lodestone API
@@ -141,6 +142,24 @@ var api =
 
         api.get(apiAchievements.getUrl('achievement', id, kind), function($) {
             api.reply(apiAchievements.getData($));
+        });
+    },
+
+    getLodestoneSlidingBanners: function()
+    {
+        console.log('Getting lodestone sliding banners');
+
+        api.get(apiLodestone.getUrl('home'), function($) {
+            api.reply(apiLodestone.getSlidingBanners($));
+        });
+    },
+
+    getLodestoneTopics: function()
+    {
+        console.log('Getting lodestone topics');
+
+        api.get(apiLodestone.getUrl('home'), function($) {
+            api.reply(apiLodestone.getSlidingBanners($));
         });
     },
 }
