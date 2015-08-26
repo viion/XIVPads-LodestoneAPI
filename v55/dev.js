@@ -22,7 +22,11 @@ $.get('dev-html.html', function(data) {
     $('.dev').html(data);
     // - - - - - - - - - - - - - - - - - - - -
 
+    $('.table_elements_com_fc tr').each(function() {
+        $node = $(this);
 
+
+    });
 
     console.log(data);
 });
