@@ -1,3 +1,18 @@
+function timezone_info_from_op(op) {
+    var data;
+
+    switch ( op.method ) {
+        case 'serial':
+            data = timezone_info_by_serial(op);
+            break;
+        case 'point':
+            data = timezone_info_by_point(op);
+            break;
+    }
+
+    return data;
+}
+
 var apiLodestone =
 {
     getUrl: function(type, string, kind)
@@ -11,8 +26,7 @@ var apiLodestone =
             updates: '/lodestone/news/category/3/',
             status: '/lodestone/news/category/4/',
             community: '/lodestone/community/',
-            events: '/lodestone/event/?all_search=&search_type=event&q=',
-
+            events: '/lodestone/event/',
         }
 
         return urls[type];
@@ -75,7 +89,7 @@ var apiLodestone =
                 timestamp: parseInt($node.find('.ic_info script').html().trim().split('(')[2].split(',')[0].trim()),
                 icon: 'http://img.finalfantasyxiv.com/lds/pc/global/images/common/ic/news_info.png',
                 link: 'http://na.finalfantasyxiv.com' + $node.find('a').eq(0).attr('href').trim(),
-                title: $node.find('a').eq(0).text().trim(),
+                name: $node.find('a').eq(0).text().trim(),
             };
 
             post.date = new Date(post.timestamp * 1000).toString();
@@ -96,7 +110,7 @@ var apiLodestone =
                 timestamp: parseInt($node.find('.ic_maintenance script').html().trim().split('(')[2].split(',')[0].trim()),
                 icon: 'http://img.finalfantasyxiv.com/lds/pc/global/images/common/ic/news_maintenance.png',
                 link: 'http://na.finalfantasyxiv.com' + $node.find('a').eq(0).attr('href').trim(),
-                title: $node.find('a').eq(0).text().trim(),
+                name: $node.find('a').eq(0).text().trim(),
                 tag: $node.find('.tag').text().trim(),
             };
 
@@ -118,7 +132,7 @@ var apiLodestone =
                 timestamp: parseInt($node.find('.ic_update script').html().trim().split('(')[2].split(',')[0].trim()),
                 icon: 'http://img.finalfantasyxiv.com/lds/pc/global/images/common/ic/news_update.png',
                 link: 'http://na.finalfantasyxiv.com' + $node.find('a').eq(0).attr('href').trim(),
-                title: $node.find('a').eq(0).text().trim(),
+                name: $node.find('a').eq(0).text().trim(),
             };
 
             post.date = new Date(post.timestamp * 1000).toString();
@@ -129,7 +143,7 @@ var apiLodestone =
     },
 
     // The status page
-    getUpdates: function($)
+    getStatus: function($)
     {
         var data = [];
         $('.area_body dl.news_list').each(function() {
@@ -139,7 +153,7 @@ var apiLodestone =
                 timestamp: parseInt($node.find('.ic_obstacle script').html().trim().split('(')[2].split(',')[0].trim()),
                 icon: 'http://img.finalfantasyxiv.com/lds/pc/global/images/common/ic/news_obstacle.png',
                 link: 'http://na.finalfantasyxiv.com' + $node.find('a').eq(0).attr('href').trim(),
-                title: $node.find('a').eq(0).text().trim(),
+                name: $node.find('a').eq(0).text().trim(),
             };
 
             post.date = new Date(post.timestamp * 1000).toString();
@@ -176,19 +190,45 @@ var apiLodestone =
         return data;
     },
 
+
+    /**
+
+    ?timezone_info={"search_term":{"method":"serial","dt_times":[1440630000,{"skip":7}]},"left_limit":{"method":"point","epoch":1427328000,"year":2015,"month":3,"date":26},"next_end":{"method":"point","epoch":1441753200,"year":2015,"month":9,"date":9},"prev_end":{"method":"point","epoch":1440543600,"year":2015,"month":8,"date":26},"next_start":{"method":"point","epoch":1441234800,"year":2015,"month":9,"date":3},"prev_start":{"method":"point","epoch":1440025200,"year":2015,"month":8,"date":20},"right_limit":{"method":"point","epoch":1448496000,"year":2015,"month":11,"date":26}}&_=1440691503280
+
+     */
     // events page
     getEvents: function($)
     {
+        var json = JSON.parse($('.require_timezone_info').attr('data-require_timezone_info')),
+            url = $('.require_timezone_info').attr('data-require_uri');
+
+        var timezone_info = {};
+
+        $.each(json, function(key, val) {
+            timezone_info[key] = timezone_info_from_op(val);
+        });
+
+        json = JSON.stringify(timezone_info);
+
+        require('./api').get('/lodestone/event/?timezone_info=' + encodeURIComponent(json), function($) {
+            return apiLodestone.getEventTimetable($);
+        })
+    },
+
+    getEventTimetable: function($)
+    {
         var data = [];
-        $('#event_calendar .event_window_header').each(function() {
+        $('.open-event-list .event_window_body').each(function() {
             $node = $(this);
+
+            console.log('parsing event')
 
             var event = {
                 status: $node.find('.event_status img').attr('alt').trim(),
                 status_icon: $node.find('.event_status img').attr('src').trim(),
                 world: $node.find('.status-limited_world').text().trim(),
                 comments: parseInt($node.find('.comment').text().trim()),
-                title: $node.find('.event_title h2 a').text().trim(),
+                name: $node.find('.event_title h2 a').text().trim(),
                 url: 'http://na.finalfantasyxiv.com' + $node.find('.event_title h2 a').attr('href'),
                 settings: $node.find('.event_data tr').eq(1).find('td').eq(1).text().trim(),
                 apply: 'http://na.finalfantasyxiv.com' + $node.find('.event_data tr').eq(3).find('td').eq(0).find('.action a').attr('href'),
@@ -222,7 +262,7 @@ var apiLodestone =
                 $n = $(this);
 
                 event.tags.push({
-                    title: $n.text(),
+                    name: $n.text(),
                     link: $n.attr('href'),
                 });
             });
@@ -238,7 +278,8 @@ var apiLodestone =
         });
 
         return data;
-    }
+    },
+
 }
 
 // Export it

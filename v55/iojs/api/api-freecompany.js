@@ -1,29 +1,21 @@
-Array.prototype.clean = function(deleteValue) {
-    for (var i = 0; i < this.length; i++) {
-        if (this[i].trim() == deleteValue) {
-            this.splice(i, 1);
-            i--;
-        }
-    }
-    return this;
-};
-
 var apiFreecompany =
 {
-    getUrl: function(type, string, server)
+    getUrl: function(type, param1, param2)
     {
         var urls =
         {
-            search: '/lodestone/freecompany/?q={string}&worldname={server}'.replace('{string}', string).replace('{server}', server),
-            freecompany: '/lodestone/freecompany/{string}/'.replace('{string}', string),
+            freecompany: '/lodestone/freecompany/{param1}/'.replace('{param1}', param1),
+            search: '/lodestone/freecompany/?q={param1}&worldname={param2}'.replace('{param1}', param1).replace('{param2}', param2),
+            members: '/lodestone/freecompany/{param1}/member/?page={param2}'.replace('{param1}', param1).replace('{param2}', param2),
         }
 
         return urls[type];
     },
 
+    // get search results for a free company
     getSearch: function($)
     {
-        var data = [];
+        var results = [];
         $('.table_elements_com_fc tr').each(function() {
             $node = $(this);
 
@@ -39,12 +31,25 @@ var apiFreecompany =
                 server: $node.find('.player_name_area h4 span').text().replace('(', '').replace(')', '').trim(),
             };
 
-            data.push(freecompany);
+            results.push(freecompany);
         });
+
+        var data = {
+            paging: {
+                start: parseInt($('.current_list .show_start').eq(0).text().trim()),
+                end: parseInt($('.current_list .show_end').eq(0).text().trim()),
+                total: parseInt($('.current_list .total').eq(0).text().trim()),
+            },
+            error: $('.error_msg').length > 0 ? $('.error_msg').text().trim() : false,
+            results: results,
+        };
+
+        data.paging.pages = Math.ceil(data.paging.total / (data.paging.end - (data.paging.start - 1)));
 
         return data;
     },
 
+    // get a free company
     getData: function($, options)
     {
         var data = {
@@ -105,6 +110,49 @@ var apiFreecompany =
         data.formed_date = new Date(data.formed_timestamp * 1000).toString();
 
         return data;
+    },
+
+    // get members in a free company
+    getMembers: function($)
+    {
+        var results = [];
+        $('.table_black_border_bottom tr').each(function() {
+            $node = $(this);
+
+            var freecompany = {
+                id: parseInt($node.find('.thumb_cont_black_50 a').attr('href').split('/')[3]),
+                avatar: $node.find('.thumb_cont_black_50 img').attr('src').trim(),
+                name: $node.find('.player_name_area h4 a').text().trim(),
+                server: $node.find('.player_name_area span').text().replace('(', '').replace(')', '').trim(),
+                rank: {
+                    icon: $node.find('.fc_member_status img').attr('src').trim(),
+                    name: $node.find('.fc_member_status').text().trim(),
+                },
+                class: {
+                    icon: $node.find('.message_ic_box .ic_class img').attr('src').trim(),
+                    level: parseInt($node.find('.message_ic_box .ic_class .lv_class').text()),
+                },
+                grand_company: {
+                    icon: $node.find('.ic_gc img').attr('src').trim(),
+                    name: $node.find('.ic_gc div:last-child').text().split('/')[0].trim(),
+                    rank: $node.find('.ic_gc div:last-child').text().split('/')[1].trim(),
+                }
+            };
+
+            results.push(freecompany);
+        });
+
+        var data = {
+            paging: {
+                start: parseInt($('.current_list .show_start').eq(0).text().trim()),
+                end: parseInt($('.current_list .show_end').eq(0).text().trim()),
+                total: parseInt($('.current_list .total').eq(0).text().trim()),
+            },
+            error: $('.error_msg').length > 0 ? $('.error_msg').text().trim() : false,
+            results: results,
+        };
+
+        data.paging.pages = Math.ceil(data.paging.total / (data.paging.end - (data.paging.start - 1)));
     },
 }
 

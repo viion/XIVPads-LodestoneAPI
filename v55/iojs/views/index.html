@@ -1,84 +1,21 @@
-<title>XIVSync API</title>
-<link href='http://fonts.googleapis.com/css?family=Roboto:400,500,700,300' rel='stylesheet' type='text/css'>
-<style>
-html, body {
-    font-family: 'Roboto', sans-serif;
-    font-size: 16px;
-    color: #333;
-    line-height: 20px;
-    font-weight: 500;
-}
-body { margin: 50px 250px; margin-bottom: 300px; }
-hr {
-    height: 3px;
-    background-color: #eee;
-    border: none;
-    margin: 50px 0;
-}
-h1 { font-size: 50px; font-weight: 300; }
-h2 { font-size: 40px; font-weight: 400; margin-bottom: 40px; }
-h3 { font-size: 32px; font-weight: 300; }
-a { text-decoration: none; color: #2979FF; }
-li { margin: 10px 0; }
-a:hover { color: #82B1FF; }
-em { color: #EF6C00; font-style: normal; }
-.help-text {
-    font-size: 13px;
-    color: #777;
-    margin: 5px 0 25px 0;
-    padding: 3px 10px;
-    border-radius: 50px;
-    border: solid 1px #eee;
-}
-</style>
+<html>
+<head>
+    <title>XIVSync API</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha/js/bootstrap.min.js"></script>
+    <style>
+    section {
+        width: 720px;
+        margin: 30px auto 50px auto;
+    }
+    </style>
+</head>
+<body>
+    <section>
+        <h1>XIVSync API</h1>
+        <p>Server Location: Tokyo</p>
+        <hr>
 
-<h1>XIVSync API</h1>
-<p>Server Location: Tokyo</p>
-<hr>
-
-<h2>Character</h2>
-<h3><a href="/character/search">/character/search</a></h3>
-<ul>
-    <li><strong>Parameter:</strong> &nbsp; name - <a href="/character/search?name=premium">/character/search?<em>name</em>=premium</a></li>
-    <li><strong>Parameter:</strong> &nbsp; server - <a href="/character/search?server=adamantoise">/character/search?<em>server</em>=adamantoise</a></li>
-</ul>
-
-<h3><a href="/character/get/730968">/character/get/<em>{id}</em></a></h3>
-<ul>
-    <li><strong>Example:</strong> &nbsp; <a href="/character/get/730968">/character/get/<em>730968</em></a></li>
-    <li><strong>Parameter:</strong> &nbsp; restrict - <a href="/character/get/730968?restrict=name,server">/character/get/<em>730968</em>?<em>restrict</em>=name,server</a>
-        <div class="help-text">Restricts the returned json to the specified columns.</div>
-    </li>
-    <li><strong>Parameter:</strong> &nbsp; ignore - <a href="/character/get/730968?ignore=minions,mounts">/character/get/<em>730968</em>?<em>ignore</em>=minions,mounts</a>
-        <div class="help-text">Ignores the specified columns from the returned json.</div>
-    </li>
-</ul>
-
-<hr>
-
-<h2>Achievements</h2>
-<h3><a href="/character/get/730968/achievement">/character/get/<em>{id}</em>/achievements</a></h3>
-<p>This returns the "Summary" page.</p>
-<ul>
-    <li><strong>Example:</strong> &nbsp; <a href="/character/get/730968/achievements">/character/get/<em>730968</em>/achievements</a></li>
-</ul>
-
-<h3><a href="/character/get/730968/achievements/">/character/get/<em>{id}</em>/achievements/<em>{kind_id}</em></a></h3>
-<p><strong>ID List:</strong> 1 = battle, 2 = character, 4 = items, 5 = synthesis, 6 = gathering, 8 = quests, 11 = explore, 12 = grand company, 13 = legacy.</p>
-<p>Get achievements for a specific category.</p>
-<ul>
-    <li><strong>Example:</strong> &nbsp; <a href="/character/get/730968/achievements/2">/character/get/<em>730968</em>/achievements/<em>2</em></a></li>
-</ul>
-
-<hr>
-
-<h2>Items</h2>
-<h3><a href="/item/search?name=curtana">/item/search</a></h3>
-<ul>
-    <li><strong>Parameter:</strong> &nbsp; name - <a href="/item/search?name=curtana">/item/search?<em>name</em>=curtana</a></li>
-</ul>
-
-<h3><a href="/item/get/fe0462845fb">/item/get/<em>{id}</em></a></h3>
-<ul>
-    <li><strong>Example:</strong> &nbsp; <a href="/item/get/fe0462845fb">/item/get/<em>fe0462845fb</em></a></li>
-</ul>
+    </section>
+</body>

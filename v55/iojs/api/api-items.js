@@ -23,17 +23,14 @@ var apiItems =
 
     getSearch: function($)
     {
-        var data = [];
-            $rows = $('.table_black #character tbody tr');
-
-        // loop through search results
-        $rows.each(function() {
+        var results = [];
+        $('.table_black #character tbody tr').each(function() {
             $dom = $(this);
 
             var link = $dom.find('.db_popup.highlight').attr('href');
                 item_id = link.split('/')[5];
 
-            data.push({
+            results.push({
                 id: item_id,
                 link: link,
                 name: $dom.find('td:nth-child(1) .db_popup.highlight').text(),
@@ -44,6 +41,19 @@ var apiItems =
                 required_level: parseInt($dom.find('td:nth-child(3)').text()),
             });
         });
+
+        var data = {
+            paging: {
+                start: parseInt($('.current_list .show_start').eq(0).text().trim()),
+                end: parseInt($('.current_list .show_end').eq(0).text().trim()),
+                total: parseInt($('.current_list .total').eq(0).text().trim()),
+            },
+            version: $('.area_footer .right').text().split(':')[1].trim(),
+            error: $('.error_msg').length > 0 ? $('.error_msg').text().trim() : false,
+            results: results,
+        };
+
+        data.paging.pages = Math.ceil(data.paging.total / (data.paging.end - (data.paging.start - 1)));
 
         return data;
     },

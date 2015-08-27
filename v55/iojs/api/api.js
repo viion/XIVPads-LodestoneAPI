@@ -1,9 +1,13 @@
 var cheerio = require('cheerio'),
     http = require('http'),
+    functions = require('../functions'),
     apiItems = require('./api-items'),
     apiCharacters = require('./api-characters'),
     apiAchievements = require('./api-achievements'),
-    apiLodestone = require('./api-lodestone');
+    apiLodestone = require('./api-lodestone'),
+    apiFreecompany = require('./api-freecompany'),
+    apiLinkshell = require('./api-linkshell'),
+    apiStandings = require('./api-standings');
 
 // - - - - - - - - - - - - - - - - - - - -
 // Lodestone API
@@ -13,26 +17,6 @@ var api =
 {
     reply: null,
 
-    memory: function()
-    {
-        return process.memoryUsage().heapUsed;
-    },
-
-    memoryToHuman: function(bytes)
-    {
-        var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
-        if (bytes == 0) return '0 Byte';
-        var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
-        return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
-    },
-
-    ucwords: function(string)
-    {
-        return (string + '').replace(/^([a-z\u00E0-\u00FC])|\s+([a-z\u00E0-\u00FC])/g, function($1) {
-            return $1.toUpperCase();
-        });
-    },
-
     /**
      * Get html from a web page
      *
@@ -41,8 +25,6 @@ var api =
      */
     get: function(url, callback)
     {
-        console.log('Get Path:', url);
-
         var options = {
             host: 'eu.finalfantasyxiv.com',
             port: 80,
@@ -52,8 +34,9 @@ var api =
         // get
         var html = '',
             start = +new Date(),
-            memoryStart = api.memory();
+            memoryStart = functions.memory();
 
+        console.log('- URL: ' + options.host + options.path);
         console.log('- Start:', start);
 
         // request
@@ -68,12 +51,12 @@ var api =
                 // end time
                 var end = +new Date(),
                     duration = (end - start),
-                    memoryFinish = api.memory();
+                    memoryFinish = functions.memory();
 
                 console.log('- End:', end);
                 console.log('- Duration:', duration);
-                console.log('- memoryStart:', memoryStart, api.memoryToHuman(memoryStart));
-                console.log('- memoryFinish:', memoryFinish, api.memoryToHuman(memoryFinish));
+                console.log('- memoryStart:', memoryStart, functions.memoryToHuman(memoryStart));
+                console.log('- memoryFinish:', memoryFinish, functions.memoryToHuman(memoryFinish));
 
                 // callback with a cheerio assigned html
                 callback(cheerio.load(html));
@@ -105,8 +88,28 @@ var api =
         });
     },
 
+    // search for a freecompany
+    searchFreecompany: function(name, server)
+    {
+        console.log('Searching for freecompany:', name, server);
+
+        api.get(apiFreecompany.getUrl('search', name, server), function($) {
+            api.reply(apiFreecompany.getSearch($));
+        });
+    },
+
+    // search for a linkshell
+    searchLinkshell: function(name, server)
+    {
+        console.log('Searching for linkshell:', name, server);
+
+        api.get(apiLinkshell.getUrl('search', name, server), function($) {
+            api.reply(apiLinkshell.getSearch($));
+        });
+    },
+
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    // get stuff
+    // Database
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     getItem: function(id)
@@ -117,6 +120,10 @@ var api =
             api.reply(apiItems.getData($));
         });
     },
+
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    // Character
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     getCharacter: function(id, options)
     {
@@ -145,6 +152,45 @@ var api =
         });
     },
 
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    // Linkshells
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    getLinkshell: function(id, options)
+    {
+        console.log('Getting character for id:', id);
+
+        api.get(apiLinkshell.getUrl('linkshell', id), function($) {
+            api.reply(apiLinkshell.getData($, options));
+        });
+    },
+
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    // Free companies
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    getFreecompany: function(id, options)
+    {
+        console.log('Getting freecompany for id:', id);
+
+        api.get(apiFreecompany.getUrl('freecompany', id), function($) {
+            api.reply(apiFreecompany.getData($, options));
+        });
+    },
+
+    getFreecompanyMembers: function(id, options)
+    {
+        console.log('Getting freecompany members for id:', id);
+
+        api.get(apiFreecompany.getUrl('getMembers', id, 1), function($) {
+            api.reply(apiFreecompany.getData($, options));
+        });
+    },
+
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    // Lodestone
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
     getLodestoneSlidingBanners: function()
     {
         console.log('Getting lodestone sliding banners');
@@ -158,8 +204,62 @@ var api =
     {
         console.log('Getting lodestone topics');
 
-        api.get(apiLodestone.getUrl('home'), function($) {
-            api.reply(apiLodestone.getSlidingBanners($));
+        api.get(apiLodestone.getUrl('topics'), function($) {
+            api.reply(apiLodestone.getTopics($));
+        });
+    },
+
+    getLodestoneNotices: function()
+    {
+        console.log('Getting lodestone topics');
+
+        api.get(apiLodestone.getUrl('notices'), function($) {
+            api.reply(apiLodestone.getNotices($));
+        });
+    },
+
+    getLodestoneMaintenance: function()
+    {
+        console.log('Getting lodestone topics');
+
+        api.get(apiLodestone.getUrl('maintenance'), function($) {
+            api.reply(apiLodestone.getMaintenance($));
+        });
+    },
+
+    getLodestoneUpdates: function()
+    {
+        console.log('Getting lodestone topics');
+
+        api.get(apiLodestone.getUrl('updates'), function($) {
+            api.reply(apiLodestone.getUpdates($));
+        });
+    },
+
+    getLodestoneStatus: function()
+    {
+        console.log('Getting lodestone topics');
+
+        api.get(apiLodestone.getUrl('status'), function($) {
+            api.reply(apiLodestone.getStatus($));
+        });
+    },
+
+    getLodestoneCommunity: function()
+    {
+        console.log('Getting lodestone topics');
+
+        api.get(apiLodestone.getUrl('community'), function($) {
+            api.reply(apiLodestone.getCommunity($));
+        });
+    },
+
+    getLodestoneEvents: function()
+    {
+        console.log('Getting lodestone topics');
+
+        api.get(apiLodestone.getUrl('events'), function($) {
+            api.reply(apiLodestone.getEvents($));
         });
     },
 }

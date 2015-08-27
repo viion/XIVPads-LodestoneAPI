@@ -2,6 +2,7 @@
 var fs = require('fs'),
     api = require('./api/api'),
     config = require('./config'),
+    functions = require('./functions'),
     hapi = require('hapi'),
     path = require('path');
     server = new hapi.Server();
@@ -20,6 +21,7 @@ server.register(require('vision'), function (err) {
         },
         relativeTo: __dirname,
         path: './views',
+        isCached: false,
     });
 });
 
@@ -37,19 +39,44 @@ server.register(require('vision'), function (err) {
 //
 // - - - - - - - - - - - - - - - - - - - - - - - - -
 
-// character search
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// Database
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+// item search
 server.route(
 {
     method: 'GET',
-    path: '/',
-    handler: function (request, reply) {
-        fs.readFile('css/styles.css', 'utf8', function (err,data) {
-            reply.view('index', {
-                css: data
-            });
-        });
+    path: '/item/search',
+
+    handler: function (request, reply)
+    {
+        var name = request.query.name ? request.query.name : '';
+
+        api.reply = reply;
+        api.searchItem(name);
+
     }
 });
+
+// item get
+server.route(
+{
+    method: 'GET',
+    path: '/item/get/{id}',
+
+    handler: function (request, reply)
+    {
+        var id = request.params.id;
+
+        api.reply = reply;
+        api.getItem(id);
+    }
+});
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// Character
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 // character search
 server.route(
@@ -60,7 +87,7 @@ server.route(
     handler: function (request, reply)
     {
         var name = request.query.name ? request.query.name : '',
-            server = request.query.server ? api.ucwords(request.query.server) : '';
+            server = request.query.server ? functions.ucwords(request.query.server) : '';
 
         api.reply = reply;
         api.searchCharacter(name, server);
@@ -119,37 +146,195 @@ server.route(
     }
 });
 
-// item search
+// character search
 server.route(
 {
     method: 'GET',
-    path: '/item/search',
+    path: '/',
+    handler: function (request, reply) {
+        fs.readFile('css/styles.css', 'utf8', function (err,data) {
+            reply.view('index', {
+                css: data
+            });
+        });
+    }
+});
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// Freecompany
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+// freecompany search
+server.route(
+{
+    method: 'GET',
+    path: '/freecompany/search',
 
     handler: function (request, reply)
     {
-        var name = request.query.name ? request.query.name : '';
+        var name = request.query.name ? request.query.name : '',
+            server = request.query.server ? functions.ucwords(request.query.server) : '';
 
         api.reply = reply;
-        api.searchItem(name);
+        api.searchFreecompany(name, server);
 
     }
 });
 
-// item get
+// freecompany get
 server.route(
 {
     method: 'GET',
-    path: '/item/get/{id}',
+    path: '/freecompany/get/{id}',
 
     handler: function (request, reply)
     {
         var id = request.params.id;
 
         api.reply = reply;
-        api.getItem(id);
+        api.getFreecompany(id);
+
     }
 });
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// Linkshell
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+// linkshell search
+server.route(
+{
+    method: 'GET',
+    path: '/linkshell/search',
+
+    handler: function (request, reply)
+    {
+        var name = request.query.name ? request.query.name : '',
+            server = request.query.server ? functions.ucwords(request.query.server) : '';
+
+        api.reply = reply;
+        api.searchLinkshell(name, server);
+
+    }
+});
+
+// linkshell get
+server.route(
+{
+    method: 'GET',
+    path: '/linkshell/get/{id}',
+
+    handler: function (request, reply)
+    {
+        var id = request.params.id;
+
+        api.reply = reply;
+        api.getLinkshell(id);
+    }
+});
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// Lodestone
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+server.route(
+{
+    method: 'GET',
+    path: '/lodestone/banners',
+
+    handler: function (request, reply)
+    {
+        api.reply = reply;
+        api.getLodestoneSlidingBanners();
+    }
+});
+
+server.route(
+{
+    method: 'GET',
+    path: '/lodestone/topics',
+
+    handler: function (request, reply)
+    {
+        api.reply = reply;
+        api.getLodestoneTopics();
+    }
+});
+
+server.route(
+{
+    method: 'GET',
+    path: '/lodestone/notices',
+
+    handler: function (request, reply)
+    {
+        api.reply = reply;
+        api.getLodestoneNotices();
+    }
+});
+
+server.route(
+{
+    method: 'GET',
+    path: '/lodestone/maintenance',
+
+    handler: function (request, reply)
+    {
+        api.reply = reply;
+        api.getLodestoneMaintenance();
+    }
+});
+
+server.route(
+{
+    method: 'GET',
+    path: '/lodestone/updates',
+
+    handler: function (request, reply)
+    {
+        api.reply = reply;
+        api.getLodestoneUpdates();
+    }
+});
+
+server.route(
+{
+    method: 'GET',
+    path: '/lodestone/status',
+
+    handler: function (request, reply)
+    {
+        api.reply = reply;
+        api.getLodestoneStatus();
+    }
+});
+
+server.route(
+{
+    method: 'GET',
+    path: '/lodestone/community',
+
+    handler: function (request, reply)
+    {
+        api.reply = reply;
+        api.getLodestoneCommunity();
+    }
+});
+
+server.route(
+{
+    method: 'GET',
+    path: '/lodestone/events',
+
+    handler: function (request, reply)
+    {
+        api.reply = reply;
+        api.getLodestoneEvents();
+    }
+});
+
+
+// start
 server.start(function () {
     console.log('Server running at:', server.info.uri);
 });

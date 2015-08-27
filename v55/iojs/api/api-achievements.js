@@ -1,11 +1,11 @@
 var apiAchievements =
 {
-    getUrl: function(type, string, kind)
+    getUrl: function(type, param1, param2)
     {
         var urls =
         {
-            summary: '/lodestone/character/{string}/achievement/'.replace('{string}', string),
-            achievement: '/lodestone/character/{string}/achievement/kind/{kind}/'.replace('{string}', string).replace('{kind}', kind),
+            summary: '/lodestone/character/{param1}/achievement/'.replace('{param1}', param1),
+            achievement: '/lodestone/character/{param1}/achievement/kind/{param2}/'.replace('{param1}', param1).replace('{param2}', param2),
         }
 
         return urls[type];

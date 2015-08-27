@@ -10,12 +10,12 @@ Array.prototype.clean = function(deleteValue) {
 
 var apiCharacters =
 {
-    getUrl: function(type, string, server)
+    getUrl: function(type, param1, param2)
     {
         var urls =
         {
-            search: '/lodestone/character/?q={string}&worldname={server}'.replace('{string}', string).replace('{server}', server),
-            character: '/lodestone/character/{string}/'.replace('{string}', string),
+            character: '/lodestone/character/{param1}/'.replace('{param1}', param1),
+            search: '/lodestone/character/?q={param1}&worldname={param2}'.replace('{param1}', param1).replace('{param2}', param2),
         }
 
         return urls[type];
@@ -23,10 +23,8 @@ var apiCharacters =
 
     getSearch: function($)
     {
-        var data = [];
-            $rows = $('.table_black_border_bottom table tr');
-
-        $rows.each(function() {
+        var results = [];
+        $('.table_black_border_bottom table tr').each(function() {
             $node = $(this);
 
             var character = {
@@ -43,12 +41,11 @@ var apiCharacters =
             }
 
             // grand company
-            if ($node.find('.col3box .col3box_center').html().length > 0) {
-                $gc = $node.find('.col3box .col3box_center');
+            if ($node.find('.col3box .col3box_center').text().trim().length > 0) {
                 character.grand_company = {
-                    icon: $gc.find('img').attr('src'),
-                    name: $gc.find('div').eq(1).text().split('/')[0],
-                    rank: $gc.find('div').eq(1).text().split('/')[1],
+                    icon: $node.find('.col3box .col3box_center').find('img').attr('src'),
+                    name: $node.find('.col3box .col3box_center').find('div').eq(1).text().split('/')[0],
+                    rank: $node.find('.col3box .col3box_center').find('div').eq(1).text().split('/')[1],
                 }
             }
 
@@ -66,8 +63,20 @@ var apiCharacters =
                 }
             }
 
-            data.push(character);
+            results.push(character);
         });
+
+        var data = {
+            paging: {
+                start: parseInt($('.current_list .show_start').eq(0).text().trim()),
+                end: parseInt($('.current_list .show_end').eq(0).text().trim()),
+                total: parseInt($('.current_list .total').eq(0).text().trim()),
+            },
+            error: $('.error_msg').length > 0 ? $('.error_msg').text().trim() : false,
+            results: results,
+        };
+
+        data.paging.pages = Math.ceil(data.paging.total / (data.paging.end - (data.paging.start - 1)));
 
         return data;
     },
