@@ -29,10 +29,10 @@ server.register(require('vision'), function (err) {
 // Routes
 //
 //      / - home!
-//      /character/search/{name}
-//      /character/get/{id}
-//      /character/get/{id}/achievements/
-//      /character/get/{id}/achievements/{kind}
+//      /characters/search/{name}
+//      /characters/get/{id}
+//      /characters/get/{id}/achievements/
+//      /characters/get/{id}/achievements/{kind}
 //
 //      /item/search/{name}
 //      /item/get/{id}
@@ -40,10 +40,8 @@ server.register(require('vision'), function (err) {
 // - - - - - - - - - - - - - - - - - - - - - - - - -
 
 // home
-server.route(
-{
-    method: 'GET',
-    path: '/',
+server.route({
+    method: 'GET', path: '/',
     handler: function (request, reply) {
         fs.readFile('views/styles.css', 'utf8', function (err,data) {
             reply.view('index', { css: data });
@@ -51,41 +49,81 @@ server.route(
     }
 });
 
+// characters
+server.route({
+    method: 'GET', path: '/characters',
+    handler: function (request, reply) {
+        fs.readFile('views/styles.css', 'utf8', function (err,data) {
+            reply.view('characters', { css: data });
+        });
+    }
+});
+
+// freecompany
+server.route({
+    method: 'GET', path: '/freecompany',
+    handler: function (request, reply) {
+        fs.readFile('views/styles.css', 'utf8', function (err,data) {
+            reply.view('freecompany', { css: data });
+        });
+    }
+});
+
+// linkshells
+server.route({
+    method: 'GET', path: '/linkshells',
+    handler: function (request, reply) {
+        fs.readFile('views/styles.css', 'utf8', function (err,data) {
+            reply.view('linkshells', { css: data });
+        });
+    }
+});
+
+// database
+server.route({
+    method: 'GET', path: '/database',
+    handler: function (request, reply) {
+        fs.readFile('views/styles.css', 'utf8', function (err,data) {
+            reply.view('database', { css: data });
+        });
+    }
+});
+
+// lodestone
+server.route({
+    method: 'GET', path: '/lodestone',
+    handler: function (request, reply) {
+        fs.readFile('views/styles.css', 'utf8', function (err,data) {
+            reply.view('lodestone', { css: data });
+        });
+    }
+});
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // Database
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 // item search
-server.route(
-{
-    method: 'GET',
-    path: '/item/search',
-
-    handler: function (request, reply)
-    {
+server.route({
+    method: 'GET', path: '/database/item/search',
+    handler: function (request, reply) {
         var name = request.query.name ? request.query.name : '';
 
         api.setLanguage(request.query.language);
-        api.setReply(reply);
-        api.searchItem(name);
-
+        api.searchItem(reply, {
+            name: name
+        });
     }
 });
 
 // item get
-server.route(
-{
-    method: 'GET',
-    path: '/item/get/{id}',
-
-    handler: function (request, reply)
-    {
-        var id = request.params.id;
-
+server.route({
+    method: 'GET', path: '/database/item/get/{id}',
+    handler: function (request, reply) {
         api.setLanguage(request.query.language);
-        api.setReply(reply);
-        api.getItem(id);
+        api.getItem(reply, {
+            id: request.params.id,
+        });
     }
 });
 
@@ -94,35 +132,26 @@ server.route(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 // character search
-server.route(
-{
-    method: 'GET',
-    path: '/character/search',
-
-    handler: function (request, reply)
-    {
+server.route({
+    method: 'GET', path: '/characters/search',
+    handler: function (request, reply) {
         var name = request.query.name ? request.query.name : '',
             server = request.query.server ? functions.ucwords(request.query.server) : '';
 
         api.setLanguage(request.query.language);
-        api.setReply(reply);
-        api.searchCharacter(name, server);
+        api.searchCharacter(reply, {
+            name: name, server: server
+        });
     }
 });
 
 // character get
-server.route(
-{
-    method: 'GET',
-    path: '/character/get/{id}',
-
-    handler: function (request, reply)
-    {
-        var id = request.params.id;
-
+server.route({
+    method: 'GET', path: '/characters/get/{id}',
+    handler: function (request, reply) {
         api.setLanguage(request.query.language);
-        api.setReply(reply);
-        api.getCharacter(id, {
+        api.getCharacter(reply, {
+            id: request.params.id,
             ignore: request.query.ignore,
             restrict: request.query.restrict,
         });
@@ -130,35 +159,26 @@ server.route(
 });
 
 // achievement summary
-server.route(
-{
-    method: 'GET',
-    path: '/character/get/{id}/achievements',
-
-    handler: function (request, reply)
-    {
-        var id = request.params.id;
-
+server.route({
+    method: 'GET', path: '/characters/get/{id}/achievements',
+    handler: function (request, reply) {
         api.setLanguage(request.query.language);
-        api.setReply(reply);
-        api.getAchievementSummary(id);
+        api.getAchievementSummary(reply, {
+            id: request.params.id,
+        });
     }
 });
 
 // achievement get
-server.route(
-{
+server.route({
     method: 'GET',
-    path: '/character/get/{id}/achievements/{kind}',
-
-    handler: function (request, reply)
-    {
-        var id = request.params.id,
-            kind = request.params.kind;
-
+    path: '/characters/get/{id}/achievements/{kind}',
+    handler: function (request, reply) {
         api.setLanguage(request.query.language);
-        api.setReply(reply);
-        api.getAchievements(id, kind);
+        api.getAchievements(reply, {
+            id: request.params.id,
+            kind: request.params.kind
+        });
     }
 });
 
@@ -167,36 +187,29 @@ server.route(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 // freecompany search
-server.route(
-{
-    method: 'GET',
-    path: '/freecompany/search',
-
-    handler: function (request, reply)
-    {
+server.route({
+    method: 'GET', path: '/freecompany/search',
+    handler: function (request, reply) {
         var name = request.query.name ? request.query.name : '',
             server = request.query.server ? functions.ucwords(request.query.server) : '';
 
         api.setLanguage(request.query.language);
-        api.setReply(reply);
-        api.searchFreecompany(name, server);
+        api.searchFreecompany(reply, {
+            name: name,
+            server: server,
+        });
 
     }
 });
 
 // freecompany get
-server.route(
-{
-    method: 'GET',
-    path: '/freecompany/get/{id}',
-
-    handler: function (request, reply)
-    {
-        var id = request.params.id;
-
+server.route({
+    method: 'GET', path: '/freecompany/get/{id}',
+    handler: function (request, reply) {
         api.setLanguage(request.query.language);
-        api.setReply(reply);
-        api.getFreecompany(id);
+        api.getFreecompany(reply, {
+            id: request.params.id
+        });
 
     }
 });
@@ -206,36 +219,29 @@ server.route(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 // linkshell search
-server.route(
-{
-    method: 'GET',
-    path: '/linkshell/search',
-
-    handler: function (request, reply)
-    {
+server.route({
+    method: 'GET', path: '/linkshells/search',
+    handler: function (request, reply) {
         var name = request.query.name ? request.query.name : '',
             server = request.query.server ? functions.ucwords(request.query.server) : '';
 
         api.setLanguage(request.query.language);
-        api.setReply(reply);
-        api.searchLinkshell(name, server);
+        api.searchLinkshell(reply, {
+            name: name,
+            server: server,
+        });
 
     }
 });
 
 // linkshell get
-server.route(
-{
-    method: 'GET',
-    path: '/linkshell/get/{id}',
-
-    handler: function (request, reply)
-    {
-        var id = request.params.id;
-
+server.route({
+    method: 'GET', path: '/linkshells/get/{id}',
+    handler: function (request, reply) {
         api.setLanguage(request.query.language);
-        api.setReply(reply);
-        api.getLinkshell(id);
+        api.getLinkshell(reply, {
+            id: request.params.id,
+        });
     }
 });
 
@@ -243,112 +249,75 @@ server.route(
 // Lodestone
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-server.route(
-{
-    method: 'GET',
-    path: '/lodestone/banners',
-
-    handler: function (request, reply)
-    {
+server.route({
+    method: 'GET', path: '/lodestone/banners',
+    handler: function (request, reply) {
         api.setLanguage(request.query.language);
-        api.setReply(reply);
-        api.getLodestoneSlidingBanners();
+        api.getLodestoneSlidingBanners(reply);
     }
 });
 
-server.route(
-{
-    method: 'GET',
-    path: '/lodestone/topics',
-
-    handler: function (request, reply)
-    {
+server.route({
+    method: 'GET', path: '/lodestone/topics',
+    handler: function (request, reply) {
         api.setLanguage(request.query.language);
-        api.setReply(reply);
-        api.getLodestoneTopics();
+        api.getLodestoneTopics(reply);
     }
 });
 
-server.route(
-{
-    method: 'GET',
-    path: '/lodestone/notices',
-
-    handler: function (request, reply)
-    {
+server.route({
+    method: 'GET', path: '/lodestone/notices',
+    handler: function (request, reply) {
         api.setLanguage(request.query.language);
-        api.setReply(reply);
-        api.getLodestoneNotices();
+        api.getLodestoneNotices(reply);
     }
 });
 
-server.route(
-{
-    method: 'GET',
-    path: '/lodestone/maintenance',
-
-    handler: function (request, reply)
-    {
+server.route({
+    method: 'GET',path: '/lodestone/maintenance',
+    handler: function (request, reply) {
         api.setLanguage(request.query.language);
-        api.setReply(reply);
-        api.getLodestoneMaintenance();
+        api.getLodestoneMaintenance(reply);
     }
 });
 
-server.route(
-{
-    method: 'GET',
-    path: '/lodestone/updates',
-
-    handler: function (request, reply)
-    {
+server.route({
+    method: 'GET', path: '/lodestone/updates',
+    handler: function (request, reply) {
         api.setLanguage(request.query.language);
-        api.setReply(reply);
-        api.getLodestoneUpdates();
+        api.getLodestoneUpdates(reply);
     }
 });
 
-server.route(
-{
-    method: 'GET',
-    path: '/lodestone/status',
-
-    handler: function (request, reply)
-    {
+server.route({
+    method: 'GET', path: '/lodestone/status',
+    handler: function (request, reply) {
         api.setLanguage(request.query.language);
-        api.setReply(reply);
-        api.getLodestoneStatus();
+        api.getLodestoneStatus(reply);
     }
 });
 
-server.route(
-{
-    method: 'GET',
-    path: '/lodestone/community',
-
-    handler: function (request, reply)
-    {
+server.route({
+    method: 'GET', path: '/lodestone/community',
+    handler: function (request, reply) {
         api.setLanguage(request.query.language);
-        api.setReply(reply);
-        api.getLodestoneCommunity();
+        api.getLodestoneCommunity(reply);
     }
 });
 
-server.route(
-{
-    method: 'GET',
-    path: '/lodestone/events',
-
-    handler: function (request, reply)
-    {
+server.route({
+    method: 'GET', path: '/lodestone/events',
+    handler: function (request, reply) {
         api.setLanguage(request.query.language);
-        api.setReply(reply);
-        api.getLodestoneEvents();
+        api.getLodestoneEvents(reply);
     }
 });
 
 
-// start
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// Start
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 server.start(function () {
     console.log('Server running at:', server.info.uri);
 });

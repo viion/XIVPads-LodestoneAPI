@@ -16,14 +16,13 @@ var cheerio = require('cheerio'),
 
 var api =
 {
-    reply: null,
     language: 'na',
 
     /**
      * Get html from a web page
      *
      * @param url - url for options for http.get
-     * @param callback - function to callback on
+     * @param reply - function to callback on
      */
     get: function(url, callback)
     {
@@ -67,7 +66,6 @@ var api =
         });
     },
 
-
     // Set the language for lodestone
     setLanguage: function(lang)
     {
@@ -84,53 +82,39 @@ var api =
         apiStandings.setLodestoneLanguage(lang);
     },
 
-    // Set the reply response
-    setReply: function(reply)
-    {
-        api.reply = reply;
-    },
-
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     // search stuff
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     // search for a character
-    searchCharacter: function(name, server)
-    {
-        console.log('Searching for character:', name, server);
-
-        api.get(apiCharacters.getUrl('search', name, server), function($) {
-            api.reply(apiCharacters.getSearch($));
+    searchCharacter: function(reply, options) {
+        console.log('- searchCharacter', options);
+        api.get(apiCharacters.getUrl('search', options.name, options.server), function($) {
+            reply(apiCharacters.getSearch($));
         });
     },
 
     // search for an item
-    searchItem: function(name)
-    {
-        console.log('Searching for item:', name);
-
-        api.get(apiItems.getUrl('search', name), function($) {
-            api.reply(apiItems.getSearch($));
+    searchItem: function(reply, options) {
+        console.log('- searchItem', options);
+        api.get(apiItems.getUrl('search', options.name), function($) {
+            reply(apiItems.getSearch($));
         });
     },
 
     // search for a freecompany
-    searchFreecompany: function(name, server)
-    {
-        console.log('Searching for freecompany:', name, server);
-
-        api.get(apiFreecompany.getUrl('search', name, server), function($) {
-            api.reply(apiFreecompany.getSearch($));
+    searchFreecompany: function(reply, options) {
+        console.log('- searchFreecompany', options);
+        api.get(apiFreecompany.getUrl('search', options.name, options.server), function($) {
+            reply(apiFreecompany.getSearch($));
         });
     },
 
     // search for a linkshell
-    searchLinkshell: function(name, server)
-    {
-        console.log('Searching for linkshell:', name, server);
-
-        api.get(apiLinkshell.getUrl('search', name, server), function($) {
-            api.reply(apiLinkshell.getSearch($));
+    searchLinkshell: function(reply, options) {
+        console.log('- searchLinkshell', options);
+        api.get(apiLinkshell.getUrl('search', options.name, options.server), function($) {
+            reply(apiLinkshell.getSearch($));
         });
     },
 
@@ -138,12 +122,10 @@ var api =
     // Database
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    getItem: function(id)
-    {
+    getItem: function(reply, options) {
         console.log('Getting item for id:', id);
-
-        api.get(apiItems.getUrl('item', id), function($) {
-            api.reply(apiItems.getData($));
+        api.get(apiItems.getUrl('item', options.id), function($) {
+            reply(apiItems.getData($));
         });
     },
 
@@ -151,30 +133,24 @@ var api =
     // Character
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    getCharacter: function(id, options)
-    {
-        console.log('Getting character for id:', id);
-
-        api.get(apiCharacters.getUrl('character', id), function($) {
-            api.reply(apiCharacters.getData($, options));
+    getCharacter: function(reply, options) {
+        console.log('- getCharacter', options);
+        api.get(apiCharacters.getUrl('character', options.id), function($) {
+            reply(apiCharacters.getData($, options));
         });
     },
 
-    getAchievementSummary: function(id)
-    {
-        console.log('Getting achievements summary for id:', id);
-
-        api.get(apiAchievements.getUrl('summary', id), function($) {
-            api.reply(apiAchievements.getSummary($));
+    getAchievementSummary: function(reply, options) {
+        console.log('- getAchievementSummary', options);
+        api.get(apiAchievements.getUrl('summary', options.id), function($) {
+            reply(apiAchievements.getSummary($));
         });
     },
 
-    getAchievements: function(id, kind)
-    {
-        console.log('Getting achievements for id:', id, ', kind:', kind);
-
-        api.get(apiAchievements.getUrl('achievement', id, kind), function($) {
-            api.reply(apiAchievements.getData($));
+    getAchievements: function(reply, options) {
+        console.log('- getAchievements', options);
+        api.get(apiAchievements.getUrl('achievement', options.id, options.kind), function($) {
+            reply(apiAchievements.getData($));
         });
     },
 
@@ -182,12 +158,10 @@ var api =
     // Linkshells
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    getLinkshell: function(id, options)
-    {
-        console.log('Getting character for id:', id);
-
-        api.get(apiLinkshell.getUrl('linkshell', id), function($) {
-            api.reply(apiLinkshell.getData($, options));
+    getLinkshell: function(reply, options) {
+        console.log('- getLinkshell', options);
+        api.get(apiLinkshell.getUrl('linkshell', options.id), function($) {
+            reply(apiLinkshell.getData($, options));
         });
     },
 
@@ -195,21 +169,17 @@ var api =
     // Free companies
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    getFreecompany: function(id, options)
-    {
-        console.log('Getting freecompany for id:', id);
-
-        api.get(apiFreecompany.getUrl('freecompany', id), function($) {
-            api.reply(apiFreecompany.getData($, options));
+    getFreecompany: function(reply, options) {
+        console.log('- getFreecompany', options);
+        api.get(apiFreecompany.getUrl('freecompany', options.id), function($) {
+            reply(apiFreecompany.getData($, options));
         });
     },
 
-    getFreecompanyMembers: function(id, options)
-    {
-        console.log('Getting freecompany members for id:', id);
-
-        api.get(apiFreecompany.getUrl('getMembers', id, 1), function($) {
-            api.reply(apiFreecompany.getData($, options));
+    getFreecompanyMembers: function(reply, options) {
+        console.log('- getFreecompanyMembers', options);
+        api.get(apiFreecompany.getUrl('getMembers', options.id, options.page), function($) {
+            reply(apiFreecompany.getData($, options));
         });
     },
 
@@ -217,80 +187,64 @@ var api =
     // Lodestone
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    getLodestoneSlidingBanners: function()
-    {
-        console.log('Getting lodestone sliding banners');
-
+    getLodestoneSlidingBanners: function(reply, options) {
+        console.log('- getLodestoneSlidingBanners', options);
         api.get(apiLodestone.getUrl('home'), function($) {
-            api.reply(apiLodestone.getSlidingBanners($));
+            reply(apiLodestone.getSlidingBanners($));
         });
     },
 
-    getLodestoneTopics: function()
-    {
-        console.log('Getting lodestone topics');
-
+    getLodestoneTopics: function(reply, options) {
+        console.log('- getLodestoneTopics', options);
         api.get(apiLodestone.getUrl('topics'), function($) {
-            api.reply(apiLodestone.getTopics($));
+            reply(apiLodestone.getTopics($));
         });
     },
 
-    getLodestoneNotices: function()
-    {
-        console.log('Getting lodestone topics');
-
+    getLodestoneNotices: function(reply, options) {
+        console.log('- getLodestoneNotices', options);
         api.get(apiLodestone.getUrl('notices'), function($) {
-            api.reply(apiLodestone.getNotices($));
+            reply(apiLodestone.getNotices($));
         });
     },
 
-    getLodestoneMaintenance: function()
-    {
-        console.log('Getting lodestone topics');
-
+    getLodestoneMaintenance: function(reply, options) {
+        console.log('- getLodestoneMaintenance', options);
         api.get(apiLodestone.getUrl('maintenance'), function($) {
-            api.reply(apiLodestone.getMaintenance($));
+            reply(apiLodestone.getMaintenance($));
         });
     },
 
-    getLodestoneUpdates: function()
-    {
-        console.log('Getting lodestone topics');
-
+    getLodestoneUpdates: function(reply, options) {
+        console.log('- getLodestoneUpdates', options);
         api.get(apiLodestone.getUrl('updates'), function($) {
-            api.reply(apiLodestone.getUpdates($));
+            reply(apiLodestone.getUpdates($));
         });
     },
 
-    getLodestoneStatus: function()
-    {
-        console.log('Getting lodestone topics');
-
+    getLodestoneStatus: function(reply, options) {
+        console.log('- getLodestoneStatus', options);
         api.get(apiLodestone.getUrl('status'), function($) {
-            api.reply(apiLodestone.getStatus($));
+            reply(apiLodestone.getStatus($));
         });
     },
 
-    getLodestoneCommunity: function()
-    {
-        console.log('Getting lodestone topics');
-
+    getLodestoneCommunity: function(reply, options) {
+        console.log('- getLodestoneCommunity', options);
         api.get(apiLodestone.getUrl('community'), function($) {
-            api.reply(apiLodestone.getCommunity($));
+            reply(apiLodestone.getCommunity($));
         });
     },
 
-    getLodestoneEvents: function()
-    {
-        console.log('Getting lodestone topics');
-
+    getLodestoneEvents: function(reply, options) {
+        console.log('- getLodestoneEvents', options);
         api.get(apiLodestone.getUrl('events'), function($) {
             // get events url
             apiLodestone.getEventsUrl($, function(url) {
                 // get events
                 api.get(url, function($) {
                     // parse events
-                    api.reply(apiLodestone.getEvents($));
+                    reply(apiLodestone.getEvents($));
                 });
             });
         });
