@@ -10,12 +10,19 @@ Array.prototype.clean = function(deleteValue) {
 
 var apiItems =
 {
+    // set the lodestone language
+    setLodestoneLanguage: function(lang) {
+        if (typeof config !== 'undefined') {
+            config.setLodestoneLanguage(lang);
+        }
+    },
+
     getUrl: function(type, string) {
 
         var urls =
         {
             search: '/lodestone/playguide/db/item/?db_search_category=item&category2=&q={string}'.replace('{string}', string),
-            item: 'http://eu.finalfantasyxiv.com/lodestone/playguide/db/item/{string}/'.replace('{string}', string),
+            item: '/lodestone/playguide/db/item/{string}/'.replace('{string}', string),
         }
 
         return urls[type];

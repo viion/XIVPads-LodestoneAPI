@@ -1,5 +1,7 @@
 var config =
 {
+    lodestoneUrl: 'eu.finalfantasyxiv.com',
+
     host: 'xivsync.com',
     port: 3000,
 

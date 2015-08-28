@@ -39,6 +39,19 @@ server.register(require('vision'), function (err) {
 //
 // - - - - - - - - - - - - - - - - - - - - - - - - -
 
+// home
+server.route(
+{
+    method: 'GET',
+    path: '/',
+    handler: function (request, reply) {
+        fs.readFile('views/styles.css', 'utf8', function (err,data) {
+            reply.view('index', { css: data });
+        });
+    }
+});
+
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // Database
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -53,7 +66,8 @@ server.route(
     {
         var name = request.query.name ? request.query.name : '';
 
-        api.reply = reply;
+        api.setLanguage(request.query.language);
+        api.setReply(reply);
         api.searchItem(name);
 
     }
@@ -69,7 +83,8 @@ server.route(
     {
         var id = request.params.id;
 
-        api.reply = reply;
+        api.setLanguage(request.query.language);
+        api.setReply(reply);
         api.getItem(id);
     }
 });
@@ -89,9 +104,9 @@ server.route(
         var name = request.query.name ? request.query.name : '',
             server = request.query.server ? functions.ucwords(request.query.server) : '';
 
-        api.reply = reply;
+        api.setLanguage(request.query.language);
+        api.setReply(reply);
         api.searchCharacter(name, server);
-
     }
 });
 
@@ -105,12 +120,12 @@ server.route(
     {
         var id = request.params.id;
 
-        api.reply = reply;
+        api.setLanguage(request.query.language);
+        api.setReply(reply);
         api.getCharacter(id, {
             ignore: request.query.ignore,
             restrict: request.query.restrict,
         });
-
     }
 });
 
@@ -124,9 +139,9 @@ server.route(
     {
         var id = request.params.id;
 
-        api.reply = reply;
+        api.setLanguage(request.query.language);
+        api.setReply(reply);
         api.getAchievementSummary(id);
-
     }
 });
 
@@ -141,22 +156,9 @@ server.route(
         var id = request.params.id,
             kind = request.params.kind;
 
-        api.reply = reply;
+        api.setLanguage(request.query.language);
+        api.setReply(reply);
         api.getAchievements(id, kind);
-    }
-});
-
-// character search
-server.route(
-{
-    method: 'GET',
-    path: '/',
-    handler: function (request, reply) {
-        fs.readFile('css/styles.css', 'utf8', function (err,data) {
-            reply.view('index', {
-                css: data
-            });
-        });
     }
 });
 
@@ -175,7 +177,8 @@ server.route(
         var name = request.query.name ? request.query.name : '',
             server = request.query.server ? functions.ucwords(request.query.server) : '';
 
-        api.reply = reply;
+        api.setLanguage(request.query.language);
+        api.setReply(reply);
         api.searchFreecompany(name, server);
 
     }
@@ -191,7 +194,8 @@ server.route(
     {
         var id = request.params.id;
 
-        api.reply = reply;
+        api.setLanguage(request.query.language);
+        api.setReply(reply);
         api.getFreecompany(id);
 
     }
@@ -212,7 +216,8 @@ server.route(
         var name = request.query.name ? request.query.name : '',
             server = request.query.server ? functions.ucwords(request.query.server) : '';
 
-        api.reply = reply;
+        api.setLanguage(request.query.language);
+        api.setReply(reply);
         api.searchLinkshell(name, server);
 
     }
@@ -228,7 +233,8 @@ server.route(
     {
         var id = request.params.id;
 
-        api.reply = reply;
+        api.setLanguage(request.query.language);
+        api.setReply(reply);
         api.getLinkshell(id);
     }
 });
@@ -244,7 +250,8 @@ server.route(
 
     handler: function (request, reply)
     {
-        api.reply = reply;
+        api.setLanguage(request.query.language);
+        api.setReply(reply);
         api.getLodestoneSlidingBanners();
     }
 });
@@ -256,7 +263,8 @@ server.route(
 
     handler: function (request, reply)
     {
-        api.reply = reply;
+        api.setLanguage(request.query.language);
+        api.setReply(reply);
         api.getLodestoneTopics();
     }
 });
@@ -268,7 +276,8 @@ server.route(
 
     handler: function (request, reply)
     {
-        api.reply = reply;
+        api.setLanguage(request.query.language);
+        api.setReply(reply);
         api.getLodestoneNotices();
     }
 });
@@ -280,7 +289,8 @@ server.route(
 
     handler: function (request, reply)
     {
-        api.reply = reply;
+        api.setLanguage(request.query.language);
+        api.setReply(reply);
         api.getLodestoneMaintenance();
     }
 });
@@ -292,7 +302,8 @@ server.route(
 
     handler: function (request, reply)
     {
-        api.reply = reply;
+        api.setLanguage(request.query.language);
+        api.setReply(reply);
         api.getLodestoneUpdates();
     }
 });
@@ -304,7 +315,8 @@ server.route(
 
     handler: function (request, reply)
     {
-        api.reply = reply;
+        api.setLanguage(request.query.language);
+        api.setReply(reply);
         api.getLodestoneStatus();
     }
 });
@@ -316,7 +328,8 @@ server.route(
 
     handler: function (request, reply)
     {
-        api.reply = reply;
+        api.setLanguage(request.query.language);
+        api.setReply(reply);
         api.getLodestoneCommunity();
     }
 });
@@ -328,7 +341,8 @@ server.route(
 
     handler: function (request, reply)
     {
-        api.reply = reply;
+        api.setLanguage(request.query.language);
+        api.setReply(reply);
         api.getLodestoneEvents();
     }
 });

@@ -1,5 +1,12 @@
 var apiLinkshell =
 {
+    // set the lodestone language
+    setLodestoneLanguage: function(lang) {
+        if (typeof config !== 'undefined') {
+            config.setLodestoneLanguage(lang);
+        }
+    },
+
     getUrl: function(type, param1, param2)
     {
         var urls =

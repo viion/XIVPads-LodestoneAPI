@@ -1,6 +1,7 @@
 var cheerio = require('cheerio'),
     http = require('http'),
     functions = require('../functions'),
+    config = require('../config'),
     apiItems = require('./api-items'),
     apiCharacters = require('./api-characters'),
     apiAchievements = require('./api-achievements'),
@@ -16,6 +17,7 @@ var cheerio = require('cheerio'),
 var api =
 {
     reply: null,
+    language: 'na',
 
     /**
      * Get html from a web page
@@ -26,7 +28,7 @@ var api =
     get: function(url, callback)
     {
         var options = {
-            host: 'eu.finalfantasyxiv.com',
+            host: config.lodestoneUrl,
             port: 80,
             path: url,
         }
@@ -36,6 +38,7 @@ var api =
             start = +new Date(),
             memoryStart = functions.memory();
 
+        console.log('- Language:' + api.language);
         console.log('- URL: ' + options.host + options.path);
         console.log('- Start:', start);
 
@@ -62,6 +65,29 @@ var api =
                 callback(cheerio.load(html));
             });
         });
+    },
+
+
+    // Set the language for lodestone
+    setLanguage: function(lang)
+    {
+        // set language for config
+        config.setLodestoneLanguage(lang);
+
+        // set language in all modules
+        apiItems.setLodestoneLanguage(lang);
+        apiCharacters.setLodestoneLanguage(lang);
+        apiAchievements.setLodestoneLanguage(lang);
+        apiLodestone.setLodestoneLanguage(lang);
+        apiFreecompany.setLodestoneLanguage(lang);
+        apiLinkshell.setLodestoneLanguage(lang);
+        apiStandings.setLodestoneLanguage(lang);
+    },
+
+    // Set the reply response
+    setReply: function(reply)
+    {
+        api.reply = reply;
     },
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -259,7 +285,14 @@ var api =
         console.log('Getting lodestone topics');
 
         api.get(apiLodestone.getUrl('events'), function($) {
-            api.reply(apiLodestone.getEvents($));
+            // get events url
+            apiLodestone.getEventsUrl($, function(url) {
+                // get events
+                api.get(url, function($) {
+                    // parse events
+                    api.reply(apiLodestone.getEvents($));
+                });
+            });
         });
     },
 }

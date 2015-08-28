@@ -1,0 +1,50 @@
+.danger { color: #d9534f; }
+.warning { color: #f0ad4e; }
+.info { color: #5bc0de; }
+.success { color: #d9534f; }
+.primary { color: #0275d8; }
+
+.subtext {
+    font-size: 11px;
+}
+
+.bar {
+    background-color: #f7f7f9;
+}
+
+hr {
+    margin: 3rem 0;
+}
+
+header {
+    background-color: #0275d8;
+    padding: 60px 0 20px 0;
+    color: #fff;
+}
+
+section, nav {
+    width: 720px;
+    margin: 0 auto;
+}
+
+nav {
+    margin-bottom: 2.5rem;
+    font-size:0px;
+}
+
+nav a {
+    display: inline-block;
+    padding: 10px 18px;
+    font-size: 16px;
+}
+
+nav a.active {
+    background-color: #0275d8;
+    color: #fff;
+}
+
+nav a:hover {
+    background-color: #0275d8;
+    color: #fff;
+    text-decoration: none;
+}

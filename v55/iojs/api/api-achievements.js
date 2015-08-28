@@ -1,5 +1,13 @@
 var apiAchievements =
 {
+    // set the lodestone language
+    setLodestoneLanguage: function(lang) {
+        if (typeof config !== 'undefined') {
+            config.setLodestoneLanguage(lang);
+        }
+    },
+
+    // get the urls for this module
     getUrl: function(type, param1, param2)
     {
         var urls =
