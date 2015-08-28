@@ -2,6 +2,7 @@
 <head>
     <title>XIVSync API</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha/js/bootstrap.min.js"></script>
     <style>{{{ css }}}</style>
@@ -10,6 +11,10 @@
 
     <header>
         <section>
+            <span class="data">
+                <em>Tokyo</em>
+                <em>v5.5</em>
+            </span>
             <h1>XIVSync API</h1>
             <p>Get all the data from the Final Fantasy XIV Lodestone.</p>
         </section>
@@ -17,12 +22,12 @@
 
     <div class="bar">
         <nav>
-            <a href="#" class="active">Home</a>
-            <a href="#">Characters</a>
-            <a href="#">Free Company</a>
-            <a href="#">Linkshell</a>
-            <a href="#">Database</a>
-            <a href="#">Lodestone</a>
+            <a href="/" class="active">Home</a>
+            <a href="/characters">Characters</a>
+            <a href="/freecompany">Free Company</a>
+            <a href="/linkshells">Linkshell</a>
+            <a href="/database">Database</a>
+            <a href="/lodestone">Lodestone</a>
         </nav>
     </div>
 
@@ -35,6 +40,12 @@
         web server is in the US or EU, it is recommended to use the <a href="#">XIVPads API</a><em class="danger">*</em> instead.</p>
         <p class="subtext"><em class="danger">*</em> The XIVPads API does not parse the site,
         but provides pre-parsed data. <a href="#">Click here to read more.</a></p>
+
+        <div class="gap20"></div>
+
+        <div class="title"><i class="fa fa-github"></i> GitHub Repository</div>
+        <p><a href="https://github.com/viion/XIVPads-LodestoneAPI" target="_blank">viion/XIVPads-LodestoneAPI</a></p>
+        <p>Use the github page for issues, feature requests and questions.</p>
 
         <hr>
 
@@ -57,6 +68,11 @@
             hops your server has to make to connect to XIVSync and respond. Connecting to a Japan server from the US is slow!
             If this is not acceptable for your application, please use the <a href="#">XIVPads API</a>.
         </p>
+
+        <hr>
+        <h2>Language support</h2>
+        <p>The API can parse the lodestone in all 4 languages: English, French, German and Japanese. Just provide the query the language you
+        would like with the tag: <code>language=<strong>{tag}</strong></code> to switch to that language. The default is English.</p>
 
     </section>
 </body>

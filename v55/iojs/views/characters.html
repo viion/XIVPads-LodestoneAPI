@@ -1,0 +1,119 @@
+<html>
+<head>
+    <title>XIVSync API</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha/js/bootstrap.min.js"></script>
+    <style>{{{ css }}}</style>
+</head>
+<body>
+
+    <header>
+        <section>
+            <span class="data">
+                <em>Tokyo</em>
+                <em>v5.5</em>
+            </span>
+            <h1>XIVSync API</h1>
+            <p>Get all the data from the Final Fantasy XIV Lodestone.</p>
+        </section>
+    </header>
+
+    <div class="bar">
+        <nav>
+            <a href="/">Home</a>
+            <a href="/characters" class="active">Characters</a>
+            <a href="/freecompany">Free Company</a>
+            <a href="/linkshells">Linkshell</a>
+            <a href="/database">Database</a>
+            <a href="/lodestone">Lodestone</a>
+        </nav>
+    </div>
+
+    <section>
+        <h2>Characters</h2>
+        <p><strong>Search</strong> and <strong>Get</strong> information about characters.</p>
+
+        <hr>
+
+        <h3>/characters/search</h3>
+        <p>Search for characters.</p>
+
+        <p><strong>Parameters</strong></p>
+        <ul>
+            <li><code>name={name}</code> - A name to search for.</li>
+            <li><code>server={server}</code> - A server to search on.</li>
+        </ul>
+
+        <p><strong>Examples</strong></p>
+        <ul>
+            <li><a href="/characters/search?name=premium">/characters/search<strong>?name=premium</strong></a><div class="li-help">Search on all servers for characters with "premium" anywhere in their name.</div></li>
+            <li><a href="/characters/search?server=shiva">/characters/search<strong>?server=shiva</strong></a><div class="li-help">Search all characters on the server "shiva", server name is case-insensitive.</div></li>
+        </ul>
+
+        <p><strong>Live ajax request example</strong></p>
+        <p>Data parameters: <code>name: 'premium'</code>, <code>server: 'adamantoise'</code> (view source to see)code></p>
+        <code class="response" id="ex1">Loading ...</code>
+        <script>
+        $.ajax({
+            url: '/characters/search',
+            data: {
+                name: 'premium',
+                server: 'adamantoise',
+            },
+            success: function(data) {
+                $('#ex1').html('<pre>' + JSON.stringify(data, null, 4) + '</pre>');
+            },
+            error: function(data, status, code) {
+                console.error(data, status, code);
+            },
+        });
+        </script>
+
+        <div class="gap20"></div>
+        <p><strong>Response</strong></p>
+        <p>All search responses return a <code>paging</code> and <code>results</code> object entry. Some will also include a <code>error</code> entry, this is any error that
+        is shown on Lodestone. For example when searching all characters with no parameters, lodestone limits your results to 1000 characters. This returns an error informing
+        this has happened.</p>
+        <p>The <code>paging</code> entry is an object containing: <code>start, end, total, pages</code>. The start and end is the current list of characters. So this could be
+        51-100 when on page 2 of characters. The total is the total results returned and the pages is the total number of pages (calculated).</p>
+        <div class="alert alert-warning" role="alert">
+            <p><i class="fa fa-exclamation-triangle"></i> Square-Enix do not provide class/job names on their search results pages. It is not possible right now to know what
+            class is what. Future dev will look into to seeing if the icons are static and can be matched to a class/job</p>
+        </div>
+
+        <hr>
+
+        <h3>/characters/get/<strong>{id}</strong></h3>
+        <p>Get data on a character</p>
+
+        <p><strong>Parameters</strong></p>
+        <ul>
+            <li><code>restrict={field},{field},{field}</code> - Will <strong>restrict</strong> the response to the specified fields.</li>
+            <li><code>ignore={field},{field},{field}</code> - Will <strong>ignore</strong> the specified fields from the response.</li>
+        </ul>
+
+        <p><strong>Examples</strong></p>
+        <ul>
+            <li><a href="/characters/get/730968">/characters/get/<strong>730968</strong></a><div class="li-help">Get the data for the character <strong>730968</strong> (me!)</div></li>
+            <li><a href="/characters/get/730968">/characters/get/<strong>730968</strong>?restrict=name,server,title</a><div class="li-help">Get only the name, server and title for the character 730968.</div></li>
+            <li><a href="/characters/get/730968">/characters/get/<strong>730968</strong>?ignore=minion,mounts</a><div class="li-help">Ignore minions and mounts from the data for the character 730968.</div></li>
+        </ul>
+
+        <p><strong>Live ajax request example</strong></p>
+        <code class="response" id="ex2">Loading ...</code>
+        <script>
+        $.ajax({
+            url: '/characters/get/730968',
+            success: function(data) {
+                $('#ex2').html('<pre>' + JSON.stringify(data, null, 4) + '</pre>');
+            },
+            error: function(data, status, code) {
+                console.error(data, status, code);
+            },
+        });
+        </script>
+
+    </section>
+</body>
