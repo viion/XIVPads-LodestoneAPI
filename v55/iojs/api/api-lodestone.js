@@ -11,8 +11,7 @@ var apiLodestone =
     },
 
     // get the urls for this module
-    getUrl: function(type, string, kind)
-    {
+    getUrl: function(type, string, kind) {
         var urls =
         {
             home: '/lodestone/',
@@ -29,8 +28,7 @@ var apiLodestone =
     },
 
     // The sliding banners at the top of the official site.
-    getSlidingBanners: function($)
-    {
+    getSlidingBanners: function($) {
         var data = [];
         $('#slider_bnr_area li').each(function() {
             $node = $(this);
@@ -45,8 +43,7 @@ var apiLodestone =
     },
 
     // The topics page
-    getTopics: function($)
-    {
+    getTopics: function($) {
         var data = [];
         $('.area_body .topics_list li').each(function() {
             $node = $(this);
@@ -75,8 +72,7 @@ var apiLodestone =
     },
 
     // The notices page
-    getNotices: function($)
-    {
+    getNotices: function($) {
         var data = [];
         $('.area_body dl.news_list').each(function() {
             $node = $(this);
@@ -96,8 +92,7 @@ var apiLodestone =
     },
 
     // The maintenance page
-    getMaintenance: function($)
-    {
+    getMaintenance: function($) {
         var data = [];
         $('.area_body dl.news_list').each(function() {
             $node = $(this);
@@ -118,8 +113,7 @@ var apiLodestone =
     },
 
     // The updates page
-    getUpdates: function($)
-    {
+    getUpdates: function($) {
         var data = [];
         $('.area_body dl.news_list').each(function() {
             $node = $(this);
@@ -139,8 +133,7 @@ var apiLodestone =
     },
 
     // The status page
-    getStatus: function($)
-    {
+    getStatus: function($) {
         var data = [];
         $('.area_body dl.news_list').each(function() {
             $node = $(this);
@@ -160,8 +153,7 @@ var apiLodestone =
     },
 
     // The community page
-    getCommunity: function($)
-    {
+    getCommunity: function($) {
         var data = [];
         $('.area_body .wall_list li').each(function() {
             $node = $(this);
@@ -187,8 +179,7 @@ var apiLodestone =
     },
 
     // events page url
-    getEventsUrl: function($, callback)
-    {
+    getEventsUrl: function($, callback) {
         var json = $('.require_timezone_info').data('require_timezone_info'),
             url = $('.require_timezone_info').attr('data-require_uri');
 
@@ -203,8 +194,7 @@ var apiLodestone =
     },
 
     // get events
-    getEvents: function($)
-    {
+    getEvents: function($) {
         var data = [];
         $('.open-event-list .event_window_body').each(function() {
             $node = $(this);

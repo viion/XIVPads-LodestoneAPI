@@ -14,8 +14,7 @@ var cheerio = require('cheerio'),
 // Lodestone API
 // - - - - - - - - - - - - - - - - - - - -
 
-var api =
-{
+var api = {
     language: 'na',
 
     /**
@@ -24,8 +23,7 @@ var api =
      * @param url - url for options for http.get
      * @param reply - function to callback on
      */
-    get: function(url, callback)
-    {
+    get: function(url, callback) {
         var options = {
             host: config.lodestoneUrl,
             port: 80,
@@ -42,14 +40,11 @@ var api =
         console.log('- Start:', start);
 
         // request
-        http.get(options, function(res)
-        {
-            res.on('data', function(data)
-            {
+        http.get(options, function(res) {
+            res.on('data', function(data) {
                 html += data;
             })
-            .on('end', function()
-            {
+            .on('end', function() {
                 // end time
                 var end = +new Date(),
                     duration = (end - start),
@@ -67,8 +62,7 @@ var api =
     },
 
     // Set the language for lodestone
-    setLanguage: function(lang)
-    {
+    setLanguage: function(lang) {
         // set language for config
         config.setLodestoneLanguage(lang);
 

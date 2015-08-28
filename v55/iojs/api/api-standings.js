@@ -8,9 +8,7 @@ var apiStandings =
     },
 
     getUrl: function(type, string) {
-
-        var urls =
-        {
+        var urls = {
             frontline_weekly: '/lodestone/ranking/frontline/weekly/',
             frontline_monthly: '/lodestone/ranking/frontline/monthly/',
         }
@@ -19,8 +17,7 @@ var apiStandings =
     },
 
     // get frontline standing
-    getFrontlineStanding: function($)
-    {
+    getFrontlineStanding: function($) {
         var data = [];
         $('.list_ranking li').each(function() {
             $node = $(this);
@@ -58,8 +55,7 @@ var apiStandings =
     },
 
     // get grand company standings
-    getGrandCompanyStanding: function($)
-    {
+    getGrandCompanyStanding: function($) {
         var data = [];
         $('.list_ranking li').each(function() {
             $node = $(this);
@@ -87,8 +83,7 @@ var apiStandings =
         return data;
     },
 
-    getFreecompanyStanding: function($)
-    {
+    getFreecompanyStanding: function($) {
         var data = [];
         $('.list_ranking li').each(function() {
             $node = $(this);

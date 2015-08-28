@@ -7,10 +7,8 @@ var apiLinkshell =
         }
     },
 
-    getUrl: function(type, param1, param2)
-    {
-        var urls =
-        {
+    getUrl: function(type, param1, param2) {
+        var urls = {
             linkshell: '/lodestone/linkshell/{param1}/?page={param2}'.replace('{param1}', param1).replace('{param2}', param2),
             search: '/lodestone/linkshell/?q={param1}&worldname={param2}'.replace('{param1}', param1).replace('{param2}', param2),
         }
@@ -19,8 +17,7 @@ var apiLinkshell =
     },
 
     // get search results
-    getSearch: function($)
-    {
+    getSearch: function($) {
         var results = [];
         $('.table_elements_com_ls tr').each(function() {
             $node = $(this);
@@ -49,8 +46,7 @@ var apiLinkshell =
     },
 
     // get linkshell members
-    getData: function($, options)
-    {
+    getData: function($, options) {
         var results = [];
         $('.table_black_border_bottom tr').each(function() {
             $node = $(this);

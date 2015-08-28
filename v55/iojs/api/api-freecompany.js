@@ -8,10 +8,8 @@ var apiFreecompany =
     },
 
     // get ths urls for this module
-    getUrl: function(type, param1, param2)
-    {
-        var urls =
-        {
+    getUrl: function(type, param1, param2) {
+        var urls = {
             freecompany: '/lodestone/freecompany/{param1}/'.replace('{param1}', param1),
             search: '/lodestone/freecompany/?q={param1}&worldname={param2}'.replace('{param1}', param1).replace('{param2}', param2),
             members: '/lodestone/freecompany/{param1}/member/?page={param2}'.replace('{param1}', param1).replace('{param2}', param2),
@@ -21,8 +19,7 @@ var apiFreecompany =
     },
 
     // get search results for a free company
-    getSearch: function($)
-    {
+    getSearch: function($) {
         var results = [];
         $('.table_elements_com_fc tr').each(function() {
             $node = $(this);
@@ -58,8 +55,7 @@ var apiFreecompany =
     },
 
     // get a free company
-    getData: function($, options)
-    {
+    getData: function($, options) {
         var data = {
             emblums: {
                 1: $('.area_header .ic_crest_64 img').eq(0).attr('src').trim(),
@@ -121,8 +117,7 @@ var apiFreecompany =
     },
 
     // get members in a free company
-    getMembers: function($)
-    {
+    getMembers: function($) {
         var results = [];
         $('.table_black_border_bottom tr').each(function() {
             $node = $(this);

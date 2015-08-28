@@ -18,10 +18,8 @@ var apiCharacters =
     },
 
     // get thr urls for this module
-    getUrl: function(type, param1, param2)
-    {
-        var urls =
-        {
+    getUrl: function(type, param1, param2) {
+        var urls = {
             character: '/lodestone/character/{param1}/'.replace('{param1}', param1),
             search: '/lodestone/character/?q={param1}&worldname={param2}'.replace('{param1}', param1).replace('{param2}', param2),
         }
@@ -29,8 +27,7 @@ var apiCharacters =
         return urls[type];
     },
 
-    getSearch: function($)
-    {
+    getSearch: function($) {
         var results = [];
         $('.table_black_border_bottom table tr').each(function() {
             $node = $(this);
@@ -89,8 +86,7 @@ var apiCharacters =
         return data;
     },
 
-    getData: function($, options)
-    {
+    getData: function($, options) {
         // detail box
         var $box = $('#character');
 

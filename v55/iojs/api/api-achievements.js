@@ -8,10 +8,8 @@ var apiAchievements =
     },
 
     // get the urls for this module
-    getUrl: function(type, param1, param2)
-    {
-        var urls =
-        {
+    getUrl: function(type, param1, param2) {
+        var urls = {
             summary: '/lodestone/character/{param1}/achievement/'.replace('{param1}', param1),
             achievement: '/lodestone/character/{param1}/achievement/kind/{param2}/'.replace('{param1}', param1).replace('{param2}', param2),
         }
@@ -19,8 +17,7 @@ var apiAchievements =
         return urls[type];
     },
 
-    getSummary: function($)
-    {
+    getSummary: function($) {
         var data = [];
         $box = $('#contents');
         $box.find('.achievement_list li').each(function() {
@@ -45,8 +42,7 @@ var apiAchievements =
         return data;
     },
 
-    getData: function($)
-    {
+    getData: function($) {
         var data = [];
         $box = $('#contents');
         $box.find('.achievement_cnts li').each(function() {

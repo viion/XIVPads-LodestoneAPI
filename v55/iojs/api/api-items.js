@@ -28,8 +28,7 @@ var apiItems =
         return urls[type];
     },
 
-    getSearch: function($)
-    {
+    getSearch: function($) {
         var results = [];
         $('.table_black #character tbody tr').each(function() {
             $dom = $(this);
@@ -65,8 +64,7 @@ var apiItems =
         return data;
     },
 
-    getData: function($)
-    {
+    getData: function($) {
         // detail box
         var $box = $('.item_detail_box');
 
