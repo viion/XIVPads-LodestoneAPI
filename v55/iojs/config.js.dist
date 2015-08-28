@@ -1,9 +1,22 @@
 var config =
 {
-    lodestoneUrl: 'eu.finalfantasyxiv.com',
+    lodestoneUrl: 'na.finalfantasyxiv.com',
+    setLodestoneLanguage: function(lang)
+    {
+        switch(lang)
+        {
+            default:
+            case 'na': config.lodestoneUrl = 'na.finalfantasyxiv.com'; break;
+            case 'eu': config.lodestoneUrl = 'eu.finalfantasyxiv.com'; break;
+            case 'fr': config.lodestoneUrl = 'fr.finalfantasyxiv.com'; break;
+            case 'de': config.lodestoneUrl = 'de.finalfantasyxiv.com'; break;
+            case 'fr': config.lodestoneUrl = 'fr.finalfantasyxiv.com'; break;
+            case 'jp': config.lodestoneUrl = 'jp.finalfantasyxiv.com'; break;
+        };
+    },
 
-    host: 'xivsync.com',
-    port: 3000,
+    host: 'localhost',
+    port: 443,
 
     db:
     {
