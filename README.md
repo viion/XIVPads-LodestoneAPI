@@ -6,10 +6,11 @@ Used for parsing the Final Fantays XIV Lodestone.
 
 This API runs on io.js (cannot use NodeJS until it merges with io.js), it also uses pm2 to stay alive.
 
+- ``` npm install pm2 -g ```
 - ``` npm install ```
 - ``` cp config.js.dist config.js ```
 - ``` nano config.js ``` modify config as required.
-- ``` bash run ```
+- ``` bash run.sh ```
 
 ## Documentation
 
