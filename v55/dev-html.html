@@ -1,3255 +1,1778 @@
-<div id="contents" class="clearfix">
-
-    <!-- #main -->
-    <div id="main">
-
-<h1 class="title--img"><img src="http://img.finalfantasyxiv.com/lds/pc/en/images/title/ranking.png?1427347187" width="646" height="50" alt="Standings"></h1>
-
-<div id="help" class="base_header mb10"><div class="base_footer"><div class="base_body">
-
-    <div class="area_body"><div class="area_header"><div class="area_footer clearfix">
-
-        <h3 class="ic_silver left">
-
-                Weekly Free Company Standings
-
-        </h3>
-
-        <div class="right">
-            <div class="bt_backnumber_ranking">
-                <a href="/lodestone/ranking/fc/archive/">
-                    <img src="http://img.finalfantasyxiv.com/lds/pc/en/images/bt/backnumber_ranking.png?1404811571" width="200" height="40" alt="Archive">
-                </a>
-            </div>
-        </div>
-
-    </div></div></div>
-
-    <div class="area_inner_header mt10 mb10">
-        <div class="area_inner_footer">
-            <div class="area_inner_body pt10 pb10">
-                Standings based on total company credits earned by free companies.
-            </div>
-        </div>
-    </div>
-
-    <ul id="tabmenu" class="mb10">
-        <li class="tab_ranking_w"><a href="/lodestone/ranking/fc/weekly/" class="active"></a></li><!--
-        --><li class="tab_ranking_m"><a href="/lodestone/ranking/fc/monthly/"></a></li>
-    </ul>
+<div class="body_bound">
+<div class="body_wrapper">
+<div id="breadcrumb" class="breadcrumb">
+    <ul class="floatcontainer">
 
 
-    <div class="ranking_narrow ">
-        <form action="?">
-        <input type="hidden" name="filter" value="1">
-
-
-        <div class="clearfix">
-
-            <div class="left">
-                <span class="txt_yellow highlight">World</span>
-                <select name="worldname" onchange="this.form.submit()">
-                    <option value="">Select All</option>
-                                            <option value="Adamantoise">Adamantoise</option>
-                                            <option value="Aegis">Aegis</option>
-                                            <option value="Alexander">Alexander</option>
-                                            <option value="Anima">Anima</option>
-                                            <option value="Asura">Asura</option>
-                                            <option value="Atomos">Atomos</option>
-                                            <option value="Bahamut">Bahamut</option>
-                                            <option value="Balmung">Balmung</option>
-                                            <option value="Behemoth">Behemoth</option>
-                                            <option value="Belias">Belias</option>
-                                            <option value="Brynhildr">Brynhildr</option>
-                                            <option value="Cactuar">Cactuar</option>
-                                            <option value="Carbuncle">Carbuncle</option>
-                                            <option value="Cerberus">Cerberus</option>
-                                            <option value="Chocobo">Chocobo</option>
-                                            <option value="Coeurl">Coeurl</option>
-                                            <option value="Diabolos">Diabolos</option>
-                                            <option value="Durandal">Durandal</option>
-                                            <option value="Excalibur">Excalibur</option>
-                                            <option value="Exodus">Exodus</option>
-                                            <option value="Faerie">Faerie</option>
-                                            <option value="Famfrit">Famfrit</option>
-                                            <option value="Fenrir">Fenrir</option>
-                                            <option value="Garuda">Garuda</option>
-                                            <option value="Gilgamesh">Gilgamesh</option>
-                                            <option value="Goblin">Goblin</option>
-                                            <option value="Gungnir">Gungnir</option>
-                                            <option value="Hades">Hades</option>
-                                            <option value="Hyperion">Hyperion</option>
-                                            <option value="Ifrit">Ifrit</option>
-                                            <option value="Ixion">Ixion</option>
-                                            <option value="Jenova">Jenova</option>
-                                            <option value="Kujata">Kujata</option>
-                                            <option value="Lamia">Lamia</option>
-                                            <option value="Leviathan">Leviathan</option>
-                                            <option value="Lich">Lich</option>
-                                            <option value="Malboro">Malboro</option>
-                                            <option value="Mandragora">Mandragora</option>
-                                            <option value="Masamune">Masamune</option>
-                                            <option value="Mateus">Mateus</option>
-                                            <option value="Midgardsormr">Midgardsormr</option>
-                                            <option value="Moogle">Moogle</option>
-                                            <option value="Odin">Odin</option>
-                                            <option value="Pandaemonium">Pandaemonium</option>
-                                            <option value="Phoenix">Phoenix</option>
-                                            <option value="Ragnarok">Ragnarok</option>
-                                            <option value="Ramuh">Ramuh</option>
-                                            <option value="Ridill">Ridill</option>
-                                            <option value="Sargatanas">Sargatanas</option>
-                                            <option value="Shinryu">Shinryu</option>
-                                            <option value="Shiva">Shiva</option>
-                                            <option value="Siren">Siren</option>
-                                            <option value="Tiamat">Tiamat</option>
-                                            <option value="Titan">Titan</option>
-                                            <option value="Tonberry">Tonberry</option>
-                                            <option value="Typhon">Typhon</option>
-                                            <option value="Ultima">Ultima</option>
-                                            <option value="Ultros">Ultros</option>
-                                            <option value="Unicorn">Unicorn</option>
-                                            <option value="Valefor">Valefor</option>
-                                            <option value="Yojimbo">Yojimbo</option>
-                                            <option value="Zalera">Zalera</option>
-                                            <option value="Zeromus">Zeromus</option>
-                                            <option value="Zodiark">Zodiark</option>
-
-                </select>
-            </div>
-
-
-            <div class="left ml10">
-                <span class="txt_yellow highlight">Grand Company</span>
-                <select name="gcid" onchange="this.form.submit()">
-                    <option value="">Select All</option>
-
-                        <option value="1">Maelstrom</option>
-
-                        <option value="2">Order of the Twin Adder</option>
-
-                        <option value="3">Immortal Flames</option>
-
-                </select>
-            </div>
-        </div>
-
-
-        </form>
-
-    </div>
-
-
-    <div class="area_body"><div class="area_header"><div class="area_footer">
-
-
-        <div class="ranking_nav">
-
-            <div class="term">
-                Tallying Period: <span class="txt_yellow large">08/17/2015-08/23/2015</span>
-            </div>
-
-            <div class="nav clearfix">
-
-
-                        <a href="/lodestone/ranking/fc/weekly/201532/" class="prev">Previous Week</a>
-
-
-
-            </div>
-
-        </div>
-
-
-    </div></div></div>
-
-
-        <!-- pager -->
-        <div class="base_inner mb10">
-
-<!-- pager -->
-<div class="pager"><div class="pagination clearfix">
-    <div class="current_list">
-        Displaying <span class="show_start">1</span>-<span class="show_end">50</span> of <span class="total">500</span>
-    </div>
-
-
-    <ul>
-
-            <li class="prev_all non"></li>
-            <li class="prev non"></li>
-
-
-
-            <li class="current"><a href="http://na.finalfantasyxiv.com/lodestone/ranking/fc/weekly/?page=1">1</a></li>
-
-            <li class="active"><a href="http://na.finalfantasyxiv.com/lodestone/ranking/fc/weekly/?page=2">2</a></li>
-
-            <li class="active"><a href="http://na.finalfantasyxiv.com/lodestone/ranking/fc/weekly/?page=3">3</a></li>
-
-            <li class="active"><a href="http://na.finalfantasyxiv.com/lodestone/ranking/fc/weekly/?page=4">4</a></li>
-
-            <li class="active"><a href="http://na.finalfantasyxiv.com/lodestone/ranking/fc/weekly/?page=5">5</a></li>
-
-
-
-            <li class="next"><a href="http://na.finalfantasyxiv.com/lodestone/ranking/fc/weekly/?page=2" rel="next"></a></li>
-            <li class="next_all"><a href="http://na.finalfantasyxiv.com/lodestone/ranking/fc/weekly/?page=10" rel="last"></a></li>
+    <li class="navbit lastnavbit"><span>Forum Top</span></li>
 
     </ul>
+    <hr>
+</div>
 
-</div></div>
-<!-- //pager -->
+
+
+
+
+
+
+    <div id="pagetitle">
+
+    </div>
+
+
+    <div id="content_container">
+        <div id="content">
+
+    <!-- main -->
+
+
+
+    <ol id="forums" class="floatcontainer">
+        <li class="forumbit_nopost L1" id="cat512">
+    <div class="forumhead foruminfo L1 collapse">
+        <h2>
+            <span class="forumtitle"><a href="forums/512-Japanese-Forums">Japanese Forums</a></span>
+
+            <span class="forumlastpost">
+                <a class="magtrack_btn" href="http://forum.square-enix.com/ffxiv/search.php?do=process&amp;search_type=1&amp;contenttypeid=1&amp;supporttrack=1&amp;starteronly=0&amp;showposts=1&amp;childforums=1&amp;forumchoice[]=512" accesskey="4"></a>
+                <a class="devtrack_btn" href="http://forum.square-enix.com/ffxiv/search.php?do=process&amp;search_type=1&amp;contenttypeid=1&amp;devtrack=1&amp;starteronly=0&amp;showposts=1&amp;childforums=1&amp;forumchoice[]=512" accesskey="4"></a>
+                <br class="float_clear">
+            </span>
+
+            <a class="collapse" id="collapse_c_cat512" href="forum.php#top"><img src="images/buttons/collapse_40b.png" alt="" title="Collapse this Category"></a>
+
+        </h2>
+    </div>
+
+
+    <ol id="c_cat512" class="childforum">
+
+        <div class="forumrowdata">
+            <p class="subforumdescription">このフォーラムは日本語でご利用ください。</p>
 
 
         </div>
-        <!-- //pager -->
+
+        <li class="forumbit_nopost L2" id="cat513">
+    <div class="forumrow L2">
+                    <img src="images/statusicon/category_forum_new.png" class="forumicon" id="forum_statusicon_513" alt="">
+        <div class="forumdata">
+<div class="datacontainer">
+            <h2 class="forumtitle"><a href="forums/513-%E3%83%8B%E3%83%A5%E3%83%BC%E3%82%B9" class="forumtitle">ニュース</a></h2>
+            <p class="forumdescription"><a href="forums/514">重要なお知らせ</a>／<a href="forums/515">メンテナンス情報</a>／<a href="forums/516">一般情報</a>／<a href="forums/517">アップデート情報</a>／<a href="forums/518">障害情報</a></p>
+            <a href="javascript://" class="collapsegadget" title="Collapse this Category"></a>
+
+        </div>
+</div>
+    </div>
+
+</li> <li class="forumbit_nopost L2" id="cat519">
+    <div class="forumrow L2">
+                    <img src="images/statusicon/category_forum_new.png" class="forumicon" id="forum_statusicon_519" alt="">
+        <div class="forumdata">
+<div class="datacontainer">
+            <h2 class="forumtitle"><a href="forums/519-%E3%83%86%E3%82%AF%E3%83%8B%E3%82%AB%E3%83%AB%E3%82%B5%E3%83%9D%E3%83%BC%E3%83%88" class="forumtitle">テクニカルサポート</a></h2>
+            <p class="forumdescription"><a href="forums/520">テクニカルサポート</a>／<a href="forums/521">対応・確認中</a>／<a href="forums/522">解決済み</a>／<a href="forums/523">対応外（窓口案内）</a></p>
+            <a href="javascript://" class="collapsegadget" title="Collapse this Category"></a>
+
+        </div>
+</div>
+    </div>
+
+</li> <li class="forumbit_nopost L2" id="cat524">
+    <div class="forumrow L2">
+                    <img src="images/statusicon/category_forum_new.png" class="forumicon" id="forum_statusicon_524" alt="">
+        <div class="forumdata">
+<div class="datacontainer">
+            <h2 class="forumtitle"><a href="forums/524-%E4%B8%8D%E5%85%B7%E5%90%88%E5%A0%B1%E5%91%8A" class="forumtitle">不具合報告</a></h2>
+            <p class="forumdescription"><a href="forums/525">不具合報告</a>／<a href="forums/526">解決済み</a>／<a href="forums/527">受理済み</a>／<a href="forums/528">情報不足</a>／<a href="forums/529">再現せず</a>／<a href="forums/530">不具合確認・修正予定</a>／<a href="forums/531">修正済み</a>／<a href="forums/532">仕様</a>／<a href="forums/533">重複</a>／<a href="forums/534">不具合以外の報告</a></p>
+            <a href="javascript://" class="collapsegadget" title="Collapse this Category"></a>
+
+        </div>
+</div>
+    </div>
+
+</li> <li class="forumbit_nopost L2" id="cat535">
+    <div class="forumrow L2">
+                    <img src="images/statusicon/category_forum_new.png" class="forumicon" id="forum_statusicon_535" alt="">
+        <div class="forumdata">
+<div class="datacontainer">
+            <h2 class="forumtitle"><a href="forums/535-%E3%83%97%E3%83%AD%E3%83%87%E3%83%A5%E3%83%BC%E3%82%B5%E3%83%BC%E3%83%AC%E3%82%BF%E3%83%BC" class="forumtitle">プロデューサーレター</a></h2>
+            <p class="forumdescription"><a href="forums/536">プロデューサーレター</a>／<a href="forums/537">プロデューサーレターLIVE</a></p>
+            <a href="javascript://" class="collapsegadget" title="Collapse this Category"></a>
+
+        </div>
+</div>
+    </div>
+
+</li> <li class="forumbit_nopost L2" id="cat538">
+    <div class="forumrow L2">
+                    <img src="images/statusicon/category_forum_new.png" class="forumicon" id="forum_statusicon_538" alt="">
+        <div class="forumdata">
+<div class="datacontainer">
+            <h2 class="forumtitle"><a href="forums/538-%E3%82%B2%E3%83%BC%E3%83%A0%E3%82%B7%E3%82%B9%E3%83%86%E3%83%A0" class="forumtitle">ゲームシステム</a></h2>
+            <p class="forumdescription"><a href="forums/539">世界設定</a>／<a href="forums/540">クエスト</a>／<a href="forums/541">ダンジョン</a>／<a href="forums/542">ギルドリーヴ・ギルドオーダー</a>／<a href="forums/543">F.A.T.E.</a>／<a href="forums/1017">PvP</a>／<a href="forums/544">討伐手帳</a>／<a href="forums/545">カンパニー</a>／<a href="forums/1018">ハウジング</a>／<a href="forums/1270">ゴールドソーサー</a>／<a href="forums/546">アイテム・製作・採集</a>／<a href="forums/547">マーケット・リテイナー</a>／<a href="forums/548">ユーザーインターフェース</a></p>
+            <a href="javascript://" class="collapsegadget" title="Collapse this Category"></a>
+
+        </div>
+</div>
+    </div>
+
+</li> <li class="forumbit_nopost L2" id="cat549">
+    <div class="forumrow L2">
+                    <img src="images/statusicon/category_forum_new.png" class="forumicon" id="forum_statusicon_549" alt="">
+        <div class="forumdata">
+<div class="datacontainer">
+            <h2 class="forumtitle"><a href="forums/549-%E3%82%AF%E3%83%A9%E3%82%B9%EF%BC%86%E3%82%B8%E3%83%A7%E3%83%96" class="forumtitle">クラス＆ジョブ</a></h2>
+            <p class="forumdescription"><a href="forums/550">TANK</a>／<a href="forums/551">DPS</a>／<a href="forums/552">HEALER</a>／<a href="forums/553">その他バトルシステム</a>／<a href="forums/554">ギャザラー</a>／<a href="forums/555">クラフター</a></p>
+            <a href="javascript://" class="collapsegadget" title="Collapse this Category"></a>
+
+        </div>
+</div>
+    </div>
+
+</li> <li class="forumbit_nopost L2" id="cat556">
+    <div class="forumrow L2">
+                    <img src="images/statusicon/category_forum_new.png" class="forumicon" id="forum_statusicon_556" alt="">
+        <div class="forumdata">
+<div class="datacontainer">
+            <h2 class="forumtitle"><a href="forums/556-%E3%82%A6%E3%82%A7%E3%83%96%E3%82%B5%E3%82%A4%E3%83%88%E3%83%95%E3%82%A3%E3%83%BC%E3%83%89%E3%83%90%E3%83%83%E3%82%AF" class="forumtitle">ウェブサイトフィードバック</a></h2>
+            <p class="forumdescription"><a href="forums/557">サイトに関する不具合報告</a>／<a href="forums/558">サイトに関するご意見ご要望</a></p>
+            <a href="javascript://" class="collapsegadget" title="Collapse this Category"></a>
+
+        </div>
+</div>
+    </div>
+
+</li> <li class="forumbit_nopost L2" id="cat559">
+    <div class="forumrow L2">
+                    <img src="images/statusicon/category_forum_new.png" class="forumicon" id="forum_statusicon_559" alt="">
+        <div class="forumdata">
+<div class="datacontainer">
+            <h2 class="forumtitle"><a href="forums/559-%E9%9B%91%E8%AB%87" class="forumtitle">雑談</a></h2>
+            <p class="forumdescription"><a href="forums/561">ワールド(Group JP)</a>／<a href="forums/587">ワールド(Group NA/EU)</a>／<a href="forums/560">ジェネラルディスカッション</a>／<a href="forums/1266">この装備を武具投影したい！！</a></p>
+            <a href="javascript://" class="collapsegadget" title="Collapse this Category"></a>
+
+        </div>
+</div>
+    </div>
+
+</li> <li id="forum613" class="forumbit_post L2">
+    <div class="forumrow table">
+        <div class="foruminfo td">
+            <img src="images/statusicon/forum_new-48.png" class="forumicon" id="forum_statusicon_613" alt="" title="Double-click this icon to mark this forum and its contents as read" style="cursor: pointer;">
+            <div class="forumdata">
+                <div class="datacontainer">
+                    <div class="titleline">
+                        <h2 class="forumtitle"><a href="forums/613-%E5%88%9D%E5%BF%83%E8%80%85%E7%94%A8">初心者用</a></h2>
+
+                    </div>
 
 
-        <div class="list_ranking_header">
-            <div class="inr">
-                <div class="left_area">Rank</div>
-                <div class="center_area">Free Company</div>
-                <div class="right_area">Company Credits</div>
+
+
+
+
+
+                </div>
             </div>
         </div>
 
-        <ol class="list_ranking">
+        <h4 class="nocss_label">Forum Actions:</h4>
 
-<li class="     rank_crown rank_crown_1 fc_list
-"><div class="list_footer"><div class="list_body clearfix">
-    <div class="rank
+        <ul class="forumactionlinks td">
+            <li class="forumactionlink rsslink"><a href="external.php?type=RSS2&amp;forumids=613" title="View this forum's RSS feed">View this forum's RSS feed</a></li>
 
+        </ul>
 
-                arrow_up
 
-        ">
-    </div>
+        <h4 class="nocss_label">Forum Statistics:</h4>
+        <ul class="forumstats td">
+            <li>Threads: 387</li>
+            <li>Posts: 9,840</li>
+        </ul>
+        <div class="forumlastpost td">
+            <h4 class="lastpostlabel">Last Post:</h4>
+            <div>
 
-    <div class="userdata">
-        <div class="thumb_wrap">
+    <p class="lastposttitle">
 
-            <div class="thumb_cont_black"><a href="/lodestone/freecompany/9232238498621161491/">
-<div class="ic_crest_64">
-    <span>
 
+    <a href="threads/101697-%E6%96%B0%E7%94%9F%E3%83%BB%E6%B0%97%E8%BB%BD%E3%81%AB%E8%B3%AA%E5%95%8F%E3%82%92%E3%81%99%E3%82%8B%E3%81%A8%E3%82%82%E3%81%AE%E5%87%84%E3%81%84%E5%8B%A2%E3%81%84%E3%81%A7%E8%AA%B0%E3%81%8B%E3%81%8C%E7%AD%94%E3%81%88%E3%82%8B%E3%82%B9%E3%83%AC%E3%80%90Part.2%E3%80%91?goto=newpost" class="threadtitle" title="Go to first unread post in thread '新生・気軽に質問をするともの凄い勢いで誰かが答えるスレ【Part.2】'">新生・気軽に質問をするともの凄い勢いで誰かが答えるスレ【Pa...</a>
+    <a href="threads/101697-%E6%96%B0%E7%94%9F%E3%83%BB%E6%B0%97%E8%BB%BD%E3%81%AB%E8%B3%AA%E5%95%8F%E3%82%92%E3%81%99%E3%82%8B%E3%81%A8%E3%82%82%E3%81%AE%E5%87%84%E3%81%84%E5%8B%A2%E3%81%84%E3%81%A7%E8%AA%B0%E3%81%8B%E3%81%8C%E7%AD%94%E3%81%88%E3%82%8B%E3%82%B9%E3%83%AC%E3%80%90Part.2%E3%80%91?p=3290126#post3290126"><img src="images/buttons/lastpost-right.png" alt="Go to last post" title="Go to last post"></a>
+    </p>
 
-            <img src="http://img2.finalfantasyxiv.com/c/B00_e03d60eead3a3a3eac0b04f662a584dc_f4_64x64.png" width="64" height="64">
+    <div class="lastpostby">
 
-        <img src="http://img2.finalfantasyxiv.com/c/F01_ff6825cb5e06c73da64c1121d2f2bc18_00_64x64.png" width="64" height="64">
-        <img src="http://img2.finalfantasyxiv.com/c/S34_75dc8458fdac18b33028369f6b010af6_02_64x64.png" width="64" height="64">
+        by <div class="popupmenu memberaction" id="yui-gen3">
+    <a class="username offline popupctrl" href="members/244439-tomytrigger" title="tomytrigger is offline" id="yui-gen5">
+        <strong>
 
-    </span>
-</div>
-</a></div>
+                tomytrigger
 
-        </div>
-
-
-        <div class="player_name_gold"><a href="/lodestone/freecompany/9232238498621161491/">Aureus Knights</a><span> (Gilgamesh)</span>
-
-
-
-                <div class="ic_gcrank">
-                    <div><img src="http://img.finalfantasyxiv.com/lds/pc/global/images/character/ic/city/uldah.png?1370575015" width="32" height="32" alt=""></div>
-                    <div>Immortal Flames</div>
-                </div>
-
-
-        </div>
-    </div>
-
-    <div class="point txt_yellow"><div class="inner point_rank">703271</div></div>
-</div></div></li>
-
-<li class="     rank_crown rank_crown_2 fc_list
-"><div class="list_footer"><div class="list_body clearfix">
-    <div class="rank
-
-
-                arrow_up
-
-        ">
-    </div>
-
-    <div class="userdata">
-        <div class="thumb_wrap">
-
-            <div class="thumb_cont_black"><a href="/lodestone/freecompany/9237023573225245637/">
-<div class="ic_crest_64">
-    <span>
-
-
-            <img src="http://img2.finalfantasyxiv.com/c/B3c_4dca5cfd387b44b4d96f9996c9f41d74_02_64x64.png" width="64" height="64">
-
-        <img src="http://img2.finalfantasyxiv.com/c/F3e_b44a589b9e4c9dd18a79693bb59fd31f_00_64x64.png" width="64" height="64">
-        <img src="http://img2.finalfantasyxiv.com/c/S6d_20492d21a9668d24eb44a46d098891f3_01_64x64.png" width="64" height="64">
-
-    </span>
-</div>
-</a></div>
-
-        </div>
-
-
-        <div class="player_name_gold"><a href="/lodestone/freecompany/9237023573225245637/">Restless Souls</a><span> (Ragnarok)</span>
-
-
-
-                <div class="ic_gcrank">
-                    <div><img src="http://img.finalfantasyxiv.com/lds/pc/global/images/character/ic/city/uldah.png?1370575015" width="32" height="32" alt=""></div>
-                    <div>Immortal Flames</div>
-                </div>
-
-
-        </div>
-    </div>
-
-    <div class="point txt_yellow"><div class="inner point_rank">656923</div></div>
-</div></div></li>
-
-<li class="     rank_crown rank_crown_3 fc_list
-"><div class="list_footer"><div class="list_body clearfix">
-    <div class="rank
-
-
-                arrow_down
-
-        ">
-    </div>
-
-    <div class="userdata">
-        <div class="thumb_wrap">
-
-            <div class="thumb_cont_black"><a href="/lodestone/freecompany/9233505136016395453/">
-<div class="ic_crest_64">
-    <span>
-
-
-            <img src="http://img2.finalfantasyxiv.com/c/B11_3d4f8262c77a2a1f627a4bf74a7be68d_08_64x64.png" width="64" height="64">
-
-        <img src="http://img2.finalfantasyxiv.com/c/F21_fe6199c218b9e02c4a091037526cdbc2_00_64x64.png" width="64" height="64">
-        <img src="http://img2.finalfantasyxiv.com/c/S6b_a7de57d63cce6769b15887d45ec4705a_00_64x64.png" width="64" height="64">
-
-    </span>
-</div>
-</a></div>
-
-        </div>
-
-
-        <div class="player_name_gold"><a href="/lodestone/freecompany/9233505136016395453/">NGC_edofumi</a><span> (Tonberry)</span>
-
-
-
-                <div class="ic_gcrank">
-                    <div><img src="http://img.finalfantasyxiv.com/lds/pc/global/images/character/ic/city/limsalominsa.png?1370575015" width="32" height="32" alt=""></div>
-                    <div>Maelstrom</div>
-                </div>
-
-
-        </div>
-    </div>
-
-    <div class="point txt_yellow"><div class="inner point_rank">639698</div></div>
-</div></div></li>
-
-<li class="     rank_num    fc_list
-"><div class="list_footer"><div class="list_body clearfix">
-    <div class="rank
-
-
-                arrow_down
-
-        ">4
-    </div>
-
-    <div class="userdata">
-        <div class="thumb_wrap">
-
-            <div class="thumb_cont_black"><a href="/lodestone/freecompany/9232238498621170478/">
-<div class="ic_crest_44">
-    <span>
-
-
-            <img src="http://img2.finalfantasyxiv.com/c/B3f_2b3f1638e91e9a2b521be9b9e3cb43c5_32_40x40.png" width="40" height="40">
-
-        <img src="http://img2.finalfantasyxiv.com/c/F0b_ba7058bc3a9691edea6542b7a94a5872_00_40x40.png" width="40" height="40">
-        <img src="http://img2.finalfantasyxiv.com/c/S5e_852e8c52d3c9a2dc0781c4b19237d8ff_00_40x40.png" width="40" height="40">
-
-    </span>
-</div>
-</a></div>
-
-        </div>
-
-
-        <div class="player_name_gold"><a href="/lodestone/freecompany/9232238498621170478/">Valkurm Dunes</a><span> (Gilgamesh)</span>
-
-
-
-                <div class="ic_gcrank">
-                    <div><img src="http://img.finalfantasyxiv.com/lds/pc/global/images/character/ic/city/uldah.png?1370575015" width="32" height="32" alt=""></div>
-                    <div>Immortal Flames</div>
-                </div>
-
-
-        </div>
-    </div>
-
-    <div class="point txt_yellow"><div class="inner">593612</div></div>
-</div></div></li>
-
-<li class="     rank_num    fc_list
-"><div class="list_footer"><div class="list_body clearfix">
-    <div class="rank
-
-
-                arrow_up
-
-        ">5
-    </div>
-
-    <div class="userdata">
-        <div class="thumb_wrap">
-
-            <div class="thumb_cont_black"><a href="/lodestone/freecompany/9233505136016359495/">
-<div class="ic_crest_44">
-    <span>
-
-
-            <img src="http://img2.finalfantasyxiv.com/c/B3d_68585a4e1dc533f1fdd2bac0561a24b6_90_40x40.png" width="40" height="40">
-
-        <img src="http://img2.finalfantasyxiv.com/c/F25_5ed55f4ebe1434faa886f076220c3b4e_00_40x40.png" width="40" height="40">
-        <img src="http://img2.finalfantasyxiv.com/c/S4c_b9b2d4d3553c428c3df5467ff7091406_06_40x40.png" width="40" height="40">
-
-    </span>
-</div>
-</a></div>
-
-        </div>
-
-
-        <div class="player_name_gold"><a href="/lodestone/freecompany/9233505136016359495/">Vesperia</a><span> (Tonberry)</span>
-
-
-
-                <div class="ic_gcrank">
-                    <div><img src="http://img.finalfantasyxiv.com/lds/pc/global/images/character/ic/city/gridania.png?1370575015" width="32" height="32" alt=""></div>
-                    <div>Order of the Twin Adder</div>
-                </div>
-
-
-        </div>
-    </div>
-
-    <div class="point txt_yellow"><div class="inner">591168</div></div>
-</div></div></li>
-
-<li class="     rank_num    fc_list
-"><div class="list_footer"><div class="list_body clearfix">
-    <div class="rank
-
-
-                arrow_flat
-
-        ">6
-    </div>
-
-    <div class="userdata">
-        <div class="thumb_wrap">
-
-            <div class="thumb_cont_black"><a href="/lodestone/freecompany/9232660711086239960/">
-<div class="ic_crest_44">
-    <span>
-
-
-        <img src="http://img2.finalfantasyxiv.com/c/F00_f4d64b4d75ce7d3be3ba37e24ccc7830_00_40x40.png" width="40" height="40">
-        <img src="http://img2.finalfantasyxiv.com/c/S62_ec4d0758100554e280255859ee307419_07_40x40.png" width="40" height="40">
-
-    </span>
-</div>
-</a></div>
-
-        </div>
-
-
-        <div class="player_name_gold"><a href="/lodestone/freecompany/9232660711086239960/">The Agency</a><span> (Odin)</span>
-
-
-
-                <div class="ic_gcrank">
-                    <div><img src="http://img.finalfantasyxiv.com/lds/pc/global/images/character/ic/city/limsalominsa.png?1370575015" width="32" height="32" alt=""></div>
-                    <div>Maelstrom</div>
-                </div>
-
-
-        </div>
-    </div>
-
-    <div class="point txt_yellow"><div class="inner">588998</div></div>
-</div></div></li>
-
-<li class="     rank_num    fc_list
-"><div class="list_footer"><div class="list_body clearfix">
-    <div class="rank
-
-
-                arrow_down
-
-        ">7
-    </div>
-
-    <div class="userdata">
-        <div class="thumb_wrap">
-
-            <div class="thumb_cont_black"><a href="/lodestone/freecompany/9234349560946491892/">
-<div class="ic_crest_44">
-    <span>
-
-
-            <img src="http://img2.finalfantasyxiv.com/c/B3e_bbb707e57b24401775c85cb3301c745f_43_40x40.png" width="40" height="40">
-
-        <img src="http://img2.finalfantasyxiv.com/c/F01_ff6825cb5e06c73da64c1121d2f2bc18_00_40x40.png" width="40" height="40">
-        <img src="http://img2.finalfantasyxiv.com/c/S2a_25731f9d927ac40e715f35066d0c66bf_03_40x40.png" width="40" height="40">
-
-    </span>
-</div>
-</a></div>
-
-        </div>
-
-
-        <div class="player_name_gold"><a href="/lodestone/freecompany/9234349560946491892/">Shinra Corporation</a><span> (Behemoth)</span>
-
-
-
-                <div class="ic_gcrank">
-                    <div><img src="http://img.finalfantasyxiv.com/lds/pc/global/images/character/ic/city/gridania.png?1370575015" width="32" height="32" alt=""></div>
-                    <div>Order of the Twin Adder</div>
-                </div>
-
-
-        </div>
-    </div>
-
-    <div class="point txt_yellow"><div class="inner">560452</div></div>
-</div></div></li>
-
-<li class="     rank_num    fc_list
-"><div class="list_footer"><div class="list_body clearfix">
-    <div class="rank
-
-
-                arrow_up
-
-        ">8
-    </div>
-
-    <div class="userdata">
-        <div class="thumb_wrap">
-
-            <div class="thumb_cont_black"><a href="/lodestone/freecompany/9232238498621162014/">
-<div class="ic_crest_44">
-    <span>
-
-
-            <img src="http://img2.finalfantasyxiv.com/c/B3d_68585a4e1dc533f1fdd2bac0561a24b6_3b_40x40.png" width="40" height="40">
-
-        <img src="http://img2.finalfantasyxiv.com/c/F14_e575a9b2e79333d063b06de36cab2252_00_40x40.png" width="40" height="40">
-        <img src="http://img2.finalfantasyxiv.com/c/S6a_ecbd94a95d39b9453fd103e1a7cd2c3c_02_40x40.png" width="40" height="40">
-
-    </span>
-</div>
-</a></div>
-
-        </div>
-
-
-        <div class="player_name_gold"><a href="/lodestone/freecompany/9232238498621162014/">MagiTaint Mayhem</a><span> (Gilgamesh)</span>
-
-
-
-                <div class="ic_gcrank">
-                    <div><img src="http://img.finalfantasyxiv.com/lds/pc/global/images/character/ic/city/gridania.png?1370575015" width="32" height="32" alt=""></div>
-                    <div>Order of the Twin Adder</div>
-                </div>
-
-
-        </div>
-    </div>
-
-    <div class="point txt_yellow"><div class="inner">544599</div></div>
-</div></div></li>
-
-<li class="     rank_num    fc_list
-"><div class="list_footer"><div class="list_body clearfix">
-    <div class="rank
-
-
-                arrow_down
-
-        ">9
-    </div>
-
-    <div class="userdata">
-        <div class="thumb_wrap">
-
-            <div class="thumb_cont_black"><a href="/lodestone/freecompany/9233364398528006292/">
-<div class="ic_crest_44">
-    <span>
-
-
-            <img src="http://img2.finalfantasyxiv.com/c/B3c_4dca5cfd387b44b4d96f9996c9f41d74_93_40x40.png" width="40" height="40">
-
-        <img src="http://img2.finalfantasyxiv.com/c/F34_cde5180211f1a2fa784032b17fa21932_00_40x40.png" width="40" height="40">
-        <img src="http://img2.finalfantasyxiv.com/c/S55_182029f1aabf0996d68b346b9dfb6d05_01_40x40.png" width="40" height="40">
-
-    </span>
-</div>
-</a></div>
-
-        </div>
-
-
-        <div class="player_name_gold"><a href="/lodestone/freecompany/9233364398528006292/">The Dark Mortals</a><span> (Moogle)</span>
-
-
-
-                <div class="ic_gcrank">
-                    <div><img src="http://img.finalfantasyxiv.com/lds/pc/global/images/character/ic/city/gridania.png?1370575015" width="32" height="32" alt=""></div>
-                    <div>Order of the Twin Adder</div>
-                </div>
-
-
-        </div>
-    </div>
-
-    <div class="point txt_yellow"><div class="inner">535010</div></div>
-</div></div></li>
-
-<li class="     rank_num    fc_list
-"><div class="list_footer"><div class="list_body clearfix">
-    <div class="rank
-
-
-                arrow_flat
-
-        ">10
-    </div>
-
-    <div class="userdata">
-        <div class="thumb_wrap">
-
-            <div class="thumb_cont_black"><a href="/lodestone/freecompany/9236460623271821325/">
-<div class="ic_crest_44">
-    <span>
-
-
-            <img src="http://img2.finalfantasyxiv.com/c/B25_6f627318de87fe5883eb1631fd8b38a6_b4_40x40.png" width="40" height="40">
-
-        <img src="http://img2.finalfantasyxiv.com/c/F3f_fdeb76450beedbae580f24b8275fbeb0_00_40x40.png" width="40" height="40">
-        <img src="http://img2.finalfantasyxiv.com/c/S6f_917dd198e022c016c641f1040d39632c_05_40x40.png" width="40" height="40">
-
-    </span>
-</div>
-</a></div>
-
-        </div>
-
-
-        <div class="player_name_gold"><a href="/lodestone/freecompany/9236460623271821325/">Please Be Careful</a><span> (Excalibur)</span>
-
-
-
-                <div class="ic_gcrank">
-                    <div><img src="http://img.finalfantasyxiv.com/lds/pc/global/images/character/ic/city/uldah.png?1370575015" width="32" height="32" alt=""></div>
-                    <div>Immortal Flames</div>
-                </div>
-
-
-        </div>
-    </div>
-
-    <div class="point txt_yellow"><div class="inner">496750</div></div>
-</div></div></li>
-
-<li class="     rank_num    fc_list
-"><div class="list_footer"><div class="list_body clearfix">
-    <div class="rank
-
-
-                arrow_down
-
-        ">11
-    </div>
-
-    <div class="userdata">
-        <div class="thumb_wrap">
-
-            <div class="thumb_cont_black"><a href="/lodestone/freecompany/9234208823458138100/">
-<div class="ic_crest_44">
-    <span>
-
-
-            <img src="http://img2.finalfantasyxiv.com/c/B34_5771d3a664e400f06b7e62acd416655b_d0_40x40.png" width="40" height="40">
-
-        <img src="http://img2.finalfantasyxiv.com/c/F19_96f871081250d683c2432fdff2d9a1fe_00_40x40.png" width="40" height="40">
-        <img src="http://img2.finalfantasyxiv.com/c/S2d_6f8a407fc0033bf7e8b5a072482b8bb7_02_40x40.png" width="40" height="40">
-
-    </span>
-</div>
-</a></div>
-
-        </div>
-
-
-        <div class="player_name_gold"><a href="/lodestone/freecompany/9234208823458138100/">Terra Salis</a><span> (Ultros)</span>
-
-
-
-                <div class="ic_gcrank">
-                    <div><img src="http://img.finalfantasyxiv.com/lds/pc/global/images/character/ic/city/uldah.png?1370575015" width="32" height="32" alt=""></div>
-                    <div>Immortal Flames</div>
-                </div>
-
-
-        </div>
-    </div>
-
-    <div class="point txt_yellow"><div class="inner">480930</div></div>
-</div></div></li>
-
-<li class="     rank_num    fc_list
-"><div class="list_footer"><div class="list_body clearfix">
-    <div class="rank
-
-
-                arrow_up
-
-        ">12
-    </div>
-
-    <div class="userdata">
-        <div class="thumb_wrap">
-
-            <div class="thumb_cont_black"><a href="/lodestone/freecompany/9237023573225278137/">
-<div class="ic_crest_44">
-    <span>
-
-
-            <img src="http://img2.finalfantasyxiv.com/c/B3b_9921a142051ac64d8232725018aa9537_63_40x40.png" width="40" height="40">
-
-        <img src="http://img2.finalfantasyxiv.com/c/F15_0f0df38b72871392cf1caaffd770929e_00_40x40.png" width="40" height="40">
-        <img src="http://img2.finalfantasyxiv.com/c/S49_c5770b59fe5589d951155240813613f5_03_40x40.png" width="40" height="40">
-
-    </span>
-</div>
-</a></div>
-
-        </div>
-
-
-        <div class="player_name_gold"><a href="/lodestone/freecompany/9237023573225278137/">Eorzea Legend</a><span> (Ragnarok)</span>
-
-
-
-                <div class="ic_gcrank">
-                    <div><img src="http://img.finalfantasyxiv.com/lds/pc/global/images/character/ic/city/uldah.png?1370575015" width="32" height="32" alt=""></div>
-                    <div>Immortal Flames</div>
-                </div>
-
-
-        </div>
-    </div>
-
-    <div class="point txt_yellow"><div class="inner">479670</div></div>
-</div></div></li>
-
-<li class="     rank_num    fc_list
-"><div class="list_footer"><div class="list_body clearfix">
-    <div class="rank
-
-
-                arrow_up
-
-        ">13
-    </div>
-
-    <div class="userdata">
-        <div class="thumb_wrap">
-
-            <div class="thumb_cont_black"><a href="/lodestone/freecompany/9232097761132819145/">
-<div class="ic_crest_44">
-    <span>
-
-
-            <img src="http://img2.finalfantasyxiv.com/c/B3a_08f246d50a4fe75ed771dc05153249b7_cd_40x40.png" width="40" height="40">
-
-        <img src="http://img2.finalfantasyxiv.com/c/F13_1eed20810bad920cde33e267219cfbf5_00_40x40.png" width="40" height="40">
-        <img src="http://img2.finalfantasyxiv.com/c/S65_b87edbd6f92e7202a5abdc3837cf2212_06_40x40.png" width="40" height="40">
-
-    </span>
-</div>
-</a></div>
-
-        </div>
-
-
-        <div class="player_name_gold"><a href="/lodestone/freecompany/9232097761132819145/">Exiled Souls</a><span> (Diabolos)</span>
-
-
-
-                <div class="ic_gcrank">
-                    <div><img src="http://img.finalfantasyxiv.com/lds/pc/global/images/character/ic/city/gridania.png?1370575015" width="32" height="32" alt=""></div>
-                    <div>Order of the Twin Adder</div>
-                </div>
-
-
-        </div>
-    </div>
-
-    <div class="point txt_yellow"><div class="inner">475829</div></div>
-</div></div></li>
-
-<li class="     rank_num    fc_list
-"><div class="list_footer"><div class="list_body clearfix">
-    <div class="rank
-
-
-                arrow_up
-
-        ">14
-    </div>
-
-    <div class="userdata">
-        <div class="thumb_wrap">
-
-            <div class="thumb_cont_black"><a href="/lodestone/freecompany/9234349560946510902/">
-<div class="ic_crest_44">
-    <span>
-
-
-            <img src="http://img2.finalfantasyxiv.com/c/B3d_68585a4e1dc533f1fdd2bac0561a24b6_90_40x40.png" width="40" height="40">
-
-        <img src="http://img2.finalfantasyxiv.com/c/F34_cde5180211f1a2fa784032b17fa21932_00_40x40.png" width="40" height="40">
-        <img src="http://img2.finalfantasyxiv.com/c/S41_301bb0deaf4ced90e73a7fbed7a85b0a_07_40x40.png" width="40" height="40">
-
-    </span>
-</div>
-</a></div>
-
-        </div>
-
-
-        <div class="player_name_gold"><a href="/lodestone/freecompany/9234349560946510902/">primal vengeance</a><span> (Behemoth)</span>
-
-
-
-                <div class="ic_gcrank">
-                    <div><img src="http://img.finalfantasyxiv.com/lds/pc/global/images/character/ic/city/uldah.png?1370575015" width="32" height="32" alt=""></div>
-                    <div>Immortal Flames</div>
-                </div>
-
-
-        </div>
-    </div>
-
-    <div class="point txt_yellow"><div class="inner">474048</div></div>
-</div></div></li>
-
-<li class="     rank_num    fc_list
-"><div class="list_footer"><div class="list_body clearfix">
-    <div class="rank
-
-
-                arrow_down
-
-        ">15
-    </div>
-
-    <div class="userdata">
-        <div class="thumb_wrap">
-
-            <div class="thumb_cont_black"><a href="/lodestone/freecompany/9236460623271823315/">
-<div class="ic_crest_44">
-    <span>
-
-
-            <img src="http://img2.finalfantasyxiv.com/c/B25_6f627318de87fe5883eb1631fd8b38a6_b4_40x40.png" width="40" height="40">
-
-        <img src="http://img2.finalfantasyxiv.com/c/F3f_fdeb76450beedbae580f24b8275fbeb0_00_40x40.png" width="40" height="40">
-        <img src="http://img2.finalfantasyxiv.com/c/S32_b14e4febe69b28e8e1cf7bb69daa3485_05_40x40.png" width="40" height="40">
-
-    </span>
-</div>
-</a></div>
-
-        </div>
-
-
-        <div class="player_name_gold"><a href="/lodestone/freecompany/9236460623271823315/">Dragongod Knightking</a><span> (Excalibur)</span>
-
-
-
-                <div class="ic_gcrank">
-                    <div><img src="http://img.finalfantasyxiv.com/lds/pc/global/images/character/ic/city/limsalominsa.png?1370575015" width="32" height="32" alt=""></div>
-                    <div>Maelstrom</div>
-                </div>
-
-
-        </div>
-    </div>
-
-    <div class="point txt_yellow"><div class="inner">456135</div></div>
-</div></div></li>
-
-<li class="     rank_num    fc_list
-"><div class="list_footer"><div class="list_body clearfix">
-    <div class="rank
-
-
-                arrow_down
-
-        ">16
-    </div>
-
-    <div class="userdata">
-        <div class="thumb_wrap">
-
-            <div class="thumb_cont_black"><a href="/lodestone/freecompany/9234349560946510410/">
-<div class="ic_crest_44">
-    <span>
-
-
-            <img src="http://img2.finalfantasyxiv.com/c/B28_26086146b1dac887f1745fd5fc8b4555_dd_40x40.png" width="40" height="40">
-
-        <img src="http://img2.finalfantasyxiv.com/c/F03_51287a2e97459a52fe56d3534ad2ff9b_00_40x40.png" width="40" height="40">
-        <img src="http://img2.finalfantasyxiv.com/c/S36_0a61de430f632982469dbd0f05e9aadb_03_40x40.png" width="40" height="40">
-
-    </span>
-</div>
-</a></div>
-
-        </div>
-
-
-        <div class="player_name_gold"><a href="/lodestone/freecompany/9234349560946510410/">Pick Up Guild</a><span> (Behemoth)</span>
-
-
-
-                <div class="ic_gcrank">
-                    <div><img src="http://img.finalfantasyxiv.com/lds/pc/global/images/character/ic/city/uldah.png?1370575015" width="32" height="32" alt=""></div>
-                    <div>Immortal Flames</div>
-                </div>
-
-
-        </div>
-    </div>
-
-    <div class="point txt_yellow"><div class="inner">446247</div></div>
-</div></div></li>
-
-<li class="     rank_num    fc_list
-"><div class="list_footer"><div class="list_body clearfix">
-    <div class="rank
-
-
-                arrow_up
-
-        ">17
-    </div>
-
-    <div class="userdata">
-        <div class="thumb_wrap">
-
-            <div class="thumb_cont_black"><a href="/lodestone/freecompany/9236319885783486499/">
-<div class="ic_crest_44">
-    <span>
-
-
-            <img src="http://img2.finalfantasyxiv.com/c/B26_e5d06a36f9789998220ed9cf3d8b6da0_23_40x40.png" width="40" height="40">
-
-        <img src="http://img2.finalfantasyxiv.com/c/F2b_5be1f15c333b2b54c33ef198f62568f4_00_40x40.png" width="40" height="40">
-        <img src="http://img2.finalfantasyxiv.com/c/S42_191b22a14e488c67f2908f651f2dd19d_02_40x40.png" width="40" height="40">
-
-    </span>
-</div>
-</a></div>
-
-        </div>
-
-
-        <div class="player_name_gold"><a href="/lodestone/freecompany/9236319885783486499/">Endless</a><span> (Durandal)</span>
-
-
-
-                <div class="ic_gcrank">
-                    <div><img src="http://img.finalfantasyxiv.com/lds/pc/global/images/character/ic/city/uldah.png?1370575015" width="32" height="32" alt=""></div>
-                    <div>Immortal Flames</div>
-                </div>
-
-
-        </div>
-    </div>
-
-    <div class="point txt_yellow"><div class="inner">442117</div></div>
-</div></div></li>
-
-<li class="     rank_num    fc_list
-"><div class="list_footer"><div class="list_body clearfix">
-    <div class="rank
-
-
-                arrow_up
-
-        ">18
-    </div>
-
-    <div class="userdata">
-        <div class="thumb_wrap">
-
-            <div class="thumb_cont_black"><a href="/lodestone/freecompany/9232379236109551326/">
-<div class="ic_crest_44">
-    <span>
-
-
-            <img src="http://img2.finalfantasyxiv.com/c/B31_d9117009e27f781ee5c6da3bf5cf7ee9_93_40x40.png" width="40" height="40">
-
-        <img src="http://img2.finalfantasyxiv.com/c/F39_6d2ac826e09e89440d628500af79269f_00_40x40.png" width="40" height="40">
-        <img src="http://img2.finalfantasyxiv.com/c/S58_6cf1782685cff2418b831fe3ae9a3769_02_40x40.png" width="40" height="40">
-
-    </span>
-</div>
-</a></div>
-
-        </div>
-
-
-        <div class="player_name_gold"><a href="/lodestone/freecompany/9232379236109551326/">Geuno</a><span> (Leviathan)</span>
-
-
-
-                <div class="ic_gcrank">
-                    <div><img src="http://img.finalfantasyxiv.com/lds/pc/global/images/character/ic/city/uldah.png?1370575015" width="32" height="32" alt=""></div>
-                    <div>Immortal Flames</div>
-                </div>
-
-
-        </div>
-    </div>
-
-    <div class="point txt_yellow"><div class="inner">441122</div></div>
-</div></div></li>
-
-<li class="     rank_num    fc_list
-"><div class="list_footer"><div class="list_body clearfix">
-    <div class="rank
-
-
-                arrow_down
-
-        ">19
-    </div>
-
-    <div class="userdata">
-        <div class="thumb_wrap">
-
-            <div class="thumb_cont_black"><a href="/lodestone/freecompany/9233505136016367967/">
-<div class="ic_crest_44">
-    <span>
-
-
-            <img src="http://img2.finalfantasyxiv.com/c/B3b_9921a142051ac64d8232725018aa9537_93_40x40.png" width="40" height="40">
-
-        <img src="http://img2.finalfantasyxiv.com/c/F1e_ed8a164ee0086dc3e36d078e76126110_00_40x40.png" width="40" height="40">
-        <img src="http://img2.finalfantasyxiv.com/c/S36_0a61de430f632982469dbd0f05e9aadb_00_40x40.png" width="40" height="40">
-
-    </span>
-</div>
-</a></div>
-
-        </div>
-
-
-        <div class="player_name_gold"><a href="/lodestone/freecompany/9233505136016367967/">Imperial Blood</a><span> (Tonberry)</span>
-
-
-
-                <div class="ic_gcrank">
-                    <div><img src="http://img.finalfantasyxiv.com/lds/pc/global/images/character/ic/city/gridania.png?1370575015" width="32" height="32" alt=""></div>
-                    <div>Order of the Twin Adder</div>
-                </div>
-
-
-        </div>
-    </div>
-
-    <div class="point txt_yellow"><div class="inner">440501</div></div>
-</div></div></li>
-
-<li class="     rank_num    fc_list
-"><div class="list_footer"><div class="list_body clearfix">
-    <div class="rank
-
-
-                arrow_down
-
-        ">20
-    </div>
-
-    <div class="userdata">
-        <div class="thumb_wrap">
-
-            <div class="thumb_cont_black"><a href="/lodestone/freecompany/9234208823458185598/">
-<div class="ic_crest_44">
-    <span>
-
-
-            <img src="http://img2.finalfantasyxiv.com/c/B1f_afae7df1b97c0bf3e5bdf2d8fc5593c0_d3_40x40.png" width="40" height="40">
-
-        <img src="http://img2.finalfantasyxiv.com/c/F3e_b44a589b9e4c9dd18a79693bb59fd31f_00_40x40.png" width="40" height="40">
-        <img src="http://img2.finalfantasyxiv.com/c/S44_acfce181a218d63225b6cf36ab0fdb5a_02_40x40.png" width="40" height="40">
-
-    </span>
-</div>
-</a></div>
-
-        </div>
-
-
-        <div class="player_name_gold"><a href="/lodestone/freecompany/9234208823458185598/">Storm Feelers</a><span> (Ultros)</span>
-
-
-
-                <div class="ic_gcrank">
-                    <div><img src="http://img.finalfantasyxiv.com/lds/pc/global/images/character/ic/city/uldah.png?1370575015" width="32" height="32" alt=""></div>
-                    <div>Immortal Flames</div>
-                </div>
-
-
-        </div>
-    </div>
-
-    <div class="point txt_yellow"><div class="inner">438076</div></div>
-</div></div></li>
-
-<li class="     rank_num    fc_list
-"><div class="list_footer"><div class="list_body clearfix">
-    <div class="rank
-
-
-                arrow_up
-
-        ">21
-    </div>
-
-    <div class="userdata">
-        <div class="thumb_wrap">
-
-            <div class="thumb_cont_black"><a href="/lodestone/freecompany/9237305048201953285/">
-<div class="ic_crest_44">
-    <span>
-
-
-            <img src="http://img2.finalfantasyxiv.com/c/B39_a2ce39d4c67c56d39f2fd00b6e2c8a4c_02_40x40.png" width="40" height="40">
-
-        <img src="http://img2.finalfantasyxiv.com/c/F17_9aadffbc2a1df59c409e6b9255be312c_00_40x40.png" width="40" height="40">
-        <img src="http://img2.finalfantasyxiv.com/c/S38_05674aab6cbde21ab186a70099e65688_00_40x40.png" width="40" height="40">
-
-    </span>
-</div>
-</a></div>
-
-        </div>
-
-
-        <div class="player_name_gold"><a href="/lodestone/freecompany/9237305048201953285/">Laodizea</a><span> (Sargatanas)</span>
-
-
-
-                <div class="ic_gcrank">
-                    <div><img src="http://img.finalfantasyxiv.com/lds/pc/global/images/character/ic/city/limsalominsa.png?1370575015" width="32" height="32" alt=""></div>
-                    <div>Maelstrom</div>
-                </div>
-
-
-        </div>
-    </div>
-
-    <div class="point txt_yellow"><div class="inner">430847</div></div>
-</div></div></li>
-
-<li class="     rank_num    fc_list
-"><div class="list_footer"><div class="list_body clearfix">
-    <div class="rank
-
-
-                arrow_down
-
-        ">22
-    </div>
-
-    <div class="userdata">
-        <div class="thumb_wrap">
-
-            <div class="thumb_cont_black"><a href="/lodestone/freecompany/9236179148295113686/">
-<div class="ic_crest_44">
-    <span>
-
-
-            <img src="http://img2.finalfantasyxiv.com/c/B39_a2ce39d4c67c56d39f2fd00b6e2c8a4c_96_40x40.png" width="40" height="40">
-
-        <img src="http://img2.finalfantasyxiv.com/c/F3f_fdeb76450beedbae580f24b8275fbeb0_00_40x40.png" width="40" height="40">
-        <img src="http://img2.finalfantasyxiv.com/c/S59_350e97260d222fac8683c9af374820b0_06_40x40.png" width="40" height="40">
-
-    </span>
-</div>
-</a></div>
-
-        </div>
-
-
-        <div class="player_name_gold"><a href="/lodestone/freecompany/9236179148295113686/">HardcoreEliteCasuals</a><span> (Balmung)</span>
-
-
-
-                <div class="ic_gcrank">
-                    <div><img src="http://img.finalfantasyxiv.com/lds/pc/global/images/character/ic/city/gridania.png?1370575015" width="32" height="32" alt=""></div>
-                    <div>Order of the Twin Adder</div>
-                </div>
-
-
-        </div>
-    </div>
-
-    <div class="point txt_yellow"><div class="inner">413953</div></div>
-</div></div></li>
-
-<li class="     rank_num    fc_list
-"><div class="list_footer"><div class="list_body clearfix">
-    <div class="rank
-
-
-                arrow_down
-
-        ">23
-    </div>
-
-    <div class="userdata">
-        <div class="thumb_wrap">
-
-            <div class="thumb_cont_black"><a href="/lodestone/freecompany/9231253336202679735/">
-<div class="ic_crest_44">
-    <span>
-
-
-            <img src="http://img2.finalfantasyxiv.com/c/B3d_68585a4e1dc533f1fdd2bac0561a24b6_09_40x40.png" width="40" height="40">
-
-        <img src="http://img2.finalfantasyxiv.com/c/F07_44c51b7fa27d3b4f9c6b1ff2fba42b52_00_40x40.png" width="40" height="40">
-        <img src="http://img2.finalfantasyxiv.com/c/S58_6cf1782685cff2418b831fe3ae9a3769_02_40x40.png" width="40" height="40">
-
-    </span>
-</div>
-</a></div>
-
-        </div>
-
-
-        <div class="player_name_gold"><a href="/lodestone/freecompany/9231253336202679735/">Force And Velocity</a><span> (Phoenix)</span>
-
-
-
-                <div class="ic_gcrank">
-                    <div><img src="http://img.finalfantasyxiv.com/lds/pc/global/images/character/ic/city/gridania.png?1370575015" width="32" height="32" alt=""></div>
-                    <div>Order of the Twin Adder</div>
-                </div>
-
-
-        </div>
-    </div>
-
-    <div class="point txt_yellow"><div class="inner">408503</div></div>
-</div></div></li>
-
-<li class="     rank_num    fc_list
-"><div class="list_footer"><div class="list_body clearfix">
-    <div class="rank
-
-
-                arrow_up
-
-        ">24
-    </div>
-
-    <div class="userdata">
-        <div class="thumb_wrap">
-
-            <div class="thumb_cont_black"><a href="/lodestone/freecompany/9236179148295113259/">
-<div class="ic_crest_44">
-    <span>
-
-
-            <img src="http://img2.finalfantasyxiv.com/c/B2d_8170670dea7cc97768356deac760447d_dd_40x40.png" width="40" height="40">
-
-        <img src="http://img2.finalfantasyxiv.com/c/F1b_f78279681ed539142ae81079444f4017_00_40x40.png" width="40" height="40">
-        <img src="http://img2.finalfantasyxiv.com/c/S4c_b9b2d4d3553c428c3df5467ff7091406_00_40x40.png" width="40" height="40">
-
-    </span>
-</div>
-</a></div>
-
-        </div>
-
-
-        <div class="player_name_gold"><a href="/lodestone/freecompany/9236179148295113259/">Warlords of the MIst</a><span> (Balmung)</span>
-
-
-
-                <div class="ic_gcrank">
-                    <div><img src="http://img.finalfantasyxiv.com/lds/pc/global/images/character/ic/city/uldah.png?1370575015" width="32" height="32" alt=""></div>
-                    <div>Immortal Flames</div>
-                </div>
-
-
-        </div>
-    </div>
-
-    <div class="point txt_yellow"><div class="inner">408289</div></div>
-</div></div></li>
-
-<li class="     rank_num    fc_list
-"><div class="list_footer"><div class="list_body clearfix">
-    <div class="rank
-
-
-                arrow_up
-
-        ">25
-    </div>
-
-    <div class="userdata">
-        <div class="thumb_wrap">
-
-            <div class="thumb_cont_black"><a href="/lodestone/freecompany/9233505136016359425/">
-<div class="ic_crest_44">
-    <span>
-
-
-            <img src="http://img2.finalfantasyxiv.com/c/B16_69487f2cd812d84376239566043b3034_09_40x40.png" width="40" height="40">
-
-        <img src="http://img2.finalfantasyxiv.com/c/F1f_09bd537610e5522c1de8c3973ec87ccb_00_40x40.png" width="40" height="40">
-        <img src="http://img2.finalfantasyxiv.com/c/S66_bf47d61b467fe35453d9606f72c678dd_02_40x40.png" width="40" height="40">
-
-    </span>
-</div>
-</a></div>
-
-        </div>
-
-
-        <div class="player_name_gold"><a href="/lodestone/freecompany/9233505136016359425/">Mirai</a><span> (Tonberry)</span>
-
-
-
-                <div class="ic_gcrank">
-                    <div><img src="http://img.finalfantasyxiv.com/lds/pc/global/images/character/ic/city/limsalominsa.png?1370575015" width="32" height="32" alt=""></div>
-                    <div>Maelstrom</div>
-                </div>
-
-
-        </div>
-    </div>
-
-    <div class="point txt_yellow"><div class="inner">405772</div></div>
-</div></div></li>
-
-<li class="     rank_num    fc_list
-"><div class="list_footer"><div class="list_body clearfix">
-    <div class="rank
-
-
-                arrow_down
-
-        ">26
-    </div>
-
-    <div class="userdata">
-        <div class="thumb_wrap">
-
-            <div class="thumb_cont_black"><a href="/lodestone/freecompany/9233505136016395427/">
-<div class="ic_crest_44">
-    <span>
-
-
-        <img src="http://img2.finalfantasyxiv.com/c/F00_f4d64b4d75ce7d3be3ba37e24ccc7830_00_40x40.png" width="40" height="40">
-        <img src="http://img2.finalfantasyxiv.com/c/S2d_6f8a407fc0033bf7e8b5a072482b8bb7_02_40x40.png" width="40" height="40">
-
-    </span>
-</div>
-</a></div>
-
-        </div>
-
-
-        <div class="player_name_gold"><a href="/lodestone/freecompany/9233505136016395427/">House Of The Saints</a><span> (Tonberry)</span>
-
-
-
-                <div class="ic_gcrank">
-                    <div><img src="http://img.finalfantasyxiv.com/lds/pc/global/images/character/ic/city/limsalominsa.png?1370575015" width="32" height="32" alt=""></div>
-                    <div>Maelstrom</div>
-                </div>
-
-
-        </div>
-    </div>
-
-    <div class="point txt_yellow"><div class="inner">403250</div></div>
-</div></div></li>
-
-<li class="     rank_num    fc_list
-"><div class="list_footer"><div class="list_body clearfix">
-    <div class="rank
-
-
-                arrow_up
-
-        ">27
-    </div>
-
-    <div class="userdata">
-        <div class="thumb_wrap">
-
-            <div class="thumb_cont_black"><a href="/lodestone/freecompany/9232379236109519324/">
-<div class="ic_crest_44">
-    <span>
-
-
-            <img src="http://img2.finalfantasyxiv.com/c/B26_e5d06a36f9789998220ed9cf3d8b6da0_cd_40x40.png" width="40" height="40">
-
-        <img src="http://img2.finalfantasyxiv.com/c/F3f_fdeb76450beedbae580f24b8275fbeb0_00_40x40.png" width="40" height="40">
-        <img src="http://img2.finalfantasyxiv.com/c/S05_bf25a86aaf6f6329f19606513073ddb2_06_40x40.png" width="40" height="40">
-
-    </span>
-</div>
-</a></div>
-
-        </div>
-
-
-        <div class="player_name_gold"><a href="/lodestone/freecompany/9232379236109519324/">Diamond Dust</a><span> (Leviathan)</span>
-
-
-
-                <div class="ic_gcrank">
-                    <div><img src="http://img.finalfantasyxiv.com/lds/pc/global/images/character/ic/city/limsalominsa.png?1370575015" width="32" height="32" alt=""></div>
-                    <div>Maelstrom</div>
-                </div>
-
-
-        </div>
-    </div>
-
-    <div class="point txt_yellow"><div class="inner">399542</div></div>
-</div></div></li>
-
-<li class="     rank_num    fc_list
-"><div class="list_footer"><div class="list_body clearfix">
-    <div class="rank
-
-
-                arrow_down
-
-        ">28
-    </div>
-
-    <div class="userdata">
-        <div class="thumb_wrap">
-
-            <div class="thumb_cont_black"><a href="/lodestone/freecompany/9230831123737609484/">
-<div class="ic_crest_44">
-    <span>
-
-
-            <img src="http://img2.finalfantasyxiv.com/c/B3f_2b3f1638e91e9a2b521be9b9e3cb43c5_03_40x40.png" width="40" height="40">
-
-        <img src="http://img2.finalfantasyxiv.com/c/F20_6fa4e9c297313c6e3574fd892bb55994_00_40x40.png" width="40" height="40">
-        <img src="http://img2.finalfantasyxiv.com/c/S66_bf47d61b467fe35453d9606f72c678dd_02_40x40.png" width="40" height="40">
-
-    </span>
-</div>
-</a></div>
-
-        </div>
-
-
-        <div class="player_name_gold"><a href="/lodestone/freecompany/9230831123737609484/">Elite Oblivion Order</a><span> (Exodus)</span>
-
-
-
-                <div class="ic_gcrank">
-                    <div><img src="http://img.finalfantasyxiv.com/lds/pc/global/images/character/ic/city/gridania.png?1370575015" width="32" height="32" alt=""></div>
-                    <div>Order of the Twin Adder</div>
-                </div>
-
-
-        </div>
-    </div>
-
-    <div class="point txt_yellow"><div class="inner">397562</div></div>
-</div></div></li>
-
-<li class="     rank_num    fc_list
-"><div class="list_footer"><div class="list_body clearfix">
-    <div class="rank
-
-
-                arrow_down
-
-        ">29
-    </div>
-
-    <div class="userdata">
-        <div class="thumb_wrap">
-
-            <div class="thumb_cont_black"><a href="/lodestone/freecompany/9230831123737608771/">
-<div class="ic_crest_44">
-    <span>
-
-
-            <img src="http://img2.finalfantasyxiv.com/c/B13_bcbdad29bc8de010c890ed156a6477ba_06_40x40.png" width="40" height="40">
-
-        <img src="http://img2.finalfantasyxiv.com/c/F1e_ed8a164ee0086dc3e36d078e76126110_00_40x40.png" width="40" height="40">
-        <img src="http://img2.finalfantasyxiv.com/c/S2a_25731f9d927ac40e715f35066d0c66bf_03_40x40.png" width="40" height="40">
-
-    </span>
-</div>
-</a></div>
-
-        </div>
-
-
-        <div class="player_name_gold"><a href="/lodestone/freecompany/9230831123737608771/">Fairy Tail</a><span> (Exodus)</span>
-
-
-
-                <div class="ic_gcrank">
-                    <div><img src="http://img.finalfantasyxiv.com/lds/pc/global/images/character/ic/city/uldah.png?1370575015" width="32" height="32" alt=""></div>
-                    <div>Immortal Flames</div>
-                </div>
-
-
-        </div>
-    </div>
-
-    <div class="point txt_yellow"><div class="inner">392513</div></div>
-</div></div></li>
-
-<li class="     rank_num    fc_list
-"><div class="list_footer"><div class="list_body clearfix">
-    <div class="rank
-
-
-                arrow_down
-
-        ">30
-    </div>
-
-    <div class="userdata">
-        <div class="thumb_wrap">
-
-            <div class="thumb_cont_black"><a href="/lodestone/freecompany/9231816286156096048/">
-<div class="ic_crest_44">
-    <span>
-
-
-            <img src="http://img2.finalfantasyxiv.com/c/B0f_8c3fc97865a1c6bfa360c1bce22b9fa0_09_40x40.png" width="40" height="40">
-
-        <img src="http://img2.finalfantasyxiv.com/c/F0c_9f69df2b17fcd82ea6aaa8368f2a6d1b_00_40x40.png" width="40" height="40">
-        <img src="http://img2.finalfantasyxiv.com/c/S2b_def95de8010725c374a359ee9e5a11d7_02_40x40.png" width="40" height="40">
-
-    </span>
-</div>
-</a></div>
-
-        </div>
-
-
-        <div class="player_name_gold"><a href="/lodestone/freecompany/9231816286156096048/">Freelance</a><span> (Ramuh)</span>
-
-
-
-                <div class="ic_gcrank">
-                    <div><img src="http://img.finalfantasyxiv.com/lds/pc/global/images/character/ic/city/limsalominsa.png?1370575015" width="32" height="32" alt=""></div>
-                    <div>Maelstrom</div>
-                </div>
-
-
-        </div>
-    </div>
-
-    <div class="point txt_yellow"><div class="inner">383112</div></div>
-</div></div></li>
-
-<li class="     rank_num    fc_list
-"><div class="list_footer"><div class="list_body clearfix">
-    <div class="rank
-
-
-                arrow_up
-
-        ">31
-    </div>
-
-    <div class="userdata">
-        <div class="thumb_wrap">
-
-            <div class="thumb_cont_black"><a href="/lodestone/freecompany/9233505136016386424/">
-<div class="ic_crest_44">
-    <span>
-
-
-            <img src="http://img2.finalfantasyxiv.com/c/B3d_68585a4e1dc533f1fdd2bac0561a24b6_39_40x40.png" width="40" height="40">
-
-        <img src="http://img2.finalfantasyxiv.com/c/F1e_ed8a164ee0086dc3e36d078e76126110_00_40x40.png" width="40" height="40">
-        <img src="http://img2.finalfantasyxiv.com/c/S5c_c48179b4e96cff6ed7c51da16ca90c11_02_40x40.png" width="40" height="40">
-
-    </span>
-</div>
-</a></div>
-
-        </div>
-
-
-        <div class="player_name_gold"><a href="/lodestone/freecompany/9233505136016386424/">Mistguard of Nabudis</a><span> (Tonberry)</span>
-
-
-
-                <div class="ic_gcrank">
-                    <div><img src="http://img.finalfantasyxiv.com/lds/pc/global/images/character/ic/city/limsalominsa.png?1370575015" width="32" height="32" alt=""></div>
-                    <div>Maelstrom</div>
-                </div>
-
-
-        </div>
-    </div>
-
-    <div class="point txt_yellow"><div class="inner">364068</div></div>
-</div></div></li>
-
-<li class="     rank_num    fc_list
-"><div class="list_footer"><div class="list_body clearfix">
-    <div class="rank
-
-
-                arrow_down
-
-        ">32
-    </div>
-
-    <div class="userdata">
-        <div class="thumb_wrap">
-
-            <div class="thumb_cont_black"><a href="/lodestone/freecompany/9237305048201953329/">
-<div class="ic_crest_44">
-    <span>
-
-
-            <img src="http://img2.finalfantasyxiv.com/c/B3e_bbb707e57b24401775c85cb3301c745f_c3_40x40.png" width="40" height="40">
-
-        <img src="http://img2.finalfantasyxiv.com/c/F0c_9f69df2b17fcd82ea6aaa8368f2a6d1b_00_40x40.png" width="40" height="40">
-        <img src="http://img2.finalfantasyxiv.com/c/S41_301bb0deaf4ced90e73a7fbed7a85b0a_00_40x40.png" width="40" height="40">
-
-    </span>
-</div>
-</a></div>
-
-        </div>
-
-
-        <div class="player_name_gold"><a href="/lodestone/freecompany/9237305048201953329/">GhostInTheLinkshell</a><span> (Sargatanas)</span>
-
-
-
-                <div class="ic_gcrank">
-                    <div><img src="http://img.finalfantasyxiv.com/lds/pc/global/images/character/ic/city/limsalominsa.png?1370575015" width="32" height="32" alt=""></div>
-                    <div>Maelstrom</div>
-                </div>
-
-
-        </div>
-    </div>
-
-    <div class="point txt_yellow"><div class="inner">364002</div></div>
-</div></div></li>
-
-<li class="     rank_num    fc_list
-"><div class="list_footer"><div class="list_body clearfix">
-    <div class="rank
-
-
-                arrow_down
-
-        ">33
-    </div>
-
-    <div class="userdata">
-        <div class="thumb_wrap">
-
-            <div class="thumb_cont_black"><a href="/lodestone/freecompany/9229001536389012456/">
-<div class="ic_crest_44">
-    <span>
-
-
-            <img src="http://img2.finalfantasyxiv.com/c/B1a_6156d40d3d0e406e2d922e079c39e9f9_3b_40x40.png" width="40" height="40">
-
-        <img src="http://img2.finalfantasyxiv.com/c/F1e_ed8a164ee0086dc3e36d078e76126110_00_40x40.png" width="40" height="40">
-        <img src="http://img2.finalfantasyxiv.com/c/S38_05674aab6cbde21ab186a70099e65688_05_40x40.png" width="40" height="40">
-
-    </span>
-</div>
-</a></div>
-
-        </div>
-
-
-        <div class="player_name_gold"><a href="/lodestone/freecompany/9229001536389012456/">Crowne of Thorne</a><span> (Jenova)</span>
-
-
-
-                <div class="ic_gcrank">
-                    <div><img src="http://img.finalfantasyxiv.com/lds/pc/global/images/character/ic/city/gridania.png?1370575015" width="32" height="32" alt=""></div>
-                    <div>Order of the Twin Adder</div>
-                </div>
-
-
-        </div>
-    </div>
-
-    <div class="point txt_yellow"><div class="inner">356917</div></div>
-</div></div></li>
-
-<li class="     rank_num    fc_list
-"><div class="list_footer"><div class="list_body clearfix">
-    <div class="rank
-
-
-                arrow_down
-
-        ">34
-    </div>
-
-    <div class="userdata">
-        <div class="thumb_wrap">
-
-            <div class="thumb_cont_black"><a href="/lodestone/freecompany/9234208823458136068/">
-<div class="ic_crest_44">
-    <span>
-
-
-            <img src="http://img2.finalfantasyxiv.com/c/B01_a6710e320c573407ef38c39790b2639d_36_40x40.png" width="40" height="40">
-
-        <img src="http://img2.finalfantasyxiv.com/c/F1e_ed8a164ee0086dc3e36d078e76126110_00_40x40.png" width="40" height="40">
-        <img src="http://img2.finalfantasyxiv.com/c/S3a_823c68e13683a115b4df62bfab74d24b_02_40x40.png" width="40" height="40">
-
-    </span>
-</div>
-</a></div>
-
-        </div>
-
-
-        <div class="player_name_gold"><a href="/lodestone/freecompany/9234208823458136068/">Gather Against Fate</a><span> (Ultros)</span>
-
-
-
-                <div class="ic_gcrank">
-                    <div><img src="http://img.finalfantasyxiv.com/lds/pc/global/images/character/ic/city/limsalominsa.png?1370575015" width="32" height="32" alt=""></div>
-                    <div>Maelstrom</div>
-                </div>
-
-
-        </div>
-    </div>
-
-    <div class="point txt_yellow"><div class="inner">353605</div></div>
-</div></div></li>
-
-<li class="     rank_num    fc_list
-"><div class="list_footer"><div class="list_body clearfix">
-    <div class="rank
-
-
-                arrow_up
-
-        ">35
-    </div>
-
-    <div class="userdata">
-        <div class="thumb_wrap">
-
-            <div class="thumb_cont_black"><a href="/lodestone/freecompany/9237023573225242696/">
-<div class="ic_crest_44">
-    <span>
-
-
-            <img src="http://img2.finalfantasyxiv.com/c/B30_c537b1726c11b3c8ecc2311853a54567_89_40x40.png" width="40" height="40">
-
-        <img src="http://img2.finalfantasyxiv.com/c/F3f_fdeb76450beedbae580f24b8275fbeb0_00_40x40.png" width="40" height="40">
-        <img src="http://img2.finalfantasyxiv.com/c/S41_301bb0deaf4ced90e73a7fbed7a85b0a_04_40x40.png" width="40" height="40">
-
-    </span>
-</div>
-</a></div>
-
-        </div>
-
-
-        <div class="player_name_gold"><a href="/lodestone/freecompany/9237023573225242696/">zzZ</a><span> (Ragnarok)</span>
-
-
-
-                <div class="ic_gcrank">
-                    <div><img src="http://img.finalfantasyxiv.com/lds/pc/global/images/character/ic/city/uldah.png?1370575015" width="32" height="32" alt=""></div>
-                    <div>Immortal Flames</div>
-                </div>
-
-
-        </div>
-    </div>
-
-    <div class="point txt_yellow"><div class="inner">351177</div></div>
-</div></div></li>
-
-<li class="     rank_num    fc_list
-"><div class="list_footer"><div class="list_body clearfix">
-    <div class="rank
-
-
-                arrow_down
-
-        ">36
-    </div>
-
-    <div class="userdata">
-        <div class="thumb_wrap">
-
-            <div class="thumb_cont_black"><a href="/lodestone/freecompany/9234490298434849249/">
-<div class="ic_crest_44">
-    <span>
-
-
-            <img src="http://img2.finalfantasyxiv.com/c/B2c_ee331b66243aebcbd791076248ceda16_31_40x40.png" width="40" height="40">
-
-        <img src="http://img2.finalfantasyxiv.com/c/F3e_b44a589b9e4c9dd18a79693bb59fd31f_00_40x40.png" width="40" height="40">
-        <img src="http://img2.finalfantasyxiv.com/c/S2a_25731f9d927ac40e715f35066d0c66bf_02_40x40.png" width="40" height="40">
-
-    </span>
-</div>
-</a></div>
-
-        </div>
-
-
-        <div class="player_name_gold"><a href="/lodestone/freecompany/9234490298434849249/">Mysidia</a><span> (Cactuar)</span>
-
-
-
-                <div class="ic_gcrank">
-                    <div><img src="http://img.finalfantasyxiv.com/lds/pc/global/images/character/ic/city/gridania.png?1370575015" width="32" height="32" alt=""></div>
-                    <div>Order of the Twin Adder</div>
-                </div>
-
-
-        </div>
-    </div>
-
-    <div class="point txt_yellow"><div class="inner">347580</div></div>
-</div></div></li>
-
-<li class="     rank_num    fc_list
-"><div class="list_footer"><div class="list_body clearfix">
-    <div class="rank
-
-
-                arrow_up
-
-        ">37
-    </div>
-
-    <div class="userdata">
-        <div class="thumb_wrap">
-
-            <div class="thumb_cont_black"><a href="/lodestone/freecompany/9233786610993117604/">
-<div class="ic_crest_44">
-    <span>
-
-
-            <img src="http://img2.finalfantasyxiv.com/c/B14_6db3b06466bca1a957ed0bc9ccb9c425_3f_40x40.png" width="40" height="40">
-
-        <img src="http://img2.finalfantasyxiv.com/c/F3e_b44a589b9e4c9dd18a79693bb59fd31f_00_40x40.png" width="40" height="40">
-        <img src="http://img2.finalfantasyxiv.com/c/S3a_823c68e13683a115b4df62bfab74d24b_07_40x40.png" width="40" height="40">
-
-    </span>
-</div>
-</a></div>
-
-        </div>
-
-
-        <div class="player_name_gold"><a href="/lodestone/freecompany/9233786610993117604/">Sixth Sense</a><span> (Coeurl)</span>
-
-
-
-                <div class="ic_gcrank">
-                    <div><img src="http://img.finalfantasyxiv.com/lds/pc/global/images/character/ic/city/limsalominsa.png?1370575015" width="32" height="32" alt=""></div>
-                    <div>Maelstrom</div>
-                </div>
-
-
-        </div>
-    </div>
-
-    <div class="point txt_yellow"><div class="inner">346835</div></div>
-</div></div></li>
-
-<li class="     rank_num    fc_list
-"><div class="list_footer"><div class="list_body clearfix">
-    <div class="rank
-
-
-                arrow_up
-
-        ">38
-    </div>
-
-    <div class="userdata">
-        <div class="thumb_wrap">
-
-            <div class="thumb_cont_black"><a href="/lodestone/freecompany/9236460623271829897/">
-<div class="ic_crest_44">
-    <span>
-
-
-            <img src="http://img2.finalfantasyxiv.com/c/B27_03117b168c3a39e866bc39e537da398c_39_40x40.png" width="40" height="40">
-
-        <img src="http://img2.finalfantasyxiv.com/c/F1d_16273eedff42b738ba21a865bc57e4bf_00_40x40.png" width="40" height="40">
-        <img src="http://img2.finalfantasyxiv.com/c/S3a_823c68e13683a115b4df62bfab74d24b_02_40x40.png" width="40" height="40">
-
-    </span>
-</div>
-</a></div>
-
-        </div>
-
-
-        <div class="player_name_gold"><a href="/lodestone/freecompany/9236460623271829897/">Limit Break</a><span> (Excalibur)</span>
-
-
-
-                <div class="ic_gcrank">
-                    <div><img src="http://img.finalfantasyxiv.com/lds/pc/global/images/character/ic/city/uldah.png?1370575015" width="32" height="32" alt=""></div>
-                    <div>Immortal Flames</div>
-                </div>
-
-
-        </div>
-    </div>
-
-    <div class="point txt_yellow"><div class="inner">342135</div></div>
-</div></div></li>
-
-<li class="     rank_num    fc_list
-"><div class="list_footer"><div class="list_body clearfix">
-    <div class="rank
-
-
-                arrow_up
-
-        ">39
-    </div>
-
-    <div class="userdata">
-        <div class="thumb_wrap">
-
-            <div class="thumb_cont_black"><a href="/lodestone/freecompany/9231112598714320022/">
-<div class="ic_crest_44">
-    <span>
-
-
-            <img src="http://img2.finalfantasyxiv.com/c/B3f_2b3f1638e91e9a2b521be9b9e3cb43c5_93_40x40.png" width="40" height="40">
-
-        <img src="http://img2.finalfantasyxiv.com/c/F3e_b44a589b9e4c9dd18a79693bb59fd31f_00_40x40.png" width="40" height="40">
-        <img src="http://img2.finalfantasyxiv.com/c/S61_b937835d1a820410d7f88eaf4308fe4d_01_40x40.png" width="40" height="40">
-
-    </span>
-</div>
-</a></div>
-
-        </div>
-
-
-        <div class="player_name_gold"><a href="/lodestone/freecompany/9231112598714320022/">Apocalypse</a><span> (Lamia)</span>
-
-
-
-                <div class="ic_gcrank">
-                    <div><img src="http://img.finalfantasyxiv.com/lds/pc/global/images/character/ic/city/gridania.png?1370575015" width="32" height="32" alt=""></div>
-                    <div>Order of the Twin Adder</div>
-                </div>
-
-
-        </div>
-    </div>
-
-    <div class="point txt_yellow"><div class="inner">335458</div></div>
-</div></div></li>
-
-<li class="     rank_num    fc_list
-"><div class="list_footer"><div class="list_body clearfix">
-    <div class="rank
-
-
-                arrow_down
-
-        ">40
-    </div>
-
-    <div class="userdata">
-        <div class="thumb_wrap">
-
-            <div class="thumb_cont_black"><a href="/lodestone/freecompany/9232379236109530830/">
-<div class="ic_crest_44">
-    <span>
-
-
-            <img src="http://img2.finalfantasyxiv.com/c/B10_0e99a67ba2e4d1b5db95f1730fdc091a_0d_40x40.png" width="40" height="40">
-
-        <img src="http://img2.finalfantasyxiv.com/c/F23_5154db99cdae3ec266835302ee7e08b7_00_40x40.png" width="40" height="40">
-        <img src="http://img2.finalfantasyxiv.com/c/S33_f0483d3975a483769f674866ff99675e_01_40x40.png" width="40" height="40">
-
-    </span>
-</div>
-</a></div>
-
-        </div>
-
-
-        <div class="player_name_gold"><a href="/lodestone/freecompany/9232379236109530830/">Bad Wolf</a><span> (Leviathan)</span>
-
-
-
-                <div class="ic_gcrank">
-                    <div><img src="http://img.finalfantasyxiv.com/lds/pc/global/images/character/ic/city/gridania.png?1370575015" width="32" height="32" alt=""></div>
-                    <div>Order of the Twin Adder</div>
-                </div>
-
-
-        </div>
-    </div>
-
-    <div class="point txt_yellow"><div class="inner">333763</div></div>
-</div></div></li>
-
-<li class="     rank_num    fc_list
-"><div class="list_footer"><div class="list_body clearfix">
-    <div class="rank
-
-
-                arrow_down
-
-        ">41
-    </div>
-
-    <div class="userdata">
-        <div class="thumb_wrap">
-
-            <div class="thumb_cont_black"><a href="/lodestone/freecompany/9233505136016359436/">
-<div class="ic_crest_44">
-    <span>
-
-
-            <img src="http://img2.finalfantasyxiv.com/c/B12_1859a5e267bbc451e5d65a83c605c543_10_40x40.png" width="40" height="40">
-
-        <img src="http://img2.finalfantasyxiv.com/c/F1d_16273eedff42b738ba21a865bc57e4bf_00_40x40.png" width="40" height="40">
-        <img src="http://img2.finalfantasyxiv.com/c/S38_05674aab6cbde21ab186a70099e65688_02_40x40.png" width="40" height="40">
-
-    </span>
-</div>
-</a></div>
-
-        </div>
-
-
-        <div class="player_name_gold"><a href="/lodestone/freecompany/9233505136016359436/">Revenant Wings</a><span> (Tonberry)</span>
-
-
-
-                <div class="ic_gcrank">
-                    <div><img src="http://img.finalfantasyxiv.com/lds/pc/global/images/character/ic/city/gridania.png?1370575015" width="32" height="32" alt=""></div>
-                    <div>Order of the Twin Adder</div>
-                </div>
-
-
-        </div>
-    </div>
-
-    <div class="point txt_yellow"><div class="inner">331634</div></div>
-</div></div></li>
-
-<li class="     rank_num    fc_list
-"><div class="list_footer"><div class="list_body clearfix">
-    <div class="rank
-
-
-                arrow_down
-
-        ">42
-    </div>
-
-    <div class="userdata">
-        <div class="thumb_wrap">
-
-            <div class="thumb_cont_black"><a href="/lodestone/freecompany/9236742098248532608/">
-<div class="ic_crest_44">
-    <span>
-
-
-            <img src="http://img2.finalfantasyxiv.com/c/B33_677b7fe71694451cd1bf51fc545c0f46_39_40x40.png" width="40" height="40">
-
-        <img src="http://img2.finalfantasyxiv.com/c/F0b_ba7058bc3a9691edea6542b7a94a5872_00_40x40.png" width="40" height="40">
-        <img src="http://img2.finalfantasyxiv.com/c/S3a_823c68e13683a115b4df62bfab74d24b_01_40x40.png" width="40" height="40">
-
-    </span>
-</div>
-</a></div>
-
-        </div>
-
-
-        <div class="player_name_gold"><a href="/lodestone/freecompany/9236742098248532608/">Celestia</a><span> (Hyperion)</span>
-
-
-
-                <div class="ic_gcrank">
-                    <div><img src="http://img.finalfantasyxiv.com/lds/pc/global/images/character/ic/city/uldah.png?1370575015" width="32" height="32" alt=""></div>
-                    <div>Immortal Flames</div>
-                </div>
-
-
-        </div>
-    </div>
-
-    <div class="point txt_yellow"><div class="inner">325543</div></div>
-</div></div></li>
-
-<li class="     rank_num    fc_list
-"><div class="list_footer"><div class="list_body clearfix">
-    <div class="rank
-
-            arrow_up
-        ">43
-    </div>
-
-    <div class="userdata">
-        <div class="thumb_wrap">
-
-            <div class="thumb_cont_black"><a href="/lodestone/freecompany/9230127436295863563/">
-<div class="ic_crest_44">
-    <span>
-
-
-            <img src="http://img2.finalfantasyxiv.com/c/B27_03117b168c3a39e866bc39e537da398c_4f_40x40.png" width="40" height="40">
-
-        <img src="http://img2.finalfantasyxiv.com/c/F0e_62b20f00f513142294752f1db6eef426_00_40x40.png" width="40" height="40">
-        <img src="http://img2.finalfantasyxiv.com/c/S68_ee911a88ef8fa7e9a3673a27f014722f_06_40x40.png" width="40" height="40">
-
-    </span>
-</div>
-</a></div>
-
-        </div>
-
-
-        <div class="player_name_gold"><a href="/lodestone/freecompany/9230127436295863563/">Cobalt</a><span> (Ixion)</span>
-
-
-
-                <div class="ic_gcrank">
-                    <div><img src="http://img.finalfantasyxiv.com/lds/pc/global/images/character/ic/city/uldah.png?1370575015" width="32" height="32" alt=""></div>
-                    <div>Immortal Flames</div>
-                </div>
-
-
-        </div>
-    </div>
-
-    <div class="point txt_yellow"><div class="inner">325007</div></div>
-</div></div></li>
-
-<li class="     rank_num    fc_list
-"><div class="list_footer"><div class="list_body clearfix">
-    <div class="rank
-
-
-                arrow_down
-
-        ">44
-    </div>
-
-    <div class="userdata">
-        <div class="thumb_wrap">
-
-            <div class="thumb_cont_black"><a href="/lodestone/freecompany/9232238498621161992/">
-<div class="ic_crest_44">
-    <span>
-
-
-            <img src="http://img2.finalfantasyxiv.com/c/B07_34ac172c2dcada2ac10d610cec522b01_d0_40x40.png" width="40" height="40">
-
-        <img src="http://img2.finalfantasyxiv.com/c/F05_a288025d90fce94f795c701eb123f52b_00_40x40.png" width="40" height="40">
-        <img src="http://img2.finalfantasyxiv.com/c/S41_301bb0deaf4ced90e73a7fbed7a85b0a_06_40x40.png" width="40" height="40">
-
-    </span>
-</div>
-</a></div>
-
-        </div>
-
-
-        <div class="player_name_gold"><a href="/lodestone/freecompany/9232238498621161992/">Fleur de Lys</a><span> (Gilgamesh)</span>
-
-
-
-                <div class="ic_gcrank">
-                    <div><img src="http://img.finalfantasyxiv.com/lds/pc/global/images/character/ic/city/limsalominsa.png?1370575015" width="32" height="32" alt=""></div>
-                    <div>Maelstrom</div>
-                </div>
-
-
-        </div>
-    </div>
-
-    <div class="point txt_yellow"><div class="inner">318960</div></div>
-</div></div></li>
-
-<li class="     rank_num    fc_list
-"><div class="list_footer"><div class="list_body clearfix">
-    <div class="rank
-
-
-                arrow_up
-
-        ">45
-    </div>
-
-    <div class="userdata">
-        <div class="thumb_wrap">
-
-            <div class="thumb_cont_black"><a href="/lodestone/freecompany/9232238498621164011/">
-<div class="ic_crest_44">
-    <span>
-
-
-            <img src="http://img2.finalfantasyxiv.com/c/B33_677b7fe71694451cd1bf51fc545c0f46_50_40x40.png" width="40" height="40">
-
-        <img src="http://img2.finalfantasyxiv.com/c/F1d_16273eedff42b738ba21a865bc57e4bf_00_40x40.png" width="40" height="40">
-        <img src="http://img2.finalfantasyxiv.com/c/S6a_ecbd94a95d39b9453fd103e1a7cd2c3c_01_40x40.png" width="40" height="40">
-
-    </span>
-</div>
-</a></div>
-
-        </div>
-
-
-        <div class="player_name_gold"><a href="/lodestone/freecompany/9232238498621164011/">Shinra</a><span> (Gilgamesh)</span>
-
-
-
-                <div class="ic_gcrank">
-                    <div><img src="http://img.finalfantasyxiv.com/lds/pc/global/images/character/ic/city/limsalominsa.png?1370575015" width="32" height="32" alt=""></div>
-                    <div>Maelstrom</div>
-                </div>
-
-
-        </div>
-    </div>
-
-    <div class="point txt_yellow"><div class="inner">316620</div></div>
-</div></div></li>
-
-<li class="     rank_num    fc_list
-"><div class="list_footer"><div class="list_body clearfix">
-    <div class="rank
-
-
-                arrow_down
-
-        ">46
-    </div>
-
-    <div class="userdata">
-        <div class="thumb_wrap">
-
-            <div class="thumb_cont_black"><a href="/lodestone/freecompany/9232379236109541804/">
-<div class="ic_crest_44">
-    <span>
-
-
-            <img src="http://img2.finalfantasyxiv.com/c/B16_69487f2cd812d84376239566043b3034_46_40x40.png" width="40" height="40">
-
-        <img src="http://img2.finalfantasyxiv.com/c/F3c_11d5994c04304c91271fd84ce6b299c7_00_40x40.png" width="40" height="40">
-        <img src="http://img2.finalfantasyxiv.com/c/S03_0fcfdbb05debe4f139728065b3827bc0_05_40x40.png" width="40" height="40">
-
-    </span>
-</div>
-</a></div>
-
-        </div>
-
-
-        <div class="player_name_gold"><a href="/lodestone/freecompany/9232379236109541804/">Starlight</a><span> (Leviathan)</span>
-
-
-
-                <div class="ic_gcrank">
-                    <div><img src="http://img.finalfantasyxiv.com/lds/pc/global/images/character/ic/city/limsalominsa.png?1370575015" width="32" height="32" alt=""></div>
-                    <div>Maelstrom</div>
-                </div>
-
-
-        </div>
-    </div>
-
-    <div class="point txt_yellow"><div class="inner">315204</div></div>
-</div></div></li>
-
-<li class="     rank_num    fc_list
-"><div class="list_footer"><div class="list_body clearfix">
-    <div class="rank
-
-
-                arrow_up
-
-        ">47
-    </div>
-
-    <div class="userdata">
-        <div class="thumb_wrap">
-
-            <div class="thumb_cont_black"><a href="/lodestone/freecompany/9232660711086253980/">
-<div class="ic_crest_44">
-    <span>
-
-
-            <img src="http://img2.finalfantasyxiv.com/c/B39_a2ce39d4c67c56d39f2fd00b6e2c8a4c_9a_40x40.png" width="40" height="40">
-
-        <img src="http://img2.finalfantasyxiv.com/c/F34_cde5180211f1a2fa784032b17fa21932_00_40x40.png" width="40" height="40">
-        <img src="http://img2.finalfantasyxiv.com/c/S5c_c48179b4e96cff6ed7c51da16ca90c11_03_40x40.png" width="40" height="40">
-
-    </span>
-</div>
-</a></div>
-
-        </div>
-
-
-        <div class="player_name_gold"><a href="/lodestone/freecompany/9232660711086253980/">Reapers of Chaos</a><span> (Odin)</span>
-
-
-
-                <div class="ic_gcrank">
-                    <div><img src="http://img.finalfantasyxiv.com/lds/pc/global/images/character/ic/city/limsalominsa.png?1370575015" width="32" height="32" alt=""></div>
-                    <div>Maelstrom</div>
-                </div>
-
-
-        </div>
-    </div>
-
-    <div class="point txt_yellow"><div class="inner">314959</div></div>
-</div></div></li>
-
-<li class="     rank_num    fc_list
-"><div class="list_footer"><div class="list_body clearfix">
-    <div class="rank
-
-
-                arrow_down
-
-        ">48
-    </div>
-
-    <div class="userdata">
-        <div class="thumb_wrap">
-
-            <div class="thumb_cont_black"><a href="/lodestone/freecompany/9227312686528727494/">
-<div class="ic_crest_44">
-    <span>
-
-
-            <img src="http://img2.finalfantasyxiv.com/c/B3b_9921a142051ac64d8232725018aa9537_09_40x40.png" width="40" height="40">
-
-        <img src="http://img2.finalfantasyxiv.com/c/F22_6da1cd88d812583b73806e8b4d3ab4ec_00_40x40.png" width="40" height="40">
-        <img src="http://img2.finalfantasyxiv.com/c/S62_ec4d0758100554e280255859ee307419_07_40x40.png" width="40" height="40">
-
-    </span>
-</div>
-</a></div>
-
-        </div>
-
-
-        <div class="player_name_gold"><a href="/lodestone/freecompany/9227312686528727494/">Special Forces Zero</a><span> (Pandaemonium)</span>
-
-
-
-                <div class="ic_gcrank">
-                    <div><img src="http://img.finalfantasyxiv.com/lds/pc/global/images/character/ic/city/uldah.png?1370575015" width="32" height="32" alt=""></div>
-                    <div>Immortal Flames</div>
-                </div>
-
-
-        </div>
-    </div>
-
-    <div class="point txt_yellow"><div class="inner">304834</div></div>
-</div></div></li>
-
-<li class="     rank_num    fc_list
-"><div class="list_footer"><div class="list_body clearfix">
-    <div class="rank
-
-
-                arrow_down
-
-        ">49
-    </div>
-
-    <div class="userdata">
-        <div class="thumb_wrap">
-
-            <div class="thumb_cont_black"><a href="/lodestone/freecompany/9236601360760176686/">
-<div class="ic_crest_44">
-    <span>
-
-
-            <img src="http://img2.finalfantasyxiv.com/c/B0c_1b1822a11a9f378468136eda583afb99_23_40x40.png" width="40" height="40">
-
-        <img src="http://img2.finalfantasyxiv.com/c/F1e_ed8a164ee0086dc3e36d078e76126110_00_40x40.png" width="40" height="40">
-        <img src="http://img2.finalfantasyxiv.com/c/S41_301bb0deaf4ced90e73a7fbed7a85b0a_04_40x40.png" width="40" height="40">
-
-    </span>
-</div>
-</a></div>
-
-        </div>
-
-
-        <div class="player_name_gold"><a href="/lodestone/freecompany/9236601360760176686/">Vanadis Federation</a><span> (Gungnir)</span>
-
-
-
-                <div class="ic_gcrank">
-                    <div><img src="http://img.finalfantasyxiv.com/lds/pc/global/images/character/ic/city/gridania.png?1370575015" width="32" height="32" alt=""></div>
-                    <div>Order of the Twin Adder</div>
-                </div>
-
-
-        </div>
-    </div>
-
-    <div class="point txt_yellow"><div class="inner">304769</div></div>
-</div></div></li>
-
-<li class="     rank_num    fc_list
-"><div class="list_footer"><div class="list_body clearfix">
-    <div class="rank
-
-
-                arrow_down
-
-        ">50
-    </div>
-
-    <div class="userdata">
-        <div class="thumb_wrap">
-
-            <div class="thumb_cont_black"><a href="/lodestone/freecompany/9233364398528043604/">
-<div class="ic_crest_44">
-    <span>
-
-
-            <img src="http://img2.finalfantasyxiv.com/c/B39_a2ce39d4c67c56d39f2fd00b6e2c8a4c_53_40x40.png" width="40" height="40">
-
-        <img src="http://img2.finalfantasyxiv.com/c/F3e_b44a589b9e4c9dd18a79693bb59fd31f_00_40x40.png" width="40" height="40">
-        <img src="http://img2.finalfantasyxiv.com/c/S49_c5770b59fe5589d951155240813613f5_02_40x40.png" width="40" height="40">
-
-    </span>
-</div>
-</a></div>
-
-        </div>
-
-
-        <div class="player_name_gold"><a href="/lodestone/freecompany/9233364398528043604/">Seed Blanc</a><span> (Moogle)</span>
-
-
-
-                <div class="ic_gcrank">
-                    <div><img src="http://img.finalfantasyxiv.com/lds/pc/global/images/character/ic/city/gridania.png?1370575015" width="32" height="32" alt=""></div>
-                    <div>Maelstrom</div>
-                </div>
-
-
-        </div>
-    </div>
-
-    <div class="point txt_yellow"><div class="inner">300959</div></div>
-</div></div></li>
-
-
-        </ol>
-
-
-    <div class="base_inner mt10">
-
-            <!-- pager -->
-            <div class="base_inner mb10">
-
-<!-- pager -->
-<div class="pager"><div class="pagination clearfix">
-    <div class="current_list">
-        Displaying <span class="show_start">1</span>-<span class="show_end">50</span> of <span class="total">500</span>
-    </div>
-
-
-    <ul>
-
-            <li class="prev_all non"></li>
-            <li class="prev non"></li>
-
-
-
-            <li class="current"><a href="http://na.finalfantasyxiv.com/lodestone/ranking/fc/weekly/?page=1">1</a></li>
-
-            <li class="active"><a href="http://na.finalfantasyxiv.com/lodestone/ranking/fc/weekly/?page=2">2</a></li>
-
-            <li class="active"><a href="http://na.finalfantasyxiv.com/lodestone/ranking/fc/weekly/?page=3">3</a></li>
-
-            <li class="active"><a href="http://na.finalfantasyxiv.com/lodestone/ranking/fc/weekly/?page=4">4</a></li>
-
-            <li class="active"><a href="http://na.finalfantasyxiv.com/lodestone/ranking/fc/weekly/?page=5">5</a></li>
-
-
-
-            <li class="next"><a href="http://na.finalfantasyxiv.com/lodestone/ranking/fc/weekly/?page=2" rel="next"></a></li>
-            <li class="next_all"><a href="http://na.finalfantasyxiv.com/lodestone/ranking/fc/weekly/?page=10" rel="last"></a></li>
-
-    </ul>
-
-</div></div>
-<!-- //pager -->
-
-
-            </div>
-            <!-- //pager -->
-            <hr>
-
-
-        <div class="bt_ranking_top m0auto">
-            <a href="/lodestone/ranking/">
-                <img src="http://img.finalfantasyxiv.com/lds/pc/en/images/bt/ranking_top.png?1377333737" width="300" height="60" alt="Standings Top">
+        </strong>
+    </a>
+    <ul class="popupbody memberaction_body" id="yui-gen4">
+        <li class="left">
+            <img src="images/site_icons/profile.png" alt="">
+            <a href="members/244439-tomytrigger">
+                View Profile
             </a>
+        </li>
+
+        <li class="right">
+            <img src="images/site_icons/forum.png" alt="">
+            <a href="search.php?do=finduser&amp;userid=244439&amp;contenttype=vBForum_Post&amp;showposts=1" rel="nofollow">
+                View Forum Posts
+            </a>
+        </li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </ul>
+</div>
+
+
+    </div>
+    <p class="lastpostdate">Today, <span class="time">12:19 PM</span></p>
+
+            </div>
         </div>
 
-    </div>
-
-</div></div></div>
-
 
     </div>
-    <!-- //#main -->
 
-    <!-- #side -->
-    <div id="side">
+</li> <li class="forumbit_nopost L2" id="cat614">
+    <div class="forumrow L2">
+                    <img src="images/statusicon/category_forum_new.png" class="forumicon" id="forum_statusicon_614" alt="">
+        <div class="forumdata">
+<div class="datacontainer">
+            <h2 class="forumtitle"><a href="forums/614-%E3%82%B3%E3%83%9F%E3%83%A5%E3%83%8B%E3%83%86%E3%82%A3%E3%82%A4%E3%83%99%E3%83%B3%E3%83%88" class="forumtitle">コミュニティイベント</a></h2>
+            <p class="forumdescription"><a href="forums/616">開催中</a>／<a href="forums/617">終了</a></p>
+            <a href="javascript://" class="collapsegadget" title="Collapse this Category"></a>
 
-
-
-
-<div class="conducting_area">
-    <img src="http://img.finalfantasyxiv.com/lds/pc/global/images/common/banner/bn_package_en-us.png?1439451731" width="300" height="218" alt="">
-    <div class="inr">
-        <a href="
-            http://www.ffxiv-freetrial.com/us/?utm_source=lodestone&amp;utm_medium=pc_buyarea&amp;utm_campaign=na_freetrial
-            " class="bt_conducting" target="_blank">
-                <img src="http://img.finalfantasyxiv.com/lds/pc/en/images/bt/free_trial_top.png?1419579887" width="284" height="80" alt="Start Your Free Trial">
-        </a>
-        <a href="
-            http://sqex.to/buyffxiv?utm_source=lodestone&amp;utm_medium=pc_buyarea&amp;utm_campaign=na_buynow
-            " class="bt_conducting" target="_blank">
-                <img src="http://img.finalfantasyxiv.com/lds/pc/en/images/bt/buynow_top.png?1419579887" width="284" height="80" alt="BUY NOW!">
-        </a>
-    </div>
+        </div>
 </div>
-
-
-
-
-
-<div class="mb10"><a href="http://na.finalfantasyxiv.com/pr/" target="_blank"><img src="http://img.finalfantasyxiv.com/lds/banner/244/bn_aboutffxiv_en-gb.png"></a></div>
-
-
-
-<div class="mb10"><a href="/heavensward/" target="_blank"><img src="http://img.finalfantasyxiv.com/lds/banner/286/PC_Ver30ページ導線バナー_右カラム_na.png"></a></div>
-
-
-
-<div class="mb10"><a href="/benchmark/" target="_blank"><img src="http://img.finalfantasyxiv.com/lds/banner/291/LDS用_ベンチマークv30_na.png"></a></div>
-
-
-
-<div class="mb10"><a href="http://sqex.to/Msp" target="_blank"><img src="http://img.finalfantasyxiv.com/lds/banner/155/モグステーション_na.png"></a></div>
-
-
-
-<div class="mb10"><a href="http://www.ffxiv-freetrial.com/us/" target="_blank"><img src="http://img.finalfantasyxiv.com/lds/banner/300/PC_FT_Banner_300x120_na.png"></a></div>
-
-
-
-
-
-
-
-
-<!-- *** Community start *** -->
-<div class="mb10">
-
-
-
-<div class="my_community">
-    <div class="base_header_w300_long"><div class="base_footer_w300 pb6"><div class="base_body_w300">
-        <a href="/lodestone/community/" title="Community Wall"><h3 id="com_wall_title" class="header_title"></h3></a>
-
-
-        <!-- narrowdown -->
-        <div class="narrowdown_box header_title_btn dropdown_trigger_box">
-            <a href="javascript:void(0);" class="button bt_edit dropdown_trigger tooltip" title="Filter"></a>
-            <div class="dropdown" style="opacity: 0;">
-                <div>
-                    <div class="popup_header_left_gold"><div class="popup_header_right_gold"></div></div>
-                    <div class="popup_body_left_gold"><div class="popup_body_right_gold clearfix">
-
-
-<div class="communitywall_filter">
-    <div>
-        Filter which items are to be displayed below.
-    </div>
-    <p class="txt_red small">
-
-        * Standing updates will display regardless of World or language filter settings.<br>
-    * Free company formation can not be filtered by language.</p>
-    <hr>
-
-    <span class="txt_yellow">Sort by</span>
-    <ul class="mb20">
-        <li>
-            <label class="block">
-                <input type="checkbox" name="community_type" value="blog">Blog
-            </label>
-        </li>
-        <li>
-            <label class="block">
-                <input type="checkbox" name="community_type" value="event">Event &amp; Party Recruitment
-            </label>
-        </li>
-        <li>
-            <label class="block">
-                <input type="checkbox" name="community_type" value="fc">Free Company
-            </label>
-        </li>
-        <li>
-            <label class="block">
-                <input type="checkbox" name="community_type" value="db">Eorzea Database
-            </label>
-        </li>
-        <li>
-            <label class="block">
-                <input type="checkbox" name="community_type" value="ranking">Standings
-            </label>
-        </li>
-    </ul>
-
-    <span class="txt_yellow">World</span>
-    <div class="mb10">
-        <label class="control-label" for="world"></label>
-        <select name="community_worldname">
-            <option value="">Select All</option>
-
-                <option value="Adamantoise">Adamantoise</option>
-
-                <option value="Aegis">Aegis</option>
-
-                <option value="Alexander">Alexander</option>
-
-                <option value="Anima">Anima</option>
-
-                <option value="Asura">Asura</option>
-
-                <option value="Atomos">Atomos</option>
-
-                <option value="Bahamut">Bahamut</option>
-
-                <option value="Balmung">Balmung</option>
-
-                <option value="Behemoth">Behemoth</option>
-
-                <option value="Belias">Belias</option>
-
-                <option value="Brynhildr">Brynhildr</option>
-
-                <option value="Cactuar">Cactuar</option>
-
-                <option value="Carbuncle">Carbuncle</option>
-
-                <option value="Cerberus">Cerberus</option>
-
-                <option value="Chocobo">Chocobo</option>
-
-                <option value="Coeurl">Coeurl</option>
-
-                <option value="Diabolos">Diabolos</option>
-
-                <option value="Durandal">Durandal</option>
-
-                <option value="Excalibur">Excalibur</option>
-
-                <option value="Exodus">Exodus</option>
-
-                <option value="Faerie">Faerie</option>
-
-                <option value="Famfrit">Famfrit</option>
-
-                <option value="Fenrir">Fenrir</option>
-
-                <option value="Garuda">Garuda</option>
-
-                <option value="Gilgamesh">Gilgamesh</option>
-
-                <option value="Goblin">Goblin</option>
-
-                <option value="Gungnir">Gungnir</option>
-
-                <option value="Hades">Hades</option>
-
-                <option value="Hyperion">Hyperion</option>
-
-                <option value="Ifrit">Ifrit</option>
-
-                <option value="Ixion">Ixion</option>
-
-                <option value="Jenova">Jenova</option>
-
-                <option value="Kujata">Kujata</option>
-
-                <option value="Lamia">Lamia</option>
-
-                <option value="Leviathan">Leviathan</option>
-
-                <option value="Lich">Lich</option>
-
-                <option value="Malboro">Malboro</option>
-
-                <option value="Mandragora">Mandragora</option>
-
-                <option value="Masamune">Masamune</option>
-
-                <option value="Mateus">Mateus</option>
-
-                <option value="Midgardsormr">Midgardsormr</option>
-
-                <option value="Moogle">Moogle</option>
-
-                <option value="Odin">Odin</option>
-
-                <option value="Pandaemonium">Pandaemonium</option>
-
-                <option value="Phoenix">Phoenix</option>
-
-                <option value="Ragnarok">Ragnarok</option>
-
-                <option value="Ramuh">Ramuh</option>
-
-                <option value="Ridill">Ridill</option>
-
-                <option value="Sargatanas">Sargatanas</option>
-
-                <option value="Shinryu">Shinryu</option>
-
-                <option value="Shiva">Shiva</option>
-
-                <option value="Siren">Siren</option>
-
-                <option value="Tiamat">Tiamat</option>
-
-                <option value="Titan">Titan</option>
-
-                <option value="Tonberry">Tonberry</option>
-
-                <option value="Typhon">Typhon</option>
-
-                <option value="Ultima">Ultima</option>
-
-                <option value="Ultros">Ultros</option>
-
-                <option value="Unicorn">Unicorn</option>
-
-                <option value="Valefor">Valefor</option>
-
-                <option value="Yojimbo">Yojimbo</option>
-
-                <option value="Zalera">Zalera</option>
-
-                <option value="Zeromus">Zeromus</option>
-
-                <option value="Zodiark">Zodiark</option>
-
-        </select>
     </div>
 
-    <span class="txt_yellow">Primary language</span>
-    <div class="mb10">
-        <label class="control-label" for="lang"></label>
-        <select name="community_lang">
-            <option value="">Select All</option>
+</li>
+    </ol>
 
-                <option value="ja">Japanese</option>
+</li> <li class="forumbit_nopost L1" id="cat619">
+    <div class="forumhead foruminfo L1 collapse">
+        <h2>
+            <span class="forumtitle"><a href="forums/619-English-Forums">English Forums</a></span>
 
-                <option value="en">English</option>
+            <span class="forumlastpost">
+                <a class="magtrack_btn" href="http://forum.square-enix.com/ffxiv/search.php?do=process&amp;search_type=1&amp;contenttypeid=1&amp;supporttrack=1&amp;starteronly=0&amp;showposts=1&amp;childforums=1&amp;forumchoice[]=619" accesskey="4"></a>
+                <a class="devtrack_btn" href="http://forum.square-enix.com/ffxiv/search.php?do=process&amp;search_type=1&amp;contenttypeid=1&amp;devtrack=1&amp;starteronly=0&amp;showposts=1&amp;childforums=1&amp;forumchoice[]=619" accesskey="4"></a>
+                <br class="float_clear">
+            </span>
 
-                <option value="de">German</option>
+            <a class="collapse" id="collapse_c_cat619" href="forum.php#top"><img src="images/buttons/collapse_40b.png" alt="" title="Collapse this Category"></a>
 
-                <option value="fr">French</option>
-
-        </select>
+        </h2>
     </div>
 
-    <span class="txt_yellow">Displaying</span>
-    <div>
-        <label class="control-label" for="limit"></label>
-        <select name="community_limit">
-            <option value="10">10</option>
-            <option value="20">20</option>
-            <option value="30">30</option>
-        </select>
-    </div>
 
-    <hr>
+    <ol id="c_cat619" class="childforum">
 
-    <input type="submit" class="button bt_narrowdown m0auto" value="">
+        <div class="forumrowdata">
+            <p class="subforumdescription">Welcome to the English forums!</p>
+
+
+        </div>
+
+        <li class="forumbit_nopost L2" id="cat620">
+    <div class="forumrow L2">
+                    <img src="images/statusicon/category_forum_new.png" class="forumicon" id="forum_statusicon_620" alt="">
+        <div class="forumdata">
+<div class="datacontainer">
+            <h2 class="forumtitle"><a href="forums/620-Information" class="forumtitle">Information</a></h2>
+            <p class="forumdescription"><a href="forums/621">Important Notices</a> / <a href="forums/622">Maintenance</a> / <a href="forums/623">General</a> / <a href="forums/624">Updates</a> / <a href="forums/625">Status</a></p>
+            <a href="javascript://" class="collapsegadget" title="Collapse this Category"></a>
+
+        </div>
 </div>
+    </div>
+
+</li> <li class="forumbit_nopost L2" id="cat626">
+    <div class="forumrow L2">
+                    <img src="images/statusicon/category_forum_new.png" class="forumicon" id="forum_statusicon_626" alt="">
+        <div class="forumdata">
+<div class="datacontainer">
+            <h2 class="forumtitle"><a href="forums/626-Technical-Support" class="forumtitle">Technical Support</a></h2>
+            <p class="forumdescription"><a href="forums/627">Technical Support</a> / <a href="forums/628">Being Addressed/Currently Reviewing</a> / <a href="forums/629">Resolved Issues</a> / <a href="forums/630">Separate Support Required</a></p>
+            <a href="javascript://" class="collapsegadget" title="Collapse this Category"></a>
+
+        </div>
+</div>
+    </div>
+
+</li> <li class="forumbit_nopost L2" id="cat631">
+    <div class="forumrow L2">
+                    <img src="images/statusicon/category_forum_new.png" class="forumicon" id="forum_statusicon_631" alt="">
+        <div class="forumdata">
+<div class="datacontainer">
+            <h2 class="forumtitle"><a href="forums/631-Bug-Reports" class="forumtitle">Bug Reports</a></h2>
+            <p class="forumdescription"><a href="forums/632">In-Game Bugs</a> / <a href="forums/633">Resolved Issues</a> / <a href="forums/634">Accepted Bugs</a> / <a href="forums/635">Insufficient Information</a> / <a href="forums/636">Unable to Verify</a> / <a href="forums/637">Confirmed/Planning to Address</a> / <a href="forums/638">Fixed</a> / <a href="forums/639">Working as Intended</a> / <a href="forums/640">Duplicate Bugs</a> / <a href="forums/641">Not a Bug Report</a></p>
+            <a href="javascript://" class="collapsegadget" title="Collapse this Category"></a>
+
+        </div>
+</div>
+    </div>
+
+</li> <li class="forumbit_nopost L2" id="cat642">
+    <div class="forumrow L2">
+                    <img src="images/statusicon/category_forum_new.png" class="forumicon" id="forum_statusicon_642" alt="">
+        <div class="forumdata">
+<div class="datacontainer">
+            <h2 class="forumtitle"><a href="forums/642-Letters-from-the-Producer" class="forumtitle">Letters from the Producer</a></h2>
+            <p class="forumdescription"><a href="forums/643">Letters from the Producer</a> / <a href="forums/644">Letter from the Producer LIVE</a></p>
+            <a href="javascript://" class="collapsegadget" title="Collapse this Category"></a>
+
+        </div>
+</div>
+    </div>
+
+</li> <li class="forumbit_nopost L2" id="cat645">
+    <div class="forumrow L2">
+                    <img src="images/statusicon/category_forum_new.png" class="forumicon" id="forum_statusicon_645" alt="">
+        <div class="forumdata">
+<div class="datacontainer">
+            <h2 class="forumtitle"><a href="forums/645-Gameplay" class="forumtitle">Gameplay</a></h2>
+            <p class="forumdescription"><a href="forums/646">Lore</a> / <a href="forums/647">Quests</a> / <a href="forums/648">Dungeons</a> / <a href="forums/649">Guildleves and Guildhests</a> / <a href="forums/650">FATE</a> / <a href="forums/1019">PvP</a> / <a href="forums/651">Hunting log</a> / <a href="forums/652">Companies</a> / <a href="forums/1020">Housing</a> / <a href="forums/1271">Gold Saucer</a> / <a href="forums/653">Items, Synthesis, and Gathering</a> / <a href="forums/654">Markets and Retainers</a> / <a href="forums/655">User Interface</a></p>
+            <a href="javascript://" class="collapsegadget" title="Collapse this Category"></a>
+
+        </div>
+</div>
+    </div>
+
+</li> <li class="forumbit_nopost L2" id="cat656">
+    <div class="forumrow L2">
+                    <img src="images/statusicon/category_forum_new.png" class="forumicon" id="forum_statusicon_656" alt="">
+        <div class="forumdata">
+<div class="datacontainer">
+            <h2 class="forumtitle"><a href="forums/656-Classes-Jobs" class="forumtitle">Classes &amp; Jobs</a></h2>
+            <p class="forumdescription"><a href="forums/657">Tank Roles</a> / <a href="forums/658">DPS Roles</a> / <a href="forums/659">Healer Roles</a> / <a href="forums/660">Other Battle Systems</a> / <a href="forums/661">Disciples of the Land</a> / <a href="forums/662">Disciples of the Hand</a></p>
+            <a href="javascript://" class="collapsegadget" title="Collapse this Category"></a>
+
+        </div>
+</div>
+    </div>
+
+</li> <li class="forumbit_nopost L2" id="cat663">
+    <div class="forumrow L2">
+                    <img src="images/statusicon/category_forum_new.png" class="forumicon" id="forum_statusicon_663" alt="">
+        <div class="forumdata">
+<div class="datacontainer">
+            <h2 class="forumtitle"><a href="forums/663-Feedback" class="forumtitle">Feedback</a></h2>
+            <p class="forumdescription"><a href="forums/664">Website Bugs</a> / <a href="forums/665">Website Feedback &amp; Suggestions</a> / <a href="forums/937">Localization</a></p>
+            <a href="javascript://" class="collapsegadget" title="Collapse this Category"></a>
+
+        </div>
+</div>
+    </div>
+
+</li> <li class="forumbit_nopost L2" id="cat666">
+    <div class="forumrow L2">
+                    <img src="images/statusicon/category_forum_new.png" class="forumicon" id="forum_statusicon_666" alt="">
+        <div class="forumdata">
+<div class="datacontainer">
+            <h2 class="forumtitle"><a href="forums/666-Community" class="forumtitle">Community</a></h2>
+            <p class="forumdescription"><a href="forums/669">Worlds(Group NA/EU)</a> / <a href="forums/668">Worlds(Group JP)</a> / <a href="forums/667">General Discussion</a></p>
+            <a href="javascript://" class="collapsegadget" title="Collapse this Category"></a>
+
+        </div>
+</div>
+    </div>
+
+</li> <li id="forum670" class="forumbit_post L2">
+    <div class="forumrow table">
+        <div class="foruminfo td">
+            <img src="images/statusicon/forum_new-48.png" class="forumicon" id="forum_statusicon_670" alt="" title="Double-click this icon to mark this forum and its contents as read" style="cursor: pointer;">
+            <div class="forumdata">
+                <div class="datacontainer">
+                    <div class="titleline">
+                        <h2 class="forumtitle"><a href="forums/670-New-Player-Help">New Player Help</a></h2>
+
+                    </div>
 
 
-                    </div></div>
-                    <div class="popup_footer_left_gold"><div class="popup_footer_right_gold"></div></div>
+
+
+
+
+
                 </div>
             </div>
         </div>
-        <!-- //narrowdown -->
+
+        <h4 class="nocss_label">Forum Actions:</h4>
+
+        <ul class="forumactionlinks td">
+            <li class="forumactionlink rsslink"><a href="external.php?type=RSS2&amp;forumids=670" title="View this forum's RSS feed">View this forum's RSS feed</a></li>
+
+        </ul>
 
 
-        <div class="area_header_w300"><div class="area_footer_w300"><div class="area_body_w300">
-            <ul class="list_style1">
+        <h4 class="nocss_label">Forum Statistics:</h4>
+        <ul class="forumstats td">
+            <li>Threads: 5,921</li>
+            <li>Posts: 48,647</li>
+        </ul>
+        <div class="forumlastpost td">
+            <h4 class="lastpostlabel">Last Post:</h4>
+            <div>
 
-<li class="more_"><div class="inner clearfix">
+    <p class="lastposttitle">
 
-<div class="thumb_cont_black_40">
-<a href="/lodestone/character/3331931/"><img src="http://img2.finalfantasyxiv.com/f/fc8b97d4017f23cef209eee40373e1cd_9eb3c19866f7ae0eeeffac7bf770aba5fc0_96x96.jpg?1440682502" width="40" height="40" alt=""></a>
+
+    <a href="threads/257170-Official-Recruit-a-Friend-Code-Thread?goto=newpost" class="threadtitle" title="Go to first unread post in thread 'Official Recruit a Friend Code Thread'">Official Recruit a Friend...</a>
+    <a href="threads/257170-Official-Recruit-a-Friend-Code-Thread?p=3290686#post3290686"><img src="images/buttons/lastpost-right.png" alt="Go to last post" title="Go to last post"></a>
+    </p>
+
+    <div class="lastpostby">
+
+        by <div class="popupmenu memberaction" id="yui-gen6">
+    <a class="username offline popupctrl" href="members/247016-adi136" title="adi136 is offline" id="yui-gen8">
+        <strong>
+
+                adi136
+
+        </strong>
+    </a>
+    <ul class="popupbody memberaction_body" id="yui-gen7">
+        <li class="left">
+            <img src="images/site_icons/profile.png" alt="">
+            <a href="members/247016-adi136">
+                View Profile
+            </a>
+        </li>
+
+        <li class="right">
+            <img src="images/site_icons/forum.png" alt="">
+            <a href="search.php?do=finduser&amp;userid=247016&amp;contenttype=vBForum_Post&amp;showposts=1" rel="nofollow">
+                View Forum Posts
+            </a>
+        </li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </ul>
 </div>
-
-
-    <div class="list_style1_inner">
-        <span class="txt_gray">
-
-<span id="datetime-0.259480289296686">08/27/2015 2:49 PM</span>
-<script>
-document.getElementById('datetime-0.259480289296686').innerHTML = ldst_strftime(1440683381, 'YMDHM');
-</script>
-
-</span>
-        <a href="/lodestone/character/3331931/">Junosh Citrus</a> (Carbuncle) posted a new blog entry: [<a href="/lodestone/character/3331931/blog/2479253/">タイラス･ネクサス</a>].
-    </div>
-</div></li>
-
-<li class="more_"><div class="inner clearfix">
-
-<div class="thumb_cont_black_40">
-<a href="/lodestone/character/347207/"><img src="http://img2.finalfantasyxiv.com/f/f3d10eaec6ffe48184176a7a5e363642_806ea5b45071d5cd6bf393e38462ee71fc0_96x96.jpg?1440682721" width="40" height="40" alt=""></a>
-</div>
-
-
-    <div class="list_style1_inner">
-        <span class="txt_gray">
-
-<span id="datetime-0.971303397302286">08/27/2015 2:49 PM</span>
-<script>
-document.getElementById('datetime-0.971303397302286').innerHTML = ldst_strftime(1440683381, 'YMDHM');
-</script>
-
-</span>
-        <a href="/lodestone/character/347207/">Fols Kiri</a> (Durandal) posted a new blog entry: [<a href="/lodestone/character/347207/blog/2479252/">モデムが壊れました、な〜む〜</a>].
-    </div>
-</div></li>
-
-<li class="more_"><div class="inner clearfix">
-
-<div class="thumb_cont_black_40">
-<a href="/lodestone/character/9983086/"><img src="http://img2.finalfantasyxiv.com/f/f26fd82bbc80e8a3e8eccdbf5101b79d_393eb74047bb90c8d80dea54218430eefc0_96x96.jpg?1440681736" width="40" height="40" alt=""></a>
-</div>
-
-
-    <div class="list_style1_inner">
-        <span class="txt_gray">
-
-<span id="datetime-0.232818162251835">08/27/2015 2:49 PM</span>
-<script>
-document.getElementById('datetime-0.232818162251835').innerHTML = ldst_strftime(1440683379, 'YMDHM');
-</script>
-
-</span>
-        <a href="/lodestone/character/9983086/">Mistir Gurandy</a> (Unicorn) posted a new blog entry: [<a href="/lodestone/character/9983086/blog/2479251/">キャラ名の意味ｨｯ！！、あれから3か月・・・</a>].
-    </div>
-</div></li>
-
-<li class="more_"><div class="inner clearfix">
-
-<div class="thumb_cont_black_40">
-<a href="/lodestone/character/3243236/"><img src="http://img2.finalfantasyxiv.com/f/9f37c53acfaabc382dfa3c341522f9dd_7126768d768f6c6c7fed3eaee98c3a8afc0_96x96.jpg?1440680260" width="40" height="40" alt=""></a>
-</div>
-
-
-    <div class="list_style1_inner">
-        <span class="txt_gray">
-
-<span id="datetime-0.312537091805311">08/27/2015 2:49 PM</span>
-<script>
-document.getElementById('datetime-0.312537091805311').innerHTML = ldst_strftime(1440683378, 'YMDHM');
-</script>
-
-</span>
-        <a href="/lodestone/character/3243236/">Viviane Sodi</a> (Ixion) posted a new blog entry: [<a href="/lodestone/character/3243236/blog/2479250/">３年目？…ん、ちょっと待って…フフフ、今…そう、笑点の…ははは…うん、録画観てるから…煎餅うま！</a>].
-    </div>
-</div></li>
-
-<li class="more_"><div class="inner clearfix">
-
-<div class="thumb_cont_black_40">
-<a href="/lodestone/character/11245008/"><img src="http://img2.finalfantasyxiv.com/f/454ab72701b1d20377db257524200352_f9f796348bc43067c7242ec4551cde69fc0_96x96.jpg?1440681289" width="40" height="40" alt=""></a>
-</div>
-
-
-    <div class="list_style1_inner">
-        <span class="txt_gray">
-
-<span id="datetime-0.369518672535005">08/27/2015 2:49 PM</span>
-<script>
-document.getElementById('datetime-0.369518672535005').innerHTML = ldst_strftime(1440683372, 'YMDHM');
-</script>
-
-</span>
-        <a href="/lodestone/character/11245008/">Dafne Arpeggio</a> (Ifrit) posted a new blog entry: [<a href="/lodestone/character/11245008/blog/2479249/">マイペースに行くんだよ( ^ω^ )</a>].
-    </div>
-</div></li>
-
-<li class="more_"><div class="inner clearfix">
-
-<div class="thumb_cont_black_40">
-<a href="/lodestone/character/9275921/"><img src="http://img2.finalfantasyxiv.com/f/69e472ee18f6c602c156923f1b4e2019_894c4bd0beab2e2beb44b74f4c4bd206fc0_96x96.jpg?1440683373" width="40" height="40" alt=""></a>
-</div>
-
-
-    <div class="list_style1_inner">
-        <span class="txt_gray">
-
-<span id="datetime-0.507533120870299">08/27/2015 2:49 PM</span>
-<script>
-document.getElementById('datetime-0.507533120870299').innerHTML = ldst_strftime(1440683356, 'YMDHM');
-</script>
-
-</span>
-        <a href="/lodestone/character/9275921/">Sirius Snowfield</a> (Belias) posted a new blog entry: [<a href="/lodestone/character/9275921/blog/2479248/">新生祭</a>].
-    </div>
-</div></li>
-
-<li class="more_"><div class="inner clearfix">
-
-<div class="thumb_cont_black_40">
-<a href="/lodestone/character/2482141/"><img src="http://img2.finalfantasyxiv.com/f/f78b73ba2db3a009800e0dbfcaa6c7ea_9df1b3cb0da35db33c17ef11ddf12adafc0_96x96.jpg?1440682568" width="40" height="40" alt=""></a>
-</div>
-
-
-    <div class="list_style1_inner">
-        <span class="txt_gray">
-
-<span id="datetime-0.439739599058758">08/27/2015 2:49 PM</span>
-<script>
-document.getElementById('datetime-0.439739599058758').innerHTML = ldst_strftime(1440683350, 'YMDHM');
-</script>
-
-</span>
-        <a href="/lodestone/character/2482141/">Hakuto Ku</a> (Ultima) posted a new blog entry: [<a href="/lodestone/character/2482141/blog/2479247/">祝・２周年（＋最近のＳＳ）</a>].
-    </div>
-</div></li>
-
-<li class="more_"><div class="inner clearfix">
-
-<div class="thumb_cont_black_40">
-<a href="/lodestone/character/10063126/"><img src="http://img2.finalfantasyxiv.com/f/c6f1ee7e03858f58b5570644a3e82540_c76848359d0b4d2f37aefbb9903ed97bfc0_96x96.jpg?1440682075" width="40" height="40" alt=""></a>
-</div>
-
-
-    <div class="list_style1_inner">
-        <span class="txt_gray">
-
-<span id="datetime-0.766676292198099">08/27/2015 2:48 PM</span>
-<script>
-document.getElementById('datetime-0.766676292198099').innerHTML = ldst_strftime(1440683328, 'YMDHM');
-</script>
-
-</span>
-        <a href="/lodestone/character/10063126/">Tetsu Philosophy</a> (Zeromus) posted a new blog entry: [<a href="/lodestone/character/10063126/blog/2479245/">便乗して</a>].
-    </div>
-</div></li>
-
-<li class="more_"><div class="inner clearfix">
-
-<div class="thumb_cont_black_40 thumb_cont_black_40_bdr_no">
-<a href="/lodestone/freecompany/9226749736575358183/"><img src="http://img.finalfantasyxiv.com/lds/pc/global/images/common/ic/activity_freecompany.png?1370575015" width="40" height="40" alt=""></a>
-</div>
-
-
-    <div class="list_style1_inner">
-        <span class="txt_gray">
-
-<span id="datetime-0.216882085293076">08/27/2015 2:48 PM</span>
-<script>
-document.getElementById('datetime-0.216882085293076').innerHTML = ldst_strftime(1440683328, 'YMDHM');
-</script>
-
-</span>
-        The free company <a href="/lodestone/freecompany/9226749736575358183/">Zombie Powder</a> (Belias) was formed on <span class="datetime" data-epoch="1440681811" data-format="YMD">08/27/2015</span>.
-    </div>
-</div></li>
-
-<li data-min_id="913499761" class="more_ last_message"><div class="inner clearfix">
-
-<div class="thumb_cont_black_40">
-<a href="/lodestone/character/4636182/"><img src="http://img2.finalfantasyxiv.com/f/a76448c5e3e6784f412cab7bf89fa326_470db1bf2e865f9130531fea40b61ee4fc0_96x96.jpg?1440679866" width="40" height="40" alt=""></a>
-</div>
-
-
-    <div class="list_style1_inner">
-        <span class="txt_gray">
-
-<span id="datetime-0.983503382393543">08/27/2015 2:48 PM</span>
-<script>
-document.getElementById('datetime-0.983503382393543').innerHTML = ldst_strftime(1440683302, 'YMDHM');
-</script>
-
-</span>
-        <a href="/lodestone/character/4636182/">Anhelo Preciado</a> (Pandaemonium) posted a new blog entry: [<a href="/lodestone/character/4636182/blog/2479244/">ユニコルト！</a>].
-    </div>
-</div></li>
-
-
-
-            </ul>
-        </div></div></div>
-
-        <a href="/lodestone/community/" class="button bt_mypage_community m0auto mt6"></a>
-
-    </div></div></div>
-</div>
-
-</div>
-<!-- *** //Community end *** -->
-
-
-
-
-
-
-<!-- *** NEWS start *** -->
-<div class="mb10">
-<div class="my_news mb10">
-    <div class="base_header_w300_long"><div class="base_footer_w300 pb6"><div class="base_body_w300">
-        <a href="/lodestone/news/" title="News"><h3 class="header_title title_mypage_news"></h3></a>
-        <div class="area_header_w300"><div class="area_footer_w300"><div class="area_body_w300">
-
-            <ul class="list_style1">
-
-                            <li><div class="inner">
-                    <span class="txt_gray ic_info">
-
-<span id="datetime-0.0977035541193239">08/27/2015</span>
-<script>
-document.getElementById('datetime-0.0977035541193239').innerHTML = ldst_strftime(1440673200, 'YMD');
-</script>
-
-</span><br>
-                    <span class="news_title"><a href="/lodestone/news/detail/80cd4583bf743600105b947d6906d0909189e479">Regarding Character Creation Restrictions</a></span>
-                </div></li>
-                            <li><div class="inner">
-                    <span class="txt_gray ic_topics">
-
-<span id="datetime-0.46816054083412">08/27/2015</span>
-<script>
-document.getElementById('datetime-0.46816054083412').innerHTML = ldst_strftime(1440662400, 'YMD');
-</script>
-
-</span><br>
-                    <span class="news_title"><a href="/lodestone/topics/detail/2c32b221038464c3c16dd8b37a1731c8cd6f2f71">Tales from the Dragonsong War Updated!</a></span>
-                </div></li>
-                            <li><div class="inner">
-                    <span class="txt_gray ic_info">
-
-<span id="datetime-0.863086867858097">08/27/2015</span>
-<script>
-document.getElementById('datetime-0.863086867858097').innerHTML = ldst_strftime(1440660313, 'YMD');
-</script>
-
-</span><br>
-                    <span class="news_title"><a href="/lodestone/news/detail/199441dca89bb8ef258650d46eba20c34d9f8421">Actions Taken Against In-Game RMT &amp; Other Illicit Activities (Aug. 27)</a></span>
-                </div></li>
-                            <li><div class="inner">
-                    <span class="txt_gray ic_topics">
-
-<span id="datetime-0.0664016895183224">08/27/2015</span>
-<script>
-document.getElementById('datetime-0.0664016895183224').innerHTML = ldst_strftime(1440658800, 'YMD');
-</script>
-
-</span><br>
-                    <span class="news_title"><a href="/lodestone/topics/detail/ade60167dae6aa5918ade5c5b70ee91e850da964">Letter from the Producer, LXI</a></span>
-                </div></li>
-                            <li><div class="inner">
-                    <span class="txt_gray ic_info">
-
-<span id="datetime-0.130964595454376">08/25/2015</span>
-<script>
-document.getElementById('datetime-0.130964595454376').innerHTML = ldst_strftime(1440499680, 'YMD');
-</script>
-
-</span><br>
-                    <span class="news_title"><a href="/lodestone/news/detail/d969ac04b0e575d8099775da448c8d4b1d07e380">Ceremony of Eternal Bonding Reservation Restrictions</a></span>
-                </div></li>
-                            <li><div class="inner">
-                    <span class="txt_gray ic_maintenance">
-
-<span id="datetime-0.910868552515495">08/25/2015</span>
-<script>
-document.getElementById('datetime-0.910868552515495').innerHTML = ldst_strftime(1440495222, 'YMD');
-</script>
-
-</span><br>
-                    <span class="news_title"><a href="/lodestone/news/detail/d5f130b30dde15481f476bbb091f0a13bb5e4d38">All Worlds Maintenance (Aug. 24): Early Completion Time</a></span>
-                </div></li>
-                            <li><div class="inner">
-                    <span class="txt_gray ic_update">
-
-<span id="datetime-0.695084322630191">08/25/2015</span>
-<script>
-document.getElementById('datetime-0.695084322630191').innerHTML = ldst_strftime(1440491008, 'YMD');
-</script>
-
-</span><br>
-                    <span class="news_title"><a href="/lodestone/news/detail/4588d963589177f52172df6627dc7a44dacd16a3">FINAL FANTASY XIV Updated (Aug. 25)</a></span>
-                </div></li>
-                            <li><div class="inner">
-                    <span class="txt_gray ic_topics">
-
-<span id="datetime-0.333284667145797">08/25/2015</span>
-<script>
-document.getElementById('datetime-0.333284667145797').innerHTML = ldst_strftime(1440487800, 'YMD');
-</script>
-
-</span><br>
-                    <span class="news_title"><a href="/lodestone/topics/detail/698c850782604a0ce8d7a7a4bb7aff5b99d9fb32">Patch 3.07 Notes</a></span>
-                </div></li>
-                            <li><div class="inner">
-                    <span class="txt_gray ic_obstacle">
-
-<span id="datetime-0.0906026892099767">08/25/2015</span>
-<script>
-document.getElementById('datetime-0.0906026892099767').innerHTML = ldst_strftime(1440471227, 'YMD');
-</script>
-
-</span><br>
-                    <span class="news_title"><a href="/lodestone/news/detail/dd4be220ae5b52e1abd9fdbf87edce67f1683b81">Recovery from Several Worlds Technical Difficulties (Aug. 24)</a></span>
-                </div></li>
-                            <li><div class="inner">
-                    <span class="txt_gray ic_obstacle">
-
-<span id="datetime-0.0513755496756829">08/25/2015</span>
-<script>
-document.getElementById('datetime-0.0513755496756829').innerHTML = ldst_strftime(1440468343, 'YMD');
-</script>
-
-</span><br>
-                    <span class="news_title"><a href="/lodestone/news/detail/d3347810a4dff8f63f59c6f8558a11cf076c208e">Several Worlds Technical Difficulties (Aug. 24)</a></span>
-                </div></li>
-
-            </ul>
-
-        </div></div></div>
-
-        <a href="/lodestone/news/" class="button bt_mypage_news m0auto mt6"></a>
-
-    </div></div></div>
-</div>
-
-</div>
-<!-- *** //NEWS end *** -->
-
-
-
-
-
-
-
-
-<div class="mb10"><a href="/lodestone/help/option_service/"><img src="http://img.finalfantasyxiv.com/lds/banner/249/bn_optionalservices_en-gb.png"></a></div>
-
-
-
-<div class="mb10"><a href="http://www.finalfantasyxiv.com/eternalbond/na/" target="_blank"><img src="http://img.finalfantasyxiv.com/lds/banner/264/bn_eternalbonding_en-gb.png"></a></div>
-
-
-
-<div class="mb10"><a href="/lodestone/special/friend_recruit/" target="_blank"><img src="http://img.finalfantasyxiv.com/lds/banner/202/bn_Recruit_a_Friend_na.png"></a></div>
-
-
-
-<div class="mb10"><a href="/lodestone/special/grandcompany/"><img src="http://img.finalfantasyxiv.com/lds/banner/169/グランドカンパニー_na.png"></a></div>
-
-
-
-<div class="mb10"><a href="/lodestone/special/patchnote_log/"><img src="http://img.finalfantasyxiv.com/lds/banner/254/bn_patchnote_en-gb.png"></a></div>
-
-
-
-<div class="mb10"><a href="/lodestone/special/update_log/"><img src="http://img.finalfantasyxiv.com/lds/banner/259/bn_update_en-gb.png"></a></div>
-
-
-
-<div class="mb10"><a href="http://na.finalfantasyxiv.com/pr/special/libraeorzea/" target="_blank"><img src="http://img.finalfantasyxiv.com/lds/banner/143/ライブラエオルゼア_na.png"></a></div>
-
-
 
 
     </div>
-    <!-- //#side -->
+    <p class="lastpostdate">Today, <span class="time">06:45 PM</span></p>
 
+            </div>
+        </div>
+
+
+    </div>
+
+</li> <li class="forumbit_nopost L2" id="cat671">
+    <div class="forumrow L2">
+                    <img src="images/statusicon/category_forum_new.png" class="forumicon" id="forum_statusicon_671" alt="">
+        <div class="forumdata">
+<div class="datacontainer">
+            <h2 class="forumtitle"><a href="forums/671-Community-Events" class="forumtitle">Community Events</a></h2>
+            <p class="forumdescription"><a href="forums/673">Current Events</a> / <a href="forums/674">Past Events</a></p>
+            <a href="javascript://" class="collapsegadget" title="Collapse this Category"></a>
+
+        </div>
+</div>
+    </div>
+
+</li>
+    </ol>
+
+</li> <li class="forumbit_nopost L1" id="cat675">
+    <div class="forumhead foruminfo L1 collapse">
+        <h2>
+            <span class="forumtitle"><a href="forums/675-Forums-fran%C3%A7ais">Forums français</a></span>
+
+            <span class="forumlastpost">
+                <a class="magtrack_btn" href="http://forum.square-enix.com/ffxiv/search.php?do=process&amp;search_type=1&amp;contenttypeid=1&amp;supporttrack=1&amp;starteronly=0&amp;showposts=1&amp;childforums=1&amp;forumchoice[]=675" accesskey="4"></a>
+                <a class="devtrack_btn" href="http://forum.square-enix.com/ffxiv/search.php?do=process&amp;search_type=1&amp;contenttypeid=1&amp;devtrack=1&amp;starteronly=0&amp;showposts=1&amp;childforums=1&amp;forumchoice[]=675" accesskey="4"></a>
+                <br class="float_clear">
+            </span>
+
+            <a class="collapse" id="collapse_c_cat675" href="forum.php#top"><img src="images/buttons/collapse_40b.png" alt="" title="Collapse this Category"></a>
+
+        </h2>
+    </div>
+
+
+    <ol id="c_cat675" class="childforum">
+
+        <div class="forumrowdata">
+            <p class="subforumdescription">Bienvenue sur les forums francophones !</p>
+
+
+        </div>
+
+        <li class="forumbit_nopost L2" id="cat676">
+    <div class="forumrow L2">
+                    <img src="images/statusicon/category_forum_new.png" class="forumicon" id="forum_statusicon_676" alt="">
+        <div class="forumdata">
+<div class="datacontainer">
+            <h2 class="forumtitle"><a href="forums/676-Informations" class="forumtitle">Informations</a></h2>
+            <p class="forumdescription"><a href="forums/677">Avis importants</a> / <a href="forums/678">Maintenance</a> / <a href="forums/679">Général</a> / <a href="forums/680">Mises à jour</a> / <a href="forums/681">État du service</a></p>
+            <a href="javascript://" class="collapsegadget" title="Collapse this Category"></a>
+
+        </div>
+</div>
+    </div>
+
+</li> <li class="forumbit_nopost L2" id="cat682">
+    <div class="forumrow L2">
+                    <img src="images/statusicon/category_forum_new.png" class="forumicon" id="forum_statusicon_682" alt="">
+        <div class="forumdata">
+<div class="datacontainer">
+            <h2 class="forumtitle"><a href="forums/682-Assistance-technique" class="forumtitle">Assistance technique</a></h2>
+            <p class="forumdescription"><a href="forums/683">Assistance technique</a> / <a href="forums/684">Problèmes en cours de résolution/examen</a> / <a href="forums/685">Problèmes résolus</a> / <a href="forums/686">Cas non traitables sur le forum</a></p>
+            <a href="javascript://" class="collapsegadget" title="Collapse this Category"></a>
+
+        </div>
+</div>
+    </div>
+
+</li> <li class="forumbit_nopost L2" id="cat687">
+    <div class="forumrow L2">
+                    <img src="images/statusicon/category_forum_new.png" class="forumicon" id="forum_statusicon_687" alt="">
+        <div class="forumdata">
+<div class="datacontainer">
+            <h2 class="forumtitle"><a href="forums/687-Rapports-de-probl%C3%A8mes" class="forumtitle">Rapports de problèmes</a></h2>
+            <p class="forumdescription"><a href="forums/688">Problèmes dans le jeu</a> / <a href="forums/689">Problèmes résolus</a> / <a href="forums/690">Problèmes acceptés</a> / <a href="forums/691">Rapports de problèmes incomplets</a> / <a href="forums/692">Problèmes impossibles à reproduire</a> / <a href="forums/693">Problèmes confirmés/Correctif prévu</a> / <a href="forums/694">Problèmes corrigés</a> / <a href="forums/695">Fonctionne comme prévu</a> / <a href="forums/696">Rapports de problèmes déjà signalés</a> / <a href="forums/697">Problèmes hors du jeu</a></p>
+            <a href="javascript://" class="collapsegadget" title="Collapse this Category"></a>
+
+        </div>
+</div>
+    </div>
+
+</li> <li class="forumbit_nopost L2" id="cat698">
+    <div class="forumrow L2">
+                    <img src="images/statusicon/category_forum_new.png" class="forumicon" id="forum_statusicon_698" alt="">
+        <div class="forumdata">
+<div class="datacontainer">
+            <h2 class="forumtitle"><a href="forums/698-La-lettre-du-producteur" class="forumtitle">La lettre du producteur</a></h2>
+            <p class="forumdescription"><a href="forums/699">La lettre du producteur</a> / <a href="forums/700">La lettre du producteur LIVE</a></p>
+            <a href="javascript://" class="collapsegadget" title="Collapse this Category"></a>
+
+        </div>
+</div>
+    </div>
+
+</li> <li class="forumbit_nopost L2" id="cat701">
+    <div class="forumrow L2">
+                    <img src="images/statusicon/category_forum_new.png" class="forumicon" id="forum_statusicon_701" alt="">
+        <div class="forumdata">
+<div class="datacontainer">
+            <h2 class="forumtitle"><a href="forums/701-Syst%C3%A8me-de-jeu" class="forumtitle">Système de jeu</a></h2>
+            <p class="forumdescription"><a href="forums/702">Histoire</a>
+ / <a href="forums/703">Quêtes</a>
+ / <a href="forums/704">Donjons</a>
+ / <a href="forums/705">Mandats et opérations de guilde</a>
+ / <a href="forums/706">ALÉA</a> / <a href="forums/1021">JcJ</a>
+ / <a href="forums/707">Bestiaire</a>
+ / <a href="forums/708">Compagnies libres</a> / <a href="forums/1022">Logement</a>
+ / <a href="forums/1272">Gold Saucer</a>
+ / <a href="forums/709">Objets, synthèse et récolte</a>
+ / <a href="forums/710">Quartiers marchands et servants</a>
+ / <a href="forums/711">Interface</a></p>
+            <a href="javascript://" class="collapsegadget" title="Collapse this Category"></a>
+
+        </div>
+</div>
+    </div>
+
+</li> <li class="forumbit_nopost L2" id="cat712">
+    <div class="forumrow L2">
+                    <img src="images/statusicon/category_forum_new.png" class="forumicon" id="forum_statusicon_712" alt="">
+        <div class="forumdata">
+<div class="datacontainer">
+            <h2 class="forumtitle"><a href="forums/712-Classes-Jobs" class="forumtitle">Classes &amp; Jobs</a></h2>
+            <p class="forumdescription"><a href="forums/713">Tanks</a> / <a href="forums/714">DPS</a> / <a href="forums/715">Soigneurs</a> / <a href="forums/716">Autres systèmes de combat</a> / <a href="forums/717">Disciples de la terre</a> / <a href="forums/718">Disciples de la main</a></p>
+            <a href="javascript://" class="collapsegadget" title="Collapse this Category"></a>
+
+        </div>
+</div>
+    </div>
+
+</li> <li class="forumbit_nopost L2" id="cat719">
+    <div class="forumrow L2">
+                    <img src="images/statusicon/category_forum_new.png" class="forumicon" id="forum_statusicon_719" alt="">
+        <div class="forumdata">
+<div class="datacontainer">
+            <h2 class="forumtitle"><a href="forums/719-Avis-et-retours" class="forumtitle">Avis et retours</a></h2>
+            <p class="forumdescription"><a href="forums/720">Problèmes sur les sites</a> / <a href="forums/721">Commentaires et suggestions sur les sites</a> / <a href="forums/938">Traduction et localisation</a></p>
+            <a href="javascript://" class="collapsegadget" title="Collapse this Category"></a>
+
+        </div>
+</div>
+    </div>
+
+</li> <li class="forumbit_nopost L2" id="cat722">
+    <div class="forumrow L2">
+                    <img src="images/statusicon/category_forum_new.png" class="forumicon" id="forum_statusicon_722" alt="">
+        <div class="forumdata">
+<div class="datacontainer">
+            <h2 class="forumtitle"><a href="forums/722-Discussion" class="forumtitle">Discussion</a></h2>
+            <p class="forumdescription"><a href="forums/724">Mondes (Amérique du N./Europe)</a> / <a href="forums/723"> Mondes (Japon)</a> / <a href="forums/936">Discussion générale</a></p>
+            <a href="javascript://" class="collapsegadget" title="Collapse this Category"></a>
+
+        </div>
+</div>
+    </div>
+
+</li> <li id="forum725" class="forumbit_post L2">
+    <div class="forumrow table">
+        <div class="foruminfo td">
+            <img src="images/statusicon/forum_new-48.png" class="forumicon" id="forum_statusicon_725" alt="" title="Double-click this icon to mark this forum and its contents as read" style="cursor: pointer;">
+            <div class="forumdata">
+                <div class="datacontainer">
+                    <div class="titleline">
+                        <h2 class="forumtitle"><a href="forums/725-Aide-aux-nouveaux-joueurs">Aide aux nouveaux joueurs</a></h2>
+
+                    </div>
+
+
+
+
+
+
+
+                </div>
+            </div>
+        </div>
+
+        <h4 class="nocss_label">Forum Actions:</h4>
+
+        <ul class="forumactionlinks td">
+            <li class="forumactionlink rsslink"><a href="external.php?type=RSS2&amp;forumids=725" title="View this forum's RSS feed">View this forum's RSS feed</a></li>
+
+        </ul>
+
+
+        <h4 class="nocss_label">Forum Statistics:</h4>
+        <ul class="forumstats td">
+            <li>Threads: 452</li>
+            <li>Posts: 3,438</li>
+        </ul>
+        <div class="forumlastpost td">
+            <h4 class="lastpostlabel">Last Post:</h4>
+            <div>
+
+    <p class="lastposttitle">
+
+
+    <a href="threads/252799-Parrainage-Ragnarok?goto=newpost" class="threadtitle" title="Go to first unread post in thread 'Parrainage Ragnarok'">Parrainage Ragnarok</a>
+    <a href="threads/252799-Parrainage-Ragnarok?p=3290593#post3290593"><img src="images/buttons/lastpost-right.png" alt="Go to last post" title="Go to last post"></a>
+    </p>
+
+    <div class="lastpostby">
+
+        by <div class="popupmenu memberaction" id="yui-gen9">
+    <a class="username offline popupctrl" href="members/162922-AppropriateName8544" title="AppropriateName8544 is offline" id="yui-gen11">
+        <strong>
+
+                AppropriateName8544
+
+        </strong>
+    </a>
+    <ul class="popupbody memberaction_body" id="yui-gen10">
+        <li class="left">
+            <img src="images/site_icons/profile.png" alt="">
+            <a href="members/162922-AppropriateName8544">
+                View Profile
+            </a>
+        </li>
+
+        <li class="right">
+            <img src="images/site_icons/forum.png" alt="">
+            <a href="search.php?do=finduser&amp;userid=162922&amp;contenttype=vBForum_Post&amp;showposts=1" rel="nofollow">
+                View Forum Posts
+            </a>
+        </li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </ul>
+</div>
+
+
+    </div>
+    <p class="lastpostdate">Today, <span class="time">05:37 PM</span></p>
+
+            </div>
+        </div>
+
+
+    </div>
+
+</li> <li class="forumbit_nopost L2" id="cat726">
+    <div class="forumrow L2">
+                    <img src="images/statusicon/category_forum_new.png" class="forumicon" id="forum_statusicon_726" alt="">
+        <div class="forumdata">
+<div class="datacontainer">
+            <h2 class="forumtitle"><a href="forums/726-Ev%C3%A9nements-organis%C3%A9s-par-l-%C3%A9quipe-communautaire" class="forumtitle">Evénements organisés par l'équipe communautaire</a></h2>
+            <p class="forumdescription"><a href="forums/728">Evénements en cours</a> / <a href="forums/729">Evénements passés</a></p>
+            <a href="javascript://" class="collapsegadget" title="Collapse this Category"></a>
+
+        </div>
+</div>
+    </div>
+
+</li>
+    </ol>
+
+</li> <li class="forumbit_nopost L1" id="cat730">
+    <div class="forumhead foruminfo L1 collapse">
+        <h2>
+            <span class="forumtitle"><a href="forums/730-Deutsches-Forum">Deutsches Forum</a></span>
+
+            <span class="forumlastpost">
+                <a class="magtrack_btn" href="http://forum.square-enix.com/ffxiv/search.php?do=process&amp;search_type=1&amp;contenttypeid=1&amp;supporttrack=1&amp;starteronly=0&amp;showposts=1&amp;childforums=1&amp;forumchoice[]=730" accesskey="4"></a>
+                <a class="devtrack_btn" href="http://forum.square-enix.com/ffxiv/search.php?do=process&amp;search_type=1&amp;contenttypeid=1&amp;devtrack=1&amp;starteronly=0&amp;showposts=1&amp;childforums=1&amp;forumchoice[]=730" accesskey="4"></a>
+                <br class="float_clear">
+            </span>
+
+            <a class="collapse" id="collapse_c_cat730" href="forum.php#top"><img src="images/buttons/collapse_40b.png" alt="" title="Collapse this Category"></a>
+
+        </h2>
+    </div>
+
+
+    <ol id="c_cat730" class="childforum">
+
+        <div class="forumrowdata">
+            <p class="subforumdescription">Willkommen im deutschsprachigen Forum!</p>
+
+
+        </div>
+
+        <li class="forumbit_nopost L2" id="cat731">
+    <div class="forumrow L2">
+                    <img src="images/statusicon/category_forum_new.png" class="forumicon" id="forum_statusicon_731" alt="">
+        <div class="forumdata">
+<div class="datacontainer">
+            <h2 class="forumtitle"><a href="forums/731-Ank%C3%BCndigungen" class="forumtitle">Ankündigungen</a></h2>
+            <p class="forumdescription"><a href="forums/732">Wichtige Hinweise</a> / <a href="forums/733">Wartungen</a> / <a href="forums/734">Allgemeines</a> / <a href="forums/735">Updates</a> / <a href="forums/736">Status</a></p>
+            <a href="javascript://" class="collapsegadget" title="Collapse this Category"></a>
+
+        </div>
+</div>
+    </div>
+
+</li> <li class="forumbit_nopost L2" id="cat737">
+    <div class="forumrow L2">
+                    <img src="images/statusicon/category_forum_new.png" class="forumicon" id="forum_statusicon_737" alt="">
+        <div class="forumdata">
+<div class="datacontainer">
+            <h2 class="forumtitle"><a href="forums/737-Technischer-Support" class="forumtitle">Technischer Support</a></h2>
+            <p class="forumdescription"><a href="forums/738">Technischer Support</a> / <a href="forums/739">Fehler wird bearbeitet/Wird untersucht</a> / <a href="forums/740">Geklärt</a> / <a href="forums/741">Separater Support benötigt</a></p>
+            <a href="javascript://" class="collapsegadget" title="Collapse this Category"></a>
+
+        </div>
+</div>
+    </div>
+
+</li> <li class="forumbit_nopost L2" id="cat742">
+    <div class="forumrow L2">
+                    <img src="images/statusicon/category_forum_new.png" class="forumicon" id="forum_statusicon_742" alt="">
+        <div class="forumdata">
+<div class="datacontainer">
+            <h2 class="forumtitle"><a href="forums/742-Fehler-melden" class="forumtitle">Fehler melden</a></h2>
+            <p class="forumdescription"><a href="forums/743">Fehler im Spiel</a> / <a href="forums/744">Geklärt</a> / <a href="forums/745">Akzeptiert</a> / <a href="forums/746">Unzureichende Informationen</a> / <a href="forums/747">Verifizierung nicht möglich</a> / <a href="forums/748">Fehler wird bearbeitet</a> / <a href="forums/749">Fehler behoben</a> / <a href="forums/750">Funktioniert wie geplant</a> / <a href="forums/751">Bereits gemeldete Probleme</a> / <a href="forums/752">Kein Problembericht</a></p>
+            <a href="javascript://" class="collapsegadget" title="Collapse this Category"></a>
+
+        </div>
+</div>
+    </div>
+
+</li> <li class="forumbit_nopost L2" id="cat753">
+    <div class="forumrow L2">
+                    <img src="images/statusicon/category_forum_new.png" class="forumicon" id="forum_statusicon_753" alt="">
+        <div class="forumdata">
+<div class="datacontainer">
+            <h2 class="forumtitle"><a href="forums/753-Briefe-des-Produzenten" class="forumtitle">Briefe des Produzenten</a></h2>
+            <p class="forumdescription"><a href="forums/754">Briefe des Produzenten</a> / <a href="forums/755">Briefe des Produzenten LIVE</a></p>
+            <a href="javascript://" class="collapsegadget" title="Collapse this Category"></a>
+
+        </div>
+</div>
+    </div>
+
+</li> <li class="forumbit_nopost L2" id="cat756">
+    <div class="forumrow L2">
+                    <img src="images/statusicon/category_forum_new.png" class="forumicon" id="forum_statusicon_756" alt="">
+        <div class="forumdata">
+<div class="datacontainer">
+            <h2 class="forumtitle"><a href="forums/756-Spielsystem" class="forumtitle">Spielsystem</a></h2>
+            <p class="forumdescription"><a href="forums/757">Hintergründe</a> / <a href="forums/758">Aufträge</a> / <a href="forums/759">Dungeons</a> / <a href="forums/760">Freibriefe und Gildengeheiße</a> / <a href="forums/761">FATE</a> / <a href="forums/1023">PvP</a> / <a href="forums/762">Bestiarium</a> / <a href="forums/763">Gesellschaften</a> / <a href="forums/1024">Unterkünfte</a> / <a href="forums/1273">Gold Saucer</a> / <a href="forums/764">Gegenstände, Synthese und Sammeln</a> / <a href="forums/765">Markt und Gehilfen</a> / <a href="forums/766">Benutzeroberfläche</a></p>
+            <a href="javascript://" class="collapsegadget" title="Collapse this Category"></a>
+
+        </div>
+</div>
+    </div>
+
+</li> <li class="forumbit_nopost L2" id="cat767">
+    <div class="forumrow L2">
+                    <img src="images/statusicon/category_forum_new.png" class="forumicon" id="forum_statusicon_767" alt="">
+        <div class="forumdata">
+<div class="datacontainer">
+            <h2 class="forumtitle"><a href="forums/767-Charakterklassen-Jobs" class="forumtitle">Charakterklassen &amp; Jobs</a></h2>
+            <p class="forumdescription"><a href="forums/768">Verteidiger</a> / <a href="forums/769">Angreifer</a> / <a href="forums/770">Heiler</a> / <a href="forums/771">Andere Kampfsysteme</a> / <a href="forums/772">Sammler</a> / <a href="forums/773">Handwerker</a></p>
+            <a href="javascript://" class="collapsegadget" title="Collapse this Category"></a>
+
+        </div>
+</div>
+    </div>
+
+</li> <li class="forumbit_nopost L2" id="cat774">
+    <div class="forumrow L2">
+                    <img src="images/statusicon/category_forum_new.png" class="forumicon" id="forum_statusicon_774" alt="">
+        <div class="forumdata">
+<div class="datacontainer">
+            <h2 class="forumtitle"><a href="forums/774-Feedback" class="forumtitle">Feedback</a></h2>
+            <p class="forumdescription"><a href="forums/775">Probleme auf der Webseite</a> / <a href="forums/776">Feedback und Vorschläge für die Webseite</a> / <a href="forums/939">Lokalisierung</a></p>
+            <a href="javascript://" class="collapsegadget" title="Collapse this Category"></a>
+
+        </div>
+</div>
+    </div>
+
+</li> <li class="forumbit_nopost L2" id="cat777">
+    <div class="forumrow L2">
+                    <img src="images/statusicon/category_forum_new.png" class="forumicon" id="forum_statusicon_777" alt="">
+        <div class="forumdata">
+<div class="datacontainer">
+            <h2 class="forumtitle"><a href="forums/777-Diskussionen" class="forumtitle">Diskussionen</a></h2>
+            <p class="forumdescription"><a href="forums/780">Welten(Group NA/EU)</a> / <a href="forums/779">Welten(Group JP)</a> / <a href="forums/778">Allgemeine Diskussionen</a></p>
+            <a href="javascript://" class="collapsegadget" title="Collapse this Category"></a>
+
+        </div>
+</div>
+    </div>
+
+</li> <li id="forum781" class="forumbit_post L2">
+    <div class="forumrow table">
+        <div class="foruminfo td">
+            <img src="images/statusicon/forum_new-48.png" class="forumicon" id="forum_statusicon_781" alt="" title="Double-click this icon to mark this forum and its contents as read" style="cursor: pointer;">
+            <div class="forumdata">
+                <div class="datacontainer">
+                    <div class="titleline">
+                        <h2 class="forumtitle"><a href="forums/781-F%C3%BCr-Einsteiger">Für Einsteiger</a></h2>
+
+                    </div>
+
+
+
+
+
+
+
+                </div>
+            </div>
+        </div>
+
+        <h4 class="nocss_label">Forum Actions:</h4>
+
+        <ul class="forumactionlinks td">
+            <li class="forumactionlink rsslink"><a href="external.php?type=RSS2&amp;forumids=781" title="View this forum's RSS feed">View this forum's RSS feed</a></li>
+
+        </ul>
+
+
+        <h4 class="nocss_label">Forum Statistics:</h4>
+        <ul class="forumstats td">
+            <li>Threads: 936</li>
+            <li>Posts: 10,268</li>
+        </ul>
+        <div class="forumlastpost td">
+            <h4 class="lastpostlabel">Last Post:</h4>
+            <div>
+
+    <p class="lastposttitle">
+
+
+    <a href="threads/193946-Freundescode-f%C3%BCr-Einsteiger?goto=newpost" class="threadtitle" title="Go to first unread post in thread 'Freundescode für Einsteiger'">Freundescode für Einsteiger</a>
+    <a href="threads/193946-Freundescode-f%C3%BCr-Einsteiger?p=3290670#post3290670"><img src="images/buttons/lastpost-right.png" alt="Go to last post" title="Go to last post"></a>
+    </p>
+
+    <div class="lastpostby">
+
+        by <div class="popupmenu memberaction" id="yui-gen12">
+    <a class="username offline popupctrl" href="members/233909-KarmaLich" title="KarmaLich is offline" id="yui-gen14">
+        <strong>
+
+                KarmaLich
+
+        </strong>
+    </a>
+    <ul class="popupbody memberaction_body" id="yui-gen13">
+        <li class="left">
+            <img src="images/site_icons/profile.png" alt="">
+            <a href="members/233909-KarmaLich">
+                View Profile
+            </a>
+        </li>
+
+        <li class="right">
+            <img src="images/site_icons/forum.png" alt="">
+            <a href="search.php?do=finduser&amp;userid=233909&amp;contenttype=vBForum_Post&amp;showposts=1" rel="nofollow">
+                View Forum Posts
+            </a>
+        </li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </ul>
+</div>
+
+
+    </div>
+    <p class="lastpostdate">Today, <span class="time">06:34 PM</span></p>
+
+            </div>
+        </div>
+
+
+    </div>
+
+</li> <li class="forumbit_nopost L2" id="cat782">
+    <div class="forumrow L2">
+                    <img src="images/statusicon/category_forum_new.png" class="forumicon" id="forum_statusicon_782" alt="">
+        <div class="forumdata">
+<div class="datacontainer">
+            <h2 class="forumtitle"><a href="forums/782-Community-Veranstaltungen" class="forumtitle">Community-Veranstaltungen</a></h2>
+            <p class="forumdescription"><a href="forums/784">Aktuelle Veranstaltungen</a> / <a href="forums/785">Vergangene Veranstaltungen</a></p>
+            <a href="javascript://" class="collapsegadget" title="Collapse this Category"></a>
+
+        </div>
+</div>
+    </div>
+
+</li>
+    </ol>
+
+</li> <li class="forumbit_nopost L1" id="cat618">
+    <div class="forumhead foruminfo L1 collapse">
+        <h2>
+            <span class="forumtitle"><a href="forums/618-Version-1.0-Forum-Archive">Version 1.0 Forum Archive</a></span>
+
+            <span class="forumlastpost">
+                <a class="magtrack_btn" href="http://forum.square-enix.com/ffxiv/search.php?do=process&amp;search_type=1&amp;contenttypeid=1&amp;supporttrack=1&amp;starteronly=0&amp;showposts=1&amp;childforums=1&amp;forumchoice[]=618" accesskey="4"></a>
+                <a class="devtrack_btn" href="http://forum.square-enix.com/ffxiv/search.php?do=process&amp;search_type=1&amp;contenttypeid=1&amp;devtrack=1&amp;starteronly=0&amp;showposts=1&amp;childforums=1&amp;forumchoice[]=618" accesskey="4"></a>
+                <br class="float_clear">
+            </span>
+
+            <a class="collapse" id="collapse_c_cat618" href="forum.php#top"><img src="images/buttons/collapse_40b.png" alt="" title="Collapse this Category"></a>
+
+        </h2>
+    </div>
+
+
+    <ol id="c_cat618" class="childforum">
+
+        <li class="forumbit_nopost L2" id="cat8">
+    <div class="forumrow L2">
+                    <img src="images/statusicon/category_forum_old.png" class="forumicon" id="forum_statusicon_8" alt="">
+        <div class="forumdata">
+<div class="datacontainer">
+            <h2 class="forumtitle"><a href="forums/8-Japanese-Forums" class="forumtitle">Japanese Forums</a></h2>
+
+            <a href="javascript://" class="collapsegadget" title="Collapse this Category"></a>
+
+        </div>
+</div>
+    </div>
+
+</li> <li class="forumbit_nopost L2" id="cat12">
+    <div class="forumrow L2">
+                    <img src="images/statusicon/category_forum_new.png" class="forumicon" id="forum_statusicon_12" alt="">
+        <div class="forumdata">
+<div class="datacontainer">
+            <h2 class="forumtitle"><a href="forums/12-English-Forums" class="forumtitle">English Forums</a></h2>
+
+            <a href="javascript://" class="collapsegadget" title="Collapse this Category"></a>
+
+        </div>
+</div>
+    </div>
+
+</li> <li class="forumbit_nopost L2" id="cat13">
+    <div class="forumrow L2">
+                    <img src="images/statusicon/category_forum_old.png" class="forumicon" id="forum_statusicon_13" alt="">
+        <div class="forumdata">
+<div class="datacontainer">
+            <h2 class="forumtitle"><a href="forums/13-Forums-fran%C3%A7ais" class="forumtitle">Forums français</a></h2>
+
+            <a href="javascript://" class="collapsegadget" title="Collapse this Category"></a>
+
+        </div>
+</div>
+    </div>
+
+</li> <li class="forumbit_nopost L2" id="cat14">
+    <div class="forumrow L2">
+                    <img src="images/statusicon/category_forum_new.png" class="forumicon" id="forum_statusicon_14" alt="">
+        <div class="forumdata">
+<div class="datacontainer">
+            <h2 class="forumtitle"><a href="forums/14-Deutsches-Forum" class="forumtitle">Deutsches Forum</a></h2>
+
+            <a href="javascript://" class="collapsegadget" title="Collapse this Category"></a>
+
+        </div>
+</div>
+    </div>
+
+</li>
+    </ol>
+
+</li>
+    </ol>
+
+    <!-- /main -->
+
+        <div class="navlinks">
+        <a href="forumdisplay.php?do=markread&amp;markreadhash=guest" rel="nofollow">Mark Forums Read</a>
+
+        </div>
+
+    <!-- what's going on box -->
+    <div id="wgo" class="collapse wgo_block block">
+        <h2 class="blockhead">What's Going On?</h2>
+        <div class="blockbody formcontrols floatcontainer">
+
+
+
+
+
+        </div>
+    </div>
+    <!-- end what's going on box -->
+
+
+
+        </div>
+    </div>
+
+    <div id="sidebar_container">
+        <a id="sidebar_button_link" href="#">
+
+            <img id="sidebar_button" src="images/misc/tab-collapsed.png" alt="">
+
+        </a>
+        <ul id="sidebar">
+            <li>
+    <div class="block smaller">
+        <div class="blocksubhead">
+            <a class="collapse" id="collapse_block_html_5" href="forum.php#top"><img alt="" src="http://forum.square-enix.com/ffxiv/images/buttons/collapse_40b.png" id="collapseimg_html_5"></a>
+            <span class="blocktitle">Dev Tracker</span>
+        </div>
+        <div class="widget_content blockbody floatcontainer">
+        <div id="block_html_5" class="blockbody">
+                    <div class="widget_content blockbody floatcontainer">
+        <ul id="block_newposts_" class="blockrow">
+
+            <li class="avatarcontent floatcontainer widget_post_bit">
+                <div class="widget_post_userinfo">
+
+                <div class="cms_widget_post_useravatar widget_post_useravatar">
+                    <a class="smallavatar comments_member_avatar_link" href="members/16439-Sasunaich">
+
+                    <img width="30" title="" src="images/avatars/Sheep.png" alt="">
+
+                    </a>
+                </div>
+
+                </div>
+                <div class="smallavatartext widget_post_comment">
+                    <p class="widget_post_content">Hey all,
+
+thanks for all your good wishes, you guys all seriously make my day. And of course I will still play the game (and FFXI).</p>
+                    <h5 class="widget_post_header"><a href="threads/259026-Farewell?p=3281389#post3281389" class="title">Farewell</a></h5>
+                    <div class="meta">
+                        08-28-2015 <span class="time">06:56 PM</span>
+                        <br>
+                    </div>
+                </div>
+            </li>
+
+            <li class="avatarcontent floatcontainer widget_post_bit">
+                <div class="widget_post_userinfo">
+
+                <div class="cms_widget_post_useravatar widget_post_useravatar">
+                    <a class="smallavatar comments_member_avatar_link" href="members/16439-Sasunaich">
+
+                    <img width="30" title="" src="images/avatars/Sheep.png" alt="">
+
+                    </a>
+                </div>
+
+                </div>
+                <div class="smallavatartext widget_post_comment">
+                    <p class="widget_post_content">Hello everyone,
+
+Today I would like to make a personal announcement. While I mainly posted in German, a lot of you still know me from occasional English posts and of course from the Beyond the...</p>
+                    <h5 class="widget_post_header"><a href="threads/259026-Farewell?p=3281294#post3281294" class="title">Farewell</a></h5>
+                    <div class="meta">
+                        08-28-2015 <span class="time">06:15 PM</span>
+                        <br>
+                    </div>
+                </div>
+            </li>
+
+            <li class="avatarcontent floatcontainer widget_post_bit">
+                <div class="widget_post_userinfo">
+
+                <div class="cms_widget_post_useravatar widget_post_useravatar">
+                    <a class="smallavatar comments_member_avatar_link" href="members/54-Naoki_Yoshida">
+
+                    <img width="30" title="" src="images/avatars/yoshida_2014a.png" alt="">
+
+                    </a>
+                </div>
+
+                </div>
+                <div class="smallavatartext widget_post_comment">
+                    <p class="widget_post_content">Hello again to all you FFXIVers! Yoshi-P here. Today, we celebrate the second anniversary of FFXIV’s rebirth!
+
+Since our official commencement of service on August 27, 2013, we’ve brought the Patch...</p>
+                    <h5 class="widget_post_header"><a href="threads/258729-Letter-from-the-Producer-LXI-%2808-27-2015%29?p=3277843#post3277843" class="title">Letter from the Producer, LXI (08/27/2015)</a></h5>
+                    <div class="meta">
+                        08-27-2015 <span class="time">04:00 PM</span>
+                        <br>
+                    </div>
+                </div>
+            </li>
+
+            <li class="avatarcontent floatcontainer widget_post_bit">
+                <div class="widget_post_userinfo">
+
+                <div class="cms_widget_post_useravatar widget_post_useravatar">
+                    <a class="smallavatar comments_member_avatar_link" href="members/248918-Bazymaeus">
+
+                    <img width="30" title="" src="images/avatars/Imp.png" alt="">
+
+                    </a>
+                </div>
+
+                </div>
+                <div class="smallavatartext widget_post_comment">
+                    <p class="widget_post_content">Thanks for pointing this out! We've fixed it up.</p>
+                    <h5 class="widget_post_header"><a href="threads/258508-Levequest-Name-Error?p=3275250#post3275250" class="title">Levequest Name Error</a></h5>
+                    <div class="meta">
+                        08-26-2015 <span class="time">06:44 PM</span>
+                        <br>
+                    </div>
+                </div>
+            </li>
+
+            <li class="avatarcontent floatcontainer widget_post_bit">
+                <div class="widget_post_userinfo">
+
+                <div class="cms_widget_post_useravatar widget_post_useravatar">
+                    <a class="smallavatar comments_member_avatar_link" href="members/230036-Zhexos">
+
+                    <img width="30" title="" src="images/avatars/Grenade.png" alt="">
+
+                    </a>
+                </div>
+
+                </div>
+                <div class="smallavatartext widget_post_comment">
+                    <p class="widget_post_content">We'll look into the possibility of adding a Free Company action that would add a PvP EXP bonus. Thanks for the suggestion!</p>
+                    <h5 class="widget_post_header"><a href="threads/257499-FC-Buff-Can-we-get-this-one?p=3273590#post3273590" class="title">FC Buff - Can we get this one?</a></h5>
+                    <div class="meta">
+                        08-26-2015 <span class="time">04:08 AM</span>
+                        <br>
+                    </div>
+                </div>
+            </li>
+
+            <li class="avatarcontent floatcontainer widget_post_bit">
+                <div class="widget_post_userinfo">
+
+                <div class="cms_widget_post_useravatar widget_post_useravatar">
+                    <a class="smallavatar comments_member_avatar_link" href="members/17773-Fernehalwes">
+
+                    <img width="30" title="" src="images/avatars/Ahriman.png" alt="">
+
+                    </a>
+                </div>
+
+                </div>
+                <div class="smallavatartext widget_post_comment">
+                    <p class="widget_post_content">Hey guys! Fernehalwes here. Long time no lore!
+
+Thanks to everybody who stayed up late to watch the lore portion of the 14-hour PLL featuring Oda-san and myself. I apologize for not having...</p>
+                    <h5 class="widget_post_header"><a href="threads/258262-2015-14-hour-Anniversary-Broadcast-Lore-Panel-Wrap-Up?p=3271647#post3271647" class="title">2015 14-hour Anniversary Broadcast Lore Panel Wrap Up</a></h5>
+                    <div class="meta">
+                        08-25-2015 <span class="time">06:11 PM</span>
+                        <br>
+                    </div>
+                </div>
+            </li>
+
+            <li class="avatarcontent floatcontainer widget_post_bit">
+                <div class="widget_post_userinfo">
+
+                <div class="cms_widget_post_useravatar widget_post_useravatar">
+                    <a class="smallavatar comments_member_avatar_link" href="members/230036-Zhexos">
+
+                    <img width="30" title="" src="images/avatars/Grenade.png" alt="">
+
+                    </a>
+                </div>
+
+                </div>
+                <div class="smallavatartext widget_post_comment">
+                    <p class="widget_post_content">Currently there aren't any further deck upgrades available for collecting more than 90 cards; however, we'll consider doing this when making future adjustments to Triple Triad.</p>
+                    <h5 class="widget_post_header"><a href="threads/249930-So-let-me-get-this-straight...?p=3269667#post3269667" class="title">So let me get this straight...</a></h5>
+                    <div class="meta">
+                        08-25-2015 <span class="time">04:06 AM</span>
+                        <br>
+                    </div>
+                </div>
+            </li>
+
+            <li class="avatarcontent floatcontainer widget_post_bit">
+                <div class="widget_post_userinfo">
+
+                <div class="cms_widget_post_useravatar widget_post_useravatar">
+                    <a class="smallavatar comments_member_avatar_link" href="members/230036-Zhexos">
+
+                    <img width="30" title="" src="images/avatars/Grenade.png" alt="">
+
+                    </a>
+                </div>
+
+                </div>
+                <div class="smallavatartext widget_post_comment">
+                    <p class="widget_post_content">We'll look into whether or not it will be possible to add an easily identifiable way to see if you possess the tome already.</p>
+                    <h5 class="widget_post_header"><a href="threads/257298-QoL-Request-Tome-Log?p=3269628#post3269628" class="title">QoL Request: Tome Log</a></h5>
+                    <div class="meta">
+                        08-25-2015 <span class="time">03:46 AM</span>
+                        <br>
+                    </div>
+                </div>
+            </li>
+
+            <li class="avatarcontent floatcontainer widget_post_bit">
+                <div class="widget_post_userinfo">
+
+                <div class="cms_widget_post_useravatar widget_post_useravatar">
+                    <a class="smallavatar comments_member_avatar_link" href="members/230036-Zhexos">
+
+                    <img width="30" title="" src="images/avatars/Grenade.png" alt="">
+
+                    </a>
+                </div>
+
+                </div>
+                <div class="smallavatartext widget_post_comment">
+                    <p class="widget_post_content">The fat cat that that appeared on the 14-hour broadcast was created as a test product (similar to the goobbue plush shown off during the Letter from the Producer LIVE Part XXIII). We don't currently...</p>
+                    <h5 class="widget_post_header"><a href="threads/257716-PLEASE-SELL-ME-THIS-FAT-CAT-PLUSH%21?p=3269574#post3269574" class="title">PLEASE SELL ME THIS FAT CAT PLUSH!</a></h5>
+                    <div class="meta">
+                        08-25-2015 <span class="time">03:23 AM</span>
+                        <br>
+                    </div>
+                </div>
+            </li>
+
+            <li class="avatarcontent floatcontainer widget_post_bit">
+                <div class="widget_post_userinfo">
+
+                <div class="cms_widget_post_useravatar widget_post_useravatar">
+                    <a class="smallavatar comments_member_avatar_link" href="members/38905-Corvinoobus">
+
+                    <img width="30" title="" src="images/avatars/Flan.png" alt="">
+
+                    </a>
+                </div>
+
+                </div>
+                <div class="smallavatartext widget_post_comment">
+                    <p class="widget_post_content">Going to jump in here ever so briefly to state that "Elder Primal Quests" was a mistake made in those 300 hour 3.0 months. This category will be renamed to "Heavensward Primal Quests" in a future...</p>
+                    <h5 class="widget_post_header"><a href="threads/257756-Elder-Primal?p=3268100#post3268100" class="title">Elder Primal?</a></h5>
+                    <div class="meta">
+                        08-24-2015 <span class="time">11:33 AM</span>
+                        <br>
+                    </div>
+                </div>
+            </li>
+
+            <li class="avatarcontent floatcontainer widget_post_bit">
+                <div class="widget_post_userinfo">
+
+                <div class="cms_widget_post_useravatar widget_post_useravatar">
+                    <a class="smallavatar comments_member_avatar_link" href="members/118-Bayohne">
+
+                    <img width="30" title="" src="images/avatars/Titan.png" alt="">
+
+                    </a>
+                </div>
+
+                </div>
+                <div class="smallavatartext widget_post_comment">
+                    <p class="widget_post_content">Company and Housing-related
+
+House Sharing Feature
+We'll be adding a system that will allow you to give furnishing and gardening rights to five people of your choosing.
+
+Interior lighting...</p>
+                    <h5 class="widget_post_header"><a href="threads/257609-Letter-from-the-Producer-LIVE-Part-XXIV-Update-Thread?p=3263959#post3263959" class="title">Letter from the Producer LIVE Part XXIV Update Thread</a></h5>
+                    <div class="meta">
+                        08-22-2015 <span class="time">02:30 PM</span>
+                        <br>
+                    </div>
+                </div>
+            </li>
+
+            <li class="avatarcontent floatcontainer widget_post_bit">
+                <div class="widget_post_userinfo">
+
+                <div class="cms_widget_post_useravatar widget_post_useravatar">
+                    <a class="smallavatar comments_member_avatar_link" href="members/118-Bayohne">
+
+                    <img width="30" title="" src="images/avatars/Titan.png" alt="">
+
+                    </a>
+                </div>
+
+                </div>
+                <div class="smallavatartext widget_post_comment">
+                    <p class="widget_post_content">Upcoming Features
+
+We’ll be adding a Gold Saucer category to the challenge log. Players will be able to plan out how they will earn the MGP each week.
+
+New crafting recipes will be added.
+...</p>
+                    <h5 class="widget_post_header"><a href="threads/257609-Letter-from-the-Producer-LIVE-Part-XXIV-Update-Thread?p=3263948#post3263948" class="title">Letter from the Producer LIVE Part XXIV Update Thread</a></h5>
+                    <div class="meta">
+                        08-22-2015 <span class="time">02:25 PM</span>
+                        <br>
+                    </div>
+                </div>
+            </li>
+
+            <li class="avatarcontent floatcontainer widget_post_bit">
+                <div class="widget_post_userinfo">
+
+                <div class="cms_widget_post_useravatar widget_post_useravatar">
+                    <a class="smallavatar comments_member_avatar_link" href="members/118-Bayohne">
+
+                    <img width="30" title="" src="images/avatars/Titan.png" alt="">
+
+                    </a>
+                </div>
+
+                </div>
+                <div class="smallavatartext widget_post_comment">
+                    <p class="widget_post_content">Triple Triad Adjustments
+
+We’ll be adding in new Triple Triad cards and new NPC opponents to battle.
+Additionally, we feel that the MGP payout is rather low, so we’re looking into increasing the...</p>
+                    <h5 class="widget_post_header"><a href="threads/257609-Letter-from-the-Producer-LIVE-Part-XXIV-Update-Thread?p=3263944#post3263944" class="title">Letter from the Producer LIVE Part XXIV Update Thread</a></h5>
+                    <div class="meta">
+                        08-22-2015 <span class="time">02:24 PM</span>
+                        <br>
+                    </div>
+                </div>
+            </li>
+
+            <li class="avatarcontent floatcontainer widget_post_bit">
+                <div class="widget_post_userinfo">
+
+                <div class="cms_widget_post_useravatar widget_post_useravatar">
+                    <a class="smallavatar comments_member_avatar_link" href="members/118-Bayohne">
+
+                    <img width="30" title="" src="images/avatars/Titan.png" alt="">
+
+                    </a>
+                </div>
+
+                </div>
+                <div class="smallavatartext widget_post_comment">
+                    <p class="widget_post_content">Gold Saucer-related
+
+We’ll be adding new content known as "Lords of Verminion."
+This was a joke brought up in the past in a Developers’ Blog post, but we actually went ahead and made it real.
+...</p>
+                    <h5 class="widget_post_header"><a href="threads/257609-Letter-from-the-Producer-LIVE-Part-XXIV-Update-Thread?p=3263941#post3263941" class="title">Letter from the Producer LIVE Part XXIV Update Thread</a></h5>
+                    <div class="meta">
+                        08-22-2015 <span class="time">02:22 PM</span>
+                        <br>
+                    </div>
+                </div>
+            </li>
+
+            <li class="avatarcontent floatcontainer widget_post_bit">
+                <div class="widget_post_userinfo">
+
+                <div class="cms_widget_post_useravatar widget_post_useravatar">
+                    <a class="smallavatar comments_member_avatar_link" href="members/118-Bayohne">
+
+                    <img width="30" title="" src="images/avatars/Titan.png" alt="">
+
+                    </a>
+                </div>
+
+                </div>
+                <div class="smallavatartext widget_post_comment">
+                    <p class="widget_post_content">Airship Exploration Voyage
+
+We’re planning to introduce new content where you explore uncharted islands with your crafted airships. Multiple parties can explore the same island at the same time....</p>
+                    <h5 class="widget_post_header"><a href="threads/257609-Letter-from-the-Producer-LIVE-Part-XXIV-Update-Thread?p=3263938#post3263938" class="title">Letter from the Producer LIVE Part XXIV Update Thread</a></h5>
+                    <div class="meta">
+                        08-22-2015 <span class="time">02:21 PM</span>
+                        <br>
+                    </div>
+                </div>
+            </li>
+
+        </ul>
+        </div>
+
+        </div>
+        </div>
+    </div>
+    <div class="underblock"></div>
+</li>
+ <li>
+    <div class="block smaller">
+        <div class="blocksubhead">
+            <a class="collapse" id="collapse_block_html_6" href="forum.php#top"><img alt="" src="images/buttons/collapse_40b.png" id="collapseimg_html_6"></a>
+            <span class="blocktitle">Popular Threads</span>
+        </div>
+        <div class="widget_content blockbody floatcontainer">
+        <div id="block_html_6" class="blockbody">
+                    <div class="widget_content blockbody floatcontainer">
+        <ul id="block_newthreads_" class="blockrow">
+
+            <li class="avatarcontent floatcontainer widget_post_bit">
+                <div class="widget_post_userinfo">
+
+                <div class="cms_widget_post_useravatar widget_post_useravatar">
+                    <a class="smallavatar comments_member_avatar_link" href="members/63712-Chewy2nd">
+
+                    <img width="30" title="" src="images/misc/unknown.gif" alt="">
+
+                    </a>
+                </div>
+
+                </div>
+                <div class="smallavatartext widget_post_comment">
+                    <h5 class="widget_post_header"><a href="threads/242462-UFO-spotted-in-Sea-of-Clouds-The-Truth-is-out-there" class="title">UFO spotted in Sea of Clouds - The Truth is out there</a></h5>
+                    <div class="meta">
+
+                        Posted By <a href="members/63712-Chewy2nd">Chewy2nd</a> ‎(280 replies)
+                        <br>06-27-2015, <span class="time">01:00 AM</span> in <a href="forums/646-Lore">Lore</a>
+
+                    </div>
+                </div>
+            </li>
+
+            <li class="avatarcontent floatcontainer widget_post_bit">
+                <div class="widget_post_userinfo">
+
+                <div class="cms_widget_post_useravatar widget_post_useravatar">
+                    <a class="smallavatar comments_member_avatar_link" href="members/219719-DiscordiaEris">
+
+                    <img width="30" title="" src="images/misc/unknown.gif" alt="">
+
+                    </a>
+                </div>
+
+                </div>
+                <div class="smallavatartext widget_post_comment">
+                    <h5 class="widget_post_header"><a href="threads/252811-Dev.-Request-Campfire-Minion" class="title">Dev. Request: Campfire Minion</a></h5>
+                    <div class="meta">
+
+                        Posted By <a href="members/219719-DiscordiaEris">DiscordiaEris</a> ‎(38 replies)
+                        <br>07-31-2015, <span class="time">11:00 PM</span> in <a href="forums/667-General-Discussion">General Discussion</a>
+
+                    </div>
+                </div>
+            </li>
+
+            <li class="avatarcontent floatcontainer widget_post_bit">
+                <div class="widget_post_userinfo">
+
+                <div class="cms_widget_post_useravatar widget_post_useravatar">
+                    <a class="smallavatar comments_member_avatar_link" href="members/171862-rje">
+
+                    <img width="30" title="" src="images/misc/unknown.gif" alt="">
+
+                    </a>
+                </div>
+
+                </div>
+                <div class="smallavatartext widget_post_comment">
+                    <h5 class="widget_post_header"><a href="threads/253230-Doing-free-sketches-post-your-characters" class="title">Doing free sketches; post your characters~</a></h5>
+                    <div class="meta">
+
+                        Posted By <a href="members/171862-rje">rje</a> ‎(88 replies)
+                        <br>08-02-2015, <span class="time">08:43 PM</span> in <a href="forums/667-General-Discussion">General Discussion</a>
+
+                    </div>
+                </div>
+            </li>
+
+            <li class="avatarcontent floatcontainer widget_post_bit">
+                <div class="widget_post_userinfo">
+
+                <div class="cms_widget_post_useravatar widget_post_useravatar">
+                    <a class="smallavatar comments_member_avatar_link" href="members/49958-Yamimarik">
+
+                    <img width="30" title="" src="images/misc/unknown.gif" alt="">
+
+                    </a>
+                </div>
+
+                </div>
+                <div class="smallavatartext widget_post_comment">
+                    <h5 class="widget_post_header"><a href="threads/234433-Official-ENTM-GD-thread%21-2.0" class="title">Official ENTM-GD thread! 2.0</a></h5>
+                    <div class="meta">
+
+                        Posted By <a href="members/49958-Yamimarik">Yamimarik</a> ‎(539 replies)
+                        <br>05-19-2015, <span class="time">06:37 AM</span> in <a href="forums/667-General-Discussion">General Discussion</a>
+
+                    </div>
+                </div>
+            </li>
+
+            <li class="avatarcontent floatcontainer widget_post_bit">
+                <div class="widget_post_userinfo">
+
+                <div class="cms_widget_post_useravatar widget_post_useravatar">
+                    <a class="smallavatar comments_member_avatar_link" href="members/95119-Kelzack">
+
+                    <img width="30" title="" src="images/misc/unknown.gif" alt="">
+
+                    </a>
+                </div>
+
+                </div>
+                <div class="smallavatartext widget_post_comment">
+                    <h5 class="widget_post_header"><a href="threads/252601-My-FFXIV-drawings%21-Image-heavy-post" class="title">My FFXIV drawings! [Image heavy post~]</a></h5>
+                    <div class="meta">
+
+                        Posted By <a href="members/95119-Kelzack">Kelzack</a> ‎(17 replies)
+                        <br>07-31-2015, <span class="time">03:54 AM</span> in <a href="forums/667-General-Discussion">General Discussion</a>
+
+                    </div>
+                </div>
+            </li>
+
+            <li class="avatarcontent floatcontainer widget_post_bit">
+                <div class="widget_post_userinfo">
+
+                <div class="cms_widget_post_useravatar widget_post_useravatar">
+                    <a class="smallavatar comments_member_avatar_link" href="members/237981-Cascadi">
+
+                    <img width="30" title="" src="images/misc/unknown.gif" alt="">
+
+                    </a>
+                </div>
+
+                </div>
+                <div class="smallavatartext widget_post_comment">
+                    <h5 class="widget_post_header"><a href="threads/240107-Shots-Fired-A-Machinist-Guide" class="title">Shots Fired: A Machinist Guide</a></h5>
+                    <div class="meta">
+
+                        Posted By <a href="members/237981-Cascadi">Cascadi</a> ‎(1279 replies)
+                        <br>06-21-2015, <span class="time">05:46 AM</span> in <a href="forums/658-DPS-Roles">DPS Roles</a>
+
+                    </div>
+                </div>
+            </li>
+
+            <li class="avatarcontent floatcontainer widget_post_bit">
+                <div class="widget_post_userinfo">
+
+                <div class="cms_widget_post_useravatar widget_post_useravatar">
+                    <a class="smallavatar comments_member_avatar_link" href="members/55688-Dervy">
+
+                    <img width="30" title="" src="images/misc/unknown.gif" alt="">
+
+                    </a>
+                </div>
+
+                </div>
+                <div class="smallavatartext widget_post_comment">
+                    <h5 class="widget_post_header"><a href="threads/238845-How-to-Dragoon-Per-Second-A-DPS-Paradigm" class="title">How to Dragoon Per Second: A DPS Paradigm</a></h5>
+                    <div class="meta">
+
+                        Posted By <a href="members/55688-Dervy">Dervy</a> ‎(1546 replies)
+                        <br>06-18-2015, <span class="time">04:16 AM</span> in <a href="forums/658-DPS-Roles">DPS Roles</a>
+
+                    </div>
+                </div>
+            </li>
+
+            <li class="avatarcontent floatcontainer widget_post_bit">
+                <div class="widget_post_userinfo">
+
+                <div class="cms_widget_post_useravatar widget_post_useravatar">
+                    <a class="smallavatar comments_member_avatar_link" href="members/84585-Maddonious">
+
+                    <img width="30" title="" src="images/misc/unknown.gif" alt="">
+
+                    </a>
+                </div>
+
+                </div>
+                <div class="smallavatartext widget_post_comment">
+                    <h5 class="widget_post_header"><a href="threads/190161-Recruit-a-friend-code-thread-New-player-exp-boosts%21" class="title">"Recruit a friend" code thread - New player exp boosts!</a></h5>
+                    <div class="meta">
+
+                        Posted By <a href="members/84585-Maddonious">Maddonious</a> ‎(1176 replies)
+                        <br>08-31-2014, <span class="time">03:16 PM</span> in <a href="forums/670-New-Player-Help">New Player Help</a>
+
+                    </div>
+                </div>
+            </li>
+
+            <li class="avatarcontent floatcontainer widget_post_bit">
+                <div class="widget_post_userinfo">
+
+                <div class="cms_widget_post_useravatar widget_post_useravatar">
+                    <a class="smallavatar comments_member_avatar_link" href="members/214931-Elusana_Celah">
+
+                    <img width="30" title="" src="images/misc/unknown.gif" alt="">
+
+                    </a>
+                </div>
+
+                </div>
+                <div class="smallavatartext widget_post_comment">
+                    <h5 class="widget_post_header"><a href="threads/209148-Marriage-Partner-Hookup-Megathread%21" class="title">Marriage Partner Hookup Megathread!</a></h5>
+                    <div class="meta">
+
+                        Posted By <a href="members/214931-Elusana_Celah">Elusana_Celah</a> ‎(2620 replies)
+                        <br>12-13-2014, <span class="time">02:52 PM</span> in <a href="forums/667-General-Discussion">General Discussion</a>
+
+                    </div>
+                </div>
+            </li>
+
+            <li class="avatarcontent floatcontainer widget_post_bit">
+                <div class="widget_post_userinfo">
+
+                <div class="cms_widget_post_useravatar widget_post_useravatar">
+                    <a class="smallavatar comments_member_avatar_link" href="members/52795-Snow">
+
+                    <img width="30" title="" src="images/misc/unknown.gif" alt="">
+
+                    </a>
+                </div>
+
+                </div>
+                <div class="smallavatartext widget_post_comment">
+                    <h5 class="widget_post_header"><a href="threads/93195-Show-your-Miqo-te-%21%21" class="title">Show your Miqo'te !!</a></h5>
+                    <div class="meta">
+
+                        Posted By <a href="members/52795-Snow">-Snow</a> ‎(1427 replies)
+                        <br>09-19-2013, <span class="time">12:08 AM</span> in <a href="forums/667-General-Discussion">General Discussion</a>
+
+                    </div>
+                </div>
+            </li>
+
+        </ul>
+        </div>
+        </div>
+        </div>
+    </div>
+    <div class="underblock"></div>
+</li>
+
+        </ul>
+    </div>
+
+
+
+
+<div id="footer" class="floatcontainer footer">
+    <form action="forum.php" method="get" id="footer_select" class="footer_select">
+
+
+
+
+            <select name="langid" onchange="switch_id(this, 'lang')">
+                <optgroup label="Quick Language Chooser">
+                    <option value="5" class="">-- Deutsch (DE)</option> <option value="8" class="">-- English (EU)</option> <option value="1" class="" selected="selected">-- English (NA)</option> <option value="7" class="">-- Français (FR)</option> <option value="2" class="">-- 日本語</option>
+                </optgroup>
+            </select>
+
+    </form>
+    <ul id="footer_links" class="footer_links">
+
+
+
+
+
+
+
+
+        <li><a href="forum.php#" onclick="document.location.hash='top'; return false;">Top</a></li>
+    </ul>
+
+
+</div>
+</div> <!-- closing div for body_wrapper -->
 </div>

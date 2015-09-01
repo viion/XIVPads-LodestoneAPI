@@ -10,13 +10,6 @@ Array.prototype.clean = function(deleteValue) {
 
 var apiItems =
 {
-    // set the lodestone language
-    setLodestoneLanguage: function(lang) {
-        if (typeof config !== 'undefined') {
-            config.setLodestoneLanguage(lang);
-        }
-    },
-
     getUrl: function(type, string) {
 
         var urls =

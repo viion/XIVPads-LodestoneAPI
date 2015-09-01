@@ -1,6 +1,8 @@
 var config =
 {
     lodestoneUrl: 'na.finalfantasyxiv.com',
+    forumsUrl: 'forum.square-enix.com',
+
     setLodestoneLanguage: function(lang)
     {
         switch(lang)

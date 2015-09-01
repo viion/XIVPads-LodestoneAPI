@@ -8,7 +8,8 @@ var cheerio = require('cheerio'),
     apiLodestone = require('./api-lodestone'),
     apiFreecompany = require('./api-freecompany'),
     apiLinkshell = require('./api-linkshell'),
-    apiStandings = require('./api-standings');
+    apiStandings = require('./api-standings'),
+    apiForums = require('./api-forums');
 
 // - - - - - - - - - - - - - - - - - - - -
 // Lodestone API
@@ -24,8 +25,19 @@ var api = {
      * @param reply - function to callback on
      */
     get: function(url, callback) {
+        // set language
+        config.setLodestoneLanguage(api.language);
+
+        // lodestone url
+        var host = config.lodestoneUrl;
+        if (url.indexOf('{forums}') > -1) {
+            url = url.replace('{forums}', '');
+            host = config.forumsUrl;
+        }
+
+        // options
         var options = {
-            host: config.lodestoneUrl,
+            host: host,
             port: 80,
             path: url,
         }
@@ -63,17 +75,9 @@ var api = {
 
     // Set the language for lodestone
     setLanguage: function(lang) {
-        // set language for config
-        config.setLodestoneLanguage(lang);
-
-        // set language in all modules
-        apiItems.setLodestoneLanguage(lang);
-        apiCharacters.setLodestoneLanguage(lang);
-        apiAchievements.setLodestoneLanguage(lang);
-        apiLodestone.setLodestoneLanguage(lang);
-        apiFreecompany.setLodestoneLanguage(lang);
-        apiLinkshell.setLodestoneLanguage(lang);
-        apiStandings.setLodestoneLanguage(lang);
+        if (lang == 'en' || lang == 'de' || lang == 'fr' || lang == 'jp') {
+            api.language = lang;
+        }
     },
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -241,6 +245,24 @@ var api = {
                     reply(apiLodestone.getEvents($));
                 });
             });
+        });
+    },
+
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    // Forums
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    getDevTracker: function(reply, options) {
+        console.log('- getDevTracker', options);
+        api.get(apiForums.getUrl('forums'), function($) {
+            reply(apiForums.getDevTracking($));
+        });
+    },
+
+    getPopularPosts: function(reply, options) {
+        console.log('- getPopularPosts', options);
+        api.get(apiForums.getUrl('forums'), function($) {
+            reply(apiForums.getPopularPosts($));
         });
     },
 }

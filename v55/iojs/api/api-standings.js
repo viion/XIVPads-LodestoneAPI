@@ -1,12 +1,5 @@
 var apiStandings =
 {
-    // set the lodestone language
-    setLodestoneLanguage: function(lang) {
-        if (typeof config !== 'undefined') {
-            config.setLodestoneLanguage(lang);
-        }
-    },
-
     getUrl: function(type, string) {
         var urls = {
             frontline_weekly: '/lodestone/ranking/frontline/weekly/',

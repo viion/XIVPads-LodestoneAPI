@@ -313,6 +313,27 @@ server.route({
     }
 });
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// Forums
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+server.route({
+    method: 'GET', path: '/forums/devtracker',
+    handler: function (request, reply) {
+        api.setLanguage(request.query.language);
+        api.getDevTracker(reply);
+    }
+});
+
+
+server.route({
+    method: 'GET', path: '/forums/popularposts',
+    handler: function (request, reply) {
+        api.setLanguage(request.query.language);
+        api.getPopularPosts(reply);
+    }
+});
+
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // Start

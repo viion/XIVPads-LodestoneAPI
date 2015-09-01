@@ -3,13 +3,6 @@ var lodestoneFunction = require('./api-lodestone-functions'),
 
 var apiLodestone =
 {
-    // set the lodestone language
-    setLodestoneLanguage: function(lang) {
-        if (typeof config !== 'undefined') {
-            config.setLodestoneLanguage(lang);
-        }
-    },
-
     // get the urls for this module
     getUrl: function(type, string, kind) {
         var urls =

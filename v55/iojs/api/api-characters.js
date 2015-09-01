@@ -10,13 +10,6 @@ Array.prototype.clean = function(deleteValue) {
 
 var apiCharacters =
 {
-    // set the lodestone language
-    setLodestoneLanguage: function(lang) {
-        if (typeof config !== 'undefined') {
-            config.setLodestoneLanguage(lang);
-        }
-    },
-
     // get thr urls for this module
     getUrl: function(type, param1, param2) {
         var urls = {
