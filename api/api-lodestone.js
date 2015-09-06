@@ -43,7 +43,7 @@ var apiLodestone =
 
             var topic = {
                 url: 'http://' + config.lodestoneUrl + $node.find('.topics_list_inner a').attr('href'),
-                title_ranking_picup: $node.find('.topics_list_inner a').text(),
+                title: $node.find('.topics_list_inner a').text(),
                 timestamp: parseInt($node.find('.topics_list_date').html().trim().split('(')[2].split(',')[0].trim()),
                 html: $node.find('.area_inner_cont').html().trim(),
                 banner: $node.find('.area_inner_cont img').eq(0).attr('src').trim(),
