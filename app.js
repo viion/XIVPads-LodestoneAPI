@@ -27,7 +27,6 @@ server.register(require('vision'), function (err) {
 
 // set headers before response
 server.ext('onPreResponse', function(request, reply) {
-    request.response.header('Content-Type', 'application/json');
     request.response.header('Access-Control-Allow-Origin', '*');
     request.response.header('Cache-Control', 'max-age=3600');
     reply(request.response);
