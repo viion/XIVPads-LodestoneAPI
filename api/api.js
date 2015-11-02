@@ -216,7 +216,7 @@ var api = {
     getLodestoneUpdates: function(reply, options) {
         console.log('- getLodestoneUpdates', options);
         api.get(apiLodestone.getUrl('updates'), function($) {
-            reply(apiLodestone.getUpdates($));.header('Content-Type', 'application/json');
+            reply(apiLodestone.getUpdates($)).header('Content-Type', 'application/json');
         });
     },
 
