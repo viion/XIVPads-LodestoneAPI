@@ -27,8 +27,18 @@ server.register(require('vision'), function (err) {
 
 // set headers before response
 server.ext('onPreResponse', function(request, reply) {
-    request.response.header('Access-Control-Allow-Origin', '*');
-    request.response.header('Cache-Control', 'max-age=3600');
+    var path = request.path;
+
+    if (typeof request.response.header === "function") {
+        // check path to dermine if we need json response
+        if (['/', '/characters', '/freecompany', '/linkshells', '/database', '/lodestone'].indexOf(path) == -1) {
+            request.response.header('Content-Type', 'application/json');
+        }
+
+        request.response.header('Access-Control-Allow-Origin', '*');
+        request.response.header('Cache-Control', 'max-age=3600');
+    }
+
     reply(request.response);
 });
 
@@ -220,6 +230,19 @@ server.route({
 
     }
 });
+
+// freecompany get
+server.route({
+    method: 'GET', path: '/freecompany/get/{id}/members',
+    handler: function (request, reply) {
+        api.setLanguage(request.query.language);
+        api.getFreecompanyMembers(reply, {
+            id: request.params.id
+        });
+
+    }
+});
+
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // Linkshell

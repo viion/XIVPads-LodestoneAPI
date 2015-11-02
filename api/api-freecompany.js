@@ -51,9 +51,9 @@ var apiFreecompany =
     getData: function($, options) {
         var data = {
             emblums: {
-                1: $('.area_header .ic_crest_64 img').eq(0).attr('src').trim(),
-                2: $('.area_header .ic_crest_64 img').eq(1).attr('src').trim(),
-                3: $('.area_header .ic_crest_64 img').eq(2).attr('src').trim(),
+                1: $('.area_header .ic_crest_64 img').eq(0).attr('src'),
+                2: $('.area_header .ic_crest_64 img').eq(1).attr('src'),
+                3: $('.area_header .ic_crest_64 img').eq(2).attr('src'),
             },
             grand_company: $('.centering_h').contents()[0].data.trim(),
             friendship: $('.friendship_color').text().trim(),
@@ -75,7 +75,14 @@ var apiFreecompany =
             seeking: [],
         };
 
-        if ($('.area_inner_body tr').eq(10).find('td:last-child .txt_yellow').html().length > 1) {
+        // trim icon if it exists
+        for(var i in [1,2,3]) {
+            var num = i+1;
+            data.emblums[num] = data.emblums[num] ? data.emblums[num].trim() : data.emblums[num];
+        }
+
+        var $estate = $('.area_inner_body tr').eq(10).find('td:last-child .txt_yellow');
+        if ($estate.html() && $estate.length > 1) {
             $estate = $('.area_inner_body tr').eq(10).find('td:last-child');
             data.estate = {
                 name: $estate.find('.txt_yellow').text().trim(),
@@ -129,9 +136,9 @@ var apiFreecompany =
                     level: parseInt($node.find('.message_ic_box .ic_class .lv_class').text()),
                 },
                 grand_company: {
-                    icon: $node.find('.ic_gc img').attr('src').trim(),
-                    name: $node.find('.ic_gc div:last-child').text().split('/')[0].trim(),
-                    rank: $node.find('.ic_gc div:last-child').text().split('/')[1].trim(),
+                    icon: $node.find('.ic_gc img').attr('src'),
+                    name: $node.find('.ic_gc div:last-child').text().split('/')[0],
+                    rank: $node.find('.ic_gc div:last-child').text().split('/')[1],
                 }
             };
 
@@ -149,6 +156,8 @@ var apiFreecompany =
         };
 
         data.paging.pages = Math.ceil(data.paging.total / (data.paging.end - (data.paging.start - 1)));
+
+        return data;
     },
 }
 
