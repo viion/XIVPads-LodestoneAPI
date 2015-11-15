@@ -121,7 +121,7 @@ var api = {
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     getItem: function(reply, options) {
-        console.log('Getting item for id:', id);
+        console.log('- getItem:', options);
         api.get(apiItems.getUrl('item', options.id), function($) {
             reply(apiItems.getData($));
         });
