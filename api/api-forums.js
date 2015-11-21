@@ -1,5 +1,3 @@
-var sugar = require('sugar');
-
 var apiForums =
 {
     getUrl: function(type, param1, param2) {
