@@ -1,3 +1,5 @@
+var sugar = require('sugar');
+
 var apiForums =
 {
     getUrl: function(type, param1, param2) {
@@ -17,21 +19,18 @@ var apiForums =
             var url = $node.find('.comments_member_avatar_link').attr('href').trim(),
                 timestamp = $node.find('.meta').text().trim();
 
-            // replace the word "Today"
-            var today = new Date().toJSON().slice(0,10);
-            timestamp = timestamp.replace('Today', today);
-
-            // sort out timestamp
-            timestamp = new Date(timestamp);
-            timestamp = timestamp.getTime() / 1000;
-
-            // date
-            var date = new Date(timestamp * 1000).toString();
+            //
+            // Timestamps are in JST, it is very difficult to convert to UTC
+            // so it will be ignored and rendered directly, with "JST" appended onto it.
+            //
+            // Frontend visuals are best to just represent the "today" or "yesterday"
+            // until the date shows up
+            //
 
             data.push({
                 member: {
                     url: 'http://forum.square-enix.com/ffxiv/' + url,
-                    name: url.split('/')[1].split('-')[1].trim().replace('_', ' ').split('?')[0],
+                    name: url.split('/')[1].split('-')[1].replace('_', ' ').split('?')[0],
                     id: parseInt(url.split('/')[1].split('-')[0].trim()),
                     icon: 'http://forum.square-enix.com/ffxiv/' + $node.find('.comments_member_avatar_link img').attr('src'),
                 },
@@ -39,7 +38,7 @@ var apiForums =
                 title: $node.find('.widget_post_header a').text(),
                 url: 'http://forum.square-enix.com/ffxiv/' +  $node.find('.widget_post_header a').attr('href').trim(),
                 timestamp: timestamp,
-                date: date,
+                date: timestamp.split(' '),
             });
         });
 

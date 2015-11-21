@@ -71,7 +71,7 @@ var apiLodestone =
             $node = $(this);
 
             post = {
-                timestamp: parseInt($node.find('.ic_info script').html().trim().split('(')[2].split(',')[0].trim()),
+                timestamp: parseInt($node.find('dd script').html().trim().split('(')[2].split(',')[0].trim()),
                 icon: 'http://img.finalfantasyxiv.com/lds/pc/global/images/common/ic/news_info.png',
                 link: 'http://' + config.lodestoneUrl + $node.find('a').eq(0).attr('href').trim(),
                 name: $node.find('a').eq(0).text().trim(),
@@ -91,7 +91,7 @@ var apiLodestone =
             $node = $(this);
 
             post = {
-                timestamp: parseInt($node.find('.ic_maintenance script').html().trim().split('(')[2].split(',')[0].trim()),
+                timestamp: parseInt($node.find('dd script').html().trim().split('(')[2].split(',')[0].trim()),
                 icon: 'http://img.finalfantasyxiv.com/lds/pc/global/images/common/ic/news_maintenance.png',
                 link: 'http://' + config.lodestoneUrl + $node.find('a').eq(0).attr('href').trim(),
                 name: $node.find('a').eq(0).text().trim(),
@@ -112,7 +112,7 @@ var apiLodestone =
             $node = $(this);
 
             post = {
-                timestamp: parseInt($node.find('.ic_update script').html().trim().split('(')[2].split(',')[0].trim()),
+                timestamp: parseInt($node.find('dd script').html().trim().split('(')[2].split(',')[0].trim()),
                 icon: 'http://img.finalfantasyxiv.com/lds/pc/global/images/common/ic/news_update.png',
                 link: 'http://' + config.lodestoneUrl + $node.find('a').eq(0).attr('href').trim(),
                 name: $node.find('a').eq(0).text().trim(),
@@ -132,7 +132,7 @@ var apiLodestone =
             $node = $(this);
 
             post = {
-                timestamp: parseInt($node.find('.ic_obstacle script').html().trim().split('(')[2].split(',')[0].trim()),
+                timestamp: parseInt($node.find('dd script').html().trim().split('(')[2].split(',')[0].trim()),
                 icon: 'http://img.finalfantasyxiv.com/lds/pc/global/images/common/ic/news_obstacle.png',
                 link: 'http://' + config.lodestoneUrl + $node.find('a').eq(0).attr('href').trim(),
                 name: $node.find('a').eq(0).text().trim(),
