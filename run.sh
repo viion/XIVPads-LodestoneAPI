@@ -24,4 +24,4 @@ sudo pm2 delete all
 sleep 1
 
 echo ">> Starting chat server"
-sudo pm2 start app.js --name API --interpreter node
+sudo pm2 start app.js --name API
