@@ -227,7 +227,6 @@ server.route({
             name: name,
             server: server,
         });
-
     }
 });
 

@@ -209,6 +209,58 @@ var apiItems =
                     });
                 });
             }
+
+            // dropped by
+            if ($footer.find('h3').text() == 'Dropped By')
+            {
+                data.enemies = [];
+
+                $footer.find('table tbody tr').each(function() {
+                    var $row1 = $(this).find('td:nth-child(1)'),
+                        $row2 = $(this).find('td:nth-child(2)'),
+                        $name = $row1.find('a.db_popup'),
+                        $area = $row2.find('.col_center a');
+
+                    var id = $name.attr('href').split('/'),
+                        id = functions.clean(id, '')[5];
+
+                    var area_id = $area.attr('href').split('/'),
+                        area_id = functions.clean(area_id, '')[4].split('=')[2];
+
+                    data.enemies.push({
+                        id: id,
+                        name: $name.text().trim(),
+                        url: $name.attr('href'),
+                        area_id: area_id,
+                        area_name: $area.text().trim(),
+                        area_url: $area.attr('href'),
+                    });
+                });
+            }
+
+            // gathering log
+            if ($footer.find('h3').text() == 'Gathering Log')
+            {
+                data.gathering = [];
+
+                $footer.find('table tbody tr').each(function() {
+                    var $row1 = $(this).find('td:nth-child(1)'),
+                        $row2 = $(this).find('td:nth-child(2)'),
+                        $name = $row1.find('a.db_popup'),
+                        $icon = $row1.find('img');
+
+                    var id = $name.attr('href').split('/'),
+                        id = functions.clean(id, '')[4];
+
+                    data.gathering.push({
+                        id: id,
+                        icon: $icon.attr('src'),
+                        name: $name.text().trim(),
+                        url: $name.attr('href'),
+                        level: $row2.text().trim(),
+                    });
+                });
+            }
         });
 
         return data;

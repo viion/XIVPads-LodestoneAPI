@@ -164,16 +164,7 @@ var api = {
 
         api.get(apiAchievements.getUrl('achievement', options.id, kind), function($) {
             data[kind] = apiAchievements.getData($, kind);
-
-            console.log(list);
-
-            // if kind id's still left
-            if (list.length > 0) {
-                api.getAchievementsAllRecurrsive(list, data, options, reply);
-            } else {
-                reply(data);
-                return;
-            }
+            var res = list.length > 0 ? api.getAchievementsAllRecurrsive(list, data, options, reply) : reply(data);
         });
     },
 
