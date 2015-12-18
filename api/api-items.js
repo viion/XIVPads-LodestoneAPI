@@ -1,12 +1,4 @@
-Array.prototype.clean = function(deleteValue) {
-    for (var i = 0; i < this.length; i++) {
-        if (this[i].trim() == deleteValue) {
-            this.splice(i, 1);
-            i--;
-        }
-    }
-    return this;
-};
+var functions = require('../functions');
 
 var apiItems =
 {
@@ -64,22 +56,30 @@ var apiItems =
         // flags
         var flags = '';
         $box.find('ul.eorzeadb_tooltip_ml12 li').each(function() { flags = flags + ' ' + $(this).text().trim(); });
-        flags = flags.replace(/\u00a0/g, " ").split(' ').clean('');
+        flags = flags.replace(/\u00a0/g, " ").split(' ')
+        flags = functions.clean(flags, '');
 
         // category
-        var category = $box.find('.item_name_area').text().trim().split("\n").clean(''), categoryOffset = 3;
+        var category = $box.find('.item_name_area').text().trim().split("\n"),
+            category = functions.clean(category, ''),
+            categoryOffset = 3;
+
         if (typeof category[categoryOffset] === 'undefined') {
             categoryOffset = 1;
         }
 
         // sells for
-        var sellsfor = $box.find('.popup_w412_body_inner').last().text().trim().split(' ').clean('');
+        var sellsfor = $box.find('.popup_w412_body_inner').last().text().trim().split(' '),
+            sellsfor = functions.clean(sellsfor, '');
+
+        var color = $box.find('.item_name_area h2').attr('class').trim().split(' '),
+            color = functions.clean(color, '')[1].trim().split('_')[0];
 
         // data
         var data =
         {
             name: $box.find('.item_name_area h2').text(),
-            color: $box.find('.item_name_area h2').attr('class').trim().split(' ').clean('')[1].trim().split('_')[0],
+            color: color,
             category: category[categoryOffset].trim(),
             icon: $box.find('.item_ic_box img.sys_nq_element').attr('src').trim(),
             is_unique: $box.find('.item_name_area .rare').length > 0 ? 1 : 0,
@@ -109,7 +109,8 @@ var apiItems =
                         $kind = $row1.find('.small a:nth-child(1)'),
                         $category = $row1.find('.small a:nth-child(2)');
 
-                    var id = $name.attr('href').split('/').clean('')[4];
+                    var id = $name.attr('href').split('/'),
+                        id = functions.clean(id, '')[4];
 
                     data.duties.push({
                         id: id,
@@ -134,7 +135,8 @@ var apiItems =
                         $row3 = $(this).find('td:nth-child(3)'),
                         $name = $row1.find('a');
 
-                    var id = $name.attr('href').split('/').clean('')[4];
+                    var id = $name.attr('href').split('/'),
+                        id = functions.clean(id, '')[4];
 
                     console.log($row2.text().trim());
 
@@ -159,13 +161,19 @@ var apiItems =
                     var $row1 = $(this).find('td:nth-child(1)'),
                         $row2 = $(this).find('td:nth-child(2)');
 
+                    var npc_id = $row1.find('a').attr('href').split('/'),
+                        npc_id = functions.clean(npc_id, '')[5];
+
+                    var area_id = $row2.find('a').attr('href').split('='),
+                        area_id = functions.clean(area_id, '')[2];
+
                     data.selling.push({
                         npc_name: $row1.find('a').text(),
                         npc_link: $row1.find('a').attr('href'),
-                        npc_id: $row1.find('a').attr('href').split('/').clean('')[5],
+                        npc_id: npc_id,
                         area_name: $row2.find('a').text(),
                         area_link: $row2.find('a').attr('href'),
-                        area_id: parseInt($row2.find('a').attr('href').split('=').clean('')[2]),
+                        area_id: area_id,
                         // area id matches in game ID
                     });
                 });
@@ -181,14 +189,20 @@ var apiItems =
                         $row2 = $(this).find('td:nth-child(2)'),
                         $row3 = $(this).find('td:nth-child(3)');
 
+                    var kind_id = $row1.find('a:nth-child(1)').attr('href').split('='),
+                        kind_id = functions.clean(kind_id, '')[1];
+
+                    var category_id = $row1.find('a:nth-child(2)').attr('href').split('='),
+                        category_id = functions.clean(category_id, '')[2];
+
                     data.quests.push({
                         kind_name: $row1.find('a:nth-child(1)').text(),
                         kind_url: $row1.find('a:nth-child(1)').attr('href'),
-                        kind_id: parseInt($row1.find('a:nth-child(1)').attr('href').split('=').clean('')[1]),
+                        kind_id: kind_id,
 
                         category_name: $row1.find('a:nth-child(2)').text(),
                         category_url: $row1.find('a:nth-child(2)').attr('href'),
-                        category_id: parseInt($row1.find('a:nth-child(2)').attr('href').split('=').clean('')[2]),
+                        category_id: category_id,
 
                         area_name: $row2.text(),
                         level: parseInt($row3.text()),

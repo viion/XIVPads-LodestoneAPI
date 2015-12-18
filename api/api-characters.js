@@ -1,12 +1,4 @@
-Array.prototype.clean = function(deleteValue) {
-    for (var i = 0; i < this.length; i++) {
-        if (this[i].trim() == deleteValue) {
-            this.splice(i, 1);
-            i--;
-        }
-    }
-    return this;
-};
+var functions = require('../functions');
 
 var apiCharacters =
 {
@@ -330,12 +322,15 @@ var apiCharacters =
                 gearLevel = $item.find('.popup_w412_body_inner').eq(1).find('.gear_level').text();
                 gearLevel = (gearLevel) ? parseInt(gearLevel.match(/\d+/)[0]) : 0;
 
+            var color = $item.find('h2.item_name').attr('class').trim().split(' ');
+                color = functions.clean(color, '')[1].trim().split('_')[0];
+
             var gear =
             {
                 id: $item.find('.bt_db_item_detail a').attr('href').split('/')[5].trim(),
                 icon: $item.find('.name_area img').eq(1).attr('src'),
                 name: $item.find('h2.item_name').text().trim(),
-                color: $item.find('h2.item_name').attr('class').trim().split(' ').clean('')[1].trim().split('_')[0],
+                color: color,
                 category: $item.find('.category_name').text(),
                 item_level: parseInt($item.find('.area_header_w400_gold .pt3.pb3').text().match(/\d+/)[0]),
                 gear_level: gearLevel,

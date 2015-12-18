@@ -148,7 +148,32 @@ var api = {
     getAchievements: function(reply, options) {
         console.log('- getAchievements', options);
         api.get(apiAchievements.getUrl('achievement', options.id, options.kind), function($) {
-            reply(apiAchievements.getData($));
+            reply(apiAchievements.getData($, options.kind));
+        });
+    },
+
+    getAchievementsAll: function(reply, options) {
+        console.log('- getAchievementsAll', options);
+        api.getAchievementsAllRecurrsive([1, 2, 4, 5, 6, 8, 11, 12, 13], {}, options, reply);
+    },
+
+    getAchievementsAllRecurrsive: function(list, data, options, reply)
+    {
+        var kind = list[0];
+        list.splice(list.indexOf(kind), 1);
+
+        api.get(apiAchievements.getUrl('achievement', options.id, kind), function($) {
+            data[kind] = apiAchievements.getData($, kind);
+
+            console.log(list);
+
+            // if kind id's still left
+            if (list.length > 0) {
+                api.getAchievementsAllRecurrsive(list, data, options, reply);
+            } else {
+                reply(data);
+                return;
+            }
         });
     },
 

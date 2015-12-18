@@ -35,7 +35,7 @@ var apiAchievements =
         return data;
     },
 
-    getData: function($) {
+    getData: function($, kind) {
         var data = [];
         $box = $('#contents');
         $box.find('.achievement_cnts li').each(function() {
@@ -57,11 +57,16 @@ var apiAchievements =
 
             achievement.date = new Date(timestamp * 1000).toString();
 
+            // if kind, include it
+            if (kind) {
+                achievement.kind = kind;
+            }
+
             data.push(achievement);
         });
 
         return data;
-    }
+    },
 }
 
 // Export it

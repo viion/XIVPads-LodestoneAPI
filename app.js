@@ -124,7 +124,8 @@ server.route({
 server.route({
     method: 'GET', path: '/database/item/search',
     handler: function (request, reply) {
-        var name = request.query.name ? request.query.name : '';
+        var name = request.query.name ? request.query.name : '',
+            name = functions.replaceAll(name, ' ', '+');
 
         api.setLanguage(request.query.language);
         api.searchItem(reply, {
@@ -186,10 +187,21 @@ server.route({
     }
 });
 
-// achievement get
+// achievement all
 server.route({
-    method: 'GET',
-    path: '/characters/get/{id}/achievements/{kind}',
+    method: 'GET', path: '/characters/get/{id}/achievements/all',
+    handler: function (request, reply) {
+        api.setLanguage(request.query.language);
+        api.getAchievementsAll(reply, {
+            id: request.params.id,
+        });
+    }
+});
+
+
+// achievement get kind
+server.route({
+    method: 'GET', path: '/characters/get/{id}/achievements/{kind}',
     handler: function (request, reply) {
         api.setLanguage(request.query.language);
         api.getAchievements(reply, {
