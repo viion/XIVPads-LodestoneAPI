@@ -1,5 +1,5 @@
 var cheerio = require('cheerio'),
-    http = require('http'),
+    http = require('follow-redirects').http,
     functions = require('../functions'),
     config = require('../config'),
     apiItems = require('./api-items'),
@@ -73,7 +73,23 @@ var api = {
         });
     },
 
+    //
+    // Super simple "get and parse",
+    // grouping two calls to one
+    //
+    getAndParse: function(url, parser, callback, extra)
+    {
+        // Get the page
+        api.get(url, function($)
+        {
+            // run it through the parser
+            parser($, callback, extra);
+        });
+    },
+
+    //
     // Set the language for lodestone
+    //
     setLanguage: function(lang) {
         if (lang == 'en' || lang == 'de' || lang == 'fr' || lang == 'jp') {
             api.language = lang;
@@ -84,7 +100,9 @@ var api = {
     // search stuff
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+    //
     // search for a character
+    ///
     searchCharacter: function(reply, options) {
         console.log('- searchCharacter', options);
         api.get(apiCharacters.getUrl('search', options.name, options.server), function($) {
@@ -92,7 +110,9 @@ var api = {
         });
     },
 
+    //
     // search for an item
+    ///
     searchItem: function(reply, options) {
         console.log('- searchItem', options);
         api.get(apiItems.getUrl('search', options.name), function($) {
@@ -100,7 +120,9 @@ var api = {
         });
     },
 
+    //
     // search for a freecompany
+    ///
     searchFreecompany: function(reply, options) {
         console.log('- searchFreecompany', options);
         api.get(apiFreecompany.getUrl('search', options.name, options.server), function($) {
@@ -108,7 +130,9 @@ var api = {
         });
     },
 
+    //
     // search for a linkshell
+    ///
     searchLinkshell: function(reply, options) {
         console.log('- searchLinkshell', options);
         api.get(apiLinkshell.getUrl('search', options.name, options.server), function($) {
@@ -120,6 +144,9 @@ var api = {
     // Database
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+    //
+    // Get item data
+    //
     getItem: function(reply, options) {
         console.log('- getItem:', options);
         api.get(apiItems.getUrl('item', options.id), function($) {
@@ -157,8 +184,7 @@ var api = {
         api.getAchievementsAllRecurrsive([1, 2, 4, 5, 6, 8, 11, 12, 13], {}, options, reply);
     },
 
-    getAchievementsAllRecurrsive: function(list, data, options, reply)
-    {
+    getAchievementsAllRecurrsive: function(list, data, options, reply) {
         var kind = list[0];
         list.splice(list.indexOf(kind), 1);
 
@@ -268,10 +294,51 @@ var api = {
     // Forums
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    getDevTracker: function(reply, options) {
+    //
+    // Get dev tracker data
+    //
+    getDevTracker: function(reply, options)
+    {
         console.log('- getDevTracker', options);
-        api.get(apiForums.getUrl('forums'), function($) {
-            reply(apiForums.getDevTracking($));
+
+        // url and parser
+        var url = apiForums.getUrl('devtracker'),
+            parser = apiForums.getDevPostsCallback;
+
+        // get dev posts
+        api.getAndParse(url, parser, function(data)
+        {
+            var numOfPostsParsed = 0;
+
+            // loop through dev posts
+            for(var postId in data)
+            {
+                // url and parser
+                var url = '{forums}/ffxiv/' + data[postId].post.url,
+                    parser = apiForums.getDevPostData;
+
+                // get full post
+                api.getAndParse(url, parser, function(post, extra)
+                {
+                    // get post id from the extra passed back
+                    var postId = extra.id;
+
+                    // populate the data using the post id
+                    data[postId].post.message = post;
+
+                    // increment numOfPostsParsed
+                    numOfPostsParsed++;
+
+                    // if numOfPostsParsed
+                    if (numOfPostsParsed == functions.objLength(data))
+                    {
+                        // return to browser
+                        reply(data);
+                    }
+                }, {
+                    id: postId
+                });
+            }
         });
     },
 

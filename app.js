@@ -45,11 +45,35 @@ server.ext('onPreResponse', function(request, reply) {
 // - - - - - - - - - - - - - - - - - - - - - - - - -
 // Routes
 //
-//      / - home!
+//      /
 //      /characters/search/{name}
 //      /characters/get/{id}
 //      /characters/get/{id}/achievements/
 //      /characters/get/{id}/achievements/{kind}
+//
+//      /freecompany
+//      /freecompany/search
+//      /freecompany/get/{id}
+//      /freecompany/get/{id}/members
+//
+//      /linkshells
+//      /linkshells/search
+//      /linkshells/get/{id}
+//
+//      /database
+//
+//      /forums/devtracker
+//      /forums/popularposts
+//
+//      /lodestone
+//      /lodestone/banners
+//      /lodestone/topics
+//      /lodestone/notices
+//      /lodestone/maintenance
+//      /lodestone/updates
+//      /lodestone/status
+//      /lodestone/community
+//      /lodestone/events
 //
 //      /item/search/{name}
 //      /item/get/{id}
@@ -197,7 +221,6 @@ server.route({
         });
     }
 });
-
 
 // achievement get kind
 server.route({
@@ -366,7 +389,6 @@ server.route({
     }
 });
 
-
 server.route({
     method: 'GET', path: '/forums/popularposts',
     handler: function (request, reply) {
@@ -374,7 +396,6 @@ server.route({
         api.getPopularPosts(reply);
     }
 });
-
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // Start

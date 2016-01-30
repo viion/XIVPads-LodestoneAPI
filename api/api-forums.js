@@ -3,6 +3,8 @@ var apiForums =
     getUrl: function(type, param1, param2) {
         var urls = {
             forums: '{forums}/ffxiv/forum.php',
+            devtracker: '{forums}/ffxiv/search.php?do=process&search_type=1&contenttypeid=1&devtrack=1&starteronly=0&showposts=1&childforums=1&forumchoice[]=619',
+            support: '{forums}/ffxiv/search.php?do=process&search_type=1&contenttypeid=1&supporttrack=1&starteronly=0&showposts=1&childforums=1&forumchoice[]=619',
         }
 
         return urls[type];
@@ -73,6 +75,53 @@ var apiForums =
         });
 
         return data;
+    },
+
+    //
+    // Get dev posts and run a callback
+    //
+    getDevPostsCallback: function($, callback) {
+        var data = {};
+
+        $('#searchbits li').each(function() {
+            $node = $(this);
+
+            var postId = $node.find('.postbody h3 a').attr('href').split('#')[1].replace(/\D/g,'');
+
+            data[postId] = {
+                timestamp: $node.find('.postdate span.date').text(),
+                topic: {
+                    name: $node.find('.userinfo_noavatar .contact .username_container h2 a').text(),
+                    url: $node.find('.userinfo_noavatar .contact .username_container h2 a').attr('href'),
+                },
+                post: {
+                    url: $node.find('.postbody h3 a').attr('href'),
+                    id: postId
+                },
+                user: {
+                    name: $node.find('.userinfo_noavatar .contact .username_container > a').text(),
+                    url: $node.find('.userinfo_noavatar .contact .username_container > a').attr('href'),
+                },
+                meta: {
+                    replies: parseInt($node.find('.userinfo_extra .userstats dd').eq(0).text().replace(/\D/g,'')),
+                    views: parseInt($node.find('.userinfo_extra .userstats dd').eq(1).text().replace(/\D/g,'')),
+                    likes: parseInt($node.find('.postbody .postrow .content div .likeitic').text().replace(/\D/g,'')),
+                }
+            };
+        });
+
+        return callback(data);
+    },
+
+    //
+    // Get dev post data
+    //
+    getDevPostData: function($, callback, extra)
+    {
+        var css = '#post_message_' + extra.id + ' .postcontent',
+            post = $(css).html();
+
+        return callback(post, extra);
     }
 }
 
