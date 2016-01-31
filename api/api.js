@@ -314,7 +314,8 @@ var api = {
             for(var postId in data)
             {
                 // url and parser
-                var url = '{forums}/ffxiv/' + data[postId].post.url,
+                var url = data[postId].post.url.replace('http://forum.square-enix.com/ffxiv/', ''),
+                    url = '{forums}/ffxiv/'+ url,
                     parser = apiForums.getDevPostData;
 
                 // get full post
@@ -324,7 +325,11 @@ var api = {
                     var postId = extra.id;
 
                     // populate the data using the post id
-                    data[postId].post.message = post;
+                    data[postId].post.message = post.message;
+                    data[postId].user.name = post.user;
+                    data[postId].user.color = post.color;
+                    data[postId].user.avatar = post.avatar;
+                    data[postId].user.title = post.title;
 
                     // increment numOfPostsParsed
                     numOfPostsParsed++;

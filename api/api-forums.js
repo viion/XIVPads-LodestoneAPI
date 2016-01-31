@@ -92,15 +92,15 @@ var apiForums =
                 timestamp: $node.find('.postdate span.date').text(),
                 topic: {
                     name: $node.find('.userinfo_noavatar .contact .username_container h2 a').text(),
-                    url: $node.find('.userinfo_noavatar .contact .username_container h2 a').attr('href'),
+                    url: 'http://forum.square-enix.com/ffxiv/'+ $node.find('.userinfo_noavatar .contact .username_container h2 a').attr('href'),
                 },
                 post: {
-                    url: $node.find('.postbody h3 a').attr('href'),
+                    url: 'http://forum.square-enix.com/ffxiv/'+ $node.find('.postbody h3 a').attr('href'),
                     id: postId
                 },
                 user: {
                     name: $node.find('.userinfo_noavatar .contact .username_container > a').text(),
-                    url: $node.find('.userinfo_noavatar .contact .username_container > a').attr('href'),
+                    url: 'http://forum.square-enix.com/ffxiv/'+ $node.find('.userinfo_noavatar .contact .username_container > a').attr('href'),
                 },
                 meta: {
                     replies: parseInt($node.find('.userinfo_extra .userstats dd').eq(0).text().replace(/\D/g,'')),
@@ -118,10 +118,17 @@ var apiForums =
     //
     getDevPostData: function($, callback, extra)
     {
-        var css = '#post_message_' + extra.id + ' .postcontent',
-            post = $(css).html();
+        var $post = $('#post_' + extra.id);
 
-        return callback(post, extra);
+        var data = {
+            message: $post.find('.postcontent').html().trim(),
+            user: $post.find('.userinfo .username_container a.username strong span').text().trim(),
+            color: $post.find('.userinfo .username_container a.username span').css('color'),
+            avatar: 'http://forum.square-enix.com/ffxiv/'+ $post.find('.userinfo .postuseravatar img').attr('src'),
+            title: $post.find('.userinfo .usertitle').text().trim(),
+        }
+
+        return callback(data, extra);
     }
 }
 
