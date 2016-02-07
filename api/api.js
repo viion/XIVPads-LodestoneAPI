@@ -39,7 +39,7 @@ var api = {
         var options = {
             host: host,
             port: 80,
-            path: url.replace(' ', '+'),
+            path: url.replace(' ', '+') + '#' + Date.now(),
         }
 
         // get
