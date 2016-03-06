@@ -7,13 +7,21 @@ var fs = require('fs'),
     path = require('path');
 
 // create server
-var server = new hapi.Server(config.hapi);
+var server = new hapi.Server();
 
 // Server connections
 server.connection({
     host: config.host,
     port: config.port,
 });
+
+if (typeof config.hapi.tls !== 'undefined') {
+    server.connection({
+        host: config.host,
+        port: config.portssl,
+        tls: config.hapi.tls,
+    });
+}
 
 // Register vision
 server.register(require('vision'), function (err) {
