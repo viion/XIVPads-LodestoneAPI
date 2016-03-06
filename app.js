@@ -12,14 +12,17 @@ var server = new hapi.Server();
 // Server connections
 server.connection({
     host: config.host,
-    port: config.port,
+    port: config.port
 });
 
 if (typeof config.hapi.tls !== 'undefined') {
     server.connection({
         host: config.host,
         port: config.portssl,
-        tls: config.hapi.tls,
+        tls: {
+            key: fs.readFileSync(config.hapi.tls.key),
+            cert: fs.readFileSync(config.hapi.tls.cert),
+        }
     });
 }
 
