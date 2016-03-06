@@ -13,15 +13,13 @@ line="--------------------------------------------------"
 nl="\n${line}\n"
 printf "${nl} ${PROJECT} ${nl}"
 
-sleep 1
-
 echo ">> Stop all"
-sudo pm2 stop all
+pm2 stop all
 
 echo ">> Delete"
-sudo pm2 delete all
+pm2 delete all
 
 sleep 1
 
-echo ">> Starting chat server"
-sudo pm2 start app.js --name API
+echo ">> Starting XIVSync Server"
+pm2 start app.js --name API
