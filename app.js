@@ -5,7 +5,9 @@ var fs = require('fs'),
     functions = require('./functions'),
     hapi = require('hapi'),
     path = require('path');
-    server = new hapi.Server();
+
+// create server
+var server = new hapi.Server(config.hapi);
 
 // Server connections
 server.connection({

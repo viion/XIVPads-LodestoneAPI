@@ -28,6 +28,8 @@ var config =
         table:  'xivsync',
         debug:  false,
     },
+
+    hapi: {}
 }
 
 // Export it
