@@ -9,22 +9,26 @@ var fs = require('fs'),
 // create server
 var server = new hapi.Server();
 
-// Server connections
-server.connection({
+// connection options
+var options = {
     host: config.host,
     port: config.port
-});
+};
 
+// if SSL connection
 if (typeof config.hapi.tls !== 'undefined') {
-    server.connection({
+    var options = {
         host: config.host,
         port: config.portssl,
         tls: {
             key: fs.readFileSync(config.hapi.tls.key),
             cert: fs.readFileSync(config.hapi.tls.cert),
         }
-    });
+    };
 }
+
+// create server connection
+server.connection(options);
 
 // Register vision
 server.register(require('vision'), function (err) {
