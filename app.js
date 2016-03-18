@@ -15,6 +15,18 @@ var options = {
     port: config.port
 };
 
+// if SSL connection
+if (typeof config.hapi.tls !== 'undefined') {
+    var options = {
+        host: config.host,
+        port: config.portssl,
+        tls: {
+            key: fs.readFileSync(config.hapi.tls.key),
+            cert: fs.readFileSync(config.hapi.tls.cert),
+        }
+    };
+}
+
 // create server connection
 server.connection(options);
 
