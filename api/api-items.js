@@ -2,11 +2,10 @@ var functions = require('../functions');
 
 var apiItems =
 {
-    getUrl: function(type, string) {
-
+    getUrl: function(type, string, page) {
         var urls =
         {
-            search: '/lodestone/playguide/db/item/?db_search_category=item&category2=&q={string}'.replace('{string}', string),
+            search: '/lodestone/playguide/db/item/?db_search_category=item&category2=&q={string}&page={page}'.replace('{string}', string).replace('{page}', page),
             item: '/lodestone/playguide/db/item/{string}/'.replace('{string}', string),
         }
 
