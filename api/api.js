@@ -3,6 +3,7 @@ var cheerio = require('cheerio'),
     functions = require('../functions'),
     config = require('../config'),
     apiItems = require('./api-items'),
+    apiRecipes = require('./api-recipes'),
     apiCharacters = require('./api-characters'),
     apiAchievements = require('./api-achievements'),
     apiLodestone = require('./api-lodestone'),
@@ -115,8 +116,15 @@ var api = {
     ///
     searchItem: function(reply, options) {
         console.log('- searchItem', options);
-        api.get(apiItems.getUrl('search', options.name), function($) {
+        api.get(apiItems.getUrl('search', options.name, options.page), function($) {
             reply(apiItems.getSearch($));
+        });
+    },    
+    
+    searchRecipe: function(reply, options) {
+        console.log('- searchRecipe', options);
+        api.get(apiRecipes.getUrl('search', options.name, options.page), function($) {
+            reply(apiRecipes.getSearch($));
         });
     },
 
@@ -154,6 +162,16 @@ var api = {
         });
     },
 
+    //
+    // Get recipe data
+    //
+    getRecipe: function(reply, options) {
+        console.log('- getRecipe:', options);
+        api.get(apiRecipes.getUrl('recipe', options.id), function($) {
+            reply(apiRecipes.getData($));
+        });
+    },
+    
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     // Character
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

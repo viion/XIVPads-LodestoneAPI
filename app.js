@@ -15,18 +15,6 @@ var options = {
     port: config.port
 };
 
-// if SSL connection
-if (typeof config.hapi.tls !== 'undefined') {
-    var options = {
-        host: config.host,
-        port: config.portssl,
-        tls: {
-            key: fs.readFileSync(config.hapi.tls.key),
-            cert: fs.readFileSync(config.hapi.tls.cert),
-        }
-    };
-}
-
 // create server connection
 server.connection(options);
 
@@ -167,10 +155,12 @@ server.route({
     handler: function (request, reply) {
         var name = request.query.name ? request.query.name : '',
             name = functions.replaceAll(name, ' ', '+');
+        var page = request.query.page ? request.query.page : '';
 
         api.setLanguage(request.query.language);
         api.searchItem(reply, {
-            name: name
+            name: name,
+            page: page
         });
     }
 });
@@ -181,6 +171,33 @@ server.route({
     handler: function (request, reply) {
         api.setLanguage(request.query.language);
         api.getItem(reply, {
+            id: request.params.id,
+        });
+    }
+});
+
+// recipe search
+server.route({
+    method: 'GET', path: '/database/recipe/search',
+    handler: function (request, reply) {
+        var name = request.query.name ? request.query.name : '',
+            name = functions.replaceAll(name, ' ', '+');
+        var page = request.query.page ? request.query.page : '';
+
+        api.setLanguage(request.query.language);
+        api.searchRecipe(reply, {
+            name: name,
+            page: page
+        });
+    }
+});
+
+// recipe get
+server.route({
+    method: 'GET', path: '/database/recipe/get/{id}',
+    handler: function (request, reply) {
+        api.setLanguage(request.query.language);
+        api.getRecipe(reply, {
             id: request.params.id,
         });
     }
