@@ -224,11 +224,12 @@ server.route({
     method: 'GET', path: '/characters/search',
     handler: function (request, reply) {
         var name = request.query.name ? request.query.name : '',
-            server = request.query.server ? functions.ucwords(request.query.server) : '';
+            server = request.query.server ? functions.ucwords(request.query.server) : '',
+            page = request.query.page ? request.query.page : 1;
 
         api.setLanguage(request.query.language);
         api.searchCharacter(reply, {
-            name: name, server: server
+            name: name, server: server, page: page
         });
     }
 });
