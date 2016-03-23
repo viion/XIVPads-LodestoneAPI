@@ -106,7 +106,7 @@ var api = {
     ///
     searchCharacter: function(reply, options) {
         console.log('- searchCharacter', options);
-        api.get(apiCharacters.getUrl('search', options.name, options.server), function($) {
+        api.get(apiCharacters.getUrl('search', options.name, options.server, options.page), function($) {
             reply(apiCharacters.getSearch($));
         });
     },
