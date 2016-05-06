@@ -1,0 +1,40 @@
+<style>
+html, body {
+    background-color: #eee; font-family: Verdana;
+}
+body {
+    margin: 0;
+    height: 100%;
+    position: relative;
+}
+header {
+    background-color: #fff;
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 130px;
+    padding: 20px 0 0 20px;
+}
+h1 {
+    margin: 0 0 10px 0;
+    font-weight: normal;
+}
+p {
+    margin: 0 0 10px 0;
+}
+main {
+    position: absolute;
+    top: 150px; left: 0; right: 0; bottom: 0;
+    padding: 50px;
+    overflow-y: scroll;
+}
+</style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script>{{{ js }}}</script>
+
+<header>
+    <h1>Dev Tool</h1>
+    <p>The dev-html.html file should only contain the contents class</p>
+    <p>Open the console to view output information, the dev window is the html being parsed</p>
+</header>
+
+<main class="dev"></main>

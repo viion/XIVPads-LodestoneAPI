@@ -1,3 +1,5 @@
+var webpages = ['/', '/characters', '/freecompany', '/linkshells', '/database', '/lodestone', '/dev', '/web/dev-html.html'];
+
 // Setup
 var fs = require('fs'),
     api = require('./api/api'),
@@ -11,6 +13,11 @@ var fs = require('fs'),
 server.connection({
     host: config.host,
     port: config.port,
+    routes: {
+        files: {
+            relativeTo: path.join(__dirname, 'web')
+        }
+    }
 });
 
 // Register vision
@@ -25,13 +32,16 @@ server.register(require('vision'), function (err) {
     });
 });
 
+// register inert
+server.register(require('inert'), () => {});
+
 // set headers before response
 server.ext('onPreResponse', function(request, reply) {
     var path = request.path;
 
     if (typeof request.response.header === "function") {
         // check path to dermine if we need json response
-        if (['/', '/characters', '/freecompany', '/linkshells', '/database', '/lodestone'].indexOf(path) == -1) {
+        if (webpages.indexOf(path) == -1) {
             request.response.header('Content-Type', 'application/json');
         }
 
@@ -56,12 +66,34 @@ server.ext('onPreResponse', function(request, reply) {
 //
 // - - - - - - - - - - - - - - - - - - - - - - - - -
 
+server.route({
+    method: 'GET',
+    path: '/web/{param*}',
+    handler: {
+        directory: {
+            path: '.',
+            redirectToSlash: true,
+            index: true
+        }
+    }
+});
+
 // home
 server.route({
     method: 'GET', path: '/',
     handler: function (request, reply) {
         fs.readFile('views/styles.css', 'utf8', function (err,data) {
             reply.view('index', { css: data });
+        });
+    }
+});
+
+// dev
+server.route({
+    method: 'GET', path: '/dev',
+    handler: function (request, reply) {
+        fs.readFile('web/dev.js', 'utf8', function (err,data) {
+            reply.view('dev', { js: data });
         });
     }
 });

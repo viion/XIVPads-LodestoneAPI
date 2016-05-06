@@ -12,13 +12,26 @@ Array.prototype.clean = function(deleteValue) {
     }
     return this;
 };
-
-// prevent issues
 function ldst_strftime(time, stamp) {}
-$.get('dev-html.html', function(data) {
-    $('.dev').html(data);
+// - - - - - - - - - - - - - - - - - - - -
+$.get('/web/dev-html.html', function(data) {
+    var $dom = $('.dev'); $dom.html(data);
+    // - - - - - - - - - - - - - - - - - - - -
+    // Your dev code goes here, and is then
+    // copied inside an api/api-<entity> file
+    // once you've got it parsing eveything
+    //
+    // Use the $dom variable as the parent
+    // for scraping the data.
+    //
+    // Use normal jquery syntax
     // - - - - - - - - - - - - - - - - - - - -
 
+
+
+
+
     // - - - - - - - - - - - - - - - - - - - -
-    console.log(data);
+    // End
+    // - - - - - - - - - - - - - - - - - - - -
 });
