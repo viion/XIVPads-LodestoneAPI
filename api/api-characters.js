@@ -3,10 +3,10 @@ var functions = require('../functions');
 var apiCharacters =
 {
     // get thr urls for this module
-    getUrl: function(type, param1, param2) {
+    getUrl: function(type, param1, param2, page) {
         var urls = {
             character: '/lodestone/character/{param1}/'.replace('{param1}', param1),
-            search: '/lodestone/character/?q={param1}&worldname={param2}'.replace('{param1}', param1).replace('{param2}', param2),
+            search: '/lodestone/character/?q={param1}&worldname={param2}&page={page}'.replace('{param1}', param1).replace('{param2}', param2).replace('{page}', page),
         }
 
         return urls[type];

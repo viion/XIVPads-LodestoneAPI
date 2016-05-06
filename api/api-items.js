@@ -2,11 +2,10 @@ var functions = require('../functions');
 
 var apiItems =
 {
-    getUrl: function(type, string) {
-
+    getUrl: function(type, string, page) {
         var urls =
         {
-            search: '/lodestone/playguide/db/item/?db_search_category=item&category2=&q={string}'.replace('{string}', string),
+            search: '/lodestone/playguide/db/item/?db_search_category=item&category2=&q={string}&page={page}'.replace('{string}', string).replace('{page}', page),
             item: '/lodestone/playguide/db/item/{string}/'.replace('{string}', string),
         }
 
@@ -82,8 +81,8 @@ var apiItems =
             color: color,
             category: category[categoryOffset].trim(),
             icon: $box.find('.item_ic_box img.sys_nq_element').attr('src').trim(),
-            is_unique: $box.find('.item_name_area .rare').length > 0 ? 1 : 0,
-            is_untradable: $box.find('.item_name_area .ex_bind').length > 0 ? 1 : 0,
+            is_unique: $box.find('.item_name_area .rare').text().trim().length > 0 ? 1 : 0,
+            is_untradable: $box.find('.item_name_area .ex_bind').text().trim().length > 0 ? 1 : 0,
             is_convertible: flags[1] == 'Yes' ? 1 : 0,
             is_projectable: flags[3] == 'Yes' ? 1 : 0,
             is_desynthesizable: flags[5] == 'Yes' ? 1 : 0,

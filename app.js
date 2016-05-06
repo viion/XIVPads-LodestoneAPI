@@ -7,10 +7,12 @@ var fs = require('fs'),
     functions = require('./functions'),
     hapi = require('hapi'),
     path = require('path');
-    server = new hapi.Server();
 
-// Server connections
-server.connection({
+// create server
+var server = new hapi.Server();
+
+// connection options
+var options = {
     host: config.host,
     port: config.port,
     routes: {
@@ -18,7 +20,27 @@ server.connection({
             relativeTo: path.join(__dirname, 'web')
         }
     }
-});
+};
+
+// if SSL connection
+if (typeof config.hapi.tls !== 'undefined') {
+    var options = {
+        host: config.host,
+        port: config.portssl,
+        tls: {
+            key: fs.readFileSync(config.hapi.tls.key),
+            cert: fs.readFileSync(config.hapi.tls.cert),
+        },
+        routes: {
+            files: {
+                relativeTo: path.join(__dirname, 'web')
+            }
+        }
+    };
+}
+
+// create server connection
+server.connection(options);
 
 // Register vision
 server.register(require('vision'), function (err) {
@@ -55,11 +77,35 @@ server.ext('onPreResponse', function(request, reply) {
 // - - - - - - - - - - - - - - - - - - - - - - - - -
 // Routes
 //
-//      / - home!
+//      /
 //      /characters/search/{name}
 //      /characters/get/{id}
 //      /characters/get/{id}/achievements/
 //      /characters/get/{id}/achievements/{kind}
+//
+//      /freecompany
+//      /freecompany/search
+//      /freecompany/get/{id}
+//      /freecompany/get/{id}/members
+//
+//      /linkshells
+//      /linkshells/search
+//      /linkshells/get/{id}
+//
+//      /database
+//
+//      /forums/devtracker
+//      /forums/popularposts
+//
+//      /lodestone
+//      /lodestone/banners
+//      /lodestone/topics
+//      /lodestone/notices
+//      /lodestone/maintenance
+//      /lodestone/updates
+//      /lodestone/status
+//      /lodestone/community
+//      /lodestone/events
 //
 //      /item/search/{name}
 //      /item/get/{id}
@@ -158,10 +204,12 @@ server.route({
     handler: function (request, reply) {
         var name = request.query.name ? request.query.name : '',
             name = functions.replaceAll(name, ' ', '+');
+        var page = request.query.page ? request.query.page : '';
 
         api.setLanguage(request.query.language);
         api.searchItem(reply, {
-            name: name
+            name: name,
+            page: page
         });
     }
 });
@@ -177,6 +225,33 @@ server.route({
     }
 });
 
+// recipe search
+server.route({
+    method: 'GET', path: '/database/recipe/search',
+    handler: function (request, reply) {
+        var name = request.query.name ? request.query.name : '',
+            name = functions.replaceAll(name, ' ', '+');
+        var page = request.query.page ? request.query.page : '';
+
+        api.setLanguage(request.query.language);
+        api.searchRecipe(reply, {
+            name: name,
+            page: page
+        });
+    }
+});
+
+// recipe get
+server.route({
+    method: 'GET', path: '/database/recipe/get/{id}',
+    handler: function (request, reply) {
+        api.setLanguage(request.query.language);
+        api.getRecipe(reply, {
+            id: request.params.id,
+        });
+    }
+});
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // Character
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -186,11 +261,12 @@ server.route({
     method: 'GET', path: '/characters/search',
     handler: function (request, reply) {
         var name = request.query.name ? request.query.name : '',
-            server = request.query.server ? functions.ucwords(request.query.server) : '';
+            server = request.query.server ? functions.ucwords(request.query.server) : '',
+            page = request.query.page ? request.query.page : 1;
 
         api.setLanguage(request.query.language);
         api.searchCharacter(reply, {
-            name: name, server: server
+            name: name, server: server, page: page
         });
     }
 });
@@ -229,7 +305,6 @@ server.route({
         });
     }
 });
-
 
 // achievement get kind
 server.route({
@@ -398,7 +473,6 @@ server.route({
     }
 });
 
-
 server.route({
     method: 'GET', path: '/forums/popularposts',
     handler: function (request, reply) {
@@ -406,7 +480,6 @@ server.route({
         api.getPopularPosts(reply);
     }
 });
-
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // Start

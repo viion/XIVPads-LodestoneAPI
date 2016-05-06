@@ -18,7 +18,8 @@ var config =
     },
 
     host: 'localhost',
-    port: 443,
+    port: 8080,
+    portssl: 8443,
 
     db:
     {
@@ -28,6 +29,8 @@ var config =
         table:  'xivsync',
         debug:  false,
     },
+
+    hapi: {}
 }
 
 // Export it

@@ -2,6 +2,12 @@
 
 A NodeJS application to parse the: Final Fantasy XIV Lodestone: http://eu.finalfantasyxiv.com/lodestone/
 
+## Getting started locally
+
+- `npm install`
+- `cp config.js.dist config.js`
+- `node app.js`
+
 ## Setup
 
 Requirements:
