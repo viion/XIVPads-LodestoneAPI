@@ -107,8 +107,9 @@ server.ext('onPreResponse', function(request, reply) {
 //      /lodestone/community
 //      /lodestone/events
 //
-//      /item/search/{name}
-//      /item/get/{id}
+//      /database/item/search/{name}
+//      /database/item/get/{id}
+//      - eg: https://xivsync.com:8443/database/item/get/fa42e65fb9a
 //
 // - - - - - - - - - - - - - - - - - - - - - - - - -
 
