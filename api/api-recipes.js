@@ -35,9 +35,9 @@ var apiRecipes =
 
         var data = {
             paging: {
-                start: parseInt($('.current_list .show_start').eq(0).text().trim()),
-                end: parseInt($('.current_list .show_end').eq(0).text().trim()),
-                total: parseInt($('.current_list .total').eq(0).text().trim()),
+                start: parseInt($('.current_list .show_start').eq(0).text().trim().replace(/,/g, '')),
+                end: parseInt($('.current_list .show_end').eq(0).text().trim().replace(/,/g, '')),
+                total: parseInt($('.current_list .total').eq(0).text().trim().replace(/,/g, '')),
             },
             version: $('.area_footer .right').text().split(':')[1].trim(),
             error: $('.error_msg').length > 0 ? $('.error_msg').text().trim() : false,

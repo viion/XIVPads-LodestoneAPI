@@ -34,9 +34,9 @@ var apiItems =
 
         var data = {
             paging: {
-                start: parseInt($('.current_list .show_start').eq(0).text().trim()),
-                end: parseInt($('.current_list .show_end').eq(0).text().trim()),
-                total: parseInt($('.current_list .total').eq(0).text().trim()),
+                start: parseInt($('.current_list .show_start').eq(0).text().trim().replace(/,/g, '')),
+                end: parseInt($('.current_list .show_end').eq(0).text().trim().replace(/,/g, '')),
+                total: parseInt($('.current_list .total').eq(0).text().trim().replace(/,/g, '')),
             },
             version: $('.area_footer .right').text().split(':')[1].trim(),
             error: $('.error_msg').length > 0 ? $('.error_msg').text().trim() : false,
@@ -88,8 +88,8 @@ var apiItems =
             is_desynthesizable: flags[5] == 'Yes' ? 1 : 0,
             is_dyeable: flags[7] == 'Yes' ? 1 : 0,
             is_crestable: flags[9] == 'Yes' ? 1 : 0,
-            sell_nq: sellsfor[2] ? parseInt(sellsfor[2]) : false,
-            sell_hq: sellsfor[6] ? parseInt(sellsfor[6]) : false,
+            sell_nq: sellsfor[2] ? parseInt(sellsfor[2].replace(/,/g, ''), 10) : false,
+            sell_hq: sellsfor[6] ? parseInt(sellsfor[6].replace(/,/g, ''), 10) : false,
         }
 
         // related duties

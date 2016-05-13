@@ -103,9 +103,9 @@ var apiForums =
                     url: 'http://forum.square-enix.com/ffxiv/'+ $node.find('.userinfo_noavatar .contact .username_container > a').attr('href'),
                 },
                 meta: {
-                    replies: parseInt($node.find('.userinfo_extra .userstats dd').eq(0).text().replace(/\D/g,'')),
-                    views: parseInt($node.find('.userinfo_extra .userstats dd').eq(1).text().replace(/\D/g,'')),
-                    likes: parseInt($node.find('.postbody .postrow .content div .likeitic').text().replace(/\D/g,'')),
+                    replies: parseInt($node.find('.userinfo_extra .userstats dd').eq(0).text().replace(/,/g, '')),
+                    views: parseInt($node.find('.userinfo_extra .userstats dd').eq(1).text().replace(/,/g, '')),
+                    likes: parseInt($node.find('.postbody .postrow .content div .likeitic').text().replace(/,/g, '')),
                 }
             };
         });
