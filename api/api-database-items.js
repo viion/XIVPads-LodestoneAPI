@@ -1,6 +1,6 @@
 var functions = require('../functions');
 
-var apiItems =
+var apiDatabaseItems =
 {
     getUrl: function(type, string, page) {
         var urls =
@@ -267,4 +267,4 @@ var apiItems =
 }
 
 // Export it
-module.exports = apiItems;
+module.exports = apiDatabaseItems;

@@ -1,6 +1,6 @@
 var functions = require('../functions');
 
-var apiRecipes =
+var apiDatabaseRecipes =
 {
     getUrl: function(type, string, page) {
         var urls =
@@ -83,4 +83,4 @@ var apiRecipes =
 }
 
 // Export it
-module.exports = apiRecipes;
+module.exports = apiDatabaseRecipes;

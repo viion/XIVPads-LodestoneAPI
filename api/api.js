@@ -2,15 +2,17 @@ var cheerio = require('cheerio'),
     http = require('follow-redirects').http,
     functions = require('../functions'),
     config = require('../config'),
-    apiItems = require('./api-items'),
-    apiRecipes = require('./api-recipes'),
+
     apiCharacters = require('./api-characters'),
     apiAchievements = require('./api-achievements'),
     apiLodestone = require('./api-lodestone'),
     apiFreecompany = require('./api-freecompany'),
     apiLinkshell = require('./api-linkshell'),
     apiStandings = require('./api-standings'),
-    apiForums = require('./api-forums');
+    apiForums = require('./api-forums'),
+
+    apiDatabaseItems = require('./api-database-items'),
+    apiDatabaseRecipes = require('./api-database-recipes');
 
 // - - - - - - - - - - - - - - - - - - - -
 // Lodestone API
@@ -81,8 +83,7 @@ var api = {
     getAndParse: function(url, parser, callback, extra)
     {
         // Get the page
-        api.get(url, function($)
-        {
+        api.get(url, function($) {
             // run it through the parser
             parser($, callback, extra);
         });
@@ -103,7 +104,7 @@ var api = {
 
     //
     // search for a character
-    ///
+    //
     searchCharacter: function(reply, options) {
         console.log('- searchCharacter', options);
         api.get(apiCharacters.getUrl('search', options.name, options.server, options.page), function($) {
@@ -113,24 +114,27 @@ var api = {
 
     //
     // search for an item
-    ///
+    //
     searchItem: function(reply, options) {
         console.log('- searchItem', options);
-        api.get(apiItems.getUrl('search', options.name, options.page), function($) {
-            reply(apiItems.getSearch($));
+        api.get(apiDatabaseItems.getUrl('search', options.name, options.page), function($) {
+            reply(apiDatabaseItems.getSearch($));
         });
-    },    
-    
+    },
+
+    //
+    // Search for a recipe
+    //
     searchRecipe: function(reply, options) {
         console.log('- searchRecipe', options);
-        api.get(apiRecipes.getUrl('search', options.name, options.page), function($) {
-            reply(apiRecipes.getSearch($));
+        api.get(apiDatabaseRecipes.getUrl('search', options.name, options.page), function($) {
+            reply(apiDatabaseRecipes.getSearch($));
         });
     },
 
     //
     // search for a freecompany
-    ///
+    //
     searchFreecompany: function(reply, options) {
         console.log('- searchFreecompany', options);
         api.get(apiFreecompany.getUrl('search', options.name, options.server), function($) {
@@ -140,7 +144,7 @@ var api = {
 
     //
     // search for a linkshell
-    ///
+    //
     searchLinkshell: function(reply, options) {
         console.log('- searchLinkshell', options);
         api.get(apiLinkshell.getUrl('search', options.name, options.server), function($) {
@@ -157,8 +161,8 @@ var api = {
     //
     getItem: function(reply, options) {
         console.log('- getItem:', options);
-        api.get(apiItems.getUrl('item', options.id), function($) {
-            reply(apiItems.getData($));
+        api.get(apiDatabaseItems.getUrl('item', options.id), function($) {
+            reply(apiDatabaseItems.getData($));
         });
     },
 
@@ -167,11 +171,11 @@ var api = {
     //
     getRecipe: function(reply, options) {
         console.log('- getRecipe:', options);
-        api.get(apiRecipes.getUrl('recipe', options.id), function($) {
-            reply(apiRecipes.getData($));
+        api.get(apiDatabaseRecipes.getUrl('recipe', options.id), function($) {
+            reply(apiDatabaseRecipes.getData($));
         });
     },
-    
+
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     // Character
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -315,8 +319,7 @@ var api = {
     //
     // Get dev tracker data
     //
-    getDevTracker: function(reply, options)
-    {
+    getDevTracker: function(reply, options) {
         console.log('- getDevTracker', options);
 
         // url and parser

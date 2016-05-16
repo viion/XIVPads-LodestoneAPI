@@ -77,7 +77,7 @@ server.ext('onPreResponse', function(request, reply) {
 // - - - - - - - - - - - - - - - - - - - - - - - - -
 // Routes
 //
-//      /
+//      / - docs
 //      /characters/search/{name}
 //      /characters/get/{id}
 //      /characters/get/{id}/achievements/
@@ -109,7 +109,7 @@ server.ext('onPreResponse', function(request, reply) {
 //
 //      /database/item/search/{name}
 //      /database/item/get/{id}
-//      - eg: https://xivsync.com:8443/database/item/get/fa42e65fb9a
+//      - eg: /database/item/get/fa42e65fb9a
 //
 // - - - - - - - - - - - - - - - - - - - - - - - - -
 
