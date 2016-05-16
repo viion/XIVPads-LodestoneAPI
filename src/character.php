@@ -145,7 +145,7 @@ class Character
             $this->classjobs[$i]['exp_total'] = $realTotal;
 
             // Handle classjob id
-            $this->classjobs[$i]['id'] = array_search(strtolower($d['name']), $jobclass);
+            $this->classjobs[$i]['id'] = array_search(strtolower(str_ireplace(' ', '', $d['name'])), $jobclass);
 
             // Handle blanks
             if ($d['level'] == '-') { $this->classjobs[$i]['level'] = 0; }
