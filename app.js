@@ -1,6 +1,21 @@
-var webpages = ['/', '/characters', '/freecompany', '/linkshells', '/database', '/lodestone', '/dev', '/web/dev-html.html'];
+//
+// These are paths which are
+// not API endpoints.
+//
+var webpages = [
+    '/',
+    '/characters',
+    '/freecompany',
+    '/linkshells',
+    '/database',
+    '/lodestone',
+    '/dev',
+    '/web/dev-html.html'
+];
 
-// Setup
+//
+// Setup API
+//
 var fs = require('fs'),
     api = require('./api/api'),
     config = require('./config'),
@@ -113,6 +128,7 @@ server.ext('onPreResponse', function(request, reply) {
 //
 // - - - - - - - - - - - - - - - - - - - - - - - - -
 
+// Any path in /web
 server.route({
     method: 'GET',
     path: '/web/{param*}',
