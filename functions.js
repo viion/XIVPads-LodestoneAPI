@@ -45,6 +45,9 @@ var functions =
        return n % 1 === 0;
     },
 
+    //
+    // Clean array, can delete a specific value
+    //
     clean: function(string, deleteValue) {
         for (var i = 0; i < string.length; i++) {
             if (string[i].trim() == deleteValue) {
@@ -55,6 +58,9 @@ var functions =
         return string;
     },
 
+    //
+    // Get the length of an object
+    //
     objLength: function(obj) {
         var size = 0, key;
         for (key in obj) {
