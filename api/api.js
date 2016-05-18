@@ -12,7 +12,8 @@ var cheerio = require('cheerio'),
     apiForums = require('./api-forums'),
 
     apiDatabaseItems = require('./api-database-items'),
-    apiDatabaseRecipes = require('./api-database-recipes');
+    apiDatabaseRecipes = require('./api-database-recipes'),
+    apiDatabaseDuty = require('./api-database-duty');
 
 // - - - - - - - - - - - - - - - - - - - -
 // Lodestone API
@@ -133,6 +134,16 @@ var api = {
     },
 
     //
+    // search for an duty
+    //
+    searchDuty: function(reply, options) {
+        console.log('- searchDuty', options);
+        api.get(apiDatabaseDuty.getUrl('search', options.name, options.page), function($) {
+            reply(apiDatabaseDuty.getSearch($));
+        });
+    },
+
+    //
     // search for a freecompany
     //
     searchFreecompany: function(reply, options) {
@@ -173,6 +184,16 @@ var api = {
         console.log('- getRecipe:', options);
         api.get(apiDatabaseRecipes.getUrl('recipe', options.id), function($) {
             reply(apiDatabaseRecipes.getData($));
+        });
+    },
+
+    //
+    // Get duty data
+    //
+    getDuty: function(reply, options) {
+        console.log('- getDuty:', options);
+        api.get(apiDatabaseDuty.getUrl('duty', options.id), function($) {
+            reply(apiDatabaseDuty.getData($));
         });
     },
 
