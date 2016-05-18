@@ -122,9 +122,13 @@ server.ext('onPreResponse', function(request, reply) {
 //      /lodestone/community
 //      /lodestone/events
 //
-//      /database/item/search/{name}
+//      /database/item/search?name={name}&page={page}
 //      /database/item/get/{id}
 //      - eg: /database/item/get/fa42e65fb9a
+//
+//      /database/duty/search?name={name}&page={page}
+//      /database/duty/get/{id}
+//      -eg: /database/duty/get/02bebe2d92c
 //
 // - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -220,8 +224,8 @@ server.route({
     method: 'GET', path: '/database/item/search',
     handler: function (request, reply) {
         var name = request.query.name ? request.query.name : '',
-            name = functions.replaceAll(name, ' ', '+');
-        var page = request.query.page ? request.query.page : '';
+            name = functions.replaceAll(name, ' ', '+'),
+            page = request.query.page ? request.query.page : '';
 
         api.setLanguage(request.query.language);
         api.searchItem(reply, {
@@ -249,8 +253,8 @@ server.route({
     method: 'GET', path: '/database/recipe/search',
     handler: function (request, reply) {
         var name = request.query.name ? request.query.name : '',
-            name = functions.replaceAll(name, ' ', '+');
-        var page = request.query.page ? request.query.page : '';
+            name = functions.replaceAll(name, ' ', '+'),
+            page = request.query.page ? request.query.page : '';
 
         api.setLanguage(request.query.language);
         api.searchRecipe(reply, {
