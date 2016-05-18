@@ -1,10 +1,16 @@
 var functions =
 {
+    //
+    // Output the memory usage
+    //
     memory: function()
     {
         return process.memoryUsage().heapUsed;
     },
 
+    //
+    // Convert memory to a human readable format
+    //
     memoryToHuman: function(bytes)
     {
         var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
@@ -13,12 +19,18 @@ var functions =
         return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
     },
 
+    //
+    // Replace all "find" with "replace" in a string
+    //
     replaceAll: function(string, find, replace)
     {
         var regex = new RegExp(find, 'g');
         return string.replace(regex, replace);
     },
 
+    //
+    // Format something into ucwords (same as PHP function)
+    //
     ucwords: function(string)
     {
         return (string + '').replace(/^([a-z\u00E0-\u00FC])|\s+([a-z\u00E0-\u00FC])/g, function($1) {
@@ -26,6 +38,9 @@ var functions =
         });
     },
 
+    //
+    // Detects if something is int.
+    //
     isInt: function(n) {
        return n % 1 === 0;
     },
