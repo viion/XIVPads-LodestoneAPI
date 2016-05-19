@@ -449,6 +449,7 @@ server.route({
 // Lodestone
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+// get banners
 server.route({
     method: 'GET', path: '/lodestone/banners',
     handler: function (request, reply) {
@@ -457,6 +458,7 @@ server.route({
     }
 });
 
+// get lodestone topics
 server.route({
     method: 'GET', path: '/lodestone/topics',
     handler: function (request, reply) {
@@ -465,6 +467,7 @@ server.route({
     }
 });
 
+// get notices
 server.route({
     method: 'GET', path: '/lodestone/notices',
     handler: function (request, reply) {
@@ -473,6 +476,7 @@ server.route({
     }
 });
 
+// get maintenance
 server.route({
     method: 'GET',path: '/lodestone/maintenance',
     handler: function (request, reply) {
@@ -481,6 +485,7 @@ server.route({
     }
 });
 
+// get updates
 server.route({
     method: 'GET', path: '/lodestone/updates',
     handler: function (request, reply) {
@@ -489,6 +494,7 @@ server.route({
     }
 });
 
+// get statuses
 server.route({
     method: 'GET', path: '/lodestone/status',
     handler: function (request, reply) {
@@ -497,6 +503,7 @@ server.route({
     }
 });
 
+// get community
 server.route({
     method: 'GET', path: '/lodestone/community',
     handler: function (request, reply) {
@@ -505,6 +512,7 @@ server.route({
     }
 });
 
+// get events
 server.route({
     method: 'GET', path: '/lodestone/events',
     handler: function (request, reply) {
@@ -517,6 +525,7 @@ server.route({
 // Forums
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+// get dev tracker
 server.route({
     method: 'GET', path: '/forums/devtracker',
     handler: function (request, reply) {
@@ -525,6 +534,7 @@ server.route({
     }
 });
 
+// get popular posts
 server.route({
     method: 'GET', path: '/forums/popularposts',
     handler: function (request, reply) {

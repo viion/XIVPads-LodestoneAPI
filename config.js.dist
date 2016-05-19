@@ -1,8 +1,14 @@
 var config =
 {
+    // set the url to use for the lodestone and the forums
+    // Import:  Some code parsing relies on English words, this will break
+    //          when language is not English. (WIP)
     lodestoneUrl: 'na.finalfantasyxiv.com',
     forumsUrl: 'forum.square-enix.com',
 
+    //
+    // Function used to set the lodestone language, the deault is na
+    //
     setLodestoneLanguage: function(lang)
     {
         switch(lang)
@@ -17,11 +23,20 @@ var config =
         };
     },
 
+    // Where is your xivsync server hosted?
     host: 'localhost',
+
+    // What port will your server be hosted on?
     port: 8080,
+
+    // (optional) what SSL port will your server use?
     portssl: 8443,
+
+    // Should the server use persistent data?
+    // Please read the docs "Persistent Tracking" regarding this
     persistent: false,
 
+    // Database details, used for persistent tracking.
     db:
     {
         host:   'localhost',
@@ -31,6 +46,7 @@ var config =
         debug:  false,
     },
 
+    // hapi options, if our server will be on SSL you can provide tokens here.
     hapi: {}
 }
 
