@@ -2,10 +2,9 @@
 # vi: set ft=ruby :
 
 Vagrant.configure(2) do |config|
-
     config.vm.box = "ubuntu/trusty64"
     config.vm.provision :shell, path: "vm/provision.sh"
-    config.vm.network "forwarded_port", guest: 80, host: 4545
+    config.vm.network "forwarded_port", guest: 80, host: 3000
 
     config.vm.provider :virtualbox do |vb|
         vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
@@ -15,7 +14,7 @@ Vagrant.configure(2) do |config|
 
     config.vm.network "private_network", ip: "14.14.14.14"
     config.vm.hostname = "xivsync.dev"
-    config.vm.synced_folder ".", "/vagrant", type: "nfs"
+    config.vm.synced_folder ".", "/home/vagrant/", type: "nfs"
 
     config.hostmanager.enabled = true
     config.hostmanager.manage_host = true

@@ -24,13 +24,13 @@ var config =
     },
 
     // Where is your xivsync server hosted?
-    host: 'localhost',
+    host: 'xivsync.dev',
 
     // What port will your server be hosted on?
-    port: 8080,
+    port: 3000,
 
     // (optional) what SSL port will your server use?
-    portssl: 8443,
+    portssl: 3443,
 
     // Should the server use persistent data?
     // Please read the docs "Persistent Tracking" regarding this
