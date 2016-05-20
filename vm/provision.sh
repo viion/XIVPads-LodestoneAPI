@@ -29,3 +29,12 @@ sudo apt-get -y install nodejs
 
 # Map IP Table
 sudo iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 3000
+
+# Run node app
+npm install pm2 -g
+bash /home/vagrant/run
+
+
+echo "-----------------"
+echo "open: xivsync.dev"
+echo "-----------------"
