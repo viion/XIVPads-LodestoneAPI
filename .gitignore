@@ -4,3 +4,4 @@ config.js
 .vagrant
 .bash_history
 .cache/
+.mysql_history

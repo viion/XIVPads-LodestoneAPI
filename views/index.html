@@ -1,78 +1,124 @@
 <html>
 <head>
-    <title>XIVSync API</title>
+    <title>XIVSYNC</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha/css/bootstrap.min.css" rel="stylesheet" type="text/css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha/js/bootstrap.min.js"></script>
-    <style>{{{ css }}}</style>
+    <style>
+    header {
+        background-color: rgb(68, 159, 255);
+        background-image: url(web/bg.jpg);
+        background-size: cover;
+        background-position: center center;
+        color: #fff;
+        padding: 50px 0 50px 0;
+    }
+    header h1 {
+        font-size: 42px;
+        font-weight: 300;
+        color: #fff;
+        text-align: center;
+    }
+    footer {
+        text-align: center;
+        font-size: 12px;
+        margin-top: 30px;
+    }
+    hr {
+        margin: 40px 0;
+        border: none;
+        height: 2px;
+        background-color: #eee;
+    }
+    .repo-link {
+        font-size: 28px;
+        margin-bottom: 10px;
+    }
+    .repo-info {
+        color: #555;
+    }
+    </style>
 </head>
 <body>
 
     <header>
-        <section>
-            <span class="data">
-                <em>Tokyo</em>
-                <em>v5.5</em>
-            </span>
-            <h1>XIVSync API</h1>
-            <p>Get all the data from the Final Fantasy XIV Lodestone.</p>
-        </section>
+        <h1>XIVSync API</h1>
     </header>
 
-    <div class="bar">
-        <nav>
-            <a href="/" class="active">Home</a>
-            <a href="/characters">Characters</a>
-            <a href="/freecompany">Free Company</a>
-            <a href="/linkshells">Linkshell</a>
-            <a href="/database">Database</a>
-            <a href="/lodestone">Lodestone</a>
-        </nav>
+    <div class="container">
+
+        <br><br>
+        <ul class="list-group">
+            <li class="list-group-item">
+                <div class="row">
+
+                    <div class="col-md-2">
+                        <i class="fa fa-github-alt fa-5x" aria-hidden="true"></i>
+                    </div>
+
+                    <div class="col-md-10">
+                        <a href="https://github.com/viion/XIVPads-LodestoneAPI" class="repo-link">XIVSync Github Repository</a>
+                        <div class="repo-info">View the repo for documentation and updates!</div>
+                    </div>
+
+                </div>
+            </li>
+        </ul>
+        <br><br>
+
+        <h2>About</h2>
+        <p>
+            XIVSync is a <strong>FREE</strong> service that parses data from the
+            <a href="http://na.finalfantasyxiv.com/lodestone/">Final Fantasy XIV Lodestone</a>.
+            It has two purposes; provide a consistent data format via a relay and provide
+            persistent tracking. The service is hosted in Tokyo so it has a very minimal
+            hop rate to the lodestone, this provides a very fast interaction. This service
+            is open source and you can run your own if you would like, it runs on NodeJS.
+        </p>
+
+        <hr>
+
+        <h3>API: Relay</h3>
+        <p>
+            Parsing Lodestone yourself can be a slow process, especially from a US/EU server
+            due to the distance a response has to travel. It can also be quite a big task to
+            parse the pages and maintain a consistency for your applications. The relay aims
+            to provide you a direct response from the lodestone for a specific piece of content
+            and always be in the same format. This allows you to focus on your application and
+            not getting the data.
+        </p>
+        <p>
+            <strong>Features:</strong>
+            <ul>
+                <li>Parses Lodestone in real-time, the data is parsed the moment the API call is requested</li>
+                <li>Provides a consistent format, data always comes back the same</li>
+                <li>Response in JSON</li>
+            </ul>
+        </p>
+
+        <hr>
+
+        <h3>API: Persistent Tracking</h3>
+        <p>
+            One of the great features of XIVSync is it's tracking. To help extend profiles on XIVDB,
+            this service tracks characters progress such as EXP changes or gear equipped, showing
+            more than what is viewable with a basic snapshot of a characters profile. Using the
+            persistent tracking will take data already pre-parsed and will include additional
+            benefits.
+        </p>
+        <p>
+            <strong>Features:</strong>
+            <ul>
+                <li>More data, includes EXP/Level history, gear and other statistics.</li>
+                <li>Faster, does not parse Lodestone in real time (it auto-updates characters in the background)</li>
+                <li>Response in JSON</li>
+            </ul>
+        </p>
+
+        <hr>
+
+        <footer>
+            Developed by <a href="http://twitter.com/viion" target="_blank">@viion</a>
+        </footer>
+
     </div>
-
-    <section>
-        <h2>What is this?</h2>
-        <p>This API acts as a relay for obtaining data from the official game website:
-        <a href="http://na.finalfantasyxiv.com/lodestone/" target="_blank">The Lodestone</a>.</p>
-        <p>It provides a lightweight and clean response for various data from the API. The data is pulled
-        straight from the API and never cached. This server is based in <strong>Tokyo</strong>, if your
-        web server is in the US or EU, it is recommended to use the <a href="#">XIVPads API</a><em class="danger">*</em> instead.</p>
-        <p class="subtext"><em class="danger">*</em> The XIVPads API does not parse the site,
-        but provides pre-parsed data. <a href="#">Click here to read more.</a></p>
-
-        <div class="gap20"></div>
-
-        <div class="title"><i class="fa fa-github"></i> GitHub Repository</div>
-        <p><a href="https://github.com/viion/XIVPads-LodestoneAPI" target="_blank">viion/XIVPads-LodestoneAPI</a></p>
-        <p>Use the github page for issues, feature requests and questions.</p>
-
-        <hr>
-
-        <h2>What is required?</h2>
-        <p>
-            This API is REST-like, you just need to query the urls. They're all open and you should be good to go in any language.
-            Responses are in <strong>JSON</strong> format. SDK are provided for <strong>Javascript</strong> and <strong>PHP</strong>.
-        </p>
-
-        <hr>
-
-        <h2>Limitations?</h2>
-        <p>
-            There are no hard limits but please do no hit the server with a significant amount of queries. There is a soft build up
-            of 2 queries per second before it prevents queries from the same source. This is enough for a single flow from a
-            <strong>search</strong> page to a <strong>content</strong> page, eg: search character to select character.
-        </p>
-        <p>
-            If your server is in the US or EU then you may experience a 1-2 second delay per query, this is because of the
-            hops your server has to make to connect to XIVSync and respond. Connecting to a Japan server from the US is slow!
-            If this is not acceptable for your application, please use the <a href="#">XIVPads API</a>.
-        </p>
-
-        <hr>
-        <h2>Language support</h2>
-        <p>The API can parse the lodestone in all 4 languages: English, French, German and Japanese. Just provide the query the language you
-        would like with the tag: <code>language=<strong>{tag}</strong></code> to switch to that language. The default is English.</p>
-
-    </section>
 </body>

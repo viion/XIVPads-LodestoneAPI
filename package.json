@@ -1,13 +1,7 @@
 {
-  "name": "XIVPadsAPI",
+  "name": "XIVSync",
   "version": "0.0.1",
-  "description": "XIVPads API on Nodejs",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "",
-  "license": "ISC",
+  "description": "XIVSync",
   "dependencies": {
     "cheerio": "^0.19.0",
     "follow-redirects": "0.0.7",
