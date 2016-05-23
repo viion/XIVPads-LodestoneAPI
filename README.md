@@ -1,51 +1,28 @@
-# XIVSync API
+# XIVSync
 
-A NodeJS application to parse the: Final Fantasy XIV Lodestone: http://eu.finalfantasyxiv.com/lodestone/
+Parsing characters from the [Final Fantasy XIV Lodestone](http://na.finalfantasyxiv.com/lodestone/).
 
-## Getting started locally
+## API
 
-- `npm install`
-- `cp config.js.dist config.js`
-- `node app.js`
+If you are a developer and interesting in using the XIVSync API:
 
-## Setup
+- [Read about XIVSync Service](SERVICE.md)
+- [API: Character](docs/characters.md)
+- [API: Free Company](docs/freecompany.md)
+- [API: Linkshells](docs/linkshells.md)
+- [API: Forums](docs/forums.md)
+- [API: Lodestone](docs/lodestone.md)
+- [API: Database](docs/database.md)
 
-Requirements:
 
-- This is a NodeJS application, please use Node 4.2 or higher.
-- Require PM2, install using: `npm install pm2 -g`
+## SDKs
 
+Soon!
 
-Getting setup:
+## Helping out
 
-Open up a terminal/command window and run:
+Helping to build this API is very simple, basic Javascript/JQuery knowledge is all you need for parsing, and some MySQL understanding will help in the persistent areas (not required)
 
-- `npm install`
-- `cp config.js.dist config.js`
-
-Modify the `config.js` file as require for your environment. Note that if you are just looking to parse Lodestone and not store character data, then set the option `persistent` to false.
-
-Then you should be ready to run it,
-
-- Local/Dev: `node app.js`
-- Server/Live: `bash start.sh`
-
-## Documentation
-
-All documentation can be found on xivsync.com
-
-## Development
-
-This application parses Lodestone using a module that has a JQuery similar syntax, if you know JQuery, you can contribute to this project very easily!
-
-Once you have your node server running, go to: `http://localhost:3838/dev` and you should see a small dev page that includes some "broke lodestone html". This page loads in the file: `/web/dev-html.html` which contains html from the lodestone. (You cannot pull in html from the live web page using javascript due to domain restrictions).
-
-To get started, go to the page you would like to code against, eg: http://eu.finalfantasyxiv.com/lodestone/playguide/db/duty/bf316aa7eee/
-
-Open up Dev Tools on your browser, and go to the "Elements" section. You want to find the element: `<div id="contents" class="clearfix">`, this will have a `<!-- contents -->` tag before it.
-
-Right click and copy the entire element (which should include the html within it) and paste it into `/web/dev-html.html`.
-
-You can then code against that html page by opening up `/web/dev.js`. Use the `$dom` variable to parse the html and get the information you need, look at some of the code in the `/api/api-*.js` files to get an idea of the structure and some techniques you can use.
-
-Once you have some code, integrate it into a function in the `api/api*.js` files (or make your own function) and build your routes in `app.js` and `/api/api.js`.
+If you are interested, check out:
+- [Getting A Local Environment Setup](SETUP.md)
+- [Contributing to the API](CONTRIBUTE.md) (Once you've parsed a page)
