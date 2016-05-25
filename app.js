@@ -10,7 +10,9 @@ var webpages = [
     '/database',
     '/lodestone',
     '/dev',
-    '/web/dev-html.html'
+    '/web/dev-html.html',
+    '/web/bg.jpg',
+    '/test'
 ];
 
 //
@@ -78,7 +80,7 @@ server.ext('onPreResponse', function(request, reply) {
 
     if (typeof request.response.header === "function") {
         // check path to dermine if we need json response
-        if (webpages.indexOf(path) == -1) {
+        if (webpages.indexOf(path) == -1 || path.indexOf('.jpg') > -1) {
             request.response.header('Content-Type', 'application/json');
         }
 
@@ -165,53 +167,11 @@ server.route({
     }
 });
 
-// characters
+// test
 server.route({
-    method: 'GET', path: '/characters',
+    method: 'GET', path: '/test',
     handler: function (request, reply) {
-        fs.readFile('views/styles.css', 'utf8', function (err,data) {
-            reply.view('characters', { css: data });
-        });
-    }
-});
-
-// freecompany
-server.route({
-    method: 'GET', path: '/freecompany',
-    handler: function (request, reply) {
-        fs.readFile('views/styles.css', 'utf8', function (err,data) {
-            reply.view('freecompany', { css: data });
-        });
-    }
-});
-
-// linkshells
-server.route({
-    method: 'GET', path: '/linkshells',
-    handler: function (request, reply) {
-        fs.readFile('views/styles.css', 'utf8', function (err,data) {
-            reply.view('linkshells', { css: data });
-        });
-    }
-});
-
-// database
-server.route({
-    method: 'GET', path: '/database',
-    handler: function (request, reply) {
-        fs.readFile('views/styles.css', 'utf8', function (err,data) {
-            reply.view('database', { css: data });
-        });
-    }
-});
-
-// lodestone
-server.route({
-    method: 'GET', path: '/lodestone',
-    handler: function (request, reply) {
-        fs.readFile('views/styles.css', 'utf8', function (err,data) {
-            reply.view('lodestone', { css: data });
-        });
+        reply.view('test');
     }
 });
 
