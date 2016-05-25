@@ -20,6 +20,7 @@ var webpages = [
 //
 var fs = require('fs'),
     api = require('./api/api'),
+    lib = require('./libs/libs'),
     config = require('./config'),
     functions = require('./functions'),
     hapi = require('hapi'),
