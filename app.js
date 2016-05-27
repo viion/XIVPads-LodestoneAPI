@@ -97,18 +97,18 @@ server.ext('onPreResponse', function(request, reply) {
 // Routes
 //
 //      / - docs
-//      /characters/search/{name}
+//      /characters/search?name={name}&server={server}&page={page}
 //      /characters/get/{id}
 //      /characters/get/{id}/achievements/
 //      /characters/get/{id}/achievements/{kind}
 //
 //      /freecompany
-//      /freecompany/search
+//      /freecompany/search?name={name}&server={server}&page={page}
 //      /freecompany/get/{id}
 //      /freecompany/get/{id}/members
 //
 //      /linkshells
-//      /linkshells/search
+//      /linkshells/search?name={name}&server={server}&page={page}
 //      /linkshells/get/{id}
 //
 //      /database
@@ -511,6 +511,8 @@ server.route({
 
 server.start(function () {
     log.line();
-    log.echo('Server running at:', server.info.uri);
+    log.echo('Server running at: {address:purple}', {
+        address: server.info.uri,
+    });
     log.line();
 });
