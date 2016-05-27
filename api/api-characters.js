@@ -319,22 +319,22 @@ var apiCharacters =
         $box.find('.contents').eq(0).find('.item_detail_box').each(function(i)
         {
             var $item = $(this),
-                gearLevel = $item.find('.popup_w412_body_inner').eq(1).find('.gear_level').text();
+                gearLevel = $item.find('.db-tooltip__item_equipment__level').text();
                 gearLevel = (gearLevel) ? parseInt(gearLevel.match(/\d+/)[0]) : 0;
 
-            var color = $item.find('h2.item_name').attr('class').trim().split(' ');
-                color = functions.clean(color, '')[1].trim().split('_')[0];
+            var color = $item.find('h2.db-tooltip__item__name').attr('class').trim().split(' ');
+                color = functions.clean(color, '')[1].split('_')[0].trim().replace('txt-', '');
 
             var gear =
             {
-                id: $item.find('.bt_db_item_detail a').attr('href').split('/')[5].trim(),
-                icon: $item.find('.name_area img').eq(1).attr('src'),
-                name: $item.find('h2.item_name').text().trim(),
+                id: $item.find('.db-tooltip__bt_item_detail a').attr('href').split('/')[5].trim(),
+                icon: $item.find('.db-tooltip__item__icon img').eq(1).attr('src'),
+                name: $item.find('h2.db-tooltip__item__name').text().trim(),
                 color: color,
-                category: $item.find('.category_name').text(),
-                item_level: parseInt($item.find('.area_header_w400_gold .pt3.pb3').text().match(/\d+/)[0]),
+                category: $item.find('.db-tooltip__item__category').text(),
+                item_level: parseInt($item.find('.db-tooltip__item__level').text().match(/\d+/)[0]),
                 gear_level: gearLevel,
-                gear_classjob: $item.find('.popup_w412_body_inner').eq(1).find('.class_ok').text(),
+                gear_classjob: $item.find('.db-tooltip__item_equipment__class').text(),
                 slot: null,
                 stats: {},
             };
@@ -349,9 +349,9 @@ var apiCharacters =
             shortslot = slot.replace(new RegExp(' ', 'g'), '_');
 
             // item stats - core
-            $item.find('.popup_w412_body_inner .clearfix').eq(0).find('.parameter_name').each(function(i) {
+            $item.find('.db-db-tooltip__item_spec > div').eq(2).find('.db-tooltip__item_spec__value').each(function(i) {
                 $node = $(this);
-                $valueNode = $item.find('.popup_w412_body_inner .clearfix').eq(1).find('.parameter').eq(i);
+                $valueNode = $item.find('.db-tooltip__item_spec').eq(1).find('.db-tooltip__item_spec__name').eq(i);
 
                 var name = $node.text().trim(),
                     shortname = name.toLowerCase().replace(new RegExp(' ', 'g'), '_');
@@ -364,7 +364,7 @@ var apiCharacters =
             });
 
             // item stats - attributes
-            $item.find('.basic_bonus li').each(function()
+            $item.find('.db-tooltip__basic_bonus li').each(function()
             {
                 var name = $(this).text().split('+')[0].trim(),
                     shortname = name.toLowerCase().replace(new RegExp(' ', 'g'), '_');
@@ -375,6 +375,8 @@ var apiCharacters =
                     value: value,
                 };
             });
+
+            console.log(gear);
 
             data.active_gear[shortslot] = gear;
         });
