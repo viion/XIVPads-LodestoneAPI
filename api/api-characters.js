@@ -376,8 +376,6 @@ var apiCharacters =
                 };
             });
 
-            console.log(gear);
-
             data.active_gear[shortslot] = gear;
         });
 
