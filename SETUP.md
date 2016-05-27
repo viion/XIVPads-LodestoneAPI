@@ -2,7 +2,12 @@
 
 ## Requirements
 
+- NodeJS (v6 or higher)
+- MySQL (for persistent tracking)
+
 This project uses Vagrant to qickly setup a VM running XIVSync that contains everything it needs (NodeJS and MySQL). [You can download Vagrant here](https://www.vagrantup.com/), once you have it downloaded, clone this repository and navigate to the folder in Windows Explorer.
+
+If you do not wish to use a vagrant and wish to use persistent functionality, you will need to install MySQL on your computer.
 
 ## Getting started
 
