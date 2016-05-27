@@ -20,9 +20,10 @@ var webpages = [
 //
 var fs = require('fs'),
     api = require('./api/api'),
-    lib = require('./libs/libs'),
+    app = require('./app/app'),
     config = require('./config'),
     functions = require('./functions'),
+    log = require('./log'),
     hapi = require('hapi'),
     path = require('path');
 
@@ -293,7 +294,7 @@ server.route({
             id: request.params.id,
             ignore: request.query.ignore,
             restrict: request.query.restrict,
-        });
+        }, app.addCharacterToPending);
     }
 });
 
@@ -509,5 +510,7 @@ server.route({
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 server.start(function () {
-    console.log('Server running at:', server.info.uri);
+    log.line();
+    log.echo('Server running at:', server.info.uri);
+    log.line();
 });

@@ -2,6 +2,7 @@ var cheerio = require('cheerio'),
     http = require('follow-redirects').http,
     functions = require('../functions'),
     config = require('../config'),
+    log = require('../log'),
 
     apiCharacters = require('./api-characters'),
     apiAchievements = require('./api-achievements'),
@@ -31,6 +32,7 @@ var api = {
     get: function(url, callback) {
         // set language
         config.setLodestoneLanguage(api.language);
+        log.echo("Starting a new request ...");
 
         // lodestone url
         var host = config.lodestoneUrl;
@@ -51,9 +53,10 @@ var api = {
             start = +new Date(),
             memoryStart = functions.memory();
 
-        console.log('- Language:' + api.language);
-        console.log('- URL: ' + options.host + options.path);
-        console.log('- Start:', start);
+        log.echo("Sending request: [{language:cyan}] --> {url:cyan}", {
+            language: api.language,
+            url: (options.host + options.path),
+        });
 
         // request
         http.get(options, function(res) {
@@ -63,13 +66,14 @@ var api = {
             .on('end', function() {
                 // end time
                 var end = +new Date(),
-                    duration = (end - start),
+                    duration = (end - parseInt(start)),
                     memoryFinish = functions.memory();
 
-                console.log('- End:', end);
-                console.log('- Duration:', duration);
-                console.log('- memoryStart:', memoryStart, functions.memoryToHuman(memoryStart));
-                console.log('- memoryFinish:', memoryFinish, functions.memoryToHuman(memoryFinish));
+                log.echo("Duration: {duration:cyan} ms | Memory: {start:cyan} to {finish:cyan}", {
+                    duration: duration.toString(),
+                    start: functions.memoryToHuman(memoryStart),
+                    finish: functions.memoryToHuman(memoryFinish),
+                })
 
                 // callback with a cheerio assigned html
                 callback(cheerio.load(html));
@@ -107,7 +111,6 @@ var api = {
     // search for a character
     //
     searchCharacter: function(reply, options) {
-        console.log('- searchCharacter', options);
         api.get(apiCharacters.getUrl('search', options.name, options.server, options.page), function($) {
             reply(apiCharacters.getSearch($));
         });
@@ -117,7 +120,6 @@ var api = {
     // search for an item
     //
     searchItem: function(reply, options) {
-        console.log('- searchItem', options);
         api.get(apiDatabaseItems.getUrl('search', options.name, options.page), function($) {
             reply(apiDatabaseItems.getSearch($));
         });
@@ -127,7 +129,6 @@ var api = {
     // Search for a recipe
     //
     searchRecipe: function(reply, options) {
-        console.log('- searchRecipe', options);
         api.get(apiDatabaseRecipes.getUrl('search', options.name, options.page), function($) {
             reply(apiDatabaseRecipes.getSearch($));
         });
@@ -137,7 +138,6 @@ var api = {
     // search for an duty
     //
     searchDuty: function(reply, options) {
-        console.log('- searchDuty', options);
         api.get(apiDatabaseDuty.getUrl('search', options.name, options.page), function($) {
             reply(apiDatabaseDuty.getSearch($));
         });
@@ -147,7 +147,6 @@ var api = {
     // search for a freecompany
     //
     searchFreecompany: function(reply, options) {
-        console.log('- searchFreecompany', options);
         api.get(apiFreecompany.getUrl('search', options.name, options.server), function($) {
             reply(apiFreecompany.getSearch($));
         });
@@ -157,7 +156,6 @@ var api = {
     // search for a linkshell
     //
     searchLinkshell: function(reply, options) {
-        console.log('- searchLinkshell', options);
         api.get(apiLinkshell.getUrl('search', options.name, options.server), function($) {
             reply(apiLinkshell.getSearch($));
         });
@@ -171,7 +169,6 @@ var api = {
     // Get item data
     //
     getItem: function(reply, options) {
-        console.log('- getItem:', options);
         api.get(apiDatabaseItems.getUrl('item', options.id), function($) {
             reply(apiDatabaseItems.getData($));
         });
@@ -181,7 +178,6 @@ var api = {
     // Get recipe data
     //
     getRecipe: function(reply, options) {
-        console.log('- getRecipe:', options);
         api.get(apiDatabaseRecipes.getUrl('recipe', options.id), function($) {
             reply(apiDatabaseRecipes.getData($));
         });
@@ -191,7 +187,6 @@ var api = {
     // Get duty data
     //
     getDuty: function(reply, options) {
-        console.log('- getDuty:', options);
         api.get(apiDatabaseDuty.getUrl('duty', options.id), function($) {
             reply(apiDatabaseDuty.getData($));
         });
@@ -201,29 +196,37 @@ var api = {
     // Character
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    getCharacter: function(reply, options) {
-        console.log('- getCharacter', options);
+    getCharacter: function(reply, options, callback) {
         api.get(apiCharacters.getUrl('character', options.id), function($) {
-            reply(apiCharacters.getData($, options));
+            // Parse character data
+            var data = apiCharacters.getData($, options);
+
+            // always send of reply first so the user
+            // gets their response asap.
+            if (reply) {
+                reply(data);
+            }
+
+            // run any callbacks
+            if (callback) {
+                callback(data);
+            }
         });
     },
 
     getAchievementSummary: function(reply, options) {
-        console.log('- getAchievementSummary', options);
         api.get(apiAchievements.getUrl('summary', options.id), function($) {
             reply(apiAchievements.getSummary($));
         });
     },
 
     getAchievements: function(reply, options) {
-        console.log('- getAchievements', options);
         api.get(apiAchievements.getUrl('achievement', options.id, options.kind), function($) {
             reply(apiAchievements.getData($, options.kind));
         });
     },
 
     getAchievementsAll: function(reply, options) {
-        console.log('- getAchievementsAll', options);
         api.getAchievementsAllRecurrsive([1, 2, 4, 5, 6, 8, 11, 12, 13], {}, options, reply);
     },
 
@@ -242,7 +245,6 @@ var api = {
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     getLinkshell: function(reply, options) {
-        console.log('- getLinkshell', options);
         api.get(apiLinkshell.getUrl('linkshell', options.id), function($) {
             reply(apiLinkshell.getData($, options));
         });
@@ -253,14 +255,12 @@ var api = {
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     getFreecompany: function(reply, options) {
-        console.log('- getFreecompany', options);
         api.get(apiFreecompany.getUrl('freecompany', options.id), function($) {
             reply(apiFreecompany.getData($, options));
         });
     },
 
     getFreecompanyMembers: function(reply, options) {
-        console.log('- getFreecompanyMembers', options);
         api.get(apiFreecompany.getUrl('members', options.id, options.page), function($) {
             reply(apiFreecompany.getMembers($, options));
         });
@@ -271,56 +271,48 @@ var api = {
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     getLodestoneSlidingBanners: function(reply, options) {
-        console.log('- getLodestoneSlidingBanners', options);
         api.get(apiLodestone.getUrl('home'), function($) {
             reply(apiLodestone.getSlidingBanners($));
         });
     },
 
     getLodestoneTopics: function(reply, options) {
-        console.log('- getLodestoneTopics', options);
         api.get(apiLodestone.getUrl('topics'), function($) {
             reply(apiLodestone.getTopics($));
         });
     },
 
     getLodestoneNotices: function(reply, options) {
-        console.log('- getLodestoneNotices', options);
         api.get(apiLodestone.getUrl('notices'), function($) {
             reply(apiLodestone.getNotices($));
         });
     },
 
     getLodestoneMaintenance: function(reply, options) {
-        console.log('- getLodestoneMaintenance', options);
         api.get(apiLodestone.getUrl('maintenance'), function($) {
             reply(apiLodestone.getMaintenance($));
         });
     },
 
     getLodestoneUpdates: function(reply, options) {
-        console.log('- getLodestoneUpdates', options);
         api.get(apiLodestone.getUrl('updates'), function($) {
             reply(apiLodestone.getUpdates($));
         });
     },
 
     getLodestoneStatus: function(reply, options) {
-        console.log('- getLodestoneStatus', options);
         api.get(apiLodestone.getUrl('status'), function($) {
             reply(apiLodestone.getStatus($));
         });
     },
 
     getLodestoneCommunity: function(reply, options) {
-        console.log('- getLodestoneCommunity', options);
         api.get(apiLodestone.getUrl('community'), function($) {
             reply(apiLodestone.getCommunity($));
         });
     },
 
     getLodestoneEvents: function(reply, options) {
-        console.log('- getLodestoneEvents', options);
         api.get(apiLodestone.getUrl('events'), function($) {
             // get events url
             apiLodestone.getEventsUrl($, function(url) {
@@ -341,8 +333,6 @@ var api = {
     // Get dev tracker data
     //
     getDevTracker: function(reply, options) {
-        console.log('- getDevTracker', options);
-
         // url and parser
         var url = apiForums.getUrl('devtracker'),
             parser = apiForums.getDevPostsCallback;
@@ -389,8 +379,10 @@ var api = {
         });
     },
 
+    //
+    // Get popular posts from the forums
+    //
     getPopularPosts: function(reply, options) {
-        console.log('- getPopularPosts', options);
         api.get(apiForums.getUrl('forums'), function($) {
             reply(apiForums.getPopularPosts($));
         });

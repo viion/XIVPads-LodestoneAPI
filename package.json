@@ -4,10 +4,12 @@
   "description": "XIVSync",
   "dependencies": {
     "cheerio": "^0.19.0",
+    "cron": "^1.1.0",
     "follow-redirects": "0.0.7",
     "handlebars": "^4.0.4",
     "hapi": "^11.1.1",
     "inert": "^3.2.1",
+    "moment": "^2.13.0",
     "sugar": "^1.4.1",
     "vision": "^3.0.0"
   }

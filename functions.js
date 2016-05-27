@@ -1,5 +1,20 @@
+var moment = require('moment');
+
+var STR_PAD_LEFT = 1;
+var STR_PAD_RIGHT = 2;
+var STR_PAD_BOTH = 3;
+
 var functions =
 {
+    //
+    // Get the time from moment
+    //
+    time: function()
+    {
+        return parseInt(moment().format('X'));
+    },
+
+
     //
     // Output the memory usage
     //
@@ -26,6 +41,16 @@ var functions =
     {
         var regex = new RegExp(find, 'g');
         return string.replace(regex, replace);
+    },
+
+    //
+    // Insert something into a string at s specific position
+    //
+    insertIntoString: function(string, insert, index, fromend)
+    {
+        string = string.toString();
+        if (fromend) { index = string.length - index; }
+        return (string.slice(0,index) + insert + string.slice(index));
     },
 
     //
@@ -67,7 +92,47 @@ var functions =
             if (obj.hasOwnProperty(key)) size++;
         }
         return size;
-    }
+    },
+
+    //
+    // Object to string
+    //
+    objString: function(obj) {
+        return JSON.stringify(obj);
+    },
+
+    //
+    // String padding, mostly used for logging
+    //
+    padding: function(str, len, pad, dir)
+    {
+        if (typeof(len) == "undefined") { var len = 0; }
+        if (typeof(pad) == "undefined") { var pad = ' '; }
+        if (typeof(dir) == "undefined") { var dir = STR_PAD_RIGHT; }
+
+        if (str && len + 1 >= str.length)
+        {
+            switch (dir)
+            {
+                case STR_PAD_LEFT:
+                    str = Array(len + 1 - str.length).join(pad) + str;
+                    break;
+
+                case STR_PAD_BOTH:
+                    var right = Math.ceil((padlen = len - str.length) / 2);
+                    var left = padlen - right;
+                    str = Array(left+1).join(pad) + str + Array(right+1).join(pad);
+                    break;
+
+                default:
+                    str = str + Array(len + 1 - str.length).join(pad);
+                    break;
+
+            } // switch
+        }
+
+        return str;
+    },
 }
 
 // Export it

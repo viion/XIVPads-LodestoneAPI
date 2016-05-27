@@ -158,4 +158,4 @@ class MySQLQueryBuilderClass
 }
 
 // Export it
-module.exports = MySQLQueryBuilderClass;
+module.exports = new MySQLQueryBuilderClass();
