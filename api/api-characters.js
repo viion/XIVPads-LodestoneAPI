@@ -83,7 +83,7 @@ var apiCharacters =
             $profile = $box.find('.chara_profile_left .chara_profile_footer dl');
 
         // active class name
-        var activeClassName = $box.find('#param_class_info_area').eq(0).find('.item_detail_box .item_name_right .category_name').text(),
+        var activeClassName = $box.find('.db-tooltip__item__category').text(),
             activeClassName = activeClassName.split("'")[0],
             activeClassName = activeClassName.replace('Two-Handed', ''),
             activeClassName = activeClassName.replace('One--Handed', '');
