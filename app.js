@@ -105,7 +105,7 @@ server.ext('onPreResponse', function(request, reply) {
 //      /freecompany
 //      /freecompany/search?name={name}&server={server}&page={page}
 //      /freecompany/get/{id}
-//      /freecompany/get/{id}/members
+//      /freecompany/get/{id}/members?page={page}
 //
 //      /linkshells
 //      /linkshells/search?name={name}&server={server}&page={page}
@@ -342,11 +342,13 @@ server.route({
     handler: function (request, reply) {
         var name = request.query.name ? request.query.name : '',
             server = request.query.server ? functions.ucwords(request.query.server) : '';
+            page = request.query.page ? request.query.page : 1;
 
         api.setLanguage(request.query.language);
         api.searchFreecompany(reply, {
             name: name,
             server: server,
+            page: page
         });
     }
 });
@@ -363,13 +365,16 @@ server.route({
     }
 });
 
-// freecompany get
+// freecompany get members
 server.route({
     method: 'GET', path: '/freecompany/get/{id}/members',
     handler: function (request, reply) {
+        var page = request.query.page ? request.query.page : 1;
+
         api.setLanguage(request.query.language);
         api.getFreecompanyMembers(reply, {
-            id: request.params.id
+            id: request.params.id,
+            page: page
         });
 
     }
@@ -385,12 +390,14 @@ server.route({
     method: 'GET', path: '/linkshells/search',
     handler: function (request, reply) {
         var name = request.query.name ? request.query.name : '',
-            server = request.query.server ? functions.ucwords(request.query.server) : '';
+            server = request.query.server ? functions.ucwords(request.query.server) : '',
+            page = request.query.page ? request.query.page : 1;
 
         api.setLanguage(request.query.language);
         api.searchLinkshell(reply, {
             name: name,
             server: server,
+            page: page,
         });
 
     }
