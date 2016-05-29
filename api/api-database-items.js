@@ -50,50 +50,43 @@ var apiDatabaseItems =
 
     getData: function($) {
         // detail box
-        var $box = $('.item_detail_box');
+        var $dom = $('.db_cnts');
 
-        // flags
-        var flags = '';
-        $box.find('ul.eorzeadb_tooltip_ml12 li').each(function() { flags = flags + ' ' + $(this).text().trim(); });
-        flags = flags.replace(/\u00a0/g, " ").split(' ')
-        flags = functions.clean(flags, '');
+        // flags (convertable, etc)
+        var flags = [];
+        $dom.find('.db-view__item-info__list li').each(function() {
+            flags.push($(this).find('span').text());
+        });
 
-        // category
-        var category = $box.find('.item_name_area').text().trim().split("\n"),
-            category = functions.clean(category, ''),
-            categoryOffset = 3;
+        // selling price
+        var $sells = $dom.find('.db-view__sells'),
+            sale = $sells.length > 0 ? $sells.parent().text().split(' ') : 0;
 
-        if (typeof category[categoryOffset] === 'undefined') {
-            categoryOffset = 1;
+        // item data
+        var data = {
+            icon: $dom.find('.db-view__item__icon .db-view__item__icon__item_image').attr('src'),
+            color: $dom.find('.db-view__item__text__name').attr('class').split(' ')[1].trim().replace('txt-rarity_', ''),
+            name: $dom.find('.db-view__item__text__name').text().trim(),
+            category: $dom.find('.db-view__item__text__category').text().trim(),
+
+            is_unique: $dom.find('.db-view__item__text__element .rare').text().trim().length > 0 ? 1 : 0,
+            is_untradable: $dom.find('.db-view__item__text__element .ex_bind').text().trim().length > 0 ? 1 : 0,
+            is_sellable: $dom.find('.db-view__unsellable').length > 0 ? 0 : 1,
+            is_market_allowed: $dom.find('.db-view__market_notsell').length > 0 ? 0 : 1,
+            is_convertible: flags[0] == 'Yes' ? 1 : 0,
+            is_projectable: flags[1] == 'Yes' ? 1 : 0,
+            is_desynthesizable: flags[2] == 'Yes' ? 1 : 0,
+            is_dyeable: flags[3] == 'Yes' ? 1 : 0,
+            is_crestable: flags[4] == 'Yes' ? 1 : 0,
+
+            sell_nq: sale[2] ? parseInt(sale[2].replace(/,/g, ''), 10) : false,
+            sell_hq: sale[5] ? parseInt(sale[5].replace(/,/g, ''), 10) : false,
         }
 
-        // sells for
-        var sellsfor = $box.find('.popup_w412_body_inner').last().text().trim().split(' '),
-            sellsfor = functions.clean(sellsfor, '');
-
-        var color = $box.find('.item_name_area h2').attr('class').trim().split(' '),
-            color = functions.clean(color, '')[1].trim().split('_')[0];
-
-        // data
-        var data =
-        {
-            name: $box.find('.item_name_area h2').text(),
-            color: color,
-            category: category[categoryOffset].trim(),
-            icon: $box.find('.item_ic_box img.sys_nq_element').attr('src').trim(),
-            is_unique: $box.find('.item_name_area .rare').text().trim().length > 0 ? 1 : 0,
-            is_untradable: $box.find('.item_name_area .ex_bind').text().trim().length > 0 ? 1 : 0,
-            is_convertible: flags[1] == 'Yes' ? 1 : 0,
-            is_projectable: flags[3] == 'Yes' ? 1 : 0,
-            is_desynthesizable: flags[5] == 'Yes' ? 1 : 0,
-            is_dyeable: flags[7] == 'Yes' ? 1 : 0,
-            is_crestable: flags[9] == 'Yes' ? 1 : 0,
-            sell_nq: sellsfor[2] ? parseInt(sellsfor[2].replace(/,/g, ''), 10) : false,
-            sell_hq: sellsfor[6] ? parseInt(sellsfor[6].replace(/,/g, ''), 10) : false,
-        }
+        console.log(data);
 
         // related duties
-        var $footers = $('.w480_footer.mt10');
+        var $footers = $('.db__l_main');
         $footers.each(function() {
             $footer = $(this);
 
@@ -103,25 +96,31 @@ var apiDatabaseItems =
                 data.duties = [];
 
                 $footer.find('table tbody tr').each(function() {
-                    var $row1 = $(this).find('td:nth-child(1)'),
-                        $name = $row1.find('a.db_popup'),
-                        $kind = $row1.find('.small a:nth-child(1)'),
-                        $category = $row1.find('.small a:nth-child(2)');
+                    var $column1 = $(this).find('td:nth-child(1)'),
+                        $column2 = $(this).find('td:nth-child(2)'),
+                        $column3 = $(this).find('td:nth-child(3)');
 
-                    var id = $name.attr('href').split('/'),
+                    var id = $column1.find('.db-table__txt--detail_link').attr('href').split('/'),
                         id = functions.clean(id, '')[4];
 
                     data.duties.push({
                         id: id,
-                        name: $name.text().trim(),
-                        url: $name.attr('href'),
-                        kind_name: $kind.text().trim(),
-                        kind_url: $kind.attr('href'),
-                        category_name: $category.text().trim(),
-                        category_url: $category.attr('href').trim(),
+                        name: $column1.find('.db-table__txt--detail_link').text().trim(),
+                        url: $column1.find('.db-table__txt--detail_link').attr('href'),
+                        kind_name: $column1.find('.db-table__txt--type a:first-of-type').text(),
+                        kind_url: $column1.find('.db-table__txt--type a:first-of-type').attr('href'),
+                        category_name: $column1.find('.db-table__txt--type a:last-of-type').text(),
+                        category_url: $column1.find('.db-table__txt--type a:last-of-type').attr('href'),
                     });
                 });
             }
+
+            /*
+
+            These need fixing as of: 29th May 2014,
+            SE Updated Lodestone DB code, all class names
+            have been changed.
+
 
             // crafting logs
             if ($footer.find('h3').text() == 'Crafting Log')
@@ -260,6 +259,8 @@ var apiDatabaseItems =
                     });
                 });
             }
+
+            */
         });
 
         return data;
