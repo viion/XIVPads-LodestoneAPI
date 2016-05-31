@@ -1,20 +1,17 @@
-var log = require('../log'),
-    queryBuilder = require('../libs/MySQLQueryBuilderClass');
+var appCharacter = require('./app-character.js'),
+    appFreeCompany = require('./app-freecompany.js'),
+    appLinkshell = require('./app-linkshell.js');
 
 //
-// Apps class
+// Apps class, links to other app entities.
 //
 class AppClass
 {
-    //
-    // Add a character to the pending table
-    //
-    addCharacterToPending(data) {
-        var lodestoneId = data.id;
-        log.echo("Adding the Lodestone ID: {lodestoneId:cyan} to the {table:yellow} table", {
-            lodestoneId: lodestoneId,
-            table: 'characters_pending',
-        });
+    constructor()
+    {
+        this.Character = appCharacter;
+        this.FreeCompany = appFreeCompany;
+        this.Linkshell = appLinkshell;
     }
 }
 

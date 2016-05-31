@@ -110,9 +110,21 @@ var api = {
     //
     // search for a character
     //
-    searchCharacter: function(reply, options) {
+    searchCharacter: function(reply, options, callback) {
         api.get(apiCharacters.getUrl('search', options.name, options.server, options.page), function($) {
-            reply(apiCharacters.getSearch($));
+            // parse search
+            var data = apiCharacters.getSearch($);
+
+            // always send of reply first so the user
+            // gets their response asap.
+            if (reply) {
+                reply(data);
+            }
+
+            // run any callbacks
+            if (callback) {
+                callback(data);
+            }
         });
     },
 
@@ -146,18 +158,42 @@ var api = {
     //
     // search for a freecompany
     //
-    searchFreecompany: function(reply, options) {
+    searchFreecompany: function(reply, options, callback) {
         api.get(apiFreecompany.getUrl('search', options.name, options.server), function($) {
-            reply(apiFreecompany.getSearch($));
+            // parse search
+            var data = apiFreecompany.getSearch($);
+
+            // always send of reply first so the user
+            // gets their response asap.
+            if (reply) {
+                reply(data);
+            }
+
+            // run any callbacks
+            if (callback) {
+                callback(data);
+            }
         });
     },
 
     //
     // search for a linkshell
     //
-    searchLinkshell: function(reply, options) {
+    searchLinkshell: function(reply, options, callback) {
         api.get(apiLinkshell.getUrl('search', options.name, options.server), function($) {
-            reply(apiLinkshell.getSearch($));
+            // parse search
+            var data = apiLinkshell.getSearch($);
+
+            // always send of reply first so the user
+            // gets their response asap.
+            if (reply) {
+                reply(data);
+            }
+
+            // run any callbacks
+            if (callback) {
+                callback(data);
+            }
         });
     },
 
@@ -244,9 +280,21 @@ var api = {
     // Linkshells
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    getLinkshell: function(reply, options) {
+    getLinkshell: function(reply, options, callback) {
         api.get(apiLinkshell.getUrl('linkshell', options.id), function($) {
-            reply(apiLinkshell.getData($, options));
+            // Parse character data
+            var data = apiLinkshell.getData($, options);
+
+            // always send of reply first so the user
+            // gets their response asap.
+            if (reply) {
+                reply(data);
+            }
+
+            // run any callbacks
+            if (callback) {
+                callback(data);
+            }
         });
     },
 
@@ -254,9 +302,21 @@ var api = {
     // Free companies
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    getFreecompany: function(reply, options) {
+    getFreecompany: function(reply, options, callback) {
         api.get(apiFreecompany.getUrl('freecompany', options.id), function($) {
-            reply(apiFreecompany.getData($, options));
+            // Parse character data
+            var data = apiFreecompany.getData($, options);
+
+            // always send of reply first so the user
+            // gets their response asap.
+            if (reply) {
+                reply(data);
+            }
+
+            // run any callbacks
+            if (callback) {
+                callback(data);
+            }
         });
     },
 

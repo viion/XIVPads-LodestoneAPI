@@ -273,7 +273,7 @@ server.route({
 // character search
 server.route({
     method: 'GET', path: '/characters/search',
-    handler: function (request, reply) {
+    handler: (request, reply) => {
         var name = request.query.name ? request.query.name : '',
             server = request.query.server ? functions.ucwords(request.query.server) : '',
             page = request.query.page ? request.query.page : 1;
@@ -281,6 +281,14 @@ server.route({
         api.setLanguage(request.query.language);
         api.searchCharacter(reply, {
             name: name, server: server, page: page
+        }, (data) => {
+            // Build ID list
+            var idList = [];
+            for(var i in data.results) {
+                idList.push([data.results[i].id]);
+            }
+
+            app.Character.addCharacterToPending(idList);
         });
     }
 });
@@ -288,13 +296,15 @@ server.route({
 // character get
 server.route({
     method: 'GET', path: '/characters/get/{id}',
-    handler: function (request, reply) {
+    handler: (request, reply) => {
         api.setLanguage(request.query.language);
         api.getCharacter(reply, {
             id: request.params.id,
             ignore: request.query.ignore,
             restrict: request.query.restrict,
-        }, app.addCharacterToPending);
+        }, (data) => {
+            app.Character.addCharacterToPending([[data.id]]);
+        });
     }
 });
 
@@ -347,6 +357,14 @@ server.route({
         api.searchFreecompany(reply, {
             name: name,
             server: server,
+        }, (data) => {
+            // Build ID list
+            var idList = [];
+            for(var i in data.results) {
+                idList.push([data.results[i].id]);
+            }
+
+            app.FreeCompany.addFreeCompanyToPending(idList);
         });
     }
 });
@@ -358,8 +376,9 @@ server.route({
         api.setLanguage(request.query.language);
         api.getFreecompany(reply, {
             id: request.params.id
+        }, (data) => {
+            app.FreeCompany.addFreeCompanyToPending([[data.id]]);
         });
-
     }
 });
 
@@ -391,6 +410,14 @@ server.route({
         api.searchLinkshell(reply, {
             name: name,
             server: server,
+        }, (data) => {
+            // Build ID list
+            var idList = [];
+            for(var i in data.results) {
+                idList.push([data.results[i].id]);
+            }
+
+            app.Linkshell.addLinkshellToPending(idList);
         });
 
     }
@@ -403,6 +430,8 @@ server.route({
         api.setLanguage(request.query.language);
         api.getLinkshell(reply, {
             id: request.params.id,
+        }, (data) => {
+            app.Linkshell.addLinkshellToPending([[data.id]]);
         });
     }
 });
