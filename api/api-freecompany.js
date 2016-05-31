@@ -1,11 +1,11 @@
 var apiFreecompany =
 {
     // get ths urls for this module
-    getUrl: function(type, param1, param2) {
+    getUrl: function(type, param1, param2, page) {
         var urls = {
             freecompany: '/lodestone/freecompany/{param1}/'.replace('{param1}', param1),
-            search: '/lodestone/freecompany/?q={param1}&worldname={param2}'.replace('{param1}', param1).replace('{param2}', param2),
-            members: '/lodestone/freecompany/{param1}/member/?page={param2}'.replace('{param1}', param1).replace('{param2}', param2),
+            search: '/lodestone/freecompany/?q={param1}&worldname={param2}'.replace('{param1}', param1).replace('{param2}', param2).replace('{page}', page),
+            members: '/lodestone/freecompany/{param1}/member/?page={param2}'.replace('{param1}', param1).replace('{param2}', param2).replace('{page}', page),
         }
 
         return urls[type];
