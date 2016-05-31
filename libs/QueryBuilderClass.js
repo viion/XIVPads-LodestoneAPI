@@ -2,7 +2,7 @@
 // Simple mysql query builder
 // - XIVSync
 //
-class MySQLQueryBuilderClass
+class QueryBuilderClass
 {
     constructor()
     {
@@ -40,7 +40,18 @@ class MySQLQueryBuilderClass
     //
     insert(table)
     {
+        this.reset();
         this.parts.push('INSERT INTO ' + table);
+        return this;
+    }
+
+    //
+    // Start an insert with ignore (resets)
+    //
+    insertIgnore(table)
+    {
+        this.reset();
+        this.parts.push('INSERT IGNORE INTO ' + table);
         return this;
     }
 
@@ -155,7 +166,22 @@ class MySQLQueryBuilderClass
         this.parts.push('ORDER BY '+ column + ' ' + order.toUpperCase());
         return this;
     }
+
+    //
+    // Columns that duplicate
+    //
+    duplicate(columns)
+    {
+        var dupe = [];
+        for(var i in columns) {
+            var col = columns[i];
+            dupe.push(`${col}=VALUES(${col})`);
+        }
+
+        this.parts.push('ON DUPLICATE KEY UPDATE ' + dupe.join(','));
+        return this;
+    }
 }
 
 // Export it
-module.exports = new MySQLQueryBuilderClass();
+module.exports = new QueryBuilderClass();
