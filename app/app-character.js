@@ -35,11 +35,12 @@ class AppCharacterClass
     //
     addCharacter(data, callback)
     {
-        var insertColumns = ['lodestone_id', 'last_updated', 'name', 'server', 'avatar', 'portrait', 'data'],
-            insertData = [data.id, moment().format('YYYY-MM-DD HH:mm:ss'), '?', '?', '?', '?', '?'];
+        var insertColumns = ['last_updated', 'lodestone_id', 'name', 'server', 'avatar', 'portrait', 'data'],
+            insertData = [moment().format('YYYY-MM-DD HH:mm:ss'), '?', '?', '?', '?', '?', '?'];
 
         // bind data
         var binds = [
+            data.id,
             data.name,
             data.server,
             data.avatar,
@@ -47,7 +48,7 @@ class AppCharacterClass
             JSON.stringify(data),
         ];
 
-        // create query
+        // insert character
         querybuilder
             .insert('characters')
             .insertColumns(insertColumns)
@@ -56,6 +57,15 @@ class AppCharacterClass
 
         // run query
         database.sql(querybuilder.get(), binds, callback);
+
+        // update characters pending table date
+        querybuilder
+            .update('pending_characters')
+            .set({ 'processed': moment().format('YYYY-MM-DD HH:mm:ss') })
+            .where('lodestone_id = ?');
+
+        // run query
+        database.sql(querybuilder.get(), [ data.id ], callback);
         return this;
     }
 

@@ -71,11 +71,11 @@ class QueryBuilderClass
     {
         var insert = [];
 
-        for (const [i, row] of data.entries()) {
-            for (const[j, value] of row.entries()) {
+        for(const [i, row] of data.entries()) {
+            for(const[j, value] of row.entries()) {
                 // dont replace bind question marks or NULL
                 if (value != '?' && value != "NULL") {
-                    data[i][j] = "'%'".replace('%', value);
+                    data[i][j] = "'{value}'".replace('{value}', value);
                 }
             }
 
@@ -87,11 +87,40 @@ class QueryBuilderClass
     }
 
     //
+    // Set data, used with updating,
+    // eg: .set([
+    //  'x = 3',
+    //  'y = 2',
+    //  'z = 1',
+    // ])
+    //
+    // = SET x = 3, y = 2, z = 1
+    //
+    set(data)
+    {
+        var insert = [];
+
+        for(var column in data) {
+            var value = data[column];
+
+            // dont replace bind question marks or NULL
+            if (value != '?' && value != "NULL") {
+                value = "'%'".replace('%', value);
+            }
+
+            insert.push('`{column}`={value}'.replace('{column}', column).replace('{value}', value));
+        }
+
+        this.parts.push('SET ' + insert.join(','));
+        return this;
+    }
+
+    //
     // Start an update query (resets)
     //
     update(table)
     {
-        this.resets();
+        this.reset();
         this.parts.push('UPDATE ' + table);
         return this;
     }
