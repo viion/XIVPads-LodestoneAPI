@@ -90,6 +90,7 @@ server.ext('onPreResponse', function(request, reply) {
         request.response.header('Cache-Control', 'max-age=3600');
     }
 
+
     reply(request.response);
 });
 
@@ -288,7 +289,7 @@ server.route({
                 idList.push([data.results[i].id]);
             }
 
-            app.Character.addCharacterToPending(idList);
+            app.Character.addToPending(idList);
         });
     }
 });
@@ -303,7 +304,7 @@ server.route({
             ignore: request.query.ignore,
             restrict: request.query.restrict,
         }, (data) => {
-            app.Character.addCharacterToPending([[data.id]]);
+            app.Character.addToPending([[data.id]]);
         });
     }
 });
@@ -366,7 +367,7 @@ server.route({
                 idList.push([data.results[i].id]);
             }
 
-            app.FreeCompany.addFreeCompanyToPending(idList);
+            app.FreeCompany.addToPending(idList);
         });
     }
 });
@@ -379,7 +380,7 @@ server.route({
         api.getFreecompany(reply, {
             id: request.params.id
         }, (data) => {
-            app.FreeCompany.addFreeCompanyToPending([[data.id]]);
+            app.FreeCompany.addToPending([[data.id]]);
         });
     }
 });
@@ -424,7 +425,7 @@ server.route({
                 idList.push([data.results[i].id]);
             }
 
-            app.Linkshell.addLinkshellToPending(idList);
+            app.Linkshell.addToPending(idList);
         });
 
     }
@@ -438,7 +439,7 @@ server.route({
         api.getLinkshell(reply, {
             id: request.params.id,
         }, (data) => {
-            app.Linkshell.addLinkshellToPending([[data.id]]);
+            app.Linkshell.addToPending([[data.id]]);
         });
     }
 });

@@ -71,8 +71,15 @@ class QueryBuilderClass
     {
         var insert = [];
 
-        for (var i in data) {
-            insert.push("('" + data[i].join("','") + "')");
+        for (const [i, row] of data.entries()) {
+            for (const[j, value] of row.entries()) {
+                // dont replace bind question marks or NULL
+                if (value != '?' && value != "NULL") {
+                    data[i][j] = "'%'".replace('%', value);
+                }
+            }
+
+            insert.push("(" + row.join(",") + ")");
         }
 
         this.parts.push('VALUES ' + insert.join(','));
@@ -104,6 +111,11 @@ class QueryBuilderClass
     //
     columns(columns)
     {
+        if (columns == '*') {
+            this.parts.push('*');
+            return this;
+        }
+
         this.parts.push(columns.join(','));
         return this;
     }

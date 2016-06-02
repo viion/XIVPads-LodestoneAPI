@@ -93,6 +93,18 @@ var log =
     },
 
     //
+    // Print a title (line before and after)
+    //
+    title: function()
+    {
+        log.line();
+        log.echo('{msg:purple}', {
+            msg: 'XIVSync Cronjob'
+        });
+        log.line();
+    },
+
+    //
     // Print a line!
     //
     line: function()

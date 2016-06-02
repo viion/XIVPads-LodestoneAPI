@@ -11,7 +11,7 @@ class AppLinkshellClass
     //
     // Add a linkshell to the pending table
     //
-    addLinkshellToPending(idList) {
+    addToPending(idList) {
         if (!config.persistent || !idList) {
             return;
         }

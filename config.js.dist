@@ -47,7 +47,16 @@ var config =
     },
 
     // hapi options, if our server will be on SSL you can provide tokens here.
-    hapi: {}
+    hapi: {},
+
+    // Settings for the app itself
+    settings: {
+        // The time delay betwen auto adding characters
+        autoAddCronTime: '*/10 * * * * *',
+
+        // The number of characters to auto add per cron cycle
+        autoAddLimit: 2
+    }
 }
 
 // Export it

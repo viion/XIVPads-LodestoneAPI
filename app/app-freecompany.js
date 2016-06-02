@@ -11,7 +11,7 @@ class AppFreeCompanyClass
     //
     // Add a free company to the pending table
     //
-    addFreeCompanyToPending(idList) {
+    addToPending(idList) {
         if (!config.persistent || !idList) {
             return;
         }

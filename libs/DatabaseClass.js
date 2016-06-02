@@ -45,7 +45,7 @@ class DatabaseClass
                 throw error;
             }
 
-            log.echo("SQL: {sql:green}", { sql: sql });
+            log.echo("SQL: {sql:purple}", { sql: sql });
 
             // Run the query
             connection.query(sql, binds, function(error, rows, fields)
