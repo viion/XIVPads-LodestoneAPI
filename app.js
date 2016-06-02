@@ -80,6 +80,16 @@ server.register(require('inert'), () => {});
 server.ext('onPreResponse', function(request, reply) {
     var path = request.path;
 
+    if (request.query.pretty) {
+        request.response.header('Content-Type', 'text/html');
+        var html = JSON.stringify(request.response.source, null, 2),
+            html = `<pre>${html}</pre>`;
+
+        reply(html);
+        return;
+    }
+
+
     if (typeof request.response.header === "function") {
         // check path to dermine if we need json response
         if (webpages.indexOf(path) == -1 || path.indexOf('.jpg') > -1) {
