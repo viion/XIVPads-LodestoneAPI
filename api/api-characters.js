@@ -143,13 +143,17 @@ var apiCharacters =
         // free company
         if ($profile.eq(3).find('a').attr('href'))
         {
+            var $fcImg1 = $profile.eq(3).find('img').eq(0).attr('src'),
+                $fcImg2 = $profile.eq(3).find('img').eq(1).attr('src'),
+                $fcImg3 = $profile.eq(3).find('img').eq(2).attr('src')
+
             data.free_company = {
                 id: $profile.eq(3).find('a').attr('href').match(/\d+/)[0],
                 name: $profile.eq(3).find('dd').eq(1).text(),
                 icon: {
-                    1: $profile.eq(3).find('img').eq(0).attr('src').replace('40x40', '64x64'),
-                    2: $profile.eq(3).find('img').eq(1).attr('src').replace('40x40', '64x64'),
-                    3: $profile.eq(3).find('img').eq(2).attr('src').replace('40x40', '64x64'),
+                    1: $fcImg1 ? $fcImg1.replace('40x40', '64x64') : null,
+                    2: $fcImg2 ? $fcImg2.replace('40x40', '64x64') : null,
+                    3: $fcImg3 ? $fcImg3.replace('40x40', '64x64') : null,
                 },
             };
         }
