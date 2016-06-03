@@ -56,16 +56,18 @@ class AppCharacterClass
             .duplicate(['lodestone_id']);
 
         // run query
-        database.sql(querybuilder.get(), binds, callback);
+        database.sql(querybuilder.get(), binds, () => {
+            // update characters pending table date
+            querybuilder
+                .update('pending_characters')
+                .set({ 'processed': moment().format('YYYY-MM-DD HH:mm:ss') })
+                .where('lodestone_id = ?');
 
-        // update characters pending table date
-        querybuilder
-            .update('pending_characters')
-            .set({ 'processed': moment().format('YYYY-MM-DD HH:mm:ss') })
-            .where('lodestone_id = ?');
+            // run query
+            database.sql(querybuilder.get(), [ data.id ], callback);
+        });
 
-        // run query
-        database.sql(querybuilder.get(), [ data.id ], callback);
+
         return this;
     }
 
@@ -80,7 +82,7 @@ class AppCharacterClass
             .from('pending_characters')
             .where(['lodestone_id != 0', 'processed IS NULL'])
             .order('added', 'asc')
-            .limit(0,config.settings.autoAddLimit);
+            .limit(0,config.settings.autoAddCharacters.limitPerCycle);
 
         database.sql(querybuilder.get(), [], callback);
         return this;

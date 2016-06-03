@@ -113,6 +113,14 @@ var log =
     },
 
     //
+    // Add a space
+    //
+    space: function()
+    {
+        log.echo('');
+    },
+
+    //
     // Alias for console log
     //
     console: function()
