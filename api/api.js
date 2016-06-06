@@ -32,7 +32,7 @@ var api = {
     get: function(url, callback) {
         // set language
         config.setLodestoneLanguage(api.language);
-        log.echo("Starting a new request ...");
+        log.echo('LODESTONE - Starting a new request ...');
 
         // lodestone url
         var host = config.lodestoneUrl;
@@ -53,7 +53,7 @@ var api = {
             start = +new Date(),
             memoryStart = functions.memory();
 
-        log.echo("Sending request: [{language:cyan}] --> {url:cyan}", {
+        log.echo('Sending request: [{language:cyan}] --> {url:cyan}', {
             language: api.language,
             url: (options.host + options.path),
         });
@@ -69,7 +69,7 @@ var api = {
                     duration = (end - parseInt(start)),
                     memoryFinish = functions.memory();
 
-                log.echo("Duration: {duration:cyan} ms | Memory: {start:cyan} to {finish:cyan}", {
+                log.echo('Duration: {duration:cyan} ms | Memory: {start:cyan} to {finish:cyan}', {
                     duration: duration.toString(),
                     start: functions.memoryToHuman(memoryStart),
                     finish: functions.memoryToHuman(memoryFinish),

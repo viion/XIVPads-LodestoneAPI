@@ -1,7 +1,12 @@
-var log = require('./log');
+var log = require('./log'),
+    setup = require('./setup');
+
 log.title('{msg:purple}', { msg: 'XIVSync Cronjob' });
 
 // ------------------------------------------------
 // Activate Tasks
 // ------------------------------------------------
-require('./tasks/autoAddCharacters').init();
+
+setup.init(() => {
+    require('./tasks/autoAddCharacters').init();
+});
