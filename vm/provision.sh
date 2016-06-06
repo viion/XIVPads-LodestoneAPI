@@ -34,6 +34,18 @@ sudo iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 3000
 npm install pm2 -g
 bash /home/vagrant/run
 
+# Install Redis!!!!
+sudo apt-get install -y build-essential
+sudo apt-get install -y tcl8.5
+wget http://download.redis.io/releases/redis-stable.tar.gz
+tar xzf redis-stable.tar.gz
+cd redis-stable
+make
+make test
+sudo make install
+cd utils
+sudo ./install_server.sh # this needs automating
+
 
 echo "-----------------"
 echo "open: xivsync.dev"

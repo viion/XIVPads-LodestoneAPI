@@ -7,3 +7,4 @@ config.js
 .mysql_history
 .pm2
 .npm
+redis-stable/
