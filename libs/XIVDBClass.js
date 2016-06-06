@@ -1,5 +1,6 @@
 var https = require('https'),
-    storage = require('../libs/StorageClass.js')
+    storage = require('../libs/StorageClass.js'),
+    functions = require('../functions'),
     log = require('../log');
 
 //
@@ -30,48 +31,87 @@ class XIVDBClass
             path: path,
         }
 
-        log.echo('Sending request: {url:cyan}', {
+        log.echo('Get: {url:cyan}', {
             url: (options.host + options.path),
         });
 
         // request
-        var json = '';
+        var json = '',
+            start = +new Date(),
+            memoryStart = functions.memory();
+
+
         https.get(options, function(res) {
             res.on('data', function(data) {
                 json += data;
             })
             .on('end', function() {
-                log.echo ('>> Complete');
+                // end time
+                var end = +new Date(),
+                    duration = (end - parseInt(start)),
+                    memoryFinish = functions.memory();
+
+                log.echo('>> Complete: {path:yellow} - Duration: {duration:cyan} ms | Memory: {start:cyan} to {finish:cyan}', {
+                    path: options.path,
+                    duration: duration.toString(),
+                    start: functions.memoryToHuman(memoryStart),
+                    finish: functions.memoryToHuman(memoryFinish),
+                });
+
                 onComplete(JSON.parse(json));
             });
         });
     }
 
     //
-    // Get the EXP Table
+    // Recurrsive get loop
     //
-    getExpTable(onComplete, loops)
+    getRecurrsion(table, callback, loops)
     {
         // Prevent crazy recurrsions
         loops = loops ? loops : 1;
         if (loops > 3) {
-            return log.echo('getExpTable has recurrsively called 3 times. Cancelling action, please check Redis is enabled and running.');
+            return log.echo('{table:red} has recurrsively called 3 times. Cancelling action, please check Redis is enabled and running.', {
+                table: table,
+            });
         }
 
-        // tru get exp table from redis
-        storage.get('exp_table', (data) => {
+        // get data for [table] from storage
+        storage.get(table, (data) => {
             // if no data, we need to query it
             if (!data) {
-                // query xivdb exp table
-                return this.get(this.exp_table, (data) => {
-                    // set the exp table and then recurrsively call back
-                    storage.set('exp_table', data);
-                    this.getExpTable(onComplete, loops++);
+                // query xivdb
+                return this.get(this[table], (data) => {
+                    // set the data and then recurrsively call back
+                    storage.set(table, data);
+                    this.getRecurrsion(table, callback, loops++);
                 });
             }
 
             // data exists, set it and call onComplete
-            this.data.exp_table = data;
+            this.data[table] = data;
+            callback();
+        });
+    }
+
+    // ---------------------------------------------------------------------------
+
+    //
+    // Get the EXP table
+    //
+    getExpTable(onComplete, loops)
+    {
+        this.getRecurrsion('exp_table', () => {
+            onComplete();
+        });
+    }
+
+    //
+    // Get the ClassJobs data
+    //
+    getClasJobs(onComplete, loops)
+    {
+        this.getRecurrsion('classjobs', () => {
             onComplete();
         });
     }

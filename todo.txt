@@ -1,0 +1,20 @@
+Setup cronjob functionality
+- https://www.npmjs.com/package/scheduled
+
+Create service application
+- Initializes cronjobs
+- Contains functions to parse characters, track them, persist them
+- Add "pending characters" to database when:
+    members FC is parsed
+    lodestone is parsed
+    a user searches a character
+- Add "pending fc" to database when:
+    member is parsed
+    a user searches an fc
+
+Sending from frontend relay to backend should work as a queue system to be fast. Is an opt-in functionality.
+
+
+Other
+- Remove non existing characters
+- Add blacklist functionality for those who wish to be private

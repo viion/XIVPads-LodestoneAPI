@@ -72,7 +72,7 @@ class AppCharacterClass
     }
 
     //
-    // Get the last pending character
+    // Get the last pending characters
     //
     getLastPending(callback)
     {
@@ -89,9 +89,26 @@ class AppCharacterClass
     }
 
     //
+    // Get the last updated characters
+    //
+    getLastUpdated(start, callback)
+    {
+        querybuilder
+            .select()
+            .columns('*')
+            .from('characters')
+            .order('last_updated', 'asc')
+            .limit(start, config.settings.autoAddCharacters.limitPerCycle);
+
+        database.sql(querybuilder.get(), [], callback);
+        return this;
+    }
+
+    //
     // Get a character from lodestone
     //
-    getFromLodestone(lodestoneId, callback) {
+    getFromLodestone(lodestoneId, callback)
+    {
         log.echo('Requesting {id:cyan} from lodestone', {
             id: lodestoneId,
         });
@@ -99,6 +116,27 @@ class AppCharacterClass
         api.getCharacter(null, { id: lodestoneId }, callback);
 
         return this;
+    }
+
+    //
+    // Compare class jobs
+    //
+    compareClassJobs(oldData, newData)
+    {
+        log.echo('>> Compare: {compare:cyan}', {
+            compare: 'Class/Jobs',
+        });
+
+        var newClassJobData = newData.classjobs,
+            oldClassJobData = oldData.classjobs;
+
+        // loop through classes
+        for(var classname in newData.classjobs) {
+            var newRole = newClassJobData[classname],
+                oldRole = oldClassJobData[classname];
+
+            console.log("Old:", oldRole.level, 'New:', newRole.level, classname);
+        }
     }
 }
 

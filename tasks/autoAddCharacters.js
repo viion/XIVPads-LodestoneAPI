@@ -1,4 +1,5 @@
 var cron = require('cron').CronJob,
+    moment = require('moment'),
     config = require('../config'),
     log = require('../log'),
     app = require('../app/app');
@@ -17,6 +18,7 @@ class autoAddCharactersClass
                 time: config.settings.autoAddCharacters.cronTime,
             });
 
+            // start cronjob
             new cron({
                 cronTime: config.settings.autoAddCharacters.cronTime,
                 onTick: () => {
@@ -30,7 +32,7 @@ class autoAddCharactersClass
                             // parse the character on lodestone
                             app.Character.getFromLodestone(row.lodestone_id, (data) => {
                                 // confirmation
-                                log.echo('{note:green} :: {id:cyan} - {name:cyan}', {
+                                log.echo('{note:green}: {id:cyan} - {name:cyan}', {
                                     note: '>> Obtained Lodestone Data',
                                     id: data.id,
                                     name: data.name,

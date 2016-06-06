@@ -10,7 +10,8 @@ class SetupClass
     {
         this.onComplete = null;
         this.tasks = {
-            getExpTable: false,
+            exp_table: false,
+            classjobs: false,
         }
     }
 
@@ -29,8 +30,14 @@ class SetupClass
 
         // Get EXP Table
         xivdb.getExpTable(() => {
-            log.echo('Obtained EXP Table');
-            this.check('getExpTable');
+            log.echo('Obtained EXP Table data');
+            this.check('exp_table');
+        });
+
+        // Get EXP Table
+        xivdb.getClasJobs(() => {
+            log.echo('Obtained Class Jobs data');
+            this.check('classjobs');
         });
     }
 
@@ -56,7 +63,6 @@ class SetupClass
             });
 
             log.space();
-
             this.onComplete();
         }
     }
