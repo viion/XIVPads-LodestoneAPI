@@ -51,6 +51,12 @@ class SetupClass
 
         // run onComplete callback
         if (finished) {
+            log.echo('{title:blue}', {
+                title: 'Setup Complete!',
+            });
+
+            log.space();
+
             this.onComplete();
         }
     }

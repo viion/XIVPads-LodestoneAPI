@@ -9,4 +9,5 @@ log.title('{msg:purple}', { msg: 'XIVSync Cronjob' });
 
 setup.init(() => {
     require('./tasks/autoAddCharacters').init();
+    log.space();
 });
