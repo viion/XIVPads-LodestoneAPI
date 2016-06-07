@@ -1,5 +1,6 @@
 var redis = require('redis'),
-    log = require('../log');
+    log = require('../log'),
+    config = require('../config');
 
 //
 // Handles the setup of xivsync
@@ -8,6 +9,11 @@ class StorageClass
 {
     constructor()
     {
+        // if persistent disabled, don't do anything
+        if (!config.persistent) {
+            return;
+        }
+
         this.client = redis.createClient();
         this.client.on("error", function (err) {
             log.echo('!!! [REDIS ERROR] {error:red}', {
