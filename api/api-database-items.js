@@ -23,7 +23,7 @@ var apiDatabaseItems =
             results.push({
                 id: item_id,
                 link: link,
-                name: $dom.find('td:nth-child(1) .db-table__link_txt a').text(),
+                name: $dom.find('td:nth-child(1) .db-table__txt--detail_link').text(),
                 img: $dom.find('td:nth-child(1) .db-list__item__icon .db-list__item__icon__item_image').attr('src'),
                 kind: $dom.find('td:nth-child(1) .db-table__txt--type a:nth-child(1)').text(),
                 category: $dom.find('td:nth-child(1) .db-table__txt--type a:nth-child(2)').text(),
