@@ -17,7 +17,7 @@ var apiDatabaseItems =
         $('.db__l_main table tbody tr').each(function() {
             $dom = $(this);
 
-            var link = $dom.find('.db-table__link_txt a').attr('href');
+            var link = $dom.find('.db-table__txt--detail_link').attr('href');
                 item_id = link.split('/')[5];
 
             results.push({
