@@ -14,19 +14,19 @@ var apiDatabaseItems =
 
     getSearch: function($) {
         var results = [];
-        $('.table_black #character tbody tr').each(function() {
+        $('.db__l_main table tbody tr').each(function() {
             $dom = $(this);
 
-            var link = $dom.find('.db_popup.highlight').attr('href');
+            var link = $dom.find('.db-table__link_txt a').attr('href');
                 item_id = link.split('/')[5];
 
             results.push({
                 id: item_id,
                 link: link,
-                name: $dom.find('td:nth-child(1) .db_popup.highlight').text(),
-                img: $dom.find('td:nth-child(1) .ic_reflection_box img').attr('src'),
-                kind: $dom.find('td:nth-child(1) .ic_link_txt span a:nth-child(1)').text(),
-                category: $dom.find('td:nth-child(1) .ic_link_txt span a:nth-child(2)').text(),
+                name: $dom.find('td:nth-child(1) .db-table__link_txt a').text(),
+                img: $dom.find('td:nth-child(1) .db-list__item__icon .db-list__item__icon__item_image').attr('src'),
+                kind: $dom.find('td:nth-child(1) .db-table__txt--type a:nth-child(1)').text(),
+                category: $dom.find('td:nth-child(1) .db-table__txt--type a:nth-child(2)').text(),
                 item_level: parseInt($dom.find('td:nth-child(2)').text()),
                 required_level: parseInt($dom.find('td:nth-child(3)').text()),
             });
@@ -38,7 +38,7 @@ var apiDatabaseItems =
                 end: parseInt($('.current_list .show_end').eq(0).text().trim().replace(/,/g, '')),
                 total: parseInt($('.current_list .total').eq(0).text().trim().replace(/,/g, '')),
             },
-            version: $('.area_footer .right').text().split(':')[1].trim(),
+            version: $('.db-content__title--version').text().split(':')[1].trim(),
             error: $('.error_msg').length > 0 ? $('.error_msg').text().trim() : false,
             results: results,
         };
