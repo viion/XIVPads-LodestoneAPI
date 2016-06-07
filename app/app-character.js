@@ -3,7 +3,9 @@ var moment = require('moment'),
     config = require('../config'),
     database = require('../libs/DatabaseClass'),
     querybuilder = require('../libs/QueryBuilderClass'),
-    api = require('../api/api');
+    xivdb = require('../libs/XIVDBClass'),
+    api = require('../api/api'),
+    events = require('./app-character-events');
 
 //
 // App Character Class
@@ -123,20 +125,18 @@ class AppCharacterClass
     //
     compareClassJobs(oldData, newData)
     {
-        log.echo('>> Compare: {compare:cyan}', {
-            compare: 'Class/Jobs',
+        // need exp table and classjobs table
+        xivdb.getExpTable((expTable) => {
+            xivdb.getClasJobs((classjobs) => {
+                // setup events and initialize
+                events
+                    .setData('oldData', oldData)
+                    .setData('newData', newData)
+                    .setData('expTable', expTable)
+                    .setData('classjobs', classjobs)
+                    .init();
+            });
         });
-
-        var newClassJobData = newData.classjobs,
-            oldClassJobData = oldData.classjobs;
-
-        // loop through classes
-        for(var classname in newData.classjobs) {
-            var newRole = newClassJobData[classname],
-                oldRole = oldClassJobData[classname];
-
-            console.log("Old:", oldRole.level, 'New:', newRole.level, classname);
-        }
     }
 }
 

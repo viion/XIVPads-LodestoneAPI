@@ -102,7 +102,7 @@ class XIVDBClass
     getExpTable(onComplete, loops)
     {
         this.getRecurrsion('exp_table', () => {
-            onComplete();
+            onComplete(this.data['exp_table']);
         });
     }
 
@@ -112,7 +112,7 @@ class XIVDBClass
     getClasJobs(onComplete, loops)
     {
         this.getRecurrsion('classjobs', () => {
-            onComplete();
+            onComplete(this.data['classjobs']);
         });
     }
 }
