@@ -1,4 +1,4 @@
-var log = require('./log'),
+var log = require('./libs/LoggingObject'),
     xivdb = require('./libs/XIVDBClass');
 
 //

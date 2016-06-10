@@ -1,7 +1,9 @@
-var log = require('./log'),
-    setup = require('./setup');
+var setup = require('./setup'),
+    log = require('./libs/LoggingObject');
 
-log.title('{msg:purple}', { msg: 'XIVSync Cronjob' });
+log.title('{msg:purple}', {
+    msg: 'XIVSync Cronjob'
+});
 
 // ------------------------------------------------
 // Activate Tasks

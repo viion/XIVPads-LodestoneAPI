@@ -1,4 +1,4 @@
-var log = require('../log'),
+var log = require('../libs/LoggingObject'),
     config = require('../config'),
     database = require('../libs/DatabaseClass'),
     querybuilder = require('../libs/QueryBuilderClass');

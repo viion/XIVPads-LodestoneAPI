@@ -19,13 +19,13 @@ var webpages = [
 // Setup API
 //
 var fs = require('fs'),
+    hapi = require('hapi'),
+    path = require('path'),
     api = require('./api/api'),
     app = require('./app/app'),
     config = require('./config'),
-    functions = require('./functions'),
-    log = require('./log'),
-    hapi = require('hapi'),
-    path = require('path');
+    functions = require('./libs/functions'),
+    log = require('./libs/LoggingObject');
 
 // create server
 var server = new hapi.Server();

@@ -1,6 +1,6 @@
 var mysql = require('mysql'),
-    log = require('../log'),
-    config = require('../config');
+    config = require('../config'),
+    log = require('./LoggingObject');
 
 //
 // Simple mysql query builder

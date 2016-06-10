@@ -1,7 +1,7 @@
 var cron = require('cron').CronJob,
     moment = require('moment'),
     config = require('../config'),
-    log = require('../log'),
+    log = require('../libs/LoggingObject'),
     app = require('../app/app');
 
 class autoAddCharactersClass

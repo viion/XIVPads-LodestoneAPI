@@ -1,7 +1,7 @@
 var cron = require('cron').CronJob,
     moment = require('moment'),
     config = require('../config'),
-    log = require('../log'),
+    log = require('../libs/LoggingObject'),
     app = require('../app/app');
 
 class autoUpdateCharactersClass
@@ -54,6 +54,19 @@ class autoUpdateCharactersClass
 
                                 // Compare levels and exp
                                 app.Character.compareClassJobs(oldData, newData);
+
+                                // Track stuff
+                                app.Character.trackData('name', oldData, newData);
+                                app.Character.trackData('server', oldData, newData);
+                                app.Character.trackData('title', oldData, newData);
+                                app.Character.trackData('race', oldData, newData);
+                                app.Character.trackData('clan', oldData, newData);
+                                app.Character.trackData('gender', oldData, newData);
+                                app.Character.trackData('nameday', oldData, newData);
+                                app.Character.trackData('city', oldData.city.name, newData.city.name, true);
+                                app.Character.trackData('grand_company_name', oldData.grand_company.name, newData.grand_company.name, true);
+                                app.Character.trackData('grand_company_rank', oldData.grand_company.rank, newData.grand_company.rank, true);
+                                app.Character.trackData('free_company', oldData.free_company.id, newData.free_company.id, true);
 
                             });
                         }

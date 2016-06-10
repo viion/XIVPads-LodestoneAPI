@@ -1,5 +1,5 @@
 var redis = require('redis'),
-    log = require('../log');
+    log = require('./LoggingObject');
 
 //
 // Handles the setup of xivsync

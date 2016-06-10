@@ -1,5 +1,5 @@
 var moment = require('moment'),
-    log = require('../log'),
+    log = require('../libs/LoggingObject'),
     config = require('../config'),
     database = require('../libs/DatabaseClass'),
     querybuilder = require('../libs/QueryBuilderClass'),
@@ -130,6 +130,7 @@ class AppCharacterClass
             xivdb.getClasJobs((classjobs) => {
                 // setup events and initialize
                 events
+                    .reset()
                     .setData('oldData', oldData)
                     .setData('newData', newData)
                     .setData('expTable', expTable)
@@ -137,6 +138,44 @@ class AppCharacterClass
                     .init();
             });
         });
+    }
+
+    //
+    // Track some kind of information
+    //
+    trackData(type, oldData, newData, isfull)
+    {
+        if (!isfull) {
+            oldData = oldData[type];
+            newData = newData[type];
+        }
+
+        log.echo('Tracking check: {type:yellow} --> {old:cyan} == {new:cyan}', {
+            type: type,
+            old: oldData,
+            new: newData,
+        });
+
+        // check if the old data is not the same as the new data
+        if (oldData != newData) {
+            var insertColumns = ['time', 'lodestone_id', 'type', 'old_value', 'new_value'],
+                insertData = [moment().format('YYYY-MM-DD HH:mm:ss'), '?', '?', '?', '?'],
+                binds = [newData.id, type, oldData, newData];
+
+            // insert character
+            querybuilder
+                .insert('events_tracking')
+                .insertColumns(insertColumns)
+                .insertData([insertData])
+                .duplicate(['lodestone_id']);
+
+            // run query
+            database.sql(querybuilder.get(), binds, () => {
+                log.echo('Added {type:yellow} tracking event', {
+                    type: type,
+                });
+            });
+        }
     }
 }
 

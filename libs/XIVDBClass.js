@@ -1,7 +1,7 @@
 var https = require('https'),
     storage = require('../libs/StorageClass.js'),
-    functions = require('../functions'),
-    log = require('../log');
+    functions = require('../Libs/functions'),
+    log = require('./LoggingObject');
 
 //
 // Simple mysql query builder

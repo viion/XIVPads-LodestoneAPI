@@ -39,6 +39,16 @@ CREATE TABLE `characters` (
   KEY `server` (`server`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+CREATE TABLE `events_tracking` (
+ `lodestone_id` int(32) NOT NULL,
+ `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+ `type` varchar(32) NOT NULL,
+ `old_value` varchar(128) NOT NULL,
+ `new_value` varchar(128) NOT NULL,
+ PRIMARY KEY (`lodestone_id`),
+ KEY `time` (`time`,`type`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 CREATE TABLE `events_exp_new` (
   `lodestone_id` int(32) NOT NULL,
   `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -46,10 +56,8 @@ CREATE TABLE `events_exp_new` (
   `gained` int(16) NOT NULL,
   `old` int(16) NOT NULL,
   `new` int(16) NOT NULL,
-  UNIQUE KEY `unique` (`lodestone_id`,`time`,`jobclass`),
-  KEY `time` (`time`),
-  KEY `jobclass` (`jobclass`),
-  KEY `lodestone_id` (`lodestone_id`)
+  UNIQUE KEY `unique` (`lodestone_id`,`jobclass`,`old`,`new`),
+  KEY `keys` (`lodestone_id`,`jobclass`,`time`,`gained`,`old`,`new`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8
 /*!50100 PARTITION BY RANGE (lodestone_id)
 (PARTITION p0 VALUES LESS THAN (250000) ENGINE = InnoDB,
@@ -261,10 +269,8 @@ CREATE TABLE `events_exp_new` (
   `gained` int(16) NOT NULL,
   `old` int(16) NOT NULL,
   `new` int(16) NOT NULL,
-  UNIQUE KEY `unique` (`lodestone_id`,`time`,`jobclass`),
-  KEY `time` (`time`),
-  KEY `jobclass` (`jobclass`),
-  KEY `lodestone_id` (`lodestone_id`)
+  UNIQUE KEY `unique` (`lodestone_id`,`jobclass`,`old`,`new`),
+  KEY `keys` (`lodestone_id`,`jobclass`,`time`,`gained`,`old`,`new`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8
 /*!50100 PARTITION BY RANGE (lodestone_id)
 (PARTITION p0 VALUES LESS THAN (250000) ENGINE = InnoDB,

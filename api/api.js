@@ -1,8 +1,8 @@
 var cheerio = require('cheerio'),
     http = require('follow-redirects').http,
-    functions = require('../functions'),
     config = require('../config'),
-    log = require('../log'),
+    functions = require('../libs/functions'),
+    log = require('../libs/LoggingObject'),
 
     apiCharacters = require('./api-characters'),
     apiAchievements = require('./api-achievements'),

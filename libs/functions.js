@@ -102,6 +102,13 @@ var functions =
     },
 
     //
+    // Convert object to array
+    //
+    objToArray: function (obj) {
+        return Object.keys(obj).map(key => obj[key]);
+    },
+
+    //
     // String padding, mostly used for logging
     //
     padding: function(str, len, pad, dir)
