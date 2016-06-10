@@ -198,7 +198,7 @@ server.route({
     handler: function (request, reply) {
         var name = request.query.name ? request.query.name : '',
             name = functions.replaceAll(name, ' ', '+'),
-            page = request.query.page ? request.query.page : '';
+            page = request.query.page ? request.query.page : 1;
 
         api.setLanguage(request.query.language);
         api.searchItem(reply, {
@@ -227,7 +227,7 @@ server.route({
     handler: function (request, reply) {
         var name = request.query.name ? request.query.name : '',
             name = functions.replaceAll(name, ' ', '+'),
-            page = request.query.page ? request.query.page : '';
+            page = request.query.page ? request.query.page : 1;
 
         api.setLanguage(request.query.language);
         api.searchRecipe(reply, {
@@ -256,7 +256,7 @@ server.route({
     handler: function (request, reply) {
         var name = request.query.name ? request.query.name : '',
             name = functions.replaceAll(name, ' ', '+'),
-            page = request.query.page ? request.query.page : '';
+            page = request.query.page ? request.query.page : 1;
 
         api.setLanguage(request.query.language);
         api.searchDuty(reply, {
