@@ -1,22 +1,25 @@
 var moment = require('moment'),
-    log = require('../libs/LoggingObject'),
-    functions = require('../libs/functions'),
-    config = require('../config'),
-    database = require('../libs/DatabaseClass'),
-    querybuilder = require('../libs/QueryBuilderClass'),
-    xivdb = require('../libs/XIVDBClass'),
-    api = require('../api/api');
+    config = require('config'),
+
+    log = require('libs/LoggingObject'),
+    functions = require('libs/functions'),
+    database = require('libs/DatabaseClass'),
+    XIVDBApi = require('libs/XIVDBClass');
 
 //
-// App Character Events Class
+// Create EXP/Level events for characters based on progression
+// between old and new character data.
 //
 class AppCharacterEventsClass
 {
     constructor()
     {
-        this.data = {};
-        this.levelEvents = [];
-        this.expEvents = [];
+        this.View = require('app/app-character-view');
+
+        this.exp_table = {};
+        this.classjobs = {}
+        this.eventsLevels = [];
+        this.eventsExp = [];
     }
 
     //
@@ -24,19 +27,32 @@ class AppCharacterEventsClass
     //
     reset()
     {
-        this.data = {};
-        this.levelEvents = [];
-        this.expEvents = [];
+        this.exp_table = {};
+        this.classjobs = {};
+        this.eventsLevels = [];
+        this.eventsExp = [];
         return this;
     }
 
     //
-    // Set some data for this class to use.
+    // Setup class
     //
-    setData(key, data)
+    init()
     {
-        this.data[key] = data;
-        return this;
+        if (!config.settings.autoUpdateCharacters.enableProgressEvents) {
+            return;
+        }
+
+        // need exp table and classjobs table
+        XIVDBApi.get('exp_table', (type, exp_table) => {
+            XIVDBApi.get('classjobs', (type, classjobs) => {
+                // setup events and check
+                this.reset();
+                this.exp_table = exp_table;
+                this.classjobs = classjobs;
+                this.check();
+            });
+        });
     }
 
     //
@@ -49,27 +65,21 @@ class AppCharacterEventsClass
     // the database for retrival when the character data
     // is requested.
     //
-    init()
+    check()
     {
         // Some some vars
-        var lodestoneId = this.data.oldData.id,
-            timeNow = moment().format('YYYY-MM-DD HH:mm:ss'),
-            maxLevel = this.data.expTable[this.data.expTable.length - 1].level;
-
-        // Start comparison
-        log.echo('>> Compare: {compare:cyan}', {
-            compare: 'Class/Jobs',
-        });
+        var timeNow = moment().format('YYYY-MM-DD HH:mm:ss'),
+            maxLevel = this.exp_table[this.exp_table.length - 1].level;
 
         // new and old data
-        var newClassJobData = this.data.newData.classjobs,
-            oldClassJobData = this.data.oldData.classjobs;
+        var newClassJobData = this.View.newData.classjobs,
+            oldClassJobData = this.View.oldData.classjobs;
 
-        var levelEvents = [],
-            expEvents = [];
+        var eventsLevels = [],
+            eventsExp = [];
 
         // loop through classes
-        for(var classname in this.data.newData.classjobs) {
+        for(var classname in this.View.newData.classjobs) {
             var newRole = newClassJobData[classname],
                 oldRole = oldClassJobData[classname],
                 oldTotalExp = this.getTotalExp(oldRole.level, oldRole.exp.current),
@@ -112,7 +122,7 @@ class AppCharacterEventsClass
                     // because I want to visually see the indexes, but
                     // the SQL query does not require them.
                     var newEvent = functions.objToArray({
-                        lodestone_id: lodestoneId,
+                        lodestone_id: this.View.lodestoneId,
                         time: timeNow,
                         jobclass: jobclassId,
                         gained: levelsGained,
@@ -121,7 +131,11 @@ class AppCharacterEventsClass
                     });
 
                     // create event
-                    this.levelEvents.push(newEvent);
+                    this.eventsLevels.push(newEvent);
+                    log.echo('--- Levels: {value:yellow} {cjname:cyan}', {
+                        value: levelsGained,
+                        cjname: newRole.name,
+                    });
                 }
             }
 
@@ -135,7 +149,7 @@ class AppCharacterEventsClass
                     // because I want to visually see the indexes, but
                     // the SQL query does not require them.
                     var newEvent = functions.objToArray({
-                        lodestone_id: lodestoneId,
+                        lodestone_id: this.View.lodestoneId,
                         time: timeNow,
                         jobclass: jobclassId,
                         gained: expGained,
@@ -144,13 +158,17 @@ class AppCharacterEventsClass
                     });
 
                     // create event
-                    this.expEvents.push(newEvent);
+                    this.eventsExp.push(newEvent);
+                    log.echo('--- EXP: {value:yellow} {cjname:cyan}', {
+                        value: expGained,
+                        cjname: newRole.name,
+                    });
                 }
             }
         }
 
         // finish
-        if (this.levelEvents.length > 0 || this.expEvents.length > 0) {
+        if (this.eventsLevels.length > 0 || this.eventsExp.length > 0) {
             this.insertNewEvents();
         }
     }
@@ -163,33 +181,33 @@ class AppCharacterEventsClass
         var insertColumns = ['lodestone_id', 'time', 'jobclass', 'gained', 'old', 'new'];
 
         // if level events
-        if (this.levelEvents.length > 0) {
-            querybuilder
+        if (this.eventsLevels.length > 0) {
+            database.QueryBuilder
                 .insert('events_lvs_new')
                 .insertColumns(insertColumns)
-                .insertData(this.levelEvents)
+                .insertData(this.eventsLevels)
                 .duplicate(['lodestone_id']);
 
             // run query
-            database.sql(querybuilder.get(), [], () => {
-                log.echo('Added {total:yellow} levelling events', {
-                    total: this.levelEvents.length,
+            database.sql(database.QueryBuilder.get(), [], () => {
+                log.echo('--- Added {total:yellow} levelling events', {
+                    total: this.eventsLevels.length,
                 });
             });
         }
 
         // if level events
-        if (this.expEvents.length > 0) {
-            querybuilder
+        if (this.eventsExp.length > 0) {
+            database.QueryBuilder
                 .insert('events_exp_new')
                 .insertColumns(insertColumns)
-                .insertData(this.expEvents)
+                .insertData(this.eventsExp)
                 .duplicate(['lodestone_id']);
 
             // run query
-            database.sql(querybuilder.get(), [], () => {
-                log.echo('Added {total:yellow} experience points events', {
-                    total: this.expEvents.length,
+            database.sql(database.QueryBuilder.get(), [], () => {
+                log.echo('--- Added {total:yellow} experience points events', {
+                    total: this.eventsExp.length,
                 });
             });
         }
@@ -203,7 +221,7 @@ class AppCharacterEventsClass
     getTotalExp(currentLevel, currentExp)
     {
         var totalExpGained = 0;
-        for (const [i, row] of this.data.expTable.entries()) {
+        for (const [i, row] of this.exp_table.entries()) {
             if (row.level < currentLevel) {
                 totalExpGained += row.exp;
             }
@@ -219,7 +237,7 @@ class AppCharacterEventsClass
     //
     getRoleId(role)
     {
-        for (const [i, row] of this.data.classjobs.entries()) {
+        for (const [i, row] of this.classjobs.entries()) {
             if (row.name_en.toLowerCase() == role.toLowerCase()) {
                 return row.id;
                 break;

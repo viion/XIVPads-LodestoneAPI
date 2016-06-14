@@ -13,8 +13,7 @@ class autoAddCharactersClass
     init()
     {
         if (config.settings.autoAddCharacters.enabled) {
-            log.echo('> Start Task: {task:cyan}, Time: {time:cyan}', {
-                task: 'Auto Add Characters',
+            log.echo('- Starting Task - Time: {time:cyan}', {
                 time: config.settings.autoAddCharacters.cronTime,
             });
 
@@ -22,7 +21,7 @@ class autoAddCharactersClass
             new cron({
                 cronTime: config.settings.autoAddCharacters.cronTime,
                 onTick: () => {
-                    log.echo('Getting {limit:cyan} pending characters ...', {
+                    log.echo('-- {limit:cyan} characters.', {
                         limit: config.settings.autoAddCharacters.limitPerCycle,
                     });
 
@@ -31,17 +30,10 @@ class autoAddCharactersClass
                         for (const [i, row] of data.rows.entries()) {
                             // parse the character on lodestone
                             app.Character.getFromLodestone(row.lodestone_id, (data) => {
-                                // confirmation
-                                log.echo('{note:green}: {id:cyan} - {name:cyan}', {
-                                    note: '>> Obtained Lodestone Data',
-                                    id: data.id,
-                                    name: data.name,
-                                });
-
                                 // add the character to the site
                                 app.Character.addCharacter(data, (data) => {
-                                    log.echo('{note:green}', {
-                                        note: '>> Character added successfully.',
+                                    log.echo('-- {note:green}', {
+                                        note: 'Character added successfully.',
                                     });
                                     log.space();
                                 });
@@ -53,8 +45,8 @@ class autoAddCharactersClass
                 timeZone: config.settings.cronTimeZones,
             }).start();
         } else {
-            log.echo('> Disabled Task: {task:red}', {
-                task: 'Auto Add Characters',
+            log.echo('{task:red}', {
+                task: 'Auto-Add Task Disabled',
             });
         }
     }

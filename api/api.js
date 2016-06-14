@@ -52,7 +52,8 @@ var api = {
             start = +new Date(),
             memoryStart = functions.memory();
 
-        log.echo('Get: [{language:cyan}] --> {url:cyan}', {
+        log.echo('{method:green}: [{language:cyan}] --> {url:cyan}', {
+            method: 'GET',
             language: api.language,
             url: (options.host + options.path),
         });
@@ -68,12 +69,14 @@ var api = {
                     duration = (end - parseInt(start)),
                     memoryFinish = functions.memory();
 
-                log.echo('>> Complete: {path:yellow} - Duration: {duration:cyan} ms | Memory: {start:cyan} to {finish:cyan}', {
+                log.echo('{arrows:green} {path:yellow} - Duration: {duration:cyan} ms | Memory: {start:cyan} to {finish:cyan}', {
+                    arrows: '>>',
                     path: options.path,
                     duration: duration.toString(),
                     start: functions.memoryToHuman(memoryStart),
                     finish: functions.memoryToHuman(memoryFinish),
                 });
+                log.space();
 
                 // callback with a cheerio assigned html
                 callback(cheerio.load(html));

@@ -1,6 +1,9 @@
 var mysql = require('mysql'),
-    config = require('../config'),
-    log = require('./LoggingObject');
+    config = require('config'),
+
+    // libs
+    functions = require('libs/functions.js'),
+    log = require('libs/LoggingObject');
 
 //
 // Simple mysql query builder
@@ -10,6 +13,8 @@ class DatabaseClass
 {
     constructor()
     {
+        this.QueryBuilder = require('libs/QueryBuilderClass');
+
         // if persistent disabled, don't do anything
         if (!config.persistent) {
             return;
@@ -32,6 +37,8 @@ class DatabaseClass
     //
     sql(sql, binds, callback)
     {
+        var randomId = functions.randomNumber(0, 99999);
+
         // if persistent disabled, don't do anything
         if (!config.persistent) {
             return;
@@ -45,7 +52,10 @@ class DatabaseClass
                 throw error;
             }
 
-            log.echo("SQL: {sql:purple}", { sql: sql });
+            log.echo("[DB] [{id:red}] SQL: {sql:purple}", {
+                id: randomId,
+                sql: config.settings.sqlStatementTruncate ? sql.substring(0, config.settings.sqlStatementTruncate) + '...' : sql
+            });
 
             // Run the query
             connection.query(sql, binds, function(error, rows, fields)
@@ -53,7 +63,11 @@ class DatabaseClass
                 // If any errors, throw the exception
                 if (error)
                 {
-                    log.echo("{arrow:green} {error:red}", { arrow: '>>', error: error });
+                    log.echo("[DB] [{id:red}] {arrow:green} {error:red}", {
+                        id: randomId,
+                        arrow: '>>',
+                        error: error
+                    });
 
                     // Return, if specific function exists, call that,
                     // otherwise its an inline function and does not require
@@ -67,7 +81,10 @@ class DatabaseClass
                 {
                     // Disconnect this query
                     connection.release();
-                    log.echo("{arrow:green} Database query complete", { arrow: '>>' });
+                    log.echo("[DB] [{id:red}] {arrow:green} Database query complete", {
+                        id: randomId,
+                        arrow: '>>'
+                    });
 
                     // Setup a return object
                     var obj = {

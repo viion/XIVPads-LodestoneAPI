@@ -16,7 +16,7 @@ class StorageClass
 
         this.client = redis.createClient();
         this.client.on("error", function (err) {
-            log.echo('!!! [REDIS ERROR] {error:red}', {
+            log.echo('[REDIS] Error: {error:red}', {
                 error: err,
             });
         });
@@ -27,7 +27,7 @@ class StorageClass
     //
     set(key, value)
     {
-        log.echo('REDIS - {method:green}: {key:yellow}', {
+        log.echo('[REDIS] {method:green}: {key:yellow}', {
             method: 'SET',
             key: key,
         });
@@ -40,14 +40,14 @@ class StorageClass
     // Get some data
     //
     get(key, callback) {
-        log.echo('REDIS - {method:green}: {key:yellow}', {
+        log.echo('[REDIS] {method:green}: {key:yellow}', {
             method: 'GET',
             key: key,
         });
 
         this.client.get(key, (err, data) => {
             if (err) {
-                return log.echo('!!! [REDIS ERROR] {error:red}', {
+                return log.echo('[REDIS] Error: {error:red}', {
                     error: err,
                 });
             }

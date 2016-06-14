@@ -1,5 +1,5 @@
-var log = require('./libs/LoggingObject'),
-    xivdb = require('./libs/XIVDBClass');
+var log = require('libs/LoggingObject'),
+    xivdb = require('libs/XIVDBClass');
 
 //
 // Handles the setup of xivsync
@@ -12,13 +12,18 @@ class SetupClass
         this.tasks = {
             exp_table: false,
             classjobs: false,
+            //grand_company: false,
+            minions: false,
+            mounts: false,
+            items: false,
         }
     }
 
     //
     // Get stuff
     //
-    init(onComplete) {
+    init(onComplete)
+    {
         log.echo('{title:blue}', {
             title: 'Running XIVSync Setup',
         });
@@ -26,25 +31,17 @@ class SetupClass
         // set onComplete function
         this.onComplete = onComplete;
 
-        // ---------------------------------------
-
-        // Get EXP Table
-        xivdb.getExpTable(() => {
-            log.echo('Obtained EXP Table data');
-            this.check('exp_table');
-        });
-
-        // Get EXP Table
-        xivdb.getClasJobs(() => {
-            log.echo('Obtained Class Jobs data');
-            this.check('classjobs');
-        });
+        // Get data from XIVDB Database
+        for(var type in this.tasks) {
+            xivdb.get(type, (type) => { this.check(type) })
+        }
     }
 
     //
     // Check if completed
     //
-    check(setupTaskCompleted) {
+    check(setupTaskCompleted)
+    {
         // update task list
         this.tasks[setupTaskCompleted] = true;
 

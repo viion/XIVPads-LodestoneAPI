@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "XIVSync",
   "dependencies": {
+    "app-module-path": "^1.1.0",
     "cheerio": "^0.19.0",
     "cron": "^1.1.0",
     "follow-redirects": "0.0.7",

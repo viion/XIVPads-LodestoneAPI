@@ -140,6 +140,14 @@ var functions =
 
         return str;
     },
+
+    //
+    // Get a random number
+    //
+    randomNumber(min, max)
+    {
+        return Math.floor((Math.random() * max) + min);
+    },
 }
 
 // Export it

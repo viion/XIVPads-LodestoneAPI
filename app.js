@@ -1,3 +1,5 @@
+require('app-module-path/register');
+
 //
 // These are paths which are
 // not API endpoints.
@@ -21,11 +23,14 @@ var webpages = [
 var fs = require('fs'),
     hapi = require('hapi'),
     path = require('path'),
-    api = require('./api/api'),
-    app = require('./app/app'),
-    config = require('./config'),
-    functions = require('./libs/functions'),
-    log = require('./libs/LoggingObject');
+    config = require('config'),
+
+    api = require('api/api'),
+    app = require('app/app'),
+
+    // libs
+    functions = require('libs/functions'),
+    log = require('libs/LoggingObject');
 
 // create server
 var server = new hapi.Server();
@@ -296,7 +301,7 @@ server.route({
             // Build ID list
             var idList = [];
             for(var i in data.results) {
-                idList.push([data.results[i].id]);
+                idList.push(data.results[i].id);
             }
 
             app.Character.addToPending(idList);
@@ -314,7 +319,7 @@ server.route({
             ignore: request.query.ignore,
             restrict: request.query.restrict,
         }, (data) => {
-            app.Character.addToPending([[data.id]]);
+            app.Character.addToPending([data.id]);
         });
     }
 });
@@ -374,7 +379,7 @@ server.route({
             // Build ID list
             var idList = [];
             for(var i in data.results) {
-                idList.push([data.results[i].id]);
+                idList.push(data.results[i].id);
             }
 
             app.FreeCompany.addToPending(idList);
@@ -390,7 +395,7 @@ server.route({
         api.getFreecompany(reply, {
             id: request.params.id
         }, (data) => {
-            app.FreeCompany.addToPending([[data.id]]);
+            app.FreeCompany.addToPending([data.id]);
         });
     }
 });
@@ -432,7 +437,7 @@ server.route({
             // Build ID list
             var idList = [];
             for(var i in data.results) {
-                idList.push([data.results[i].id]);
+                idList.push(data.results[i].id);
             }
 
             app.Linkshell.addToPending(idList);
@@ -449,7 +454,7 @@ server.route({
         api.getLinkshell(reply, {
             id: request.params.id,
         }, (data) => {
-            app.Linkshell.addToPending([[data.id]]);
+            app.Linkshell.addToPending([data.id]);
         });
     }
 });

@@ -1,7 +1,8 @@
-var log = require('../libs/LoggingObject'),
-    config = require('../config'),
-    database = require('../libs/DatabaseClass'),
-    querybuilder = require('../libs/QueryBuilderClass');
+var config = require('config'),
+
+    // libs
+    log = require('libs/LoggingObject'),
+    database = require('libs/DatabaseClass');
 
 //
 // App FreeCompany Class
@@ -17,14 +18,14 @@ class AppFreeCompanyClass
         }
 
         // create query
-        querybuilder
+        database.QueryBuilder
             .insert('pending_freecompanies')
             .insertColumns(['fc_id'])
-            .insertData(idList)
+            .insertData([idList])
             .duplicate(['fc_id']);
 
         // run query
-        database.sql(querybuilder.get());
+        database.sql(database.QueryBuilder.get());
     }
 }
 

@@ -1,6 +1,6 @@
-var appCharacter = require('./app-character.js'),
-    appFreeCompany = require('./app-freecompany.js'),
-    appLinkshell = require('./app-linkshell.js');
+var appCharacter = require('app/app-character.js'),
+    appFreeCompany = require('app/app-freecompany.js'),
+    appLinkshell = require('app/app-linkshell.js');
 
 //
 // Apps class, links to other app entities.

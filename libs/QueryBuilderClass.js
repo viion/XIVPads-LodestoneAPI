@@ -74,8 +74,10 @@ class QueryBuilderClass
         for(const [i, row] of data.entries()) {
             for(const[j, value] of row.entries()) {
                 // dont replace bind question marks or NULL
-                if (value != '?' && value != "NULL") {
+                if (value && value != '?' && value != "NULL") {
                     data[i][j] = "'{value}'".replace('{value}', value);
+                } else if (!value) {
+                    data[i][j] = "NULL";
                 }
             }
 

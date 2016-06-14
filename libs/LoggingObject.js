@@ -68,7 +68,7 @@ var log =
                     var realText = params[text];
 
                     // Get the color to use
-                    var color = log.colors[context[1]];
+                    var color = context[1] ? log.colors[context[1]] : log.colors['white'];
 
                     var style = '';
                     if (context[2] == 'bold') { style = log.formatting.bold; }

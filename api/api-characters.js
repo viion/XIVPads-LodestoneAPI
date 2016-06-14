@@ -235,12 +235,12 @@ var apiCharacters =
 
             switch(attribute)
             {
-                case 'str': attribute = 'strength'; break;
-                case 'dex': attribute = 'dexterity'; break;
-                case 'vit': attribute = 'vitality'; break;
-                case 'int': attribute = 'intelligence'; break;
-                case 'mnd': attribute = 'mind'; break;
-                case 'pie': attribute = 'piety'; break;
+                case 'str': attribute = 'Strength'; break;
+                case 'dex': attribute = 'Dexterity'; break;
+                case 'vit': attribute = 'Vitality'; break;
+                case 'int': attribute = 'Intelligence'; break;
+                case 'mnd': attribute = 'Mind'; break;
+                case 'pie': attribute = 'Piety'; break;
             }
 
             data.stats.attributes[attribute.toLowerCase()] = {

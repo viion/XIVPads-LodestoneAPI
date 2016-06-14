@@ -1,8 +1,8 @@
 var cron = require('cron').CronJob,
     moment = require('moment'),
-    config = require('../config'),
-    log = require('../libs/LoggingObject'),
-    app = require('../app/app');
+    config = require('config'),
+    log = require('libs/LoggingObject'),
+    app = require('app/app');
 
 class autoUpdateCharactersClass
 {
@@ -15,25 +15,24 @@ class autoUpdateCharactersClass
     {
         if (config.settings.autoUpdateCharacters.enabled) {
             var start = range * config.settings.autoUpdateCharacters.limitPerCycle;
-            log.echo('> Start Task: {task:cyan} - Time: {time:cyan} - Range: {start:yellow} ({limit:yellow})', {
-                task: 'Auto Update Characters',
+            log.echo('- Starting Task - Time: {time:cyan} - Range: {start:yellow} ({limit:yellow})', {
                 time: config.settings.autoUpdateCharacters.cronTime,
-                start: start,
                 limit: config.settings.autoUpdateCharacters.limitPerCycle,
+                start: start,
             });
 
             // start cronjob
             new cron({
                 cronTime: config.settings.autoUpdateCharacters.cronTime,
                 onTick: () => {
-                    log.echo('Getting {limit:cyan} characters to process updates...', {
+                    log.echo('-- {limit:cyan} characters.', {
                         limit: config.settings.autoUpdateCharacters.limitPerCycle,
                     });
 
                     // get the last updated characters
                     app.Character.getLastUpdated(start, (data) => {
                         for (const [i, character] of data.rows.entries()) {
-                            log.echo('Updating: {id:cyan} - {name:cyan} ({server:cyan}) - Last Updated: {time:yellow}', {
+                            log.echo('-- {id:cyan} - {name:cyan} ({server:cyan}) - Last Updated: {time}', {
                                 id: character.lodestone_id,
                                 name: character.name,
                                 server: character.server,
@@ -42,32 +41,48 @@ class autoUpdateCharactersClass
 
                             // parse the character on lodestone
                             app.Character.getFromLodestone(character.lodestone_id, (newData) => {
-                                // confirmation
-                                log.echo('{note:green}: {id:cyan} - {name:cyan}', {
-                                    note: '>> Obtained Lodestone Data',
-                                    id: newData.id,
-                                    name: newData.name,
-                                });
-
                                 // get old data
                                 var oldData = JSON.parse(character.data);
 
+                                // set data on character class
+                                // TODO: Find a better way to do this, eg class inheritence
+                                var modules = ['Events', 'Tracking', 'Stats', 'Pets', 'GrandCompany', 'Gear'];
+                                for (const [i, module] of modules.entries()) {
+                                    app.Character[module].View.setData(oldData, newData);
+                                }
+
                                 // Compare levels and exp
-                                app.Character.compareClassJobs(oldData, newData);
+
+                                log.echo('-- Testing EXP/Level Events');
+                                app.Character.Events.init();
+
+                                // Calculate up the attributes
+                                log.echo('-- Checking Attribute Statistics');
+                                app.Character.Stats.init();
 
                                 // Track stuff
-                                app.Character.trackData('name', oldData, newData);
-                                app.Character.trackData('server', oldData, newData);
-                                app.Character.trackData('title', oldData, newData);
-                                app.Character.trackData('race', oldData, newData);
-                                app.Character.trackData('clan', oldData, newData);
-                                app.Character.trackData('gender', oldData, newData);
-                                app.Character.trackData('nameday', oldData, newData);
-                                app.Character.trackData('city', oldData.city.name, newData.city.name, true);
-                                app.Character.trackData('grand_company_name', oldData.grand_company.name, newData.grand_company.name, true);
-                                app.Character.trackData('grand_company_rank', oldData.grand_company.rank, newData.grand_company.rank, true);
-                                app.Character.trackData('free_company', oldData.free_company.id, newData.free_company.id, true);
+                                log.echo('-- Tracking Profile Information');
+                                app.Character.Tracking.init();
 
+                                // Record minions and mounts
+                                log.echo('-- Recording Minions/Mounts');
+                                app.Character.Pets.init();
+
+                                // Record grand companies
+                                log.echo('-- Track Grand Companies');
+                                app.Character.GrandCompany.init();
+
+                                // Save gear
+                                log.echo('-- Saving Gear Set');
+                                app.Character.Gear.init();
+
+                                // Add free company to pending list
+                                if (config.settings.autoUpdateCharacters.enablePlayerFCPending && newData.free_company && typeof newData.free_company.id !== 'undefined') {
+                                    app.FreeCompany.addToPending([newData.free_company.id]);
+                                    log.echo('-- Adding players free company ({id:yellow}) to the pending list', {
+                                        id: newData.free_company.id,
+                                    });
+                                }
                             });
                         }
                     });
@@ -76,8 +91,8 @@ class autoUpdateCharactersClass
                 timeZone: config.settings.cronTimeZones,
             }).start();
         } else {
-            log.echo('> Disabled Task: {task:red}', {
-                task: 'Auto Update Characters',
+            log.echo('{task:red}', {
+                task: 'Auto-Update Task Disabled',
             });
         }
     }

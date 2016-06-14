@@ -1,29 +1,36 @@
 var https = require('https'),
-    storage = require('../libs/StorageClass.js'),
-    functions = require('../Libs/functions'),
-    log = require('./LoggingObject');
+
+    // libs
+    log = require('libs/LoggingObject'),
+    storage = require('libs/StorageClass.js'),
+    functions = require('libs/functions');
 
 //
-// Simple mysql query builder
-// - XIVSync
+// Talk to XIVDB API!
 //
 class XIVDBClass
 {
     constructor()
     {
         this.host = 'api.xivdb.com';
+
+        // api paths
         this.exp_table = '/data/exp_table';
         this.classjobs = '/data/classjobs';
+        this.grand_company = '/data/grand_company';
+        this.minions = '/minion?columns=id,name_en';
+        this.mounts = '/mount?columns=id,name_en';
+        this.items = '/item?columns=id,name_en';
+
+        // storage
         this.data = {};
     }
 
     //
     // Get some data from the XIVDB API
     //
-    get(path, onComplete)
+    query(path, onComplete)
     {
-        log.echo('XIVDB - Starting a new request ...');
-
         // request options
         var options = {
             host: this.host,
@@ -31,7 +38,7 @@ class XIVDBClass
             path: path,
         }
 
-        log.echo('Get: {url:cyan}', {
+        log.echo('[XIVDB] Get: {url:cyan}', {
             url: (options.host + options.path),
         });
 
@@ -51,7 +58,7 @@ class XIVDBClass
                     duration = (end - parseInt(start)),
                     memoryFinish = functions.memory();
 
-                log.echo('>> Complete: {path:yellow} - Duration: {duration:cyan} ms | Memory: {start:cyan} to {finish:cyan}', {
+                log.echo('[XIVDB] >> Complete: {path:yellow} - Duration: {duration:cyan} ms | Memory: {start:cyan} to {finish:cyan}', {
                     path: options.path,
                     duration: duration.toString(),
                     start: functions.memoryToHuman(memoryStart),
@@ -66,30 +73,30 @@ class XIVDBClass
     //
     // Recurrsive get loop
     //
-    getRecurrsion(table, callback, loops)
+    getRecurrsion(type, callback, loops)
     {
         // Prevent crazy recurrsions
         loops = loops ? loops : 1;
         if (loops > 3) {
-            return log.echo('{table:red} has recurrsively called 3 times. Cancelling action, please check Redis is enabled and running.', {
-                table: table,
+            return log.echo('[XIVDB] {type:red} has recurrsively called 3 times. Cancelling action, please check Redis is enabled and running.', {
+                type: type,
             });
         }
 
-        // get data for [table] from storage
-        storage.get(table, (data) => {
+        // get data for [type] from storage
+        storage.get(type, (data) => {
             // if no data, we need to query it
             if (!data) {
                 // query xivdb
-                return this.get(this[table], (data) => {
+                return this.query(this[type], (data) => {
                     // set the data and then recurrsively call back
-                    storage.set(table, data);
-                    this.getRecurrsion(table, callback, loops++);
+                    storage.set(type, data);
+                    this.getRecurrsion(type, callback, loops++);
                 });
             }
 
             // data exists, set it and call onComplete
-            this.data[table] = data;
+            this.data[type] = data;
             callback();
         });
     }
@@ -97,23 +104,15 @@ class XIVDBClass
     // ---------------------------------------------------------------------------
 
     //
-    // Get the EXP table
+    // Get some data from the API based on a "type"
     //
-    getExpTable(onComplete, loops)
+    get(type, onComplete)
     {
-        this.getRecurrsion('exp_table', () => {
-            onComplete(this.data['exp_table']);
+        this.getRecurrsion(type, () => {
+            onComplete(type, this.data[type]);
         });
-    }
 
-    //
-    // Get the ClassJobs data
-    //
-    getClasJobs(onComplete, loops)
-    {
-        this.getRecurrsion('classjobs', () => {
-            onComplete(this.data['classjobs']);
-        });
+        return this;
     }
 }
 

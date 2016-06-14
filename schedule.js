@@ -1,6 +1,9 @@
-var setup = require('./setup'),
-    log = require('./libs/LoggingObject');
+require('app-module-path/register');
 
+var setup = require('setup'),
+    log = require('libs/LoggingObject');
+
+// Title
 log.title('{msg:purple}', {
     msg: 'XIVSync Cronjob'
 });
@@ -10,8 +13,8 @@ log.title('{msg:purple}', {
 // ------------------------------------------------
 
 setup.init(() => {
-    require('./tasks/autoAddCharacters').init();
-    require('./tasks/autoUpdateCharacters').init(0);
+    //require('tasks/autoAddCharacters').init();
+    require('tasks/autoUpdateCharacters').init(0);
     //require('./tasks/autoUpdateCharacters').init(1);
     //require('./tasks/autoUpdateCharacters').init(2);
     log.space();

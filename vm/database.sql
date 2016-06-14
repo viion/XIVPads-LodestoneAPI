@@ -3,40 +3,93 @@
 --
 
 CREATE TABLE `pending_characters` (
-  `lodestone_id` int(32) NOT NULL,
-  `added` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`lodestone_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+ `lodestone_id` int(32) NOT NULL,
+ `added` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+ `processed` timestamp NULL DEFAULT NULL,
+ PRIMARY KEY (`lodestone_id`),
+ KEY `processed` (`processed`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1
 
 CREATE TABLE `pending_freecompanies` (
-  `fc_id` varchar(64) NOT NULL,
-  `added` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`fc_id`)
+ `fc_id` varchar(64) NOT NULL,
+ `added` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+ `processed` timestamp NULL DEFAULT NULL,
+ PRIMARY KEY (`fc_id`),
+ KEY `processed` (`processed`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE `pending_linkshells` (
-  `ls_id` varchar(64) NOT NULL,
-  `added` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`ls_id`)
+ `ls_id` varchar(64) NOT NULL,
+ `added` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `processed` timestamp NULL DEFAULT NULL,
+ PRIMARY KEY (`ls_id`),
+ KEY `processed` (`processed`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE `characters` (
-  `lodestone_id` int(32) NOT NULL,
-  `added` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `last_updated` timestamp NULL DEFAULT NULL,
-  `last_active` timestamp NULL DEFAULT NULL,
-  `queue` tinyint(1) NOT NULL DEFAULT '1',
-  `name` varchar(64) NOT NULL,
-  `server` varchar(32) NOT NULL,
-  `avatar` varchar(256) NOT NULL,
-  `portrait` varchar(256) NOT NULL,
-  `data` text COMMENT 'JSON Data',
-  PRIMARY KEY (`lodestone_id`),
-  KEY `added` (`added`),
-  KEY `last_updated` (`last_updated`),
-  KEY `queue` (`queue`),
-  KEY `name` (`name`),
-  KEY `server` (`server`)
+ `lodestone_id` int(32) NOT NULL,
+ `added` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ `last_updated` timestamp NULL DEFAULT NULL,
+ `last_active` timestamp NULL DEFAULT NULL,
+ `queue` tinyint(1) NOT NULL DEFAULT '1',
+ `name` varchar(64) NOT NULL,
+ `server` varchar(32) NOT NULL,
+ `avatar` varchar(256) NOT NULL,
+ `portrait` varchar(256) NOT NULL,
+ `data` text COMMENT 'JSON Data',
+ PRIMARY KEY (`lodestone_id`),
+ KEY `added` (`added`),
+ KEY `last_updated` (`last_updated`),
+ KEY `queue` (`queue`),
+ KEY `name` (`name`),
+ KEY `server` (`server`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE `characters_grandcompany` (
+ `lodestone_id` int(32) NOT NULL,
+ `updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+ `name` varchar(64) NOT NULL,
+ `rank` varchar(64) NOT NULL,
+ `icon` varchar(128) NOT NULL,
+ UNIQUE KEY `unique` (`lodestone_id`,`name`),
+ KEY `name` (`name`,`rank`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE `characters_mounts` (
+ `lodestone_id` int(32) NOT NULL,
+ `mount_id` int(32) NOT NULL,
+ `added` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ `other` varchar(512) DEFAULT NULL,
+ UNIQUE KEY `unique` (`lodestone_id`,`mount_id`,`other`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE `characters_minions` (
+ `lodestone_id` int(32) NOT NULL,
+ `minion_id` int(32) NOT NULL,
+ `added` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ `other` varchar(512) DEFAULT NULL,
+ UNIQUE KEY `unique` (`lodestone_id`,`minion_id`,`other`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE `characters_gearsets` (
+ `lodestone_id` int(32) NOT NULL,
+ `updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+ `classjob_id` int(3) NOT NULL,
+ `level` int(3) NOT NULL,
+ `gear` varchar(2048) NOT NULL,
+ `stats` varchar(5000) NOT NULL,
+ UNIQUE KEY `unique` (`lodestone_id`,`classjob_id`,`level`),
+ KEY `role` (`classjob_id`,`level`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE `ranking_stats` (
+ `lodestone_id` int(32) NOT NULL,
+ `name` varchar(64) NOT NULL,
+ `type` varchar(32) NOT NULL,
+ `value` int(8) NOT NULL,
+ `updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+ PRIMARY KEY (`name`),
+ KEY `keys` (`type`,`value`,`lodestone_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE `events_tracking` (
@@ -46,18 +99,19 @@ CREATE TABLE `events_tracking` (
  `old_value` varchar(128) NOT NULL,
  `new_value` varchar(128) NOT NULL,
  PRIMARY KEY (`lodestone_id`),
+ UNIQUE KEY `unique` (`lodestone_id`,`type`,`new_value`),
  KEY `time` (`time`,`type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE `events_exp_new` (
-  `lodestone_id` int(32) NOT NULL,
-  `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `jobclass` smallint(3) NOT NULL,
-  `gained` int(16) NOT NULL,
-  `old` int(16) NOT NULL,
-  `new` int(16) NOT NULL,
-  UNIQUE KEY `unique` (`lodestone_id`,`jobclass`,`old`,`new`),
-  KEY `keys` (`lodestone_id`,`jobclass`,`time`,`gained`,`old`,`new`)
+ `lodestone_id` int(32) NOT NULL,
+ `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ `jobclass` smallint(3) NOT NULL,
+ `gained` int(16) NOT NULL,
+ `old` int(16) NOT NULL,
+ `new` int(16) NOT NULL,
+ UNIQUE KEY `unique` (`lodestone_id`,`jobclass`,`old`,`new`),
+ KEY `keys` (`lodestone_id`,`jobclass`,`time`,`gained`,`old`,`new`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8
 /*!50100 PARTITION BY RANGE (lodestone_id)
 (PARTITION p0 VALUES LESS THAN (250000) ENGINE = InnoDB,
@@ -262,15 +316,15 @@ CREATE TABLE `events_exp_new` (
  PARTITION p199 VALUES LESS THAN (50000000) ENGINE = InnoDB,
  PARTITION p200 VALUES LESS THAN MAXVALUE ENGINE = InnoDB) */;
 
- CREATE TABLE `events_lvs_new` (
-  `lodestone_id` int(32) NOT NULL,
-  `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `jobclass` smallint(3) NOT NULL,
-  `gained` int(16) NOT NULL,
-  `old` int(16) NOT NULL,
-  `new` int(16) NOT NULL,
-  UNIQUE KEY `unique` (`lodestone_id`,`jobclass`,`old`,`new`),
-  KEY `keys` (`lodestone_id`,`jobclass`,`time`,`gained`,`old`,`new`)
+CREATE TABLE `events_lvs_new` (
+ `lodestone_id` int(32) NOT NULL,
+ `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ `jobclass` smallint(3) NOT NULL,
+ `gained` int(16) NOT NULL,
+ `old` int(16) NOT NULL,
+ `new` int(16) NOT NULL,
+ UNIQUE KEY `unique` (`lodestone_id`,`jobclass`,`old`,`new`),
+ KEY `keys` (`lodestone_id`,`jobclass`,`time`,`gained`,`old`,`new`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8
 /*!50100 PARTITION BY RANGE (lodestone_id)
 (PARTITION p0 VALUES LESS THAN (250000) ENGINE = InnoDB,
@@ -475,29 +529,29 @@ CREATE TABLE `events_exp_new` (
  PARTITION p199 VALUES LESS THAN (50000000) ENGINE = InnoDB,
  PARTITION p200 VALUES LESS THAN MAXVALUE ENGINE = InnoDB) */;
 
- CREATE TABLE `events_tally` (
-  `lodestone_id` int(11) NOT NULL AUTO_INCREMENT,
-  `totalNewExp` bigint(20) NOT NULL,
-  `totalNewLevels` int(11) NOT NULL,
-  `totalLegacyExp` bigint(20) NOT NULL,
-  `totalLegacyLevels` int(11) NOT NULL,
-  `totalMerged` int(11) NOT NULL,
-  `totalInvalidJob` int(11) NOT NULL,
-  `totalGainZero` int(11) NOT NULL,
-  `totalGainInvalid` int(11) NOT NULL,
-  `totalNewIsZero` int(11) NOT NULL,
-  `totalBelowThreshold` int(11) NOT NULL,
-  `totalEvents` int(11) NOT NULL,
-  PRIMARY KEY (`lodestone_id`),
-  KEY `totalNewExp` (`totalNewExp`),
-  KEY `totalNewLevels` (`totalNewLevels`),
-  KEY `totalLegacyExp` (`totalLegacyExp`),
-  KEY `totalLegacyLevels` (`totalLegacyLevels`),
-  KEY `totalMerged` (`totalMerged`),
-  KEY `totalInvalidJob` (`totalInvalidJob`),
-  KEY `totalGainZero` (`totalGainZero`),
-  KEY `totalGainInvalid` (`totalGainInvalid`),
-  KEY `totalNewIsZero` (`totalNewIsZero`),
-  KEY `totalBelowThreshold` (`totalBelowThreshold`),
-  KEY `totalEvents` (`totalEvents`)
+CREATE TABLE `events_tally` (
+ `lodestone_id` int(11) NOT NULL AUTO_INCREMENT,
+ `totalNewExp` bigint(20) NOT NULL,
+ `totalNewLevels` int(11) NOT NULL,
+ `totalLegacyExp` bigint(20) NOT NULL,
+ `totalLegacyLevels` int(11) NOT NULL,
+ `totalMerged` int(11) NOT NULL,
+ `totalInvalidJob` int(11) NOT NULL,
+ `totalGainZero` int(11) NOT NULL,
+ `totalGainInvalid` int(11) NOT NULL,
+ `totalNewIsZero` int(11) NOT NULL,
+ `totalBelowThreshold` int(11) NOT NULL,
+ `totalEvents` int(11) NOT NULL,
+ PRIMARY KEY (`lodestone_id`),
+ KEY `totalNewExp` (`totalNewExp`),
+ KEY `totalNewLevels` (`totalNewLevels`),
+ KEY `totalLegacyExp` (`totalLegacyExp`),
+ KEY `totalLegacyLevels` (`totalLegacyLevels`),
+ KEY `totalMerged` (`totalMerged`),
+ KEY `totalInvalidJob` (`totalInvalidJob`),
+ KEY `totalGainZero` (`totalGainZero`),
+ KEY `totalGainInvalid` (`totalGainInvalid`),
+ KEY `totalNewIsZero` (`totalNewIsZero`),
+ KEY `totalBelowThreshold` (`totalBelowThreshold`),
+ KEY `totalEvents` (`totalEvents`)
 ) ENGINE=InnoDB AUTO_INCREMENT=14735950 DEFAULT CHARSET=latin1;
