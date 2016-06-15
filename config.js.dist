@@ -34,7 +34,7 @@ var config =
 
     // Should the server use persistent data?
     // Please read the docs "Persistent Tracking" regarding this
-    persistent: false,
+    persistent: true,
 
     // The number of agent socket connections to keep alive
     agentMaxSockets: 1000,
@@ -73,10 +73,10 @@ var config =
         // Auto add characters
         autoAddCharacters: {
             // Enable or disable automatic adding characters
-            enabled: false,
+            enabled: true,
 
             // The time delay betwen auto adding characters
-            cronTime: '*/10 * * * * *',
+            cronTime: '*/60 * * * * *',
 
             // The number of characters to auto add per cron cycle
             limitPerCycle: 1
@@ -88,7 +88,7 @@ var config =
             enabled: false,
 
             // The time delay betwen auto updating characters
-            cronTime: '*/30 * * * * *',
+            cronTime: '*/60 * * * * *',
 
             // The number of characters to auto update per cron cycle
             limitPerCycle: 1,
@@ -123,10 +123,10 @@ var config =
         // Auto update achievements
         autoUpdateAchievements: {
             // Enable or disable automatic adding characters
-            enabled: true,
+            enabled: false,
 
             // The time delay betwen auto adding characters
-            cronTime: '* */60 * * * *',
+            cronTime: '*/60 * * * * *',
 
             // The number of characters to auto add per cron cycle
             limitPerCycle: 1,
