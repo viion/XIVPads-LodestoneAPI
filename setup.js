@@ -1,3 +1,6 @@
+global.TIMESTAMP = 0;
+
+// node modules
 var log = require('libs/LoggingObject'),
     xivdb = require('libs/XIVDBClass');
 

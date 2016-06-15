@@ -27,7 +27,7 @@ class StorageClass
     //
     set(key, value)
     {
-        log.echo('[REDIS] {method:green}: {key:yellow}', {
+        log.echo('[REDIS] {method:green}: {key:cyan}', {
             method: 'SET',
             key: key,
         });
@@ -40,7 +40,7 @@ class StorageClass
     // Get some data
     //
     get(key, callback) {
-        log.echo('[REDIS] {method:green}: {key:yellow}', {
+        log.echo('[REDIS] {method:green}: {key:cyan}', {
             method: 'GET',
             key: key,
         });

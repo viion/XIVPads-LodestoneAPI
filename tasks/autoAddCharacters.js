@@ -21,7 +21,7 @@ class autoAddCharactersClass
             new cron({
                 cronTime: config.settings.autoAddCharacters.cronTime,
                 onTick: () => {
-                    log.echo('-- {limit:cyan} characters.', {
+                    log.echo('-- Auto-Add {limit:cyan} characters.', {
                         limit: config.settings.autoAddCharacters.limitPerCycle,
                     });
 
@@ -32,9 +32,7 @@ class autoAddCharactersClass
                             app.Character.getFromLodestone(row.lodestone_id, (data) => {
                                 // add the character to the site
                                 app.Character.addCharacter(data, (data) => {
-                                    log.echo('-- {note:green}', {
-                                        note: 'Character added successfully.',
-                                    });
+                                    log.echo('-- {note:green}', { note: 'Character added successfully.' });
                                     log.space();
                                 });
                             });

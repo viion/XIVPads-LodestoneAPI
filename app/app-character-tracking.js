@@ -54,12 +54,6 @@ class AppCharacterTrackingClass
             });
         }
 
-        log.echo('--- [{type:yellow}] {old:cyan} = {new:cyan}', {
-            type: type,
-            old: oldValue,
-            new: newValue,
-        });
-
         // check if the old data is not the same as the new data
         if (oldValue != newValue) {
             // set vars
@@ -76,7 +70,7 @@ class AppCharacterTrackingClass
 
             // run query
             database.sql(database.QueryBuilder.get(), binds, () => {
-                log.echo('--- [{type:yellow}] event added.', {
+                log.echo('--- [{type:blue}] event added.', {
                     type: type,
                 });
             });

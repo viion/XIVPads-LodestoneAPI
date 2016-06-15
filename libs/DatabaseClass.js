@@ -52,7 +52,7 @@ class DatabaseClass
                 throw error;
             }
 
-            log.echo("[DB] [{id:red}] SQL: {sql:purple}", {
+            log.echo("[DB][{id:red}] SQL: {sql:purple}", {
                 id: randomId,
                 sql: config.settings.sqlStatementTruncate ? sql.substring(0, config.settings.sqlStatementTruncate) + '...' : sql
             });
@@ -63,7 +63,7 @@ class DatabaseClass
                 // If any errors, throw the exception
                 if (error)
                 {
-                    log.echo("[DB] [{id:red}] {arrow:green} {error:red}", {
+                    log.echo("[DB][{id:red}] {arrow:green} {error:red}", {
                         id: randomId,
                         arrow: '>>',
                         error: error
@@ -81,7 +81,7 @@ class DatabaseClass
                 {
                     // Disconnect this query
                     connection.release();
-                    log.echo("[DB] [{id:red}] {arrow:green} Database query complete", {
+                    log.echo("[DB][{id:red}] {arrow:green} Database query complete", {
                         id: randomId,
                         arrow: '>>'
                     });

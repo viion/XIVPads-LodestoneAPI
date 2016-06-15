@@ -94,7 +94,7 @@ class AppCharacterGearClass
 
         // run query
         database.sql(database.QueryBuilder.get(), binds, () => {
-            log.echo('--- Added Gear Set for: {level:yellow} {role:yellow}', {
+            log.echo('--- Added Gear Set for: {level:blue} {role:blue}', {
                 role: this.View.newData.active_class.name,
                 level: this.View.newData.active_class.level,
             });

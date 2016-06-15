@@ -132,7 +132,7 @@ class AppCharacterEventsClass
 
                     // create event
                     this.eventsLevels.push(newEvent);
-                    log.echo('--- Levels: {value:yellow} {cjname:cyan}', {
+                    log.echo('--- Levels: {value:blue} {cjname:cyan}', {
                         value: levelsGained,
                         cjname: newRole.name,
                     });
@@ -159,7 +159,7 @@ class AppCharacterEventsClass
 
                     // create event
                     this.eventsExp.push(newEvent);
-                    log.echo('--- EXP: {value:yellow} {cjname:cyan}', {
+                    log.echo('--- EXP: {value:blue} {cjname:cyan}', {
                         value: expGained,
                         cjname: newRole.name,
                     });
@@ -190,7 +190,7 @@ class AppCharacterEventsClass
 
             // run query
             database.sql(database.QueryBuilder.get(), [], () => {
-                log.echo('--- Added {total:yellow} levelling events', {
+                log.echo('--- Added {total:blue} levelling events', {
                     total: this.eventsLevels.length,
                 });
             });
@@ -206,7 +206,7 @@ class AppCharacterEventsClass
 
             // run query
             database.sql(database.QueryBuilder.get(), [], () => {
-                log.echo('--- Added {total:yellow} experience points events', {
+                log.echo('--- Added {total:blue} experience points events', {
                     total: this.eventsExp.length,
                 });
             });

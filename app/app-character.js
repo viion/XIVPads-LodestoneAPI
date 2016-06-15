@@ -47,7 +47,7 @@ class AppCharacterClass
     //
     // Add character to the database
     //
-    addCharacter(data, callback)
+    addCharacter(data, callback, isUpdate)
     {
         var insertColumns = ['last_updated', 'lodestone_id', 'name', 'server', 'avatar', 'portrait', 'data'],
             insertData = [moment().format('YYYY-MM-DD HH:mm:ss'), '?', '?', '?', '?', '?', '?'];
@@ -67,22 +67,34 @@ class AppCharacterClass
             .insert('characters')
             .insertColumns(insertColumns)
             .insertData([insertData])
-            .duplicate(['lodestone_id']);
+            .duplicate(['lodestone_id', 'name', 'server', 'avatar', 'portrait', 'data']);
 
         // run query
         database.sql(database.QueryBuilder.get(), binds, () => {
             // update characters pending table date
-            database.QueryBuilder
-                .update('pending_characters')
-                .set({ 'processed': moment().format('YYYY-MM-DD HH:mm:ss') })
-                .where('lodestone_id = ?');
+            // - this is only done if we're not updating a character
+            if (!isUpdate) {
+                database.QueryBuilder
+                    .update('pending_characters')
+                    .set({ 'processed': moment().format('YYYY-MM-DD HH:mm:ss') })
+                    .where('lodestone_id = ?');
 
-            // run query
-            database.sql(database.QueryBuilder.get(), [ data.id ], callback);
+                // run query
+                database.sql(database.QueryBuilder.get(), [ data.id ], callback);
+            }
         });
 
-
         return this;
+    }
+
+    //
+    // Update a character
+    // - This is an alias to addCharacter since the
+    //   code would be the same.
+    //
+    updateCharacter(data, callback)
+    {
+        this.addCharacter(data, callback, true);
     }
 
     //

@@ -25,7 +25,7 @@ class autoUpdateCharactersClass
             new cron({
                 cronTime: config.settings.autoUpdateCharacters.cronTime,
                 onTick: () => {
-                    log.echo('-- {limit:cyan} characters.', {
+                    log.echo('-- Auto-Update {limit:cyan} characters.', {
                         limit: config.settings.autoUpdateCharacters.limitPerCycle,
                     });
 
@@ -52,7 +52,6 @@ class autoUpdateCharactersClass
                                 }
 
                                 // Compare levels and exp
-
                                 log.echo('-- Testing EXP/Level Events');
                                 app.Character.Events.init();
 
@@ -83,6 +82,12 @@ class autoUpdateCharactersClass
                                         id: newData.free_company.id,
                                     });
                                 }
+
+                                // Update character
+                                app.Character.updateCharacter(newData, (data) => {
+                                    log.echo('-- {note:green}', { note: 'Character updated successfully.' });
+                                    log.space();
+                                });
                             });
                         }
                     });

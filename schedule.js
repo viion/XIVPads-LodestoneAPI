@@ -1,5 +1,7 @@
 require('app-module-path/register');
+global.TIMESTAMP = 0;
 
+// node modules
 var setup = require('setup'),
     log = require('libs/LoggingObject');
 

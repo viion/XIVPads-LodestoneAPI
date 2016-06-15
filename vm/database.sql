@@ -37,12 +37,12 @@ CREATE TABLE `characters` (
  `avatar` varchar(256) NOT NULL,
  `portrait` varchar(256) NOT NULL,
  `data` text COMMENT 'JSON Data',
+ `achievements_last_updated` timestamp NULL DEFAULT NULL,
+ `achievements_public` tinyint(1) DEFAULT '0',
+ `achievements_score` int(12) NOT NULL,
  PRIMARY KEY (`lodestone_id`),
- KEY `added` (`added`),
- KEY `last_updated` (`last_updated`),
- KEY `queue` (`queue`),
- KEY `name` (`name`),
- KEY `server` (`server`)
+ KEY `profile` (`added`,`last_updated`,`queue`,`name`,`server`),
+ KEY `achievements` (`achievements_last_updated`,`achievements_public`,`achievements_score`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE `characters_grandcompany` (

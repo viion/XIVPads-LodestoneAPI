@@ -1,4 +1,5 @@
 require('app-module-path/register');
+global.TIMESTAMP = 0;
 
 //
 // These are paths which are
@@ -17,9 +18,7 @@ var webpages = [
     '/test'
 ];
 
-//
-// Setup API
-//
+// node modules
 var fs = require('fs'),
     hapi = require('hapi'),
     path = require('path'),

@@ -1,4 +1,5 @@
-var functions = require("./functions");
+var moment = require('moment'),
+    functions = require('libs/functions');
 
 //
 // Custom built logger
@@ -83,13 +84,25 @@ var log =
             }
         }
 
-        // Date
-        var date = new Date().getTime();
-        date = functions.insertIntoString(date, '-', 4, true);
-        date = log.colors.yellow + date + log.formatting.reset;
-
         // print
-        console.log('%s%s%s%s', log.formatting.space, date, log.formatting.space, string);
+        var date = moment().format('HH:mm:ss') +'  '+ moment().format('x').slice(-3),
+            diff = (global.TIMESTAMP > 0) ? moment().format('x') - global.TIMESTAMP : 0,
+            diff = (diff == 0) ? '' : diff;
+
+        // if diff increased, highlight the time
+        if (diff > 0) {
+            date = log.colors.yellow + date + log.formatting.reset;
+        }
+
+        // diff visual
+        var diffVisual = functions.padding(Array(12).join(' '), diff, true);
+            diffVisual = log.colors.yellow + diffVisual + log.formatting.reset;
+
+        // print timestamp
+        console.log('    %s%s    %s', date, diffVisual, string);
+
+        // update global timestamp
+        global.TIMESTAMP = moment().format('x');
     },
 
     //
@@ -109,7 +122,7 @@ var log =
     //
     line: function()
     {
-        console.log(log.formatting.space + '------------------------------------------------------------' + log.formatting.reset);
+        console.log('    ------------------------------------------------------------');
     },
 
     //
