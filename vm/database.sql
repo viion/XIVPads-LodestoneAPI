@@ -39,10 +39,20 @@ CREATE TABLE `characters` (
  `data` text COMMENT 'JSON Data',
  `achievements_last_updated` timestamp NULL DEFAULT NULL,
  `achievements_public` tinyint(1) DEFAULT '0',
- `achievements_score` int(12) NOT NULL,
+ `achievements_score_reborn` int(8) NOT NULL,
+ `achievements_score_legacy` int(8) NOT NULL DEFAULT '0',
  PRIMARY KEY (`lodestone_id`),
- KEY `profile` (`added`,`last_updated`,`queue`,`name`,`server`),
- KEY `achievements` (`achievements_last_updated`,`achievements_public`,`achievements_score`)
+ KEY `achievements` (`achievements_last_updated`,`achievements_public`,`achievements_score_reborn`,`achievements_score_legacy`),
+ KEY `profile` (`added`,`last_active`,`queue`,`name`,`server`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE `characters_achievements` (
+ `lodestone_id` int(32) NOT NULL,
+ `achievement_id` int(12) NOT NULL,
+ `obtained` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+ `points` int(3) NOT NULL,
+ UNIQUE KEY `unique` (`lodestone_id`,`achievement_id`),
+ KEY `data` (`obtained`,`points`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE `characters_grandcompany` (

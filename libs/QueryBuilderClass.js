@@ -90,11 +90,11 @@ class QueryBuilderClass
 
     //
     // Set data, used with updating,
-    // eg: .set([
-    //  'x = 3',
-    //  'y = 2',
-    //  'z = 1',
-    // ])
+    // eg: .set({
+    //  x: 3,
+    //  y: 2,
+    //  z: 1,
+    // })
     //
     // = SET x = 3, y = 2, z = 1
     //

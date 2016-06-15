@@ -75,7 +75,13 @@ Ignore **minions** and **mounts** from the data for the character **730968**.
 
 ## /characters/get/{id}/achievements/
 
-Get characters achievements (All)
+Get characters achievements (summary)
+
+---
+
+## /characters/get/{id}/achievements/all
+
+Get characters achievements (all of them)
 
 ---
 

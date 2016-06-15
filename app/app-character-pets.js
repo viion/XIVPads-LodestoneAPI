@@ -68,7 +68,9 @@ class AppCharacterPetsClass
 
             // run query
             database.sql(database.QueryBuilder.get(), [], () => {
-                log.echo('--- Saved minions');
+                log.echo('--- Saved {total:blue} minions', {
+                    total: insertData.length
+                });
             });
         }
     }
@@ -106,7 +108,9 @@ class AppCharacterPetsClass
 
             // run query
             database.sql(database.QueryBuilder.get(), [], () => {
-                log.echo('--- Saved mounts');
+                log.echo('--- Saved {total:blue} mounts', {
+                    total: insertData.length
+                });
             });
         }
     }

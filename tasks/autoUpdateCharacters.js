@@ -9,13 +9,19 @@ class autoUpdateCharactersClass
     //
     // Auto Updates Characters
     // - Compares EXP to generate EXP events
-    // - Compared Levels to generate Level events
+    // - Compares Levels to generate Level events
+    // - Tracks Attributes against a stored list to get the highest values
+    // - Tracks profile information for changes (name, server, race, free company)
+    // - Tracks minions and mounts
+    // - Tracks individual Grand Companies
+    // - Tracks gearsets (with their stats and active class)
+    // - Adds free company to the site (if it doesn't exist)
     //
     init(range)
     {
         if (config.settings.autoUpdateCharacters.enabled) {
             var start = range * config.settings.autoUpdateCharacters.limitPerCycle;
-            log.echo('- Starting Task - Time: {time:cyan} - Range: {start:yellow} ({limit:yellow})', {
+            log.echo('- Starting Task: Auto-Update Characters - Time: {time:cyan} - Range: {start:yellow} ({limit:yellow})', {
                 time: config.settings.autoUpdateCharacters.cronTime,
                 limit: config.settings.autoUpdateCharacters.limitPerCycle,
                 start: start,
@@ -31,6 +37,10 @@ class autoUpdateCharactersClass
 
                     // get the last updated characters
                     app.Character.getLastUpdated(start, (data) => {
+                        if (data.rows.length == 0) {
+                            return log.echo('-- {error:red}', { error: 'No entries.' });
+                        }
+
                         for (const [i, character] of data.rows.entries()) {
                             log.echo('-- {id:cyan} - {name:cyan} ({server:cyan}) - Last Updated: {time}', {
                                 id: character.lodestone_id,
@@ -92,7 +102,8 @@ class autoUpdateCharactersClass
                         }
                     });
                 },
-                start: true,
+                start: config.settings.cronStart,
+                runOnInit: config.settings.cronRunOnInit,
                 timeZone: config.settings.cronTimeZones,
             }).start();
         } else {

@@ -15,9 +15,13 @@ log.title('{msg:purple}', {
 // ------------------------------------------------
 
 setup.init(() => {
+    // Auto add characters
     //require('tasks/autoAddCharacters').init();
-    require('tasks/autoUpdateCharacters').init(0);
-    //require('./tasks/autoUpdateCharacters').init(1);
-    //require('./tasks/autoUpdateCharacters').init(2);
-    log.space();
+
+    // Auto update characters
+    //require('tasks/autoUpdateCharacters').init(0);
+
+    // Auto update achievements
+    require('./tasks/autoUpdateAchievements').init(0);
+
 });

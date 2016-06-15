@@ -13,7 +13,7 @@ class autoAddCharactersClass
     init()
     {
         if (config.settings.autoAddCharacters.enabled) {
-            log.echo('- Starting Task - Time: {time:cyan}', {
+            log.echo('- Starting Task: Auto-Add Characters - Time: {time:cyan}', {
                 time: config.settings.autoAddCharacters.cronTime,
             });
 
@@ -27,6 +27,10 @@ class autoAddCharactersClass
 
                     // get the last pending character
                     app.Character.getLastPending((data) => {
+                        if (data.rows.length == 0) {
+                            return log.echo('-- {error:red}', { error: 'No entries.' });
+                        }
+
                         for (const [i, row] of data.rows.entries()) {
                             // parse the character on lodestone
                             app.Character.getFromLodestone(row.lodestone_id, (data) => {
@@ -39,7 +43,8 @@ class autoAddCharactersClass
                         }
                     });
                 },
-                start: true,
+                start: config.settings.cronStart,
+                runOnInit: config.settings.cronRunOnInit,
                 timeZone: config.settings.cronTimeZones,
             }).start();
         } else {

@@ -253,29 +253,68 @@ var api = {
         });
     },
 
-    getAchievementSummary: function(reply, options) {
+    getAchievementSummary: function(reply, options, callback) {
         api.get(apiAchievements.getUrl('summary', options.id), function($) {
-            reply(apiAchievements.getSummary($));
+            // Parse achievement data
+            var data = apiAchievements.getSummary($, options);
+
+            // always send of reply first so the user
+            // gets their response asap.
+            if (reply) {
+                reply(data);
+            }
+
+            // run any callbacks
+            if (callback) {
+                callback(data);
+            }
         });
     },
 
-    getAchievements: function(reply, options) {
+    getAchievements: function(reply, options, callback) {
         api.get(apiAchievements.getUrl('achievement', options.id, options.kind), function($) {
+            // Parse achievement data (for a specific category)
             reply(apiAchievements.getData($, options.kind));
+
+            // always send of reply first so the user
+            // gets their response asap.
+            if (reply) {
+                reply(data);
+            }
+
+            // run any callbacks
+            if (callback) {
+                callback(data);
+            }
         });
     },
 
-    getAchievementsAll: function(reply, options) {
-        api.getAchievementsAllRecurrsive([1, 2, 4, 5, 6, 8, 11, 12, 13], {}, options, reply);
+    getAchievementsAll: function(reply, options, callback) {
+        api.getAchievementsAllRecurrsive([1, 2, 4, 5, 6, 8, 11, 12, 13], {}, options, reply, callback);
     },
 
-    getAchievementsAllRecurrsive: function(list, data, options, reply) {
+    getAchievementsAllRecurrsive: function(list, data, options, reply, callback) {
         var kind = list[0];
         list.splice(list.indexOf(kind), 1);
 
         api.get(apiAchievements.getUrl('achievement', options.id, kind), function($) {
             data[kind] = apiAchievements.getData($, kind);
-            var res = list.length > 0 ? api.getAchievementsAllRecurrsive(list, data, options, reply) : reply(data);
+
+            // if still more categories to get, continue onto the next one.
+            if (list.length > 0) {
+                api.getAchievementsAllRecurrsive(list, data, options, reply, callback)
+            } else {
+                // always send of reply first so the user
+                // gets their response asap.
+                if (reply) {
+                    reply(data);
+                }
+
+                // run any callbacks
+                if (callback) {
+                    callback(data);
+                }
+            }
         });
     },
 
