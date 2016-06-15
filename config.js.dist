@@ -42,10 +42,11 @@ var config =
     // Database details, used for persistent tracking.
     db:
     {
-        host:   'localhost',
-        user:   'xivsync',
-        pass:   'xivsync',
-        table:  'xivsync',
+        host: 'localhost',
+        user: 'xivsync',
+        pass: 'xivsync',
+        table: 'xivsync',
+        socket: '/var/run/mysqld/mysqld.sock',
         debug:  false,
     },
 

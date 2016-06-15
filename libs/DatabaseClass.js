@@ -28,7 +28,7 @@ class DatabaseClass
             password:   config.db.pass,
             database:   config.db.table,
             debug:      config.db.debug,
-            //socketPath  : '/var/run/mysqld/mysqld.sock',
+            socketPath: config.db.socket,
         });
     }
 
