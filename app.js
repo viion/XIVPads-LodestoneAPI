@@ -318,7 +318,7 @@ server.route({
             ignore: request.query.ignore,
             restrict: request.query.restrict,
         }, (data) => {
-            app.Character.addToPending([data.id]);
+            app.Character.addToPending([[data.id]]);
         });
     }
 });
@@ -394,7 +394,7 @@ server.route({
         api.getFreecompany(reply, {
             id: request.params.id
         }, (data) => {
-            app.FreeCompany.addToPending([data.id]);
+            app.FreeCompany.addToPending([[data.id]]);
         });
     }
 });
@@ -453,7 +453,7 @@ server.route({
         api.getLinkshell(reply, {
             id: request.params.id,
         }, (data) => {
-            app.Linkshell.addToPending([data.id]);
+            app.Linkshell.addToPending([[data.id]]);
         });
     }
 });
