@@ -40,11 +40,17 @@ var api = {
             host = config.forumsUrl;
         }
 
+        // create path
+        var urlPath = url.replace(' ', '+');
+        if (config.settings.breakCacheOnHttpGet) {
+            urlPath = urlPath + '#' + Date.now();
+        }
+
         // options
         var options = {
             host: host,
             port: 80,
-            path: url.replace(' ', '+') + '#' + Date.now(),
+            path: urlPath,
         }
 
         // get

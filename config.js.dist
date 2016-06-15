@@ -23,8 +23,8 @@ var config =
         };
     },
 
-    // Where is your xivsync server hosted?
-    host: 'xivsync.dev',
+    // Where is your xivsync server hosted? (use 0.0.0.0 for vagrant, or localhost for Window/OSX)
+    host: '0.0.0.0',
 
     // What port will your server be hosted on?
     port: 3000,
@@ -51,11 +51,89 @@ var config =
 
     // Settings for the app itself
     settings: {
-        // The time delay betwen auto adding characters
-        autoAddCronTime: '*/10 * * * * *',
+        // Should urls be cache broken?
+        breakCacheOnHttpGet: false,
 
-        // The number of characters to auto add per cron cycle
-        autoAddLimit: 2
+        // Default timezone for cronjobs
+        cronTimeZones: 'Japan',
+
+        // Start the cronjob immediately?
+        cronStart: true,
+
+        // Fire the cronjob ontick method
+        cronRunOnInit: true,
+
+        // If to truncate sql statements (can be very long), set to 0 if not
+        sqlStatementTruncate: 50,
+
+        // Auto add characters
+        autoAddCharacters: {
+            // Enable or disable automatic adding characters
+            enabled: false,
+
+            // The time delay betwen auto adding characters
+            cronTime: '*/10 * * * * *',
+
+            // The number of characters to auto add per cron cycle
+            limitPerCycle: 1
+        },
+
+        // Auto update characters
+        autoUpdateCharacters: {
+            // Enable or disable automatic updating characters
+            enabled: false,
+
+            // The time delay betwen auto updating characters
+            cronTime: '*/30 * * * * *',
+
+            // The number of characters to auto update per cron cycle
+            limitPerCycle: 1,
+
+            // Minimum amount of exp to generate an event, we want this kind of
+            // high so that we do not generate lots of "little" events, in XIV
+            // you will mostly always earn a good chunk before stopping.
+            minimumExpForEvent: 10000,
+
+            // Should events be tracked?
+            enableProgressEvents: true,
+
+            // Should character details be tracked?
+            enableProfileTracking: true,
+
+            // Should stats be ranked?
+            enableAttributeStatsRanking: true,
+
+            // Should mounts and minions be recorded?
+            enablePetsTracking: true,
+
+            // Should players FC's be added to the pending list?
+            enablePlayerFCPending: true,
+
+            // Should track Grand Companies?
+            enableGrandCompanyTracking: true,
+
+            // Should gear be tracked?
+            enableGearTracking: true,
+        },
+
+        // Auto update achievements
+        autoUpdateAchievements: {
+            // Enable or disable automatic adding characters
+            enabled: true,
+
+            // The time delay betwen auto adding characters
+            cronTime: '* */60 * * * *',
+
+            // The number of characters to auto add per cron cycle
+            limitPerCycle: 1,
+
+            // Should achievements be tally'd up?
+            enableTallyPoints: true,
+
+            // Should achievements be tracked?
+            enableTracking: true,
+        },
+
     }
 }
 
