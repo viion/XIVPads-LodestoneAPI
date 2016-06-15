@@ -36,6 +36,9 @@ var config =
     // Please read the docs "Persistent Tracking" regarding this
     persistent: false,
 
+    // The number of agent socket connections to keep alive
+    agentMaxSockets: 1000,
+
     // Database details, used for persistent tracking.
     db:
     {

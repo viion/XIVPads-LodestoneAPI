@@ -87,7 +87,7 @@ class autoUpdateCharactersClass
 
                                 // Add free company to pending list
                                 if (config.settings.autoUpdateCharacters.enablePlayerFCPending && newData.free_company && typeof newData.free_company.id !== 'undefined') {
-                                    app.FreeCompany.addToPending([newData.free_company.id]);
+                                    app.FreeCompany.addToPending([[newData.free_company.id]]);
                                     log.echo('-- Adding players free company ({id:yellow}) to the pending list', {
                                         id: newData.free_company.id,
                                     });

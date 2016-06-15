@@ -21,7 +21,7 @@ class AppLinkshellClass
         database.QueryBuilder
             .insert('pending_linkshells')
             .insertColumns(['ls_id'])
-            .insertData([idList])
+            .insertData(idList)
             .duplicate(['ls_id']);
 
         // run query

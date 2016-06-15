@@ -36,7 +36,7 @@ class AppCharacterClass
         database.QueryBuilder
             .insert('pending_characters')
             .insertColumns(['lodestone_id'])
-            .insertData([idList])
+            .insertData(idList)
             .duplicate(['lodestone_id']);
 
         // run query

@@ -21,7 +21,7 @@ class AppFreeCompanyClass
         database.QueryBuilder
             .insert('pending_freecompanies')
             .insertColumns(['fc_id'])
-            .insertData([idList])
+            .insertData(idList)
             .duplicate(['fc_id']);
 
         // run query

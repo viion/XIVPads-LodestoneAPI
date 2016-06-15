@@ -300,7 +300,7 @@ server.route({
             // Build ID list
             var idList = [];
             for(var i in data.results) {
-                idList.push(data.results[i].id);
+                idList.push([data.results[i].id]);
             }
 
             app.Character.addToPending(idList);
@@ -378,7 +378,7 @@ server.route({
             // Build ID list
             var idList = [];
             for(var i in data.results) {
-                idList.push(data.results[i].id);
+                idList.push([data.results[i].id]);
             }
 
             app.FreeCompany.addToPending(idList);
@@ -436,7 +436,7 @@ server.route({
             // Build ID list
             var idList = [];
             for(var i in data.results) {
-                idList.push(data.results[i].id);
+                idList.push([data.results[i].id]);
             }
 
             app.Linkshell.addToPending(idList);

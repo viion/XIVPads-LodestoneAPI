@@ -8,7 +8,7 @@ CREATE TABLE `pending_characters` (
  `processed` timestamp NULL DEFAULT NULL,
  PRIMARY KEY (`lodestone_id`),
  KEY `processed` (`processed`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE `pending_freecompanies` (
  `fc_id` varchar(64) NOT NULL,
