@@ -1,5 +1,7 @@
 require('app-module-path/register');
 global.TIMESTAMP = 0;
+global.ANALYTICS = require('libs/Analytics');
+global.ANALYTICS.reset();
 
 // node modules
 var setup = require('setup'),
@@ -15,9 +17,13 @@ log.title('{msg:purple}', {
 // ------------------------------------------------
 
 setup.init(() => {
+
+    global.ANALYTICS.record('setup', 'Complete');
+
     // Auto add characters
     require('tasks/autoAddCharacters').init();
 
+    /*
     // Auto update characters
     require('tasks/autoUpdateCharacters').init(0);
     require('tasks/autoUpdateCharacters').init(1);
@@ -28,4 +34,5 @@ setup.init(() => {
     // Auto update achievements
     require('./tasks/autoUpdateAchievements').init(0);
     require('./tasks/autoUpdateAchievements').init(1);
+    */
 });

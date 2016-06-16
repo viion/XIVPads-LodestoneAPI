@@ -63,26 +63,32 @@ class autoUpdateCharactersClass
 
                                 // Compare levels and exp
                                 log.echo('-- Testing EXP/Level Events');
+                                global.ANALYTICS.record('api', 'Record EXP/Level Events');
                                 app.Character.Events.init();
 
                                 // Calculate up the attributes
                                 log.echo('-- Checking Attribute Statistics');
+                                global.ANALYTICS.record('api', 'Record Attribute Statistics');
                                 app.Character.Stats.init();
 
                                 // Track stuff
                                 log.echo('-- Tracking Profile Information');
+                                global.ANALYTICS.record('api', 'Record Profile Information');
                                 app.Character.Tracking.init();
 
                                 // Record minions and mounts
                                 log.echo('-- Recording Minions/Mounts');
+                                global.ANALYTICS.record('api', 'Record Minions/Mounts');
                                 app.Character.Pets.init();
 
                                 // Record grand companies
                                 log.echo('-- Track Grand Companies');
+                                global.ANALYTICS.record('api', 'Record Grand Companies');
                                 app.Character.GrandCompany.init();
 
                                 // Save gear
                                 log.echo('-- Saving Gear Set');
+                                global.ANALYTICS.record('api', 'Record Gear Sets');
                                 app.Character.Gear.init();
 
                                 // Add free company to pending list
@@ -94,6 +100,7 @@ class autoUpdateCharactersClass
                                 }
 
                                 // Update character
+                                global.ANALYTICS.record('api', 'Finish and Update');
                                 app.Character.updateCharacter(newData, (data) => {
                                     log.echo('-- {note:green}', { note: 'Character updated successfully.' });
                                     log.space();

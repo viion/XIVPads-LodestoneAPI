@@ -32,10 +32,13 @@ class autoAddCharactersClass
                         }
 
                         for (const [i, row] of data.rows.entries()) {
+                            global.ANALYTICS.record('cronjob', 'Add ID: '+ row.lodestone_id);
+
                             // parse the character on lodestone
                             app.Character.getFromLodestone(row.lodestone_id, (data) => {
                                 // add the character to the site
                                 app.Character.addCharacter(data, (data) => {
+                                    global.ANALYTICS.record('cronjob', 'Add ID Completed: '+ row.lodestone_id);
                                     log.echo('-- {note:green}', { note: 'Character added successfully.' });
                                     log.space();
                                 });

@@ -38,6 +38,7 @@ class DatabaseClass
     sql(sql, binds, callback)
     {
         var randomId = functions.randomNumber(0, 99999);
+        global.ANALYTICS.record('database', 'Starting SQL Query: '+ randomId + ' --- '+ sql);
 
         // if persistent disabled, don't do anything
         if (!config.persistent) {
@@ -60,6 +61,8 @@ class DatabaseClass
             // Run the query
             connection.query(sql, binds, function(error, rows, fields)
             {
+                global.ANALYTICS.record('database', 'Completed SQL Query: '+ randomId);
+
                 // If any errors, throw the exception
                 if (error)
                 {

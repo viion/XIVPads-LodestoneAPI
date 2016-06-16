@@ -67,6 +67,8 @@ var api = {
             url: (options.host + options.path),
         });
 
+        global.ANALYTICS.record('api', 'New HTTP Request: '+ urlPath);
+
         // request
         http.get(options, function(res) {
             res.on('data', function(data) {
@@ -77,6 +79,8 @@ var api = {
                 var end = +new Date(),
                     duration = (end - parseInt(start)),
                     memoryFinish = functions.memory();
+
+                global.ANALYTICS.record('api', 'HTTP Request Completed, Duration: '+ duration + 'ms - ' + urlPath);
 
                 log.echo('{arrows:green} {path:yellow} - Duration: {duration:cyan} ms | Memory: {start:cyan} to {finish:cyan}', {
                     arrows: '>>',
