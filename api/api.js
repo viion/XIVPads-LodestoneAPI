@@ -16,9 +16,6 @@ var cheerio = require('cheerio'),
     apiDatabaseRecipes = require('./api-database-recipes'),
     apiDatabaseDuty = require('./api-database-duty');
 
-// Update sockets
-http.globalAgent.maxSockets = config.agentMaxSockets;
-
 // - - - - - - - - - - - - - - - - - - - -
 // Lodestone API
 // - - - - - - - - - - - - - - - - - - - -
@@ -54,6 +51,7 @@ var api = {
             host: host,
             port: 80,
             path: urlPath,
+            agent: config.agentPooling,
         }
 
         // get
