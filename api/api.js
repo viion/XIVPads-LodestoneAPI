@@ -254,6 +254,9 @@ var api = {
             // Parse character data
             var data = apiCharacters.getData($, options);
             if (!data) {
+                if (callback) {
+                    callback(false);
+                }
                 return reply({ error: 'Character does not exist.' });
             }
 
@@ -275,6 +278,9 @@ var api = {
             // Parse achievement data
             var data = apiAchievements.getSummary($, options);
             if (!data) {
+                if (callback) {
+                    callback(false);
+                }
                 return reply({ error: 'Achievements does not exist.' });
             }
 
@@ -296,6 +302,9 @@ var api = {
             // Parse achievement data (for a specific category)
             var data = apiAchievements.getData($, options.kind);
             if (!data) {
+                if (callback) {
+                    callback(false);
+                }
                 return reply({ error: 'Achievements does not exist.' });
             }
 
@@ -323,6 +332,9 @@ var api = {
         api.get(apiAchievements.getUrl('achievement', options.id, kind), function($) {
             data[kind] = apiAchievements.getData($, kind);
             if (!data[kind]) {
+                if (callback) {
+                    callback(false);
+                }
                 return reply({ error: 'Achievements does not exist.' });
             }
 
@@ -353,6 +365,9 @@ var api = {
             // Parse character data
             var data = apiLinkshell.getData($, options);
             if (!data) {
+                if (callback) {
+                    callback(false);
+                }
                 return reply({ error: 'Linkshell does not exist.' });
             }
 
@@ -378,6 +393,9 @@ var api = {
             // Parse character data
             var data = apiFreecompany.getData($, options);
             if (!data) {
+                if (callback) {
+                    callback(false);
+                }
                 return reply({ error: 'Free Company does not exist.' });
             }
 
@@ -399,6 +417,9 @@ var api = {
             // get members
             var data = apiFreecompany.getMembers($, options);
             if (!data) {
+                if (callback) {
+                    callback(false);
+                }
                 return reply({ error: 'Free Company does not exist.' });
             }
 

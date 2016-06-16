@@ -36,6 +36,11 @@ class autoAddCharactersClass
 
                             // parse the character on lodestone
                             app.Character.getFromLodestone(row.lodestone_id, (data) => {
+                                // if achievements not public, set status and continue
+                                if (!data) {
+                                    return app.Character.setDeleted(row.lodestone_id);
+                                }
+
                                 // add the character to the site
                                 app.Character.addCharacter(data, (data) => {
                                     global.ANALYTICS.record('cronjob', 'Add ID Completed: '+ row.lodestone_id);

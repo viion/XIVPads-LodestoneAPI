@@ -6,8 +6,9 @@ CREATE TABLE `pending_characters` (
  `lodestone_id` int(32) NOT NULL,
  `added` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
  `processed` timestamp NULL DEFAULT NULL,
+ `deleted` tinyint(1) NOT NULL DEFAULT '0',
  PRIMARY KEY (`lodestone_id`),
- KEY `processed` (`processed`)
+ KEY `main` (`added`,`processed`,`deleted`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE `pending_freecompanies` (

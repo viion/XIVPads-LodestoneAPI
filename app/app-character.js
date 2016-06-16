@@ -76,7 +76,7 @@ class AppCharacterClass
             if (!isUpdate) {
                 database.QueryBuilder
                     .update('pending_characters')
-                    .set({ 'processed': moment().format('YYYY-MM-DD HH:mm:ss') })
+                    .set({ processed: moment().format('YYYY-MM-DD HH:mm:ss') })
                     .where('lodestone_id = ?');
 
                 // run query
@@ -106,7 +106,7 @@ class AppCharacterClass
             .select()
             .columns('*')
             .from('pending_characters')
-            .where(['lodestone_id != 0', 'processed IS NULL'])
+            .where(['lodestone_id != 0', 'processed IS NULL', 'deleted = 0'])
             .order('added', 'asc')
             .limit(0,config.settings.autoAddCharacters.limitPerCycle);
 
@@ -141,6 +141,27 @@ class AppCharacterClass
 
         SyncApi.getCharacter(null, { id: lodestoneId }, callback);
         return this;
+    }
+
+    //
+    // Set a character as deleted
+    //
+    setDeleted(lodestoneId)
+    {
+        log.echo('Marking character {id:red} as deleted.', {
+            id: lodestoneId,
+        });
+
+        database.QueryBuilder
+            .update('pending_characters')
+            .set({
+                processed: moment().format('YYYY-MM-DD HH:mm:ss'),
+                deleted: 1
+            })
+            .where('lodestone_id = ?');
+
+        // run query
+        database.sql(database.QueryBuilder.get(), [ data.id ], (callback));
     }
 }
 

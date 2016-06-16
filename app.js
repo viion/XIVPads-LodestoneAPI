@@ -320,7 +320,9 @@ server.route({
             ignore: request.query.ignore,
             restrict: request.query.restrict,
         }, (data) => {
-            app.Character.addToPending([[data.id]]);
+            if (data) {
+                app.Character.addToPending([[data.id]]);
+            }
         });
     }
 });
@@ -377,13 +379,15 @@ server.route({
             server: server,
             page: page
         }, (data) => {
-            // Build ID list
-            var idList = [];
-            for(var i in data.results) {
-                idList.push([data.results[i].id]);
-            }
+            if (data) {
+                // Build ID list
+                var idList = [];
+                for(var i in data.results) {
+                    idList.push([data.results[i].id]);
+                }
 
-            app.FreeCompany.addToPending(idList);
+                app.FreeCompany.addToPending(idList);
+            }
         });
     }
 });
@@ -396,7 +400,9 @@ server.route({
         api.getFreecompany(reply, {
             id: request.params.id
         }, (data) => {
-            app.FreeCompany.addToPending([[data.id]]);
+            if (data) {
+                app.FreeCompany.addToPending([[data.id]]);
+            }
         });
     }
 });
@@ -412,13 +418,15 @@ server.route({
             id: request.params.id,
             page: page
         }, (data) => {
-            // build ID list
-            var idList = [];
-            for(var i in data.results) {
-                idList.push([data.results[i].id]);
-            }
+            if (data) {
+                // build ID list
+                var idList = [];
+                for (var i in data.results) {
+                    idList.push([data.results[i].id]);
+                }
 
-            app.Character.addToPending(idList);
+                app.Character.addToPending(idList);
+            }
         });
 
     }
@@ -443,13 +451,15 @@ server.route({
             server: server,
             page: page,
         }, (data) => {
-            // Build ID list
-            var idList = [];
-            for(var i in data.results) {
-                idList.push([data.results[i].id]);
-            }
+            if (data) {
+                // Build ID list
+                var idList = [];
+                for (var i in data.results) {
+                    idList.push([data.results[i].id]);
+                }
 
-            app.Linkshell.addToPending(idList);
+                app.Linkshell.addToPending(idList);
+            }
         });
 
     }
@@ -463,7 +473,9 @@ server.route({
         api.getLinkshell(reply, {
             id: request.params.id,
         }, (data) => {
-            app.Linkshell.addToPending([[data.id]]);
+            if (data) {
+                app.Linkshell.addToPending([[data.id]]);
+            }
         });
     }
 });
