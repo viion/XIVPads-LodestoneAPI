@@ -161,7 +161,7 @@ class AppCharacterClass
             .where('lodestone_id = ?');
 
         // run query
-        database.sql(database.QueryBuilder.get(), [ data.id ], (callback));
+        database.sql(database.QueryBuilder.get(), [ lodestoneId ], (callback));
     }
 }
 
