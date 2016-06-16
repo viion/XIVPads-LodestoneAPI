@@ -72,6 +72,10 @@ var apiCharacters =
     },
 
     getData: function($, options) {
+        if (!apiCharacters.checkIfExists($)) {
+            return false;
+        }
+
         // detail box
         var $box = $('#character');
 
@@ -419,6 +423,18 @@ var apiCharacters =
 
         return data;
     },
+
+    //
+    // Check if the character exists
+    //
+    checkIfExists($)
+    {
+        if ($('.error_bg_footer .area_inner p').text().length > 0) {
+            return false;
+        }
+
+        return true;
+    }
 }
 
 // Export it

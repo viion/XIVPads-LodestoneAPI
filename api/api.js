@@ -253,6 +253,9 @@ var api = {
         api.get(apiCharacters.getUrl('character', options.id), function($) {
             // Parse character data
             var data = apiCharacters.getData($, options);
+            if (!data) {
+                return reply({ error: 'Character does not exist.' });
+            }
 
             // always send of reply first so the user
             // gets their response asap.
@@ -271,6 +274,9 @@ var api = {
         api.get(apiAchievements.getUrl('summary', options.id), function($) {
             // Parse achievement data
             var data = apiAchievements.getSummary($, options);
+            if (!data) {
+                return reply({ error: 'Achievements does not exist.' });
+            }
 
             // always send of reply first so the user
             // gets their response asap.
@@ -288,7 +294,10 @@ var api = {
     getAchievements: function(reply, options, callback) {
         api.get(apiAchievements.getUrl('achievement', options.id, options.kind), function($) {
             // Parse achievement data (for a specific category)
-            reply(apiAchievements.getData($, options.kind));
+            var data = apiAchievements.getData($, options.kind);
+            if (!data) {
+                return reply({ error: 'Achievements does not exist.' });
+            }
 
             // always send of reply first so the user
             // gets their response asap.
@@ -313,6 +322,9 @@ var api = {
 
         api.get(apiAchievements.getUrl('achievement', options.id, kind), function($) {
             data[kind] = apiAchievements.getData($, kind);
+            if (!data[kind]) {
+                return reply({ error: 'Achievements does not exist.' });
+            }
 
             // if still more categories to get, continue onto the next one.
             if (list.length > 0) {
@@ -340,6 +352,9 @@ var api = {
         api.get(apiLinkshell.getUrl('linkshell', options.id), function($) {
             // Parse character data
             var data = apiLinkshell.getData($, options);
+            if (!data) {
+                return reply({ error: 'Linkshell does not exist.' });
+            }
 
             // always send of reply first so the user
             // gets their response asap.
@@ -362,6 +377,9 @@ var api = {
         api.get(apiFreecompany.getUrl('freecompany', options.id), function($) {
             // Parse character data
             var data = apiFreecompany.getData($, options);
+            if (!data) {
+                return reply({ error: 'Free Company does not exist.' });
+            }
 
             // always send of reply first so the user
             // gets their response asap.
@@ -380,6 +398,9 @@ var api = {
         api.get(apiFreecompany.getUrl('members', options.id, options.page), function($) {
             // get members
             var data = apiFreecompany.getMembers($, options);
+            if (!data) {
+                return reply({ error: 'Free Company does not exist.' });
+            }
 
             // always send of reply first so the user
             // gets their response asap.
