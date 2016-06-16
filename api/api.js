@@ -81,6 +81,7 @@ var api = {
                     memoryFinish = functions.memory();
 
                 global.ANALYTICS.record('api', 'HTTP Request Completed, Duration: '+ duration + 'ms - ' + urlPath);
+                global.ANALYTICS.count('api', urlPath);
 
                 log.echo('{arrows:green} {path:yellow} - Duration: {duration:cyan} ms | Memory: {start:cyan} to {finish:cyan}', {
                     arrows: '>>',

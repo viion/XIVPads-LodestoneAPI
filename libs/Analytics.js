@@ -22,7 +22,7 @@ class Analytics
 {
     constructor()
     {
-        this.events = [];
+        this.counts = {};
     }
 
     //
@@ -59,6 +59,26 @@ class Analytics
                 percent.toFixed(3)
             ));
         });
+    }
+
+    //
+    // Add a counter
+    //
+    count(type, text)
+    {
+        if (typeof this.counts[type] === 'undefined') {
+            this.counts[type] = 0;
+        }
+
+        this.counts[type]++;
+
+        // write event
+        this.write(0, 'count_' + type, '{0} [{1}] Count: {2} - {3}'.format(
+            this.getTimestamp(),
+            type,
+            this.counts[type],
+            text
+        ));
     }
 
     //

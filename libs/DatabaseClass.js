@@ -39,6 +39,7 @@ class DatabaseClass
     {
         var randomId = functions.randomNumber(0, 99999);
         global.ANALYTICS.record('database', 'Starting SQL Query: '+ randomId + ' --- '+ sql);
+        global.ANALYTICS.count('database', sql);
 
         // if persistent disabled, don't do anything
         if (!config.persistent) {
