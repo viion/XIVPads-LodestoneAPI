@@ -10,23 +10,26 @@ class autoAddCharactersClass
     // Auto Adds Characters, will add them to the
     // database from the "pending" table.
     //
-    init()
+    init(range)
     {
         if (config.settings.autoAddCharacters.enabled) {
-            log.echo('- Starting Task: Auto-Add Characters - Time: {time:cyan}', {
-                time: config.settings.autoAddCharacters.cronTime,
+            var start = range * config.settings.autoUpdateAchievements.limitPerCycle;
+            log.echo('Starting Task: Auto-Update Achievements - Time: {time:cyan} - Range: {start:yellow} ({limit:yellow})', {
+                time: config.settings.autoUpdateAchievements.cronTime,
+                limit: config.settings.autoUpdateAchievements.limitPerCycle,
+                start: start,
             });
 
             // start cronjob
             new cron({
                 cronTime: config.settings.autoAddCharacters.cronTime,
                 onTick: () => {
-                    log.echo('-- Auto-Add {limit:cyan} characters.', {
+                    log.echo('- Auto-Add {limit:cyan} characters.', {
                         limit: config.settings.autoAddCharacters.limitPerCycle,
                     });
 
                     // get the last pending character
-                    app.Character.getLastPending((data) => {
+                    app.Character.getLastPending(start, (data) => {
                         if (data.rows.length == 0) {
                             return log.echo('-- {error:red}', { error: 'No entries.' });
                         }
@@ -56,7 +59,8 @@ class autoAddCharactersClass
                 timeZone: config.settings.cronTimeZones,
             }).start();
         } else {
-            log.echo('{task:red}', {
+            log.echo('{range:yellow} {task:red}', {
+                range: range,
                 task: 'Auto-Add Task Disabled',
             });
         }

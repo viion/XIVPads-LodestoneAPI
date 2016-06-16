@@ -1,10 +1,10 @@
 require('app-module-path/register');
 global.TIMESTAMP = 0;
-global.ANALYTICS = require('libs/Analytics');
-global.ANALYTICS.reset();
+global.ANALYTICS = require('libs/Analytics').reset('schedule');
 
 // node modules
 var setup = require('setup'),
+    config = require('config'),
     log = require('libs/LoggingObject');
 
 // Title
@@ -15,24 +15,33 @@ log.title('{msg:purple}', {
 // ------------------------------------------------
 // Activate Tasks
 // ------------------------------------------------
-
 setup.init(() => {
-
     global.ANALYTICS.record('setup', 'Complete');
 
-    // Auto add characters
-    require('tasks/autoAddCharacters').init();
+    // Modules
+    var autoAddCharacters = require('tasks/autoAddCharacters'),
+        autoUpdateCharacters = require('tasks/autoUpdateCharacters'),
+        autoUpdateAchievements = require('tasks/autoUpdateAchievements');
 
-    /*
+    // Auto add characters
+    if (config.settings.autoAddCharacters.enabled) {
+        for (var i = 0; i < config.settings.autoAddCharacters.spawn; i++) {
+            autoAddCharacters.init(i);
+        }
+    }
+
+
     // Auto update characters
-    require('tasks/autoUpdateCharacters').init(0);
-    require('tasks/autoUpdateCharacters').init(1);
-    require('tasks/autoUpdateCharacters').init(2);
-    require('tasks/autoUpdateCharacters').init(3);
-    require('tasks/autoUpdateCharacters').init(4);
+    if (config.settings.autoAddCharacters.enabled) {
+        for (var i = 0; i < config.settings.autoAddCharacters.spawn; i++) {
+            autoUpdateCharacters.init(i);
+        }
+    }
 
     // Auto update achievements
-    require('./tasks/autoUpdateAchievements').init(0);
-    require('./tasks/autoUpdateAchievements').init(1);
-    */
+    if (config.settings.autoAddCharacters.enabled) {
+        for (var i = 0; i < config.settings.autoAddCharacters.spawn; i++) {
+            autoUpdateAchievements.init(i);
+        }
+    }
 });

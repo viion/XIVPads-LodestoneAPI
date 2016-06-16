@@ -22,6 +22,7 @@ class Analytics
 {
     constructor()
     {
+        this.prefix = null;
         this.counts = {};
     }
 
@@ -86,18 +87,20 @@ class Analytics
     //
     write(id, filename, text)
     {
-        text = id + ' | '+ text + "\n";
-        filename = 'analytics/'+ filename + '.txt';
-
-        fs.appendFile(filename, text);
+        text = "[{0}][{1}] -- {2}\n".format(this.prefix, id, text);
+        fs.appendFile('analytics/'+ filename + '.txt', text);
     }
 
 
     //
     // Reset (wipes files)
     //
-    reset()
+    reset(prefix)
     {
+        // set prefix
+        this.prefix = prefix;
+
+        // empty files
         fs.readdir('analytics/', (err, files) => {
             if (err) return;
 
@@ -105,6 +108,8 @@ class Analytics
                 fs.writeFile('analytics/' + filename, '');
             });
         });
+
+        return this;
     }
 
     //

@@ -79,7 +79,10 @@ var config =
             cronTime: '*/60 * * * * *',
 
             // The number of characters to auto add per cron cycle
-            limitPerCycle: 1
+            limitPerCycle: 1,
+
+            // The number of processes to spawn
+            spawn: 3,
         },
 
         // Auto update characters
@@ -92,6 +95,9 @@ var config =
 
             // The number of characters to auto update per cron cycle
             limitPerCycle: 1,
+
+            // The number of processes to spawn
+            spawn: 3,
 
             // Minimum amount of exp to generate an event, we want this kind of
             // high so that we do not generate lots of "little" events, in XIV
@@ -130,6 +136,9 @@ var config =
 
             // The number of characters to auto add per cron cycle
             limitPerCycle: 1,
+
+            // The number of processes to spawn
+            spawn: 3,
 
             // Should achievements be tally'd up?
             enableTallyPoints: true,

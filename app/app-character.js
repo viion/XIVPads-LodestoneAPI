@@ -100,7 +100,7 @@ class AppCharacterClass
     //
     // Get the last pending characters
     //
-    getLastPending(callback)
+    getLastPending(start, callback)
     {
         database.QueryBuilder
             .select()
@@ -108,7 +108,7 @@ class AppCharacterClass
             .from('pending_characters')
             .where(['lodestone_id != 0', 'processed IS NULL', 'deleted = 0'])
             .order('added', 'asc')
-            .limit(0,config.settings.autoAddCharacters.limitPerCycle);
+            .limit((start) ? start : 0,config.settings.autoAddCharacters.limitPerCycle)
 
         database.sql(database.QueryBuilder.get(), [], callback);
         return this;
@@ -124,7 +124,7 @@ class AppCharacterClass
             .columns('*')
             .from('characters')
             .order('last_updated', 'asc')
-            .limit(start, config.settings.autoAddCharacters.limitPerCycle);
+            .limit((start) ? start : 0, config.settings.autoAddCharacters.limitPerCycle);
 
         database.sql(database.QueryBuilder.get(), [], callback);
         return this;

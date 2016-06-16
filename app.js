@@ -1,7 +1,6 @@
 require('app-module-path/register');
 global.TIMESTAMP = 0;
-global.ANALYTICS = require('libs/Analytics');
-global.ANALYTICS.reset();
+global.ANALYTICS = require('libs/Analytics').reset('app');
 
 //
 // These are paths which are

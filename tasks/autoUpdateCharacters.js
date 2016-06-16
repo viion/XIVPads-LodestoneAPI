@@ -21,7 +21,7 @@ class autoUpdateCharactersClass
     {
         if (config.settings.autoUpdateCharacters.enabled) {
             var start = range * config.settings.autoUpdateCharacters.limitPerCycle;
-            log.echo('- Starting Task: Auto-Update Characters - Time: {time:cyan} - Range: {start:yellow} ({limit:yellow})', {
+            log.echo('Starting Task: Auto-Update Characters - Time: {time:cyan} - Range: {start:yellow} ({limit:yellow})', {
                 time: config.settings.autoUpdateCharacters.cronTime,
                 limit: config.settings.autoUpdateCharacters.limitPerCycle,
                 start: start,
@@ -31,7 +31,7 @@ class autoUpdateCharactersClass
             new cron({
                 cronTime: config.settings.autoUpdateCharacters.cronTime,
                 onTick: () => {
-                    log.echo('-- Auto-Update {limit:cyan} characters.', {
+                    log.echo('- Auto-Update {limit:cyan} characters.', {
                         limit: config.settings.autoUpdateCharacters.limitPerCycle,
                     });
 
@@ -114,7 +114,8 @@ class autoUpdateCharactersClass
                 timeZone: config.settings.cronTimeZones,
             }).start();
         } else {
-            log.echo('{task:red}', {
+            log.echo('{range:yellow} {task:red}', {
+                range: range,
                 task: 'Auto-Update Task Disabled',
             });
         }

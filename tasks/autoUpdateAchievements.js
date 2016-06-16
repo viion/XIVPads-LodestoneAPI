@@ -15,7 +15,7 @@ class autoUpdateAchievements
     {
         if (config.settings.autoUpdateAchievements.enabled) {
             var start = range * config.settings.autoUpdateAchievements.limitPerCycle;
-            log.echo('- Starting Task: Auto-Update Achievements - Time: {time:cyan} - Range: {start:yellow} ({limit:yellow})', {
+            log.echo('Starting Task: Auto-Update Achievements - Time: {time:cyan} - Range: {start:yellow} ({limit:yellow})', {
                 time: config.settings.autoUpdateAchievements.cronTime,
                 limit: config.settings.autoUpdateAchievements.limitPerCycle,
                 start: start,
@@ -25,7 +25,7 @@ class autoUpdateAchievements
             new cron({
                 cronTime: config.settings.autoUpdateAchievements.cronTime,
                 onTick: () => {
-                    log.echo('-- Auto-Add {limit:cyan} characters.', {
+                    log.echo('- Auto-Add {limit:cyan} characters.', {
                         limit: config.settings.autoUpdateAchievements.limitPerCycle,
                     });
 
@@ -64,7 +64,8 @@ class autoUpdateAchievements
                 timeZone: config.settings.cronTimeZones,
             }).start();
         } else {
-            log.echo('{task:red}', {
+            log.echo('{range:yellow} {task:red}', {
+                range: range,
                 task: 'Auto-Add Task Disabled',
             });
         }
