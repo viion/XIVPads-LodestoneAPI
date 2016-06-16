@@ -376,9 +376,21 @@ var api = {
         });
     },
 
-    getFreecompanyMembers: function(reply, options) {
+    getFreecompanyMembers: function(reply, options, callback) {
         api.get(apiFreecompany.getUrl('members', options.id, options.page), function($) {
-            reply(apiFreecompany.getMembers($, options));
+            // get members
+            var data = apiFreecompany.getMembers($, options);
+
+            // always send of reply first so the user
+            // gets their response asap.
+            if (reply) {
+                reply(data);
+            }
+
+            // run any callbacks
+            if (callback) {
+                callback(data);
+            }
         });
     },
 

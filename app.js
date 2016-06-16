@@ -1,5 +1,7 @@
 require('app-module-path/register');
 global.TIMESTAMP = 0;
+global.ANALYTICS = require('libs/Analytics');
+global.ANALYTICS.reset();
 
 //
 // These are paths which are
@@ -409,6 +411,14 @@ server.route({
         api.getFreecompanyMembers(reply, {
             id: request.params.id,
             page: page
+        }, (data) => {
+            // build ID list
+            var idList = [];
+            for(var i in data.results) {
+                idList.push([data.results[i].id]);
+            }
+
+            app.Character.addToPending(idList);
         });
 
     }
