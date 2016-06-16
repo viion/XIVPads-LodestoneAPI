@@ -13,10 +13,10 @@ class autoAddCharactersClass
     init(range)
     {
         if (config.settings.autoAddCharacters.enabled) {
-            var start = range * config.settings.autoUpdateAchievements.limitPerCycle;
+            var start = range * config.settings.autoAddCharacters.limitPerCycle;
             log.echo('Starting Task: Auto-Update Achievements - Time: {time:cyan} - Range: {start:yellow} ({limit:yellow})', {
-                time: config.settings.autoUpdateAchievements.cronTime,
-                limit: config.settings.autoUpdateAchievements.limitPerCycle,
+                time: config.settings.autoAddCharacters.cronTime,
+                limit: config.settings.autoAddCharacters.limitPerCycle,
                 start: start,
             });
 
