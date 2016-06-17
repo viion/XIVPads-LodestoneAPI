@@ -88,7 +88,7 @@ class Analytics
     write(id, filename, text)
     {
         text = "[{0}][{1}] -- {2}\n".format(this.prefix, id, text);
-        fs.appendFile('analytics/'+ global.SPAWN + filename + '.txt', text);
+        fs.appendFile('analytics/'+ global.SPAWN ? global.SPAWN : 'api_' + filename + '.txt', text);
     }
 
 
