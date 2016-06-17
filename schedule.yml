@@ -2,18 +2,60 @@ apps:
     - script: schedule.js
       instances: 1
       exec_mode: fork
+      name: 'Schedule 0'
+      args:
+        - '0'
+    - script: schedule.js
+      instances: 1
+      exec_mode: fork
       name: 'Schedule 1'
       args:
-        - "1"
+        - '1'
     - script: schedule.js
       instances: 1
       exec_mode: fork
       name: 'Schedule 2'
       args:
-        - "2"
+        - '2'
     - script: schedule.js
       instances: 1
       exec_mode: fork
       name: 'Schedule 3'
       args:
-        - "3"
+        - '3'
+    - script: schedule.js
+      instances: 1
+      exec_mode: fork
+      name: 'Schedule 4'
+      args:
+        - '4'
+    - script: schedule.js
+      instances: 1
+      exec_mode: fork
+      name: 'Schedule 5'
+      args:
+        - '5'
+    - script: schedule.js
+      instances: 1
+      exec_mode: fork
+      name: 'Schedule 6'
+      args:
+        - '6'
+    - script: schedule.js
+      instances: 1
+      exec_mode: fork
+      name: 'Schedule 7'
+      args:
+        - '7'
+    - script: schedule.js
+      instances: 1
+      exec_mode: fork
+      name: 'Schedule 8'
+      args:
+        - '8'
+    - script: schedule.js
+      instances: 1
+      exec_mode: fork
+      name: 'Schedule 9'
+      args:
+        - '9'
