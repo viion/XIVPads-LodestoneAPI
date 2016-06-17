@@ -5,12 +5,20 @@ global.ANALYTICS = require('libs/Analytics').reset('schedule');
 // node modules
 var setup = require('setup'),
     config = require('config'),
-    log = require('libs/LoggingObject');
+
+    // libs
+    log = require('libs/LoggingObject'),
+
+    // params
+    args = process.argv.slice(2),
+    spawnProcess = parseInt(args[0]);
+
+global.ANALYTICS.setSpawnProcess(spawnProcess);
+
 
 // Title
-log.title('{msg:purple}', {
-    msg: 'XIVSync Cronjob'
-});
+log.title('{msg:purple}', { msg: 'XIVSync Cronjob' });
+log.echo('Spawn Process: {spawn:yellow}', { spawn: spawnProcess });
 
 // ------------------------------------------------
 // Activate Tasks
@@ -24,24 +32,7 @@ setup.init(() => {
         autoUpdateAchievements = require('tasks/autoUpdateAchievements');
 
     // Auto add characters
-    if (config.settings.autoAddCharacters.enabled) {
-        for (var i = 0; i < config.settings.autoAddCharacters.spawn; i++) {
-            autoAddCharacters.init(i);
-        }
-    }
-
-
-    // Auto update characters
-    if (config.settings.autoAddCharacters.enabled) {
-        for (var i = 0; i < config.settings.autoAddCharacters.spawn; i++) {
-            autoUpdateCharacters.init(i);
-        }
-    }
-
-    // Auto update achievements
-    if (config.settings.autoAddCharacters.enabled) {
-        for (var i = 0; i < config.settings.autoAddCharacters.spawn; i++) {
-            autoUpdateAchievements.init(i);
-        }
-    }
+    autoAddCharacters.init(spawnProcess);
+    autoUpdateCharacters.init(spawnProcess);
+    autoUpdateAchievements.init(spawnProcess);
 });

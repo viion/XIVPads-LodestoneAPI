@@ -23,7 +23,13 @@ class Analytics
     constructor()
     {
         this.prefix = null;
+        this.spawnProcess = 1;
         this.counts = {};
+    }
+
+    setSpawnProcess(num)
+    {
+        this.setSpawnProcess = num;
     }
 
     //
@@ -88,7 +94,7 @@ class Analytics
     write(id, filename, text)
     {
         text = "[{0}][{1}] -- {2}\n".format(this.prefix, id, text);
-        fs.appendFile('analytics/'+ filename + '.txt', text);
+        fs.appendFile('analytics/'+ this.spawnProcess + filename + '.txt', text);
     }
 
 
