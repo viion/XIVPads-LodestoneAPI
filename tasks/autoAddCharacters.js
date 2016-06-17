@@ -1,4 +1,5 @@
 var cron = require('cron').CronJob,
+    async = require("async"),
     moment = require('moment'),
     config = require('../config'),
     log = require('../libs/LoggingObject'),
@@ -34,24 +35,28 @@ class autoAddCharactersClass
                             return log.echo('-- {error:red}', { error: 'No entries.' });
                         }
 
-                        for (const [i, row] of data.rows.entries()) {
+                        // Create an async map to handle multiple actions at once
+                        async.map(data.rows, (row, callback) => {
+                            // get character from lodestone
                             global.ANALYTICS.record('cronjob', 'Add ID: '+ row.lodestone_id);
-
-                            // parse the character on lodestone
                             app.Character.getFromLodestone(row.lodestone_id, (data) => {
-                                // if achievements not public, set status and continue
-                                if (!data) {
-                                    return app.Character.setDeleted(row.lodestone_id);
-                                }
-
-                                // add the character to the site
-                                app.Character.addCharacter(data, (data) => {
-                                    global.ANALYTICS.record('cronjob', 'Add ID Completed: '+ row.lodestone_id);
-                                    log.echo('-- {note:green}', { note: 'Character added successfully.' });
-                                    log.space();
-                                });
+                                callback(row.lodestone_id, data);
                             });
-                        }
+                        },
+                        (lodestoneId, data) => {
+                            // if no data, set character as deleted.
+                            if (!data) {
+                                return app.Character.setDeleted(lodestoneId);
+                            }
+
+                            // add the character to the site
+                            app.Character.addCharacter(data, (data) => {
+                                global.ANALYTICS.record('cronjob', 'Add ID Completed: '+ lodestoneId);
+                                log.echo('-- {note:green}', { note: 'Character added successfully.' });
+                                log.space();
+                            });
+                        });
+
                     });
                 },
                 start: config.settings.cronStart,

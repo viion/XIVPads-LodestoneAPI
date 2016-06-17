@@ -3,6 +3,7 @@ var cheerio = require('cheerio'),
     config = require('../config'),
     functions = require('../libs/functions'),
     log = require('../libs/LoggingObject'),
+    request = require('request'),
 
     apiCharacters = require('./api-characters'),
     apiAchievements = require('./api-achievements'),
@@ -15,6 +16,12 @@ var cheerio = require('cheerio'),
     apiDatabaseItems = require('./api-database-items'),
     apiDatabaseRecipes = require('./api-database-recipes'),
     apiDatabaseDuty = require('./api-database-duty');
+
+var apiAgent = new http.Agent({
+        keepAlive: false,
+        maxSockets: 1000,
+        maxFreeSockets: 250,
+    });
 
 // - - - - - - - - - - - - - - - - - - - -
 // Lodestone API
@@ -51,7 +58,7 @@ var api = {
             host: host,
             port: 80,
             path: urlPath,
-            agent: config.agentPooling,
+            agent: apiAgent,
         }
 
         // get
@@ -67,6 +74,33 @@ var api = {
 
         global.ANALYTICS.record('api', 'New HTTP Request: '+ urlPath);
 
+        request(('http://' + options.host + options.path), function (error, response, body) {
+            if (!error && response.statusCode == 200) {
+                // end time
+                var end = +new Date(),
+                    duration = (end - parseInt(start)),
+                    memoryFinish = functions.memory();
+
+                global.ANALYTICS.record('api', 'HTTP Request Completed, Duration: '+ duration + 'ms - ' + urlPath);
+                global.ANALYTICS.count('api', urlPath);
+
+                log.echo('{arrows:green} {path:yellow} - Duration: {duration:cyan} ms | Memory: {start:cyan} to {finish:cyan}', {
+                    arrows: '>>',
+                    path: options.path,
+                    duration: duration.toString(),
+                    start: functions.memoryToHuman(memoryStart),
+                    finish: functions.memoryToHuman(memoryFinish),
+                });
+                log.space();
+
+                // callback with a cheerio assigned html
+                callback(cheerio.load(body));
+            } else {
+                console.log(error);
+            }
+        })
+
+        /*
         // request
         http.get(options, function(res) {
             res.on('data', function(data) {
@@ -94,6 +128,7 @@ var api = {
                 callback(cheerio.load(html));
             });
         });
+        */
     },
 
     //

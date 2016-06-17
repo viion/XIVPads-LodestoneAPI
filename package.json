@@ -4,6 +4,7 @@
   "description": "XIVSync",
   "dependencies": {
     "app-module-path": "^1.1.0",
+    "async": "^2.0.0-rc.6",
     "cheerio": "^0.19.0",
     "cron": "^1.1.0",
     "follow-redirects": "0.0.7",
@@ -14,6 +15,7 @@
     "mysql": "^2.10.2",
     "os-utils": "0.0.14",
     "redis": "^2.6.1",
+    "request": "^2.72.0",
     "sugar": "^1.4.1",
     "vision": "^3.0.0"
   }
