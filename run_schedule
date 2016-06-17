@@ -1,0 +1,34 @@
+#!/bin/bash
+#
+#   This Script:
+#   - Starts chat server
+#
+################################
+
+# Start
+PROJECT="XIVSync Schedule"
+
+# Display vars
+line="--------------------------------------------------"
+nl="\n${line}\n"
+printf "${nl} ${PROJECT} ${nl}"
+
+echo ">> Stop all"
+pm2 stop all
+
+echo ">> Delete"
+pm2 delete all
+
+sleep 1
+
+echo ">> Starting: ${PROJECT}"
+pm2 start schedule.js -i max --name="Schedule 0" -- 0
+pm2 start schedule.js -i max --name="Schedule 1" -- 1
+pm2 start schedule.js -i max --name="Schedule 2" -- 2
+#pm2 start schedule.js -i max --name="Schedule 3" -- 3
+#pm2 start schedule.js -i max --name="Schedule 4" -- 4
+#pm2 start schedule.js -i max --name="Schedule 5" -- 5
+#pm2 start schedule.js -i max --name="Schedule 6" -- 6
+#pm2 start schedule.js -i max --name="Schedule 7" -- 7
+#pm2 start schedule.js -i max --name="Schedule 8" -- 8
+#pm2 start schedule.js -i max --name="Schedule 9" -- 9

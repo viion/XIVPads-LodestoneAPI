@@ -1,0 +1,19 @@
+apps:
+    - script: schedule.js
+      instances: 1
+      exec_mode: fork
+      name: 'Schedule 1'
+      args:
+        - "1"
+    - script: schedule.js
+      instances: 1
+      exec_mode: fork
+      name: 'Schedule 2'
+      args:
+        - "2"
+    - script: schedule.js
+      instances: 1
+      exec_mode: fork
+      name: 'Schedule 3'
+      args:
+        - "3"

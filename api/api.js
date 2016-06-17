@@ -53,14 +53,6 @@ var api = {
             urlPath = urlPath + '#' + Date.now();
         }
 
-        // options
-        var options = {
-            host: host,
-            port: 80,
-            path: urlPath,
-            agent: apiAgent,
-        }
-
         // get
         var html = '',
             start = +new Date(),
@@ -69,12 +61,12 @@ var api = {
         log.echo('{method:green}: [{language:cyan}] --> {url:cyan}', {
             method: 'GET',
             language: api.language,
-            url: (options.host + options.path),
+            url: urlPath,
         });
 
         global.ANALYTICS.record('api', 'New HTTP Request: '+ urlPath);
 
-        request(('http://' + options.host + options.path), function (error, response, body) {
+        request(('http://' + host + urlPath), function (error, response, body) {
             if (!error && response.statusCode == 200) {
                 // end time
                 var end = +new Date(),
@@ -86,49 +78,20 @@ var api = {
 
                 log.echo('{arrows:green} {path:yellow} - Duration: {duration:cyan} ms | Memory: {start:cyan} to {finish:cyan}', {
                     arrows: '>>',
-                    path: options.path,
+                    path: urlPath,
                     duration: duration.toString(),
                     start: functions.memoryToHuman(memoryStart),
                     finish: functions.memoryToHuman(memoryFinish),
                 });
-                log.space();
 
                 // callback with a cheerio assigned html
                 callback(cheerio.load(body));
             } else {
-                console.log(error);
-            }
-        })
-
-        /*
-        // request
-        http.get(options, function(res) {
-            res.on('data', function(data) {
-                html += data;
-            })
-            .on('end', function() {
-                // end time
-                var end = +new Date(),
-                    duration = (end - parseInt(start)),
-                    memoryFinish = functions.memory();
-
-                global.ANALYTICS.record('api', 'HTTP Request Completed, Duration: '+ duration + 'ms - ' + urlPath);
-                global.ANALYTICS.count('api', urlPath);
-
-                log.echo('{arrows:green} {path:yellow} - Duration: {duration:cyan} ms | Memory: {start:cyan} to {finish:cyan}', {
-                    arrows: '>>',
-                    path: options.path,
-                    duration: duration.toString(),
-                    start: functions.memoryToHuman(memoryStart),
-                    finish: functions.memoryToHuman(memoryFinish),
+                log.echo('{error:red}', {
+                    error: error,
                 });
-                log.space();
-
-                // callback with a cheerio assigned html
-                callback(cheerio.load(html));
-            });
+            }
         });
-        */
     },
 
     //

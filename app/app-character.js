@@ -49,8 +49,6 @@ class AppCharacterClass
     //
     addCharacter(data, callback, isUpdate)
     {
-        global.ANALYTICS.record('character', 'Add Character '+ data.name);
-
         var insertColumns = ['last_updated', 'lodestone_id', 'name', 'server', 'avatar', 'portrait', 'data'],
             insertData = [moment().format('YYYY-MM-DD HH:mm:ss'), '?', '?', '?', '?', '?', '?'];
 
