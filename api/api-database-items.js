@@ -83,8 +83,6 @@ var apiDatabaseItems =
             sell_hq: sale[5] ? parseInt(sale[5].replace(/,/g, ''), 10) : false,
         }
 
-        console.log(data);
-
         // related duties
         var $footers = $('.db__l_main');
         $footers.each(function() {
@@ -135,8 +133,6 @@ var apiDatabaseItems =
 
                     var id = $name.attr('href').split('/'),
                         id = functions.clean(id, '')[4];
-
-                    console.log($row2.text().trim());
 
                     data.craftinglog.push({
                         id: id,

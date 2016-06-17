@@ -87,8 +87,9 @@ class Analytics
     //
     write(id, filename, text)
     {
+        var prefix = (global.SPAWN ? global.SPAWN : 'api_');
         text = "[{0}][{1}] -- {2}\n".format(this.prefix, id, text);
-        fs.appendFile('analytics/'+ global.SPAWN ? global.SPAWN : 'api_' + filename + '.txt', text);
+        fs.appendFile('analytics/'+ prefix + filename + '.txt', text);
     }
 
 
