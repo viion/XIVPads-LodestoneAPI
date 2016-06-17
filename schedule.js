@@ -15,10 +15,17 @@ var setup = require('setup'),
 
 global.ANALYTICS.setSpawnProcess(spawnProcess);
 
-
 // Title
 log.title('{msg:purple}', { msg: 'XIVSync Cronjob' });
 log.echo('Spawn Process: {spawn:yellow}', { spawn: spawnProcess });
+
+// check spawn process
+if (isNaN(spawnProcess)) {
+    log.echo('{error:red}', {
+        error: 'Please provide a spawn process, eg: "node schedule.js 3"'
+    });
+    process.exit();
+}
 
 // ------------------------------------------------
 // Activate Tasks
