@@ -1,7 +1,7 @@
 apps:
     - script: schedule.js
       instances: 1
-      exec_mode: fork
+      exec_mode: cluster
       error_file: '/dev/null'
       out_file: '/dev/null'
       name: 'Schedule 0'
@@ -9,7 +9,7 @@ apps:
         - '0'
     - script: schedule.js
       instances: 1
-      exec_mode: fork
+      exec_mode: cluster
       error_file: '/dev/null'
       out_file: '/dev/null'
       name: 'Schedule 1'
@@ -17,7 +17,7 @@ apps:
         - '1'
     - script: schedule.js
       instances: 1
-      exec_mode: fork
+      exec_mode: cluster
       error_file: '/dev/null'
       out_file: '/dev/null'
       name: 'Schedule 2'
@@ -25,7 +25,7 @@ apps:
         - '2'
     - script: schedule.js
       instances: 1
-      exec_mode: fork
+      exec_mode: cluster
       error_file: '/dev/null'
       out_file: '/dev/null'
       name: 'Schedule 3'
@@ -33,7 +33,7 @@ apps:
         - '3'
     - script: schedule.js
       instances: 1
-      exec_mode: fork
+      exec_mode: cluster
       error_file: '/dev/null'
       out_file: '/dev/null'
       name: 'Schedule 4'
@@ -41,7 +41,7 @@ apps:
         - '4'
     - script: schedule.js
       instances: 1
-      exec_mode: fork
+      exec_mode: cluster
       error_file: '/dev/null'
       out_file: '/dev/null'
       name: 'Schedule 5'
@@ -49,7 +49,7 @@ apps:
         - '5'
     - script: schedule.js
       instances: 1
-      exec_mode: fork
+      exec_mode: cluster
       error_file: '/dev/null'
       out_file: '/dev/null'
       name: 'Schedule 6'
@@ -57,7 +57,7 @@ apps:
         - '6'
     - script: schedule.js
       instances: 1
-      exec_mode: fork
+      exec_mode: cluster
       error_file: '/dev/null'
       out_file: '/dev/null'
       name: 'Schedule 7'
@@ -65,7 +65,7 @@ apps:
         - '7'
     - script: schedule.js
       instances: 1
-      exec_mode: fork
+      exec_mode: cluster
       error_file: '/dev/null'
       out_file: '/dev/null'
       name: 'Schedule 8'
@@ -73,7 +73,7 @@ apps:
         - '8'
     - script: schedule.js
       instances: 1
-      exec_mode: fork
+      exec_mode: cluster
       error_file: '/dev/null'
       out_file: '/dev/null'
       name: 'Schedule 9'
