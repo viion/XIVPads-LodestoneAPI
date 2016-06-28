@@ -99,7 +99,7 @@ var log =
             diffVisual = log.colors.yellow + diffVisual + log.formatting.reset;
 
         // print timestamp
-        console.log('    [%s]  %s%s    %s', global.SPAWN, date, diffVisual, string);
+        console.log('    [%s]  %s%s    %s', global.SPAWN ? global.SPAWN : 'core', date, diffVisual, string);
 
         // update global timestamp
         global.TIMESTAMP = moment().format('x');

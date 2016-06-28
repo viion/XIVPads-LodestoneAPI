@@ -40,12 +40,16 @@ class AppCharacterTrackingClass
     track(type, depth, field)
     {
         if (!config.settings.autoUpdateCharacters.enableProfileTracking) {
-            return;
+            return false;
         }
 
         // get old and new values
         var oldValue = (depth && field) ? this.View.oldData[depth][field] : this.View.oldData[type],
             newValue = (depth && field) ? this.View.newData[depth][field] : this.View.newData[type];
+
+        if (!oldValue || !newValue) {
+            return false;
+        }
 
         // ensure length otherwise could be an issue with lodestone
         if (oldValue.length < 2 || newValue.length < 2) {

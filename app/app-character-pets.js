@@ -59,7 +59,7 @@ class AppCharacterPetsClass
         }
 
         // if we have data
-        if (insertData) {
+        if (insertData && insertData.length > 1) {
             database.QueryBuilder
                 .insert('characters_minions')
                 .insertColumns(['lodestone_id', 'minion_id', 'other'])
@@ -99,7 +99,7 @@ class AppCharacterPetsClass
         }
 
         // if we have data
-        if (insertData) {
+        if (insertData && insertData.length > 1) {
             database.QueryBuilder
                 .insert('characters_mounts')
                 .insertColumns(['lodestone_id', 'mount_id', 'other'])

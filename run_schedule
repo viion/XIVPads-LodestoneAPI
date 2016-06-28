@@ -22,4 +22,6 @@ pm2 delete all
 sleep 1
 
 echo ">> Starting: ${PROJECT}"
-pm2 start schedule.yml
+pm2 start tasks/autoAddCharacters.yml
+pm2 start tasks/autoUpdateAchievements.yml
+pm2 start tasks/autoUpdateCharacters.yml

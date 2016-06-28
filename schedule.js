@@ -1,6 +1,7 @@
 require('app-module-path/register');
 global.TIMESTAMP = 0;
 global.SPAWN = parseInt(process.argv[2]);
+global.ACTION = parseInt(process.argv[2]);
 global.ANALYTICS = require('libs/Analytics').reset('schedule');
 
 // node modules
@@ -30,7 +31,17 @@ setup.init(() => {
         autoUpdateAchievements = require('tasks/autoUpdateAchievements');
 
     // Auto add characters
-    autoAddCharacters.init(global.SPAWN);
-    autoUpdateCharacters.init(global.SPAWN);
-    autoUpdateAchievements.init(global.SPAWN);
+    if (global.ACTIONS == 'autoAddCharacters') {
+        autoAddCharacters.init(global.SPAWN);
+    }
+
+    // Auto update characters
+    if (global.ACTIONS == 'autoUpdateCharacters') {
+        autoUpdateCharacters.init(global.SPAWN);
+    }
+
+    // Auto update achievements
+    if (global.ACTIONS == 'autoUpdateAchievements') {
+        autoUpdateAchievements.init(global.SPAWN);
+    }
 });

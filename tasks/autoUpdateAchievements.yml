@@ -1,0 +1,15 @@
+apps:
+    - script: schedule.js
+      instances: 1
+      exec_mode: fork
+      name: 'autoUpdateAchievements 0'
+      args:
+        - '0'
+        - 'autoUpdateAchievements'
+    - script: schedule.js
+      instances: 1
+      exec_mode: fork
+      name: 'autoUpdateAchievements 1'
+      args:
+        - '1'
+        - 'autoUpdateAchievements'

@@ -60,7 +60,7 @@ class QueryBuilderClass
     //
     insertColumns(columns)
     {
-        this.parts.push('(' + columns.join(',') + ')');
+        this.parts.push('(`' + columns.join('`,`') + '`)');
         return this;
     }
 
@@ -218,7 +218,7 @@ class QueryBuilderClass
         var dupe = [];
         for(var i in columns) {
             var col = columns[i];
-            dupe.push(`${col}=VALUES(${col})`);
+            dupe.push('`'+ col +'`=VALUES(`'+ col +'`)');
         }
 
         this.parts.push('ON DUPLICATE KEY UPDATE ' + dupe.join(','));

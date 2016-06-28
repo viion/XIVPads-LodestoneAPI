@@ -1,0 +1,8 @@
+apps:
+    - script: schedule.js
+      instances: 1
+      exec_mode: fork
+      name: 'autoAddCharacters 0'
+      args:
+        - '0'
+        - 'autoAddCharacters'

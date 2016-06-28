@@ -42,6 +42,10 @@ class AppCharacterGrandCompanyClass
     //
     trackGrandCompanies()
     {
+        if (!this.View.newData.grand_company.name) {
+            return;
+        }
+
         var insertColumns = ['lodestone_id', 'name', 'rank', 'icon'],
             insertData = [
                 this.View.lodestoneId,

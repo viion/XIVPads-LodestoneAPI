@@ -89,8 +89,9 @@ var apiCharacters =
         // active class name
         var activeClassName = $box.find('.db-tooltip__item__category').text(),
             activeClassName = activeClassName.split("'")[0],
-            activeClassName = activeClassName.replace('Two-Handed', ''),
-            activeClassName = activeClassName.replace('One--Handed', '');
+            activeClassName = activeClassName.replace('Two-handed', ''),
+            activeClassName = activeClassName.replace('One-handed', '');
+            activeClassName = activeClassName.trim();
 
         // data
         var data =

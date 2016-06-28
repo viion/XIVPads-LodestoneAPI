@@ -124,7 +124,7 @@ class AppCharacterClass
             .columns('*')
             .from('characters')
             .order('last_updated', 'asc')
-            .limit((start) ? start : 0, config.settings.autoAddCharacters.limitPerCycle);
+            .limit((start) ? start : 0, config.settings.autoUpdateCharacters.limitPerCycle);
 
         database.sql(database.QueryBuilder.get(), [], callback);
         return this;

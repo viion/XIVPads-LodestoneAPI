@@ -2,60 +2,71 @@ apps:
     - script: schedule.js
       instances: 1
       exec_mode: fork
-      name: 'Schedule 0'
+      name: 'autoUpdateCharacters 0'
       args:
         - '0'
+        - 'autoUpdateCharacters'
+        - 'autoUpdateCharacters'
     - script: schedule.js
       instances: 1
       exec_mode: fork
-      name: 'Schedule 1'
+      name: 'autoUpdateCharacters 1'
       args:
         - '1'
+        - 'autoUpdateCharacters'
     - script: schedule.js
       instances: 1
       exec_mode: fork
-      name: 'Schedule 2'
+      name: 'autoUpdateCharacters 2'
       args:
         - '2'
+        - 'autoUpdateCharacters'
     - script: schedule.js
       instances: 1
       exec_mode: fork
-      name: 'Schedule 3'
+      name: 'autoUpdateCharacters 3'
       args:
         - '3'
+        - 'autoUpdateCharacters'
     - script: schedule.js
       instances: 1
       exec_mode: fork
-      name: 'Schedule 4'
+      name: 'autoUpdateCharacters 4'
       args:
         - '4'
+        - 'autoUpdateCharacters'
     - script: schedule.js
       instances: 1
       exec_mode: fork
-      name: 'Schedule 5'
+      name: 'autoUpdateCharacters 5'
       args:
         - '5'
+        - 'autoUpdateCharacters'
     - script: schedule.js
       instances: 1
       exec_mode: fork
-      name: 'Schedule 6'
+      name: 'autoUpdateCharacters 6'
       args:
         - '6'
+        - 'autoUpdateCharacters'
     - script: schedule.js
       instances: 1
       exec_mode: fork
-      name: 'Schedule 7'
+      name: 'autoUpdateCharacters 7'
       args:
         - '7'
+        - 'autoUpdateCharacters'
     - script: schedule.js
       instances: 1
       exec_mode: fork
-      name: 'Schedule 8'
+      name: 'autoUpdateCharacters 8'
       args:
         - '8'
+        - 'autoUpdateCharacters'
     - script: schedule.js
       instances: 1
       exec_mode: fork
-      name: 'Schedule 9'
+      name: 'autoUpdateCharacters 9'
       args:
         - '9'
+        - 'autoUpdateCharacters'
