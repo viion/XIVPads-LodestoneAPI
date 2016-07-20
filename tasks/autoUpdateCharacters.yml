@@ -6,7 +6,6 @@ apps:
       args:
         - '0'
         - 'autoUpdateCharacters'
-        - 'autoUpdateCharacters'
     - script: schedule.js
       instances: 1
       exec_mode: fork
