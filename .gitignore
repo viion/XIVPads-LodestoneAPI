@@ -11,3 +11,4 @@ redis-stable/
 redis-stable.tar.gz
 analytics/*.txt
 logs/
+.npmrc
