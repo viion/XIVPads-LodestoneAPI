@@ -23,11 +23,11 @@ var config =
         };
     },
 
-    // Where is your xivsync server hosted? (use 0.0.0.0 for vagrant, or localhost for Window/OSX)
+    // Where is your xivsync server hosted? (use 0.0.0.0 for vagrant, or localhost for Window/OSX, or domain.com for production)
     host: '0.0.0.0',
 
     // What port will your server be hosted on?
-    port: 3000,
+    port: 8080,
 
     // (optional) what SSL port will your server use?
     portssl: 3443,
