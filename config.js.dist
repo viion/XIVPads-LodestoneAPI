@@ -36,6 +36,9 @@ var config =
     // Please read the docs "Persistent Tracking" regarding this
     persistent: true,
 
+    // If persistent storage should use zlib
+    zlibStorage: true,
+
     // The number of agent socket connections to keep alive
     agentMaxSockets: 1000,
 
@@ -76,13 +79,10 @@ var config =
             enabled: true,
 
             // The time delay betwen auto adding characters
-            cronTime: '*/60 * * * * *',
+            cronTime: '*/5 * * * * *',
 
             // The number of characters to auto add per cron cycle
             limitPerCycle: 1,
-
-            // The number of processes to spawn
-            spawn: 3,
         },
 
         // Auto update characters
@@ -95,9 +95,6 @@ var config =
 
             // The number of characters to auto update per cron cycle
             limitPerCycle: 1,
-
-            // The number of processes to spawn
-            spawn: 3,
 
             // Minimum amount of exp to generate an event, we want this kind of
             // high so that we do not generate lots of "little" events, in XIV
@@ -136,9 +133,6 @@ var config =
 
             // The number of characters to auto add per cron cycle
             limitPerCycle: 1,
-
-            // The number of processes to spawn
-            spawn: 3,
 
             // Should achievements be tally'd up?
             enableTallyPoints: true,

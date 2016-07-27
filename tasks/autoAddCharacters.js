@@ -14,7 +14,7 @@ class autoAddCharactersClass
     {
         if (config.settings.autoAddCharacters.enabled) {
             var start = range * config.settings.autoAddCharacters.limitPerCycle;
-            log.echo('Starting Task: Auto-Update Achievements - Time: {time:cyan} - Range: {start:yellow} ({limit:yellow})', {
+            log.echo('Starting Task: Auto-Add Character - Time: {time:cyan} - Range: {start:yellow} ({limit:yellow})', {
                 time: config.settings.autoAddCharacters.cronTime,
                 limit: config.settings.autoAddCharacters.limitPerCycle,
                 start: start,
@@ -37,7 +37,7 @@ class autoAddCharactersClass
                         for (const [i, row] of data.rows.entries()) {
                             // parse the character on lodestone
                             app.Character.getFromLodestone(row.lodestone_id, (data) => {
-                                // if achievements not public, set status and continue
+                                // ifcharacter not found, set deleted and move on.
                                 if (!data) {
                                     return app.Character.setDeleted(row.lodestone_id);
                                 }

@@ -1,9 +1,10 @@
 var moment = require('moment'),
-    config = require('config'),
+    config = require('config');
 
     // libs
     log = require('libs/LoggingObject'),
     database = require('libs/DatabaseClass'),
+    storage = require('libs/StorageClass'),
 
     // sync api
     SyncApi = require('api/api');
@@ -59,29 +60,37 @@ class AppCharacterClass
             data.server,
             data.avatar,
             data.portrait,
-            JSON.stringify(data),
         ];
 
-        // insert character
-        database.QueryBuilder
-            .insert('characters')
-            .insertColumns(insertColumns)
-            .insertData([insertData])
-            .duplicate(['lodestone_id', 'name', 'server', 'avatar', 'portrait', 'data']);
+        // stringify json
+        var json = JSON.stringify(data);
 
-        // run query
-        database.sql(database.QueryBuilder.get(), binds, () => {
-            // update characters pending table date
-            // - this is only done if we're not updating a character
-            if (!isUpdate) {
-                database.QueryBuilder
-                    .update('pending_characters')
-                    .set({ processed: moment().format('YYYY-MM-DD HH:mm:ss') })
-                    .where('lodestone_id = ?');
+        // compress data
+        storage.compress(json, (json) => {
+            // add json
+            binds.push(json);
 
-                // run query
-                database.sql(database.QueryBuilder.get(), [ data.id ], callback);
-            }
+            // insert character
+            database.QueryBuilder
+                .insert('characters')
+                .insertColumns(insertColumns)
+                .insertData([insertData])
+                .duplicate(['lodestone_id', 'name', 'server', 'avatar', 'portrait', 'data']);
+
+            // run query
+            database.sql(database.QueryBuilder.get(), binds, () => {
+                // update characters pending table date
+                // - this is only done if we're not updating a character
+                if (!isUpdate) {
+                    database.QueryBuilder
+                        .update('pending_characters')
+                        .set({ processed: moment().format('YYYY-MM-DD HH:mm:ss') })
+                        .where('lodestone_id = ?');
+
+                    // run query
+                    database.sql(database.QueryBuilder.get(), [ data.id ], callback);
+                }
+            });
         });
 
         return this;

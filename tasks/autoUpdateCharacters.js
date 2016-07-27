@@ -1,4 +1,5 @@
 var cron = require('cron').CronJob,
+    storage = require('libs/StorageClass'),
     moment = require('moment'),
     config = require('config'),
     log = require('libs/LoggingObject'),
@@ -51,58 +52,61 @@ class autoUpdateCharactersClass
 
                             // parse the character on lodestone
                             app.Character.getFromLodestone(character.lodestone_id, (newData) => {
-                                // get old data
-                                var oldData = JSON.parse(character.data);
+                                // decompress to get old data
+                                storage.decompress(character.data, (oldData) => {
+                                    // parse json
+                                    oldData = JSON.parse(oldData);
 
-                                // if old data, do something with it, otherwise skip
-                                if (oldData) {
-                                    // set data on character class
-                                    // TODO: Find a better way to do this, eg class inheritence
-                                    var modules = ['Events', 'Tracking', 'Stats', 'Pets', 'GrandCompany', 'Gear'];
-                                    for (const [i, module] of modules.entries()) {
-                                        app.Character[module].View.setData(oldData, newData);
+                                    // if old data, do something with it, otherwise skip
+                                    if (oldData) {
+                                        // set data on character class
+                                        // TODO: Find a better way to do this, eg class inheritence
+                                        var modules = ['Events', 'Tracking', 'Stats', 'Pets', 'GrandCompany', 'Gear'];
+                                        for (const [i, module] of modules.entries()) {
+                                            app.Character[module].View.setData(oldData, newData);
+                                        }
+
+                                        // Compare levels and exp
+                                        log.echo('-- Testing EXP/Level Events');
+                                        app.Character.Events.init();
+
+                                        // Calculate up the attributes
+                                        log.echo('-- Checking Attribute Statistics');
+                                        app.Character.Stats.init();
+
+                                        // Track stuff
+                                        log.echo('-- Tracking Profile Information');
+                                        app.Character.Tracking.init();
+
+                                        // Record minions and mounts
+                                        log.echo('-- Recording Minions/Mounts');
+                                        app.Character.Pets.init();
+
+                                        // Record grand companies
+                                        log.echo('-- Track Grand Companies');
+                                        app.Character.GrandCompany.init();
+
+                                        // Save gear
+                                        log.echo('-- Saving Gear Set');
+                                        app.Character.Gear.init();
+
+                                        // Add free company to pending list
+                                        if (config.settings.autoUpdateCharacters.enablePlayerFCPending && newData.free_company && typeof newData.free_company.id !== 'undefined') {
+                                            app.FreeCompany.addToPending([[newData.free_company.id]]);
+                                            log.echo('-- Adding players free company ({id:yellow}) to the pending list', {
+                                                id: newData.free_company.id,
+                                            });
+                                        }
+                                    } else {
+                                        log.echo('-- No old data stored ...');
                                     }
 
-                                    // Compare levels and exp
-                                    log.echo('-- Testing EXP/Level Events');
-                                    app.Character.Events.init();
-
-                                    // Calculate up the attributes
-                                    log.echo('-- Checking Attribute Statistics');
-                                    app.Character.Stats.init();
-
-                                    // Track stuff
-                                    log.echo('-- Tracking Profile Information');
-                                    app.Character.Tracking.init();
-
-                                    // Record minions and mounts
-                                    log.echo('-- Recording Minions/Mounts');
-                                    app.Character.Pets.init();
-
-                                    // Record grand companies
-                                    log.echo('-- Track Grand Companies');
-                                    app.Character.GrandCompany.init();
-
-                                    // Save gear
-                                    log.echo('-- Saving Gear Set');
-                                    app.Character.Gear.init();
-
-                                    // Add free company to pending list
-                                    if (config.settings.autoUpdateCharacters.enablePlayerFCPending && newData.free_company && typeof newData.free_company.id !== 'undefined') {
-                                        app.FreeCompany.addToPending([[newData.free_company.id]]);
-                                        log.echo('-- Adding players free company ({id:yellow}) to the pending list', {
-                                            id: newData.free_company.id,
-                                        });
-                                    }
-                                } else {
-                                    log.echo('-- No old data stored ...');
-                                }
-
-                                // Update character
-                                /*app.Character.updateCharacter(newData, (data) => {
-                                    log.echo('-- {note:green}', { note: 'Character updated successfully.' });
-                                    log.space();
-                                });*/
+                                    // Update character
+                                    /*app.Character.updateCharacter(newData, (data) => {
+                                        log.echo('-- {note:green}', { note: 'Character updated successfully.' });
+                                        log.space();
+                                    });*/
+                                });
                             });
                         }
                     });

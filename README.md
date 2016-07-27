@@ -26,3 +26,16 @@ Helping to build this API is very simple, basic Javascript/JQuery knowledge is a
 If you are interested, check out:
 - [Getting A Local Environment Setup](docs/docs_setup.md)
 - [Contributing to the API](docs/docs_contribute.md) (Once you've parsed a page)
+
+## Testing Schdule
+
+Each schedule task has 2 arguments:
+
+- Start Offset
+- Action
+
+Test like so:
+
+- `node schedule 0 autoAddCharacters`
+- `node schedule 0 autoUpdateAchievements`
+- `node schedule 0 autoUpdateCharacters`

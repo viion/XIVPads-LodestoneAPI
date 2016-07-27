@@ -11,6 +11,7 @@
     "handlebars": "^4.0.4",
     "hapi": "^11.1.1",
     "inert": "^3.2.1",
+    "jsonpack": "^1.1.5",
     "moment": "^2.13.0",
     "mysql": "^2.10.2",
     "os-utils": "0.0.14",

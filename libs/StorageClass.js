@@ -1,6 +1,7 @@
 var redis = require('redis'),
-    log = require('./LoggingObject');
-    config = require('../config');
+    log = require('./LoggingObject'),
+    config = require('../config'),
+    zlib = require('zlib');
 
 //
 // Handles the setup of xivsync
@@ -55,6 +56,48 @@ class StorageClass
             callback(JSON.parse(data));
         });
     }
+
+    //
+    // Compress some data
+    //
+    compress(data, callback)
+    {
+        if (config.zlibStorage) {
+            zlib.deflate(data, (error, buffer) => {
+                if (!error) {
+                    return callback(buffer.toString('base64'));
+                } else {
+                    console.error('Error compressing:');
+                    console.error(error);
+                    return callback(data);
+                }
+            });
+        } else {
+            return callback(data);
+        }
+    }
+
+    //
+    // Decompress some data
+    //
+    decompress(data, callback)
+    {
+        if (config.zlibStorage) {
+            var data = Buffer.from(data, 'base64');
+            zlib.inflate(data, (error, buffer) => {
+                if (!error) {
+                    return callback(buffer.toString());
+                } else {
+                    console.error('Error decompressing:');
+                    console.error(error);
+                    return callback(data);
+                }
+            });
+        } else {
+            return callback(data);
+        }
+    }
+
 }
 
 // Export it

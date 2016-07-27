@@ -1,7 +1,7 @@
 require('app-module-path/register');
 global.TIMESTAMP = 0;
-global.SPAWN = parseInt(process.argv[2]);
-global.ACTION = parseInt(process.argv[2]);
+global.START_RANGE = parseInt(process.argv[2]);
+global.START_TASK = process.argv[3];
 global.ANALYTICS = require('libs/Analytics').reset('schedule');
 
 // node modules
@@ -11,10 +11,10 @@ var setup = require('setup'),
 
 // Title
 log.title('{msg:purple}', { msg: 'XIVSync Cronjob' });
-log.echo('Spawn Process: {spawn:yellow}', { spawn: global.SPAWN });
+log.echo('Start Range: {spawn:yellow}', { spawn: global.START_RANGE });
 
 // check spawn process
-if (isNaN(global.SPAWN)) {
+if (isNaN(global.START_RANGE)) {
     log.echo('{error:red}', {
         error: 'Please provide a spawn process, eg: "node schedule.js 3"'
     });
@@ -30,18 +30,20 @@ setup.init(() => {
         autoUpdateCharacters = require('tasks/autoUpdateCharacters'),
         autoUpdateAchievements = require('tasks/autoUpdateAchievements');
 
+    log.echo('Running Task: {task:yellow}', { task: global.START_TASK });
+
     // Auto add characters
-    if (global.ACTIONS == 'autoAddCharacters') {
-        autoAddCharacters.init(global.SPAWN);
+    if (global.START_TASK == 'autoAddCharacters') {
+        autoAddCharacters.init(global.START_RANGE);
     }
 
     // Auto update characters
-    if (global.ACTIONS == 'autoUpdateCharacters') {
-        autoUpdateCharacters.init(global.SPAWN);
+    if (global.START_TASK == 'autoUpdateCharacters') {
+        autoUpdateCharacters.init(global.START_RANGE);
     }
 
     // Auto update achievements
-    if (global.ACTIONS == 'autoUpdateAchievements') {
-        autoUpdateAchievements.init(global.SPAWN);
+    if (global.START_TASK == 'autoUpdateAchievements') {
+        autoUpdateAchievements.init(global.START_RANGE);
     }
 });
