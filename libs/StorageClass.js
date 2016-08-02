@@ -26,7 +26,7 @@ class StorageClass
     //
     // Set some data
     //
-    set(key, value)
+    set(key, value, expire)
     {
         log.echo('[REDIS] {method:green}: {key:cyan}', {
             method: 'SET',
@@ -34,7 +34,13 @@ class StorageClass
         });
 
         value = JSON.stringify(value);
-        this.client.set(key, value);
+
+        // if an expire time passed
+        expire
+            ? this.client.set(key, value, 'EX', expire)
+            : this.client.set(key, value);
+
+        return this;
     }
 
     //
@@ -53,7 +59,7 @@ class StorageClass
                 });
             }
 
-            callback(JSON.parse(data));
+            callback(data ? JSON.parse(data) : false);
         });
     }
 

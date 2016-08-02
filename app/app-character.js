@@ -25,6 +25,22 @@ class AppCharacterClass
     }
 
     //
+    // Get a character via a specific id
+    //
+    get(id, callback)
+    {
+        database.QueryBuilder
+            .select()
+            .columns('*')
+            .from('characters')
+            .where('lodestone_id = ?')
+            .limit(0,1);
+
+        database.sql(database.QueryBuilder.get(), [id], callback);
+        return this;
+    }
+
+    //
     // Add a character to the pending table
     //
     addToPending(idList)

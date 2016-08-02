@@ -360,6 +360,27 @@ server.route({
     }
 });
 
+// persistent character get
+server.route({
+    method: 'GET', path: '/persistent/characters/get/{id}',
+    handler: (request, reply) => {
+        if (!config.persistent) {
+            reply({ error: 'Persistence not available on this server.' });
+        }
+
+        // get character data
+        app.Character.get(request.params.id, function(data) {
+            if (data.length == 1) {
+                var characterData = data.rows[0];
+                characterData.cache_time = data.time;
+                return reply(characterData);
+            }
+
+            reply({ error: 'Character not found.' });
+        });
+    }
+});
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // Freecompany
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -36,6 +36,10 @@ var config =
     // Please read the docs "Persistent Tracking" regarding this
     persistent: true,
 
+    // How long data should stay persistent in redis
+    // set: 6 hours
+    persistentTimeout: (60 * 60 * 6),
+
     // If persistent storage should use zlib
     zlibStorage: true,
 

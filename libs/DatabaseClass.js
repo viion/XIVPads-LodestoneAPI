@@ -1,8 +1,10 @@
 var mysql = require('mysql'),
     config = require('config'),
+    sha1 = require('sha1'),
 
     // libs
     functions = require('libs/functions.js'),
+    storage = require('libs/StorageClass'),
     log = require('libs/LoggingObject');
 
 //
@@ -36,6 +38,29 @@ class DatabaseClass
     // run an sql query
     //
     sql(sql, binds, callback)
+    {
+        var command = sql.split(' ')[0],
+            key = sha1(sql + binds.join(''));
+
+        // if SQL command is select, check storage
+        if (command == 'SELECT') {
+            storage.get(key, (data) => {
+                if (data) {
+                    return callback(data);
+                }
+
+                this.execute(sql, binds, callback, key);
+            });
+        } else {
+            this.execute(sql, binds, callback);
+        }
+    }
+
+    //
+    // execute an SQL statement (called based
+    // on the callback conditions from the function: sql)
+    //
+    execute(sql, binds, callback, key)
     {
         var randomId = functions.randomNumber(0, 99999);
         global.ANALYTICS.record('database', 'Starting SQL Query: '+ randomId + ' --- '+ sql);
@@ -92,8 +117,14 @@ class DatabaseClass
 
                     // Setup a return object
                     var obj = {
+                        time: new Date(),
                         length: rows.length,
                         rows: rows,
+                    }
+
+                    // if storage key
+                    if (key) {
+                        storage.set(key, obj, config.persistentTimeout);
                     }
 
                     // Return, if specific function exists, call that,
