@@ -94,8 +94,7 @@ class StorageClass
                 if (!error) {
                     return callback(buffer.toString());
                 } else {
-                    console.error('Error decompressing:');
-                    console.error(error);
+                    console.error('Error decompressing:', error);
                     return callback(data);
                 }
             });
