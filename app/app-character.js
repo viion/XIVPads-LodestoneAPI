@@ -41,6 +41,52 @@ class AppCharacterClass
     }
 
     //
+    // Get the last pending characters
+    //
+    getLastPending(start, callback)
+    {
+        database.QueryBuilder
+            .select()
+            .columns('*')
+            .from('pending_characters')
+            .where(['lodestone_id != 0', 'processed IS NULL', 'deleted = 0'])
+            .order('added', 'asc')
+            .limit((start) ? start : 0,config.settings.autoAddCharacters.limitPerCycle)
+
+        database.sql(database.QueryBuilder.get(), [], callback);
+        return this;
+    }
+
+    //
+    // Get the last updated characters
+    //
+    getLastUpdated(start, callback)
+    {
+        database.QueryBuilder
+            .select()
+            .columns('*')
+            .from('characters')
+            .order('last_updated', 'asc')
+            .limit((start) ? start : 0, config.settings.autoUpdateCharacters.limitPerCycle);
+
+        database.sql(database.QueryBuilder.get(), [], callback);
+        return this;
+    }
+
+    //
+    // Get a character from lodestone
+    //
+    getFromLodestone(lodestoneId, callback)
+    {
+        log.echo('Requesting {id:cyan} from lodestone', {
+            id: lodestoneId,
+        });
+
+        SyncApi.getCharacter(null, { id: lodestoneId }, callback);
+        return this;
+    }
+
+    //
     // Add a character to the pending table
     //
     addToPending(idList)
@@ -120,52 +166,6 @@ class AppCharacterClass
     updateCharacter(data, callback)
     {
         this.addCharacter(data, callback, true);
-    }
-
-    //
-    // Get the last pending characters
-    //
-    getLastPending(start, callback)
-    {
-        database.QueryBuilder
-            .select()
-            .columns('*')
-            .from('pending_characters')
-            .where(['lodestone_id != 0', 'processed IS NULL', 'deleted = 0'])
-            .order('added', 'asc')
-            .limit((start) ? start : 0,config.settings.autoAddCharacters.limitPerCycle)
-
-        database.sql(database.QueryBuilder.get(), [], callback);
-        return this;
-    }
-
-    //
-    // Get the last updated characters
-    //
-    getLastUpdated(start, callback)
-    {
-        database.QueryBuilder
-            .select()
-            .columns('*')
-            .from('characters')
-            .order('last_updated', 'asc')
-            .limit((start) ? start : 0, config.settings.autoUpdateCharacters.limitPerCycle);
-
-        database.sql(database.QueryBuilder.get(), [], callback);
-        return this;
-    }
-
-    //
-    // Get a character from lodestone
-    //
-    getFromLodestone(lodestoneId, callback)
-    {
-        log.echo('Requesting {id:cyan} from lodestone', {
-            id: lodestoneId,
-        });
-
-        SyncApi.getCharacter(null, { id: lodestoneId }, callback);
-        return this;
     }
 
     //
