@@ -40,7 +40,7 @@ class DatabaseClass
     sql(sql, binds, callback)
     {
         var command = sql.split(' ')[0],
-            key = sha1(sql + binds.join(''));
+            key = sha1(sql + (binds ? binds.join('') : ''));
 
         // if SQL command is select, check storage
         if (command == 'SELECT') {
