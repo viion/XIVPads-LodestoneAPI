@@ -18,6 +18,36 @@ class AppCharacterPetsClass
     }
 
     //
+    // Get minions via a specific id
+    //
+    getMinions(id, callback)
+    {
+        database.QueryBuilder
+            .select()
+            .columns('*')
+            .from('characters_minions')
+            .where('lodestone_id = ?');
+
+        database.sql(database.QueryBuilder.get(), [id], callback);
+        return this;
+    }
+
+    //
+    // Get mounts via a specific id
+    //
+    getMounts(id, callback)
+    {
+        database.QueryBuilder
+            .select()
+            .columns('*')
+            .from('characters_mounts')
+            .where('lodestone_id = ?');
+
+        database.sql(database.QueryBuilder.get(), [id], callback);
+        return this;
+    }
+
+    //
     // Initialize tracking
     //
     init()

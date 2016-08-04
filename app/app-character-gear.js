@@ -20,6 +20,34 @@ class AppCharacterGearClass
     }
 
     //
+    // Get gear for a specific character
+    //
+    get(id, callback)
+    {
+        database.QueryBuilder
+            .select()
+            .columns('*')
+            .from('characters_gearsets')
+            .where('lodestone_id = ?');
+
+        database.sql(database.QueryBuilder.get(), [id], (data) => {
+            if (data.length > 0) {
+                // json parse gear and stats
+                for(var i in data.rows) {
+                    var gs = data.rows[i];
+
+                    gs.gear = JSON.parse(gs.gear);
+                    gs.stats = JSON.parse(gs.stats);
+                    data.rows[i] = gs;
+                }
+            }
+
+            callback(data);
+        });
+        return this;
+    }
+
+    //
     // Initialize tracking
     //
     init()

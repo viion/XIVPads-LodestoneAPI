@@ -19,6 +19,21 @@ class AppAchievementsClass
     }
 
     //
+    // Get achievements for a specific character
+    //
+    get(id, callback)
+    {
+        database.QueryBuilder
+            .select()
+            .columns('*')
+            .from('characters_achievements')
+            .where('lodestone_id = ?');
+
+        database.sql(database.QueryBuilder.get(), [id], callback);
+        return this;
+    }
+
+    //
     // Get the last updated characters
     //
     getLastUpdated(start, callback)

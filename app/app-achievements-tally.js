@@ -48,7 +48,6 @@ class AppAchievementsTallyClass
                     (kind == 13)
                         ? legacy = legacy + achievement.points
                         : reborn = reborn + achievement.points;
-
                 }
             }
         }

@@ -18,6 +18,21 @@ class AppCharacterGrandCompanyClass
     }
 
     //
+    // Get grand companies for a specific character
+    //
+    get(id, callback)
+    {
+        database.QueryBuilder
+            .select()
+            .columns('*')
+            .from('characters_grandcompany')
+            .where('lodestone_id = ?');
+
+        database.sql(database.QueryBuilder.get(), [id], callback);
+        return this;
+    }
+
+    //
     // Initialize tracking
     //
     init()

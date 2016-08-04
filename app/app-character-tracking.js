@@ -17,6 +17,21 @@ class AppCharacterTrackingClass
     }
 
     //
+    // Get a character via a specific id
+    //
+    get(id, callback)
+    {
+        database.QueryBuilder
+            .select()
+            .columns('*')
+            .from('events_tracking')
+            .where('lodestone_id = ?');
+
+        database.sql(database.QueryBuilder.get(), [id], callback);
+        return this;
+    }
+
+    //
     // Initialize tracking
     //
     init()

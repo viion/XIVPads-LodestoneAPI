@@ -23,6 +23,34 @@ class AppCharacterEventsClass
     }
 
     //
+    // Get events for a specific character
+    //
+    get(id, callback)
+    {
+        database.QueryBuilder
+            .select()
+            .columns('*')
+            .from('events_exp_new')
+            .where('lodestone_id = ?');
+
+        database.sql(database.QueryBuilder.get(), [id], (expData) => {
+            database.QueryBuilder
+                .select()
+                .columns('*')
+                .from('events_lvs_new')
+                .where('lodestone_id = ?');
+
+            database.sql(database.QueryBuilder.get(), [id], (lvsData) => {
+                callback({
+                    exp: expData,
+                    lvs: lvsData,
+                })
+            });
+        });
+        return this;
+    }
+
+    //
     // Reset
     //
     reset()

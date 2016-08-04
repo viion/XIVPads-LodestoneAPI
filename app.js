@@ -24,6 +24,7 @@ var fs = require('fs'),
     hapi = require('hapi'),
     path = require('path'),
     config = require('config'),
+    async = require('async'),
 
     api = require('api/api'),
     app = require('app/app'),
@@ -368,15 +369,76 @@ server.route({
             reply({ error: 'Persistence not available on this server.' });
         }
 
-        // get character data
+        // get character
         app.Character.get(request.params.id, function(data) {
             if (data.length == 1) {
-                var characterData = data.rows[0];
-                characterData.cache_time = data.time;
-                return reply(characterData);
-            }
+                var characterData = data.rows[0],
+                    characterId = characterData.lodestone_id;
 
-            reply({ error: 'Character not found.' });
+                // Cache time
+                characterData.cache_time = data.time;
+
+                // Parallel fetch character data
+                async.parallel({
+                    // get achievements
+                    achievements: function(callback) {
+                        app.Achievements.get(characterId, function(data) {
+                            callback(null, data.length > 0 ? data.rows : null);
+                        });
+                    },
+                    // get events
+                    events: function(callback) {
+                        app.Character.Events.get(characterId, function(data) {
+                            callback(null, data.length > 0 ? data.rows : null);
+                        });
+                    },
+                    // get tracking
+                    tracking: function(callback) {
+                        app.Character.Tracking.get(characterId, function(data) {
+                            callback(null, data.length > 0 ? data.rows : null);
+                        });
+                    },
+                    // get gear
+                    gearsets: function(callback) {
+                        app.Character.Gear.get(characterId, function(data) {
+                            callback(null, data.length > 0 ? data.rows : null);
+                        });
+                    },
+                    // get grand companies
+                    grand_companies: function(callback) {
+                        app.Character.GrandCompany.get(characterId, function(data) {
+                            callback(null, data.length > 0 ? data.rows : null);
+                        });
+                    },
+                    // get minions
+                    minions: function(callback) {
+                        app.Character.Pets.getMinions(characterId, function(data) {
+                            callback(null, data.length > 0 ? data.rows : null);
+                        });
+                    },
+                    // get minions
+                    mounts: function(callback) {
+                        app.Character.Pets.getMounts(characterId, function(data) {
+                            callback(null, data.length > 0 ? data.rows : null);
+                        });
+                    }
+                },
+                // finish
+                function(error, data) {
+                    // append
+                    characterData.achievements = data.achievements;
+                    characterData.events = data.events;
+                    characterData.tracking = data.tracking;
+                    characterData.gearsets = data.gearsets;
+                    characterData.grand_companies = data.grand_companies;
+                    characterData.minions = data.minions;
+                    characterData.mounts = data.mounts;
+
+                    return reply(characterData);
+                });
+            } else {
+                reply({ error: 'Character not found.' });
+            }
         });
     }
 });
