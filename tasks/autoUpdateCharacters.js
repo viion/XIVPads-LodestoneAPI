@@ -102,10 +102,10 @@ class autoUpdateCharactersClass
                                     }
 
                                     // Update character
-                                    /*app.Character.updateCharacter(newData, (data) => {
+                                    app.Character.updateCharacter(newData, (data) => {
                                         log.echo('-- {note:green}', { note: 'Character updated successfully.' });
                                         log.space();
-                                    });*/
+                                    });
                                 });
                             });
                         }
