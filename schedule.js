@@ -16,7 +16,7 @@ log.echo('Start Range: {spawn:yellow}', { spawn: global.START_RANGE });
 // check spawn process
 if (isNaN(global.START_RANGE)) {
     log.echo('{error:red}', {
-        error: 'Please provide a spawn process, eg: "node schedule.js 3"'
+        error: 'Please provide a spawn process, eg: "node schedule.js 3 autoAddCharacters"'
     });
     process.exit();
 }
@@ -29,6 +29,16 @@ setup.init(() => {
     var autoAddCharacters = require('tasks/autoAddCharacters'),
         autoUpdateCharacters = require('tasks/autoUpdateCharacters'),
         autoUpdateAchievements = require('tasks/autoUpdateAchievements');
+
+    if (typeof global.START_TASK == 'undefined') {
+        log.echo('{error:red}', {
+            error: 'No task provided, please include either: autoAddCharacters, autoUpdateCharacters, autoUpdateAchievements'
+        });
+        log.echo('{error:red}', {
+            error: 'Example: node schedule.js 3 autoAddCharacters'
+        });
+        process.exit();
+    }
 
     log.echo('Running Task: {task:yellow}', { task: global.START_TASK });
 

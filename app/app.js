@@ -5,10 +5,10 @@ class AppClass
 {
     constructor()
     {
-        this.Character = require('app/app-character.js');
-        this.FreeCompany = require('app/app-freecompany.js');
-        this.Linkshell = require('app/app-linkshell.js');
-        this.Achievements = require('app/app-achievements.js')
+        this.Character = require('app/app-character');
+        this.FreeCompany = require('app/app-freecompany');
+        this.Linkshell = require('app/app-linkshell');
+        this.Achievements = require('app/app-achievements');
     }
 }
 
