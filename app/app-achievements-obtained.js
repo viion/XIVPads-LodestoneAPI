@@ -35,7 +35,12 @@ class AppAchievementsTallyClass
     //
     track()
     {
-        var insertData = [];
+        var insertData = [],
+            insertTotal = {
+                reborn: 0,
+                legacy: 0,
+            };
+
         for(var kind in this.View.data) {
             var list = this.View.data[kind];
 
@@ -49,11 +54,15 @@ class AppAchievementsTallyClass
                         moment.unix(achievement.timestamp).format('YYYY-MM-DD HH:mm:ss')
                     ]);
                 }
+
+                // totals
+                var key = (achievement.kind == 13) ? 'legacy' : 'reborn';
+                insertTotal[key] = insertTotal[key] + achievement.points;
             }
         }
 
         // if we have obtained achievements, lets insert them!
-        if (insertData.length > 1) {
+        if (insertData.length > 0) {
             database.QueryBuilder
                 .insert('characters_achievements')
                 .insertColumns(['lodestone_id', 'achievement_id', 'points', 'obtained'])
@@ -65,6 +74,22 @@ class AppAchievementsTallyClass
                 log.echo('--- Saved {total:blue} achievements', {
                     total: insertData.length
                 });
+            });
+        }
+
+        // update players totals
+        if (insertData.length > 0) {
+            database.QueryBuilder
+                .update('characters')
+                .set({
+                    achievements_score_reborn_total: insertTotal['reborn'],
+                    achievements_score_legacy_total: insertTotal['legacy'],
+                })
+                .where('lodestone_id = ?');
+
+            // run query
+            database.sql(database.QueryBuilder.get(), [this.View.lodestoneId], () => {
+                log.echo('--- Updated character achievements');
             });
         }
     }
