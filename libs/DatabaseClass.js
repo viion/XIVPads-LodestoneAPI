@@ -32,6 +32,14 @@ class DatabaseClass
             debug:      config.db.debug,
             socketPath: config.db.socket,
         });
+
+        this.cache = true;
+    }
+
+    noCache()
+    {
+        this.cache = false;
+        return this;
     }
 
     //
@@ -43,7 +51,7 @@ class DatabaseClass
             key = sha1(sql + (binds ? binds.join('') : ''));
 
         // if SQL command is select, check storage
-        if (command == 'SELECT') {
+        if (this.cache && command == 'SELECT') {
             storage.get(key, (data) => {
                 if (data) {
                     return callback(data);
@@ -123,7 +131,7 @@ class DatabaseClass
                     }
 
                     // if storage key
-                    if (key) {
+                    if (this.cache && key) {
                         storage.set(key, obj, config.persistentTimeout);
                     }
 
@@ -134,6 +142,9 @@ class DatabaseClass
                     {
                         callback(obj);
                     }
+
+                    // reset cache status
+                    this.cache = true;
                 }
             });
         });

@@ -36,7 +36,7 @@ class AppCharacterClass
             .where('lodestone_id = ?')
             .limit(0,1);
 
-        database.sql(database.QueryBuilder.get(), [id], callback);
+        database.noCache().sql(database.QueryBuilder.get(), [id], callback);
         return this;
     }
 
@@ -53,7 +53,7 @@ class AppCharacterClass
             .order('added', 'asc')
             .limit((start) ? start : 0,config.settings.autoAddCharacters.limitPerCycle)
 
-        database.sql(database.QueryBuilder.get(), [], callback);
+        database.sql(database.noCache().QueryBuilder.get(), [], callback);
         return this;
     }
 
@@ -69,7 +69,7 @@ class AppCharacterClass
             .order('last_updated', 'asc')
             .limit((start) ? start : 0, config.settings.autoUpdateCharacters.limitPerCycle);
 
-        database.sql(database.QueryBuilder.get(), [], callback);
+        database.sql(database.noCache().QueryBuilder.get(), [], callback);
         return this;
     }
 
@@ -140,7 +140,7 @@ class AppCharacterClass
                 .duplicate(['lodestone_id', 'name', 'server', 'avatar', 'portrait', 'data']);
 
             // run query
-            database.sql(database.QueryBuilder.get(), binds, () => {
+            database.sql(database.QueryBuilder.get(), binds, (data) => {
                 // update characters pending table date
                 // - this is only done if we're not updating a character
                 if (!isUpdate) {
@@ -151,6 +151,8 @@ class AppCharacterClass
 
                     // run query
                     database.sql(database.QueryBuilder.get(), [ data.id ], callback);
+                } else {
+                    callback(data);
                 }
             });
         });
