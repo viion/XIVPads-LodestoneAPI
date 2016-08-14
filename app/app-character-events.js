@@ -42,8 +42,8 @@ class AppCharacterEventsClass
 
             database.sql(database.QueryBuilder.get(), [id], (lvsData) => {
                 callback({
-                    exp: expData,
-                    lvs: lvsData,
+                    exp: expData.length > 0 ? expData.rows : null,
+                    lvs: lvsData.length > 0 ? lvsData.rows : null,
                 })
             });
         });
@@ -137,6 +137,14 @@ class AppCharacterEventsClass
             // - this is a forced skip as we don't want to generate exp events
             //   even if this section fails.
             if (oldRole.level > newRole.level) {
+                continue;
+            }
+
+            // If the old was 0 and the new was 30, its likely
+            // to be one of the new jobs, skip the event as
+            // that isn't really "earned"
+            // (0 - 1317680 is the exp relative)
+            if (oldRole.level == 0 && newRole.level == 30 || oldTotalExp == 0 && newTotalExp == 1317680) {
                 continue;
             }
 
