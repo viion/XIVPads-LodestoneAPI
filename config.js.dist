@@ -103,7 +103,7 @@ var config =
             // Minimum amount of exp to generate an event, we want this kind of
             // high so that we do not generate lots of "little" events, in XIV
             // you will mostly always earn a good chunk before stopping.
-            minimumExpForEvent: 10000,
+            minimumExpForEvent: 1000,
 
             // Should events be tracked?
             enableProgressEvents: true,
