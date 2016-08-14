@@ -124,9 +124,9 @@ server.ext('onPreResponse', function(request, reply) {
 //      /freecompany/get/{id}
 //      /freecompany/get/{id}/members?page={page}
 //
-//      /linkshells
-//      /linkshells/search?name={name}&server={server}&page={page}
-//      /linkshells/get/{id}
+//      /linkshell
+//      /linkshell/search?name={name}&server={server}&page={page}
+//      /linkshell/get/{id}
 //
 //      /database
 //
@@ -338,6 +338,17 @@ server.route({
     }
 });
 
+// achievement summary (extra)
+server.route({
+    method: 'GET', path: '/characters/get/{id}/achievements/',
+    handler: function (request, reply) {
+        api.setLanguage(request.query.language);
+        api.getAchievementSummary(reply, {
+            id: request.params.id,
+        });
+    }
+});
+
 // achievement all
 server.route({
     method: 'GET', path: '/characters/get/{id}/achievements/all',
@@ -389,7 +400,7 @@ server.route({
                     // get events
                     events: function(callback) {
                         app.Character.Events.get(characterId, function(data) {
-                            callback(null, data.length > 0 ? data.rows : null);
+                            callback(null, data);
                         });
                     },
                     // get tracking
@@ -521,7 +532,7 @@ server.route({
 
 // linkshell search
 server.route({
-    method: 'GET', path: '/linkshells/search',
+    method: 'GET', path: '/linkshell/search',
     handler: function (request, reply) {
         var name = request.query.name ? request.query.name : '',
             server = request.query.server ? functions.ucwords(request.query.server) : '',
@@ -549,7 +560,7 @@ server.route({
 
 // linkshell get
 server.route({
-    method: 'GET', path: '/linkshells/get/{id}',
+    method: 'GET', path: '/linkshell/get/{id}',
     handler: function (request, reply) {
         api.setLanguage(request.query.language);
         api.getLinkshell(reply, {
