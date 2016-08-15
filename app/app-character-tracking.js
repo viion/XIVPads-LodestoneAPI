@@ -68,7 +68,7 @@ class AppCharacterTrackingClass
 
         // ensure length otherwise could be an issue with lodestone
         if (oldValue.length < 2 || newValue.length < 2) {
-            return log.echo('--- The length of old or new data was below 2 for: {type:yellow}', {
+            return log.echo('--- The length of old or new data was 1 or less for: {type:yellow}', {
                 yellow: type,
             });
         }
@@ -89,8 +89,10 @@ class AppCharacterTrackingClass
 
             // run query
             database.sql(database.QueryBuilder.get(), binds, () => {
-                log.echo('--- [{type:blue}] event added.', {
+                log.echo('--- [{type:blue}] event added: {old:green} > {new:green}', {
                     type: type,
+                    old: oldValue,
+                    new: newValue,
                 });
             });
         }

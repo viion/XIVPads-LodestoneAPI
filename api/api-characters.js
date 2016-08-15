@@ -264,7 +264,6 @@ var apiCharacters =
                 icon = $(this).find('.help_text img').attr('src').trim(),
                 value = parseInt($(this).find('.val').text().trim());
 
-
             data.stats.elemental[shortname] = {
                 name: attribute,
                 //help: help,
