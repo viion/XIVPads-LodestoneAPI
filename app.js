@@ -86,7 +86,7 @@ server.register(require('inert'), () => {});
 server.ext('onPreResponse', function(request, reply) {
     var path = request.path;
 
-    if (request.query.pretty) {
+    if (request.response && typeof request.response.header === "function" && request.query.pretty) {
         request.response.header('Content-Type', 'text/html');
         var html = JSON.stringify(request.response.source, null, 2),
             html = `<pre>${html}</pre>`;
@@ -95,8 +95,7 @@ server.ext('onPreResponse', function(request, reply) {
         return;
     }
 
-
-    if (typeof request.response.header === "function") {
+    if (request.response && typeof request.response.header === "function") {
         // check path to dermine if we need json response
         if (webpages.indexOf(path) == -1 || path.indexOf('.jpg') > -1) {
             request.response.header('Content-Type', 'application/json');
@@ -105,7 +104,6 @@ server.ext('onPreResponse', function(request, reply) {
         request.response.header('Access-Control-Allow-Origin', '*');
         request.response.header('Cache-Control', 'max-age=3600');
     }
-
 
     reply(request.response);
 });
