@@ -570,7 +570,7 @@ server.route({
             page: page,
         }, (data) => {
             if (data) {
-                app.Linkshell.addToPending([[data.id]]);
+                app.Linkshell.addToPending([[request.params.id]]);
             }
         });
     }
