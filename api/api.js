@@ -351,7 +351,7 @@ var api = {
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     getLinkshell: function(reply, options, callback) {
-        api.get(apiLinkshell.getUrl('linkshell', options.id), function($) {
+        api.get(apiLinkshell.getUrl('linkshell', options.id, null, options.page), function($) {
             // Parse character data
             var data = apiLinkshell.getData($, options);
             // always send of reply first so the user

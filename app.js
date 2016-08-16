@@ -562,9 +562,12 @@ server.route({
 server.route({
     method: 'GET', path: '/linkshell/get/{id}',
     handler: function (request, reply) {
+        var page = request.query.page ? request.query.page : 1;
+
         api.setLanguage(request.query.language);
         api.getLinkshell(reply, {
             id: request.params.id,
+            page: page,
         }, (data) => {
             if (data) {
                 app.Linkshell.addToPending([[data.id]]);

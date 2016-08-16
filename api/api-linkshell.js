@@ -2,7 +2,7 @@ var apiLinkshell =
 {
     getUrl: function(type, param1, param2, page) {
         var urls = {
-            linkshell: '/lodestone/linkshell/{param1}/?page={param2}'.replace('{param1}', param1).replace('{param2}', param2).replace('{page}', page),
+            linkshell: '/lodestone/linkshell/{param1}/?page={page}'.replace('{param1}', param1).replace('{page}', page),
             search: '/lodestone/linkshell/?q={param1}&worldname={param2}'.replace('{param1}', param1).replace('{param2}', param2),
         }
 
