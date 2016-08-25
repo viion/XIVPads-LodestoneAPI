@@ -395,6 +395,12 @@ server.route({
                             callback(null, data.length > 0 ? data.rows : null);
                         });
                     },
+                    // get possible achievements
+                    achievements_possible: function(callback) {
+                        app.Achievements.getPossible(characterId, function(data) {
+                            callback(null, data.length > 0 ? JSON.parse(data.rows[0].possible) : null);
+                        });
+                    },
                     // get events
                     events: function(callback) {
                         app.Character.Events.get(characterId, function(data) {
@@ -436,6 +442,7 @@ server.route({
                 function(error, data) {
                     // append
                     characterData.achievements = data.achievements;
+                    characterData.achievements_possible = data.achievements_possible;
                     characterData.events = data.events;
                     characterData.tracking = data.tracking;
                     characterData.gearsets = data.gearsets;

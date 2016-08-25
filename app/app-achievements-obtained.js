@@ -35,7 +35,8 @@ class AppAchievementsTallyClass
     //
     track()
     {
-        var insertData = [],
+        var insertPossible = [],
+            insertData = [],
             insertTotal = {
                 reborn: 0,
                 legacy: 0,
@@ -46,6 +47,10 @@ class AppAchievementsTallyClass
 
             // go through entries
             for (const [i, achievement] of list.entries()) {
+                // Add to possible
+                insertPossible.push(achievement.id);
+
+                // if obtained, add to insert data
                 if (achievement.obtained) {
                     insertData.push([
                         this.View.lodestoneId,
@@ -59,6 +64,20 @@ class AppAchievementsTallyClass
                 var key = (achievement.kind == 13) ? 'legacy' : 'reborn';
                 insertTotal[key] = insertTotal[key] + achievement.points;
             }
+        }
+
+        // if we have a possible amount
+        if (insertPossible.length > 0) {
+            database.QueryBuilder
+                .insert('characters_achievements_possible')
+                .insertColumns(['lodestone_id', 'possible'])
+                .insertData([[ this.View.lodestoneId, JSON.stringify(insertPossible) ]])
+                .duplicate(['possible']);
+
+            // run query
+            database.sql(database.QueryBuilder.get(), [], () => {
+                log.echo('--- Saved all possible achievements');
+            });
         }
 
         // if we have obtained achievements, lets insert them!
