@@ -65,8 +65,8 @@ var api = {
         });
 
         global.ANALYTICS.record('api', 'New HTTP Request: '+ urlPath);
-
         request(('http://' + host + urlPath), function (error, response, body) {
+
             if (!error && response.statusCode == 200) {
                 // end time
                 var end = +new Date(),
@@ -87,9 +87,11 @@ var api = {
                 // callback with a cheerio assigned html
                 callback(cheerio.load(body));
             } else {
-                log.echo('{error:red}', {
+                log.echo('Could not fetch page, error: {error:red}, status code: {code:red}', {
                     error: error,
+                    code: response.statusCode,
                 });
+                callback(false);
             }
         });
     },
@@ -320,13 +322,7 @@ var api = {
         list.splice(list.indexOf(kind), 1);
 
         api.get(apiAchievements.getUrl('achievement', options.id, kind), function($) {
-            data[kind] = apiAchievements.getData($, kind);
-            if (!data[kind]) {
-                if (callback) {
-                    callback(false);
-                }
-                return reply({ error: 'Achievements does not exist.' });
-            }
+            data[kind] = $ ? apiAchievements.getData($, kind) : null;
 
             // if still more categories to get, continue onto the next one.
             if (list.length > 0) {
