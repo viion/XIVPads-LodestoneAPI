@@ -44,8 +44,8 @@ class autoUpdateAchievements
                                 }
 
                                 // set views
-                                app.Achievements.Tally.View.setData(row.lodestone_id, data);
-                                app.Achievements.Obtained.View.setData(row.lodestone_id, data);
+                                app.Achievements.Tally.View.setData(row.lodestone_id, data, row.server);
+                                app.Achievements.Obtained.View.setData(row.lodestone_id, data, row.server);
 
                                 // Set achievements public!
                                 app.Achievements.setPublicStatus(row.lodestone_id, 1);

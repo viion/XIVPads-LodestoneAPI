@@ -10,6 +10,9 @@ var apiAchievements =
         return urls[type];
     },
 
+    //
+    // Obtain a summary of the characters achievements.
+    //
     getSummary: function($) {
         var data = [];
         $box = $('#contents');
@@ -35,6 +38,9 @@ var apiAchievements =
         return data;
     },
 
+    //
+    // Get an entire list of achievements for a specific category.
+    //
     getData: function($, kind) {
         var data = [];
         $box = $('#contents');

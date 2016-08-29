@@ -36,6 +36,16 @@ class QueryBuilderClass
     }
 
     //
+    // Start a count query (resets)
+    //
+    count()
+    {
+        this.reset();
+        this.parts.push('SELECT count(*) as total');
+        return this;
+    }
+
+    //
     // Start an insert (resets)
     //
     insert(table)

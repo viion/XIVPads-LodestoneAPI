@@ -1,4 +1,5 @@
 var config = require('config'),
+    async = require('async'),
 
     // libs
     log = require('libs/LoggingObject'),
@@ -31,6 +32,50 @@ class AppAchievementsClass
 
         database.sql(database.QueryBuilder.get(), [id], callback);
         return this;
+    }
+
+    //
+    // Get the census of an achievement
+    // - Provides how many people have achievement: {id}
+    // - Provides a number of how many people have public achievements
+    // - Provides a list of obtained dates
+    //
+    getCensus(id, callback)
+    {
+        async.parallel({
+            // get list of obtained
+            getList: function(asyncCallback) {
+                database.QueryBuilder
+                    .select()
+                    .columns(['lodestone_id', 'server', 'obtained'])
+                    .from('characters_achievements')
+                    .where('achievement_id = ?');
+
+                database.sql(database.QueryBuilder.get(), [id], data => {
+                    asyncCallback(null, data.length > 0 ? data.rows : null);
+                });
+            },
+
+            // get how many are eligable
+            getEligable: function(asyncCallback) {
+                database.QueryBuilder
+                    .count()
+                    .from('characters')
+                    .where('achievements_public = 1');
+
+                database.sql(database.QueryBuilder.get(), [], data => {
+                    asyncCallback(null, data.length > 0 ? data.rows : null);
+                });
+            }
+        },
+        // finish
+        (error, data) => {
+            callback({
+                list: data.getList,
+                obtained: data.getList.length,
+                eligable: data.getEligable[0].total,
+            });
+        });
     }
 
     //

@@ -54,6 +54,7 @@ class AppAchievementsTallyClass
                 if (achievement.obtained) {
                     insertData.push([
                         this.View.lodestoneId,
+                        this.View.server,
                         achievement.id,
                         achievement.points,
                         moment.unix(achievement.timestamp).format('YYYY-MM-DD HH:mm:ss')
@@ -84,9 +85,9 @@ class AppAchievementsTallyClass
         if (insertData.length > 0) {
             database.QueryBuilder
                 .insert('characters_achievements')
-                .insertColumns(['lodestone_id', 'achievement_id', 'points', 'obtained'])
+                .insertColumns(['lodestone_id', 'server', 'achievement_id', 'points', 'obtained'])
                 .insertData(insertData)
-                .duplicate(['lodestone_id']);
+                .duplicate(['lodestone_id', 'server', 'points', 'obtained']);
 
             // run query
             database.sql(database.QueryBuilder.get(), [], () => {
@@ -97,7 +98,7 @@ class AppAchievementsTallyClass
         }
 
         // update players totals
-        if (insertData.length > 0) {
+        if (insertTotal.length > 0) {
             database.QueryBuilder
                 .update('characters')
                 .set({

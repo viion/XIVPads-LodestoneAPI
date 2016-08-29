@@ -370,6 +370,16 @@ server.route({
     }
 });
 
+// achievement statistics
+server.route({
+    method: 'GET', path: '/achievements/get/{id}/census',
+    handler: function (request, reply) {
+        app.Achievements.getCensus(request.params.id, function(data) {
+            reply(data);
+        });
+    }
+})
+
 // persistent character get
 server.route({
     method: 'GET', path: '/persistent/characters/get/{id}',
