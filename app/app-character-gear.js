@@ -15,58 +15,28 @@ class AppCharacterGearClass
     constructor()
     {
         this.View = require('app/app-character-view');
+        this.Role = null;
         this.classjobs = {};
         this.items = {};
-    }
-
-    //
-    // Get gear for a specific character
-    //
-    get(id, callback)
-    {
-        database.QueryBuilder
-            .select()
-            .columns('*')
-            .from('characters_gearsets')
-            .where('lodestone_id = ?');
-
-        database.sql(database.QueryBuilder.get(), [id], (data) => {
-            if (data.length > 0) {
-                // json parse gear and stats
-                for(var i in data.rows) {
-                    var gs = data.rows[i];
-
-                    gs.gear = JSON.parse(gs.gear);
-                    gs.stats = JSON.parse(gs.stats);
-                    data.rows[i] = gs;
-                }
-            }
-
-            callback(data);
-        });
-        return this;
+        this.callback = null;
     }
 
     //
     // Initialize tracking
     //
-    init()
+    init(callback)
     {
         if (!config.settings.autoUpdateCharacters.enableGearTracking) {
-            return;
+            return callback ? callback() : false;
         }
+
+        this.callback = callback;
 
         // We need items
         XIVDBApi.get('items', (type, items) => {
-            XIVDBApi.get('classjobs', (type, classjobs) => {
-                this.classjobs = classjobs;
-                this.items = items;
-
-                this.trackGear();
-            });
+            this.items = items;
+            this.trackGear();
         });
-
-
     }
 
     //
@@ -101,7 +71,7 @@ class AppCharacterGearClass
         // the SQL query does not require them.
         var insertData = functions.objToArray({
             lodestone_id: this.View.lodestoneId,
-            classjob_id: this.getRoleId(this.View.newData.active_class.name),
+            classjob_id: this.Role.getRoleId(this.View.newData.active_class.name),
             level: this.View.newData.active_class.level,
             gear: '?',
             stats: '?',
@@ -122,30 +92,13 @@ class AppCharacterGearClass
 
         // run query
         database.sql(database.QueryBuilder.get(), binds, () => {
-            log.echo('--- Added Gear Set for: {level:blue} {role:blue}', {
+            // finished
+            this.callback();
+            log.echo('Added Gear Set for: {level:blue} {role:blue}', {
                 role: this.View.newData.active_class.name,
                 level: this.View.newData.active_class.level,
             });
         });
-    }
-
-    //
-    // (borrowed from app-character-events, should probably be done better ...)
-    //
-    // Get the real ClassJob ID for the role, this is matched by lowercasing the name
-    // and matching against the two names, returns false if no match, which will
-    // skip any event creation.
-    //
-    getRoleId(role)
-    {
-        for (const [i, row] of this.classjobs.entries()) {
-            if (row.name_en.toLowerCase() == role.toLowerCase()) {
-                return row.id;
-                break;
-            }
-        }
-
-        return false;
     }
 }
 

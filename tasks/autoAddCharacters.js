@@ -1,4 +1,6 @@
-var cron = require('cron').CronJob,
+var async = require('async'),
+    sha1 = require('sha1'),
+    cron = require('cron').CronJob,
     moment = require('moment'),
     config = require('../config'),
     log = require('../libs/LoggingObject'),
@@ -37,16 +39,13 @@ class autoAddCharactersClass
                         for (const [i, row] of data.rows.entries()) {
                             // parse the character on lodestone
                             app.Character.getFromLodestone(row.lodestone_id, (data) => {
-                                // ifcharacter not found, set deleted and move on.
+                                // if character not found, set deleted and move on.
                                 if (!data) {
                                     return app.Character.setDeleted(row.lodestone_id);
                                 }
 
-                                // add the character to the site
-                                app.Character.addCharacter(data, (data) => {
-                                    log.echo('-- {note:green}', { note: 'Character added successfully.' });
-                                    log.space();
-                                });
+                                // process a character add
+                                this.addCharacter(data);
                             });
                         }
                     });
@@ -59,6 +58,116 @@ class autoAddCharactersClass
             log.echo('{range:yellow} {task:red}', {
                 range: range,
                 task: 'Auto-Add Task Disabled',
+            });
+        }
+    }
+
+    //
+    // Process a character add
+    //
+    addCharacter(newData)
+    {
+        // set data on character class
+        var modules = ['Pets', 'Role'];
+        for (const [i, module] of modules.entries()) {
+            log.echo('Set view: {view:cyan}', { view: module });
+            app.Character[module].View.setData(null, newData);
+        }
+
+        // run actions
+        async.parallel({
+            //
+            // Manage character roles
+            // - classjobs
+            // - active class.
+            //
+            roles: function(callback) {
+                // Save gear
+                log.echo('[ACTION] CLASSJOBS');
+                app.Character.Role.init(() => {
+                    callback(null, {
+                        classjobs: app.Character.Role.handleClassJobs(),
+                        active_class: app.Character.Role.handleActiveClassJob(),
+                    });
+                });
+            },
+
+            //
+            // Convert minion names into ids
+            //
+            pets: function(callback) {
+                // Handle pets
+                log.echo('[ACTION] PETS');
+                app.Character.Pets.init((minions, mounts) => {
+                    log.echo('[ACTION] PETS - COMPLETE');
+                    callback(null, {
+                        minions: minions,
+                        mounts: mounts,
+                    });
+                });
+            },
+        },
+        (error, data) => {
+            // override character data
+            newData.minions = data.pets.minions;
+            newData.mounts = data.pets.mounts;
+            newData.classjobs = data.roles.classjobs;
+            newData.active_class = data.roles.active_class;
+
+            // get fc id for later
+            var freeCompanyId = newData.free_company ? newData.free_company.id : false;
+
+            // remove unnecessary data
+            delete newData.active_gear;
+            delete newData.active_class.icon;
+            delete newData.stats;
+            delete newData.free_company;
+
+            // handle free company
+            this.handleFreeCompany(freeCompanyId);
+
+            // add the character to the site
+            app.Character.addCharacter(newData, () => {
+                // set initial hash
+                this.setDataHash(newData, () => {
+                    log.echo('{note:green}', { note: '✔ Character added successfully.' });
+                });
+            });
+        });
+    }
+
+    //
+    // Set the characters data hash
+    //
+    setDataHash(newData, callback)
+    {
+        var newDataHash = sha1(JSON.stringify(newData));
+
+        database.QueryBuilder
+            .update('characters')
+            .set({
+                data_hash: newDataHash,
+                data_last_changed: moment().format('YYYY-MM-DD HH:mm:ss')
+            })
+            .where('lodestone_id = ?');
+
+        database.sql(database.QueryBuilder.get(), [ newData.id ], callback);
+    }
+
+    //
+    // Handle Free Company, adds it to the pending list.
+    //
+    handleFreeCompany(freeCompanyId)
+    {
+        if (!config.settings.autoUpdateCharacters.enablePlayerFCPending) {
+            return;
+        }
+
+        // Add free company to pending list
+        if (freeCompanyId) {
+            app.FreeCompany.addToPending([[ freeCompanyId ]]);
+            log.echo('-- Adding players free company ({id:yellow}) to the pending list', {
+                id: freeCompanyId,
             });
         }
     }

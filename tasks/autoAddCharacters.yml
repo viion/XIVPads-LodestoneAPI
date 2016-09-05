@@ -1,3 +1,14 @@
+#
+# Automatically add characters
+# Args:
+# - START_RANGE
+#   The mysql start index for the LIMIT query
+#
+# - START_TASK
+#   The name of the task to run.
+#
+#
+#
 apps:
     - script: schedule.js
       instances: 1

@@ -15,31 +15,19 @@ class AppCharacterGrandCompanyClass
     constructor()
     {
         this.View = require('app/app-character-view');
-    }
-
-    //
-    // Get grand companies for a specific character
-    //
-    get(id, callback)
-    {
-        database.QueryBuilder
-            .select()
-            .columns('*')
-            .from('characters_grandcompany')
-            .where('lodestone_id = ?');
-
-        database.sql(database.QueryBuilder.get(), [id], callback);
-        return this;
+        this.callback = null;
     }
 
     //
     // Initialize tracking
     //
-    init()
+    init(callback)
     {
         if (!config.settings.autoUpdateCharacters.enableGrandCompanyTracking) {
-            return;
+            return callback ? callback() : false;
         }
+
+        this.callback = callback;
 
         //
         // TODO: I need to make an ID system for grand company ranks,
@@ -77,7 +65,9 @@ class AppCharacterGrandCompanyClass
             .duplicate(['rank', 'icon']);
 
         // run query
-        database.sql(database.QueryBuilder.get());
+        database.sql(database.QueryBuilder.get(), [], () => {
+            this.callback();
+        });
     }
 }
 

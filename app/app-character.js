@@ -18,10 +18,10 @@ class AppCharacterClass
     {
         this.Events = require('app/app-character-events');
         this.Tracking = require('app/app-character-tracking');
-        this.Stats = require('app/app-character-stats');
         this.Pets = require('app/app-character-pets');
         this.GrandCompany = require('app/app-character-gc');
         this.Gear = require('app/app-character-gear');
+        this.Role = require('app/app-character-roles');
     }
 
     //
@@ -112,12 +112,15 @@ class AppCharacterClass
     //
     addCharacter(data, callback, isUpdate)
     {
+        var characterId = data.id;
+
+        // insert columns
         var insertColumns = ['last_updated', 'lodestone_id', 'name', 'server', 'avatar', 'portrait', 'data'],
             insertData = [moment().format('YYYY-MM-DD HH:mm:ss'), '?', '?', '?', '?', '?', '?'];
 
         // bind data
         var binds = [
-            data.id,
+            characterId,
             data.name,
             data.server,
             data.avatar,
@@ -150,7 +153,7 @@ class AppCharacterClass
                         .where('lodestone_id = ?');
 
                     // run query
-                    database.sql(database.QueryBuilder.get(), [ data.id ], callback);
+                    database.sql(database.QueryBuilder.get(), [ characterId ], callback);
                 } else {
                     callback(data);
                 }

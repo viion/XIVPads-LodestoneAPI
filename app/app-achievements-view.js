@@ -6,18 +6,16 @@ class AppAchievementViewClass
     constructor()
     {
         this.data = {};
-        this.lodestoneId = null;
-        this.server = null;
+        this.character = null;
     }
 
     //
-    // Set character lodestone id and achievement data
+    // Set achievement data and character
     //
-    setData(lodestoneId, data, server)
+    setData(data, character)
     {
         this.data = data;
-        this.lodestoneId = lodestoneId;
-        this.server = server;
+        this.character = character;
     }
 }
 

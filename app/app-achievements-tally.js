@@ -63,8 +63,8 @@ class AppAchievementsTallyClass
                 })
                 .where(['lodestone_id = ?']);
 
-            database.sql(database.QueryBuilder.get(), [ this.View.lodestoneId ], () => {
-                log.echo('--- Achievement scores updated ({legacy:blue} Legacy) ({reborn:blue} Reborn)', {
+            database.sql(database.QueryBuilder.get(), [ this.View.character.lodestone_id ], () => {
+                log.echo('Achievement scores updated ({legacy:blue} Legacy) ({reborn:blue} Reborn)', {
                     legacy: legacy,
                     reborn: reborn,
                 });

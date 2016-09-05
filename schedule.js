@@ -2,7 +2,6 @@ require('app-module-path/register');
 global.TIMESTAMP = 0;
 global.START_RANGE = parseInt(process.argv[2]);
 global.START_TASK = process.argv[3];
-global.ANALYTICS = require('libs/Analytics').reset('schedule');
 
 // node modules
 var setup = require('setup'),
@@ -17,6 +16,15 @@ log.echo('Start Range: {spawn:yellow}', { spawn: global.START_RANGE });
 if (isNaN(global.START_RANGE)) {
     log.echo('{error:red}', {
         error: 'Please provide a spawn process, eg: "node schedule.js 3 autoAddCharacters"'
+    });
+    process.exit();
+}
+
+// check start task is correct
+var validTasks = ['autoAddCharacters', 'autoUpdateCharacters', 'autoUpdateAchievements'];
+if (validTasks.indexOf(global.START_TASK) == -1) {
+    log.echo('{error:red}', {
+        error: 'Start task invalid, it should be one of: ' + validTasks.join(', ')
     });
     process.exit();
 }

@@ -1,6 +1,5 @@
 require('app-module-path/register');
 global.TIMESTAMP = 0;
-global.ANALYTICS = require('libs/Analytics').reset('app');
 
 //
 // These are paths which are
@@ -8,15 +7,9 @@ global.ANALYTICS = require('libs/Analytics').reset('app');
 //
 var webpages = [
     '/',
-    '/characters',
-    '/freecompany',
-    '/linkshells',
-    '/database',
-    '/lodestone',
     '/dev',
-    '/web/dev-html.html',
-    '/web/bg.jpg',
-    '/test'
+    '/web/views/dev-html.html',
+    '/web/views/bg.jpg',
 ];
 
 // node modules
@@ -74,7 +67,7 @@ server.register(require('vision'), function (err) {
             html: require('handlebars')
         },
         relativeTo: __dirname,
-        path: './views',
+        path: './web/views',
         isCached: false,
     });
 });
@@ -168,9 +161,7 @@ server.route({
 server.route({
     method: 'GET', path: '/',
     handler: function (request, reply) {
-        fs.readFile('views/styles.css', 'utf8', function (err,data) {
-            reply.view('index', { css: data });
-        });
+        reply.view('index');
     }
 });
 
@@ -178,105 +169,8 @@ server.route({
 server.route({
     method: 'GET', path: '/dev',
     handler: function (request, reply) {
-        fs.readFile('web/dev.js', 'utf8', function (err,data) {
+        fs.readFile('web/js/dev.js', 'utf8', function (err,data) {
             reply.view('dev', { js: data });
-        });
-    }
-});
-
-// test
-server.route({
-    method: 'GET', path: '/test',
-    handler: function (request, reply) {
-        reply.view('test');
-    }
-});
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// Database
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-// item search
-server.route({
-    method: 'GET', path: '/database/item/search',
-    handler: function (request, reply) {
-        var name = request.query.name ? request.query.name : '',
-            name = functions.replaceAll(name, ' ', '+'),
-            page = request.query.page ? request.query.page : 1;
-
-        api.setLanguage(request.query.language);
-        api.searchItem(reply, {
-            name: name,
-            page: page
-        });
-    }
-});
-
-// item get
-server.route({
-    method: 'GET', path: '/database/item/get/{id}',
-    handler: function (request, reply) {
-        api.setLanguage(request.query.language);
-        api.getItem(reply, {
-            id: request.params.id,
-        });
-    }
-});
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-// recipe search
-server.route({
-    method: 'GET', path: '/database/recipe/search',
-    handler: function (request, reply) {
-        var name = request.query.name ? request.query.name : '',
-            name = functions.replaceAll(name, ' ', '+'),
-            page = request.query.page ? request.query.page : 1;
-
-        api.setLanguage(request.query.language);
-        api.searchRecipe(reply, {
-            name: name,
-            page: page
-        });
-    }
-});
-
-// recipe get
-server.route({
-    method: 'GET', path: '/database/recipe/get/{id}',
-    handler: function (request, reply) {
-        api.setLanguage(request.query.language);
-        api.getRecipe(reply, {
-            id: request.params.id,
-        });
-    }
-});
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-// duty search
-server.route({
-    method: 'GET', path: '/database/duty/search',
-    handler: function (request, reply) {
-        var name = request.query.name ? request.query.name : '',
-            name = functions.replaceAll(name, ' ', '+'),
-            page = request.query.page ? request.query.page : 1;
-
-        api.setLanguage(request.query.language);
-        api.searchDuty(reply, {
-            name: name,
-            page: page
-        });
-    }
-});
-
-// duty get
-server.route({
-    method: 'GET', path: '/database/duty/get/{id}',
-    handler: function (request, reply) {
-        api.setLanguage(request.query.language);
-        api.getDuty(reply, {
-            id: request.params.id,
         });
     }
 });
@@ -686,6 +580,95 @@ server.route({
     handler: function (request, reply) {
         api.setLanguage(request.query.language);
         api.getPopularPosts(reply);
+    }
+});
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// Database
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+// item search
+server.route({
+    method: 'GET', path: '/database/item/search',
+    handler: function (request, reply) {
+        var name = request.query.name ? request.query.name : '',
+            name = functions.replaceAll(name, ' ', '+'),
+            page = request.query.page ? request.query.page : 1;
+
+        api.setLanguage(request.query.language);
+        api.searchItem(reply, {
+            name: name,
+            page: page
+        });
+    }
+});
+
+// item get
+server.route({
+    method: 'GET', path: '/database/item/get/{id}',
+    handler: function (request, reply) {
+        api.setLanguage(request.query.language);
+        api.getItem(reply, {
+            id: request.params.id,
+        });
+    }
+});
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+// recipe search
+server.route({
+    method: 'GET', path: '/database/recipe/search',
+    handler: function (request, reply) {
+        var name = request.query.name ? request.query.name : '',
+            name = functions.replaceAll(name, ' ', '+'),
+            page = request.query.page ? request.query.page : 1;
+
+        api.setLanguage(request.query.language);
+        api.searchRecipe(reply, {
+            name: name,
+            page: page
+        });
+    }
+});
+
+// recipe get
+server.route({
+    method: 'GET', path: '/database/recipe/get/{id}',
+    handler: function (request, reply) {
+        api.setLanguage(request.query.language);
+        api.getRecipe(reply, {
+            id: request.params.id,
+        });
+    }
+});
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+// duty search
+server.route({
+    method: 'GET', path: '/database/duty/search',
+    handler: function (request, reply) {
+        var name = request.query.name ? request.query.name : '',
+            name = functions.replaceAll(name, ' ', '+'),
+            page = request.query.page ? request.query.page : 1;
+
+        api.setLanguage(request.query.language);
+        api.searchDuty(reply, {
+            name: name,
+            page: page
+        });
+    }
+});
+
+// duty get
+server.route({
+    method: 'GET', path: '/database/duty/get/{id}',
+    handler: function (request, reply) {
+        api.setLanguage(request.query.language);
+        api.getDuty(reply, {
+            id: request.params.id,
+        });
     }
 });
 

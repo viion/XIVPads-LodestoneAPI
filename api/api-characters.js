@@ -28,6 +28,7 @@ var apiCharacters =
                     level: parseInt($node.find('.col3box .col3box_left div').eq(1).text()),
                 },
                 grand_company: false,
+                free_company: false,
             }
 
             // grand company

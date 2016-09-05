@@ -15,134 +15,81 @@ class AppCharacterPetsClass
     constructor()
     {
         this.View = require('app/app-character-view');
-    }
-
-    //
-    // Get minions via a specific id
-    //
-    getMinions(id, callback)
-    {
-        database.QueryBuilder
-            .select()
-            .columns('*')
-            .from('characters_minions')
-            .where('lodestone_id = ?');
-
-        database.sql(database.QueryBuilder.get(), [id], callback);
-        return this;
-    }
-
-    //
-    // Get mounts via a specific id
-    //
-    getMounts(id, callback)
-    {
-        database.QueryBuilder
-            .select()
-            .columns('*')
-            .from('characters_mounts')
-            .where('lodestone_id = ?');
-
-        database.sql(database.QueryBuilder.get(), [id], callback);
-        return this;
+        this.callback = null;
     }
 
     //
     // Initialize tracking
     //
-    init()
+    init(callback)
     {
         if (!config.settings.autoUpdateCharacters.enablePetsTracking) {
-            return;
+            return callback ? callback() : false;
         }
+
+        this.callback = callback;
 
         // need minions and mounts from xivdb!
         XIVDBApi.get('minions', (type, minions) => {
             XIVDBApi.get('mounts', (type, mounts) => {
-                this.trackMinions(minions);
-                this.trackMounts(mounts);
+                this.callback(
+                    this.convertMinions(minions),
+                    this.convertMounts(mounts)
+                );
             });
         });
     }
 
     //
-    // Track minions
+    // Convert minion data into known ids
     //
-    trackMinions(minions)
+    convertMinions(minions)
     {
         var nameToId = {},
-            insertData = [];
+            data = [];
 
         // sort minions into name-to-id
         for (const [i, minion] of minions.entries()) {
             nameToId[minion.name_en.toLowerCase()] = minion.id;
         }
 
-        // get insert data
+        // get real ids
         for (const [i, minion] of this.View.newData.minions.entries()) {
             var minionId = nameToId[minion.name.toLowerCase()];
 
             // if minion id, store that, otherwise store lodestone response.
             minionId
-                ? insertData.push([ this.View.lodestoneId, minionId, null ])
-                : insertData.push([ this.View.lodestoneId, null, JSON.stringify(minion) ]);
+                ? data.push([ minionId, null ])
+                : data.push([ null, minion ]);
         }
 
-        // if we have data
-        if (insertData && insertData.length > 1) {
-            database.QueryBuilder
-                .insert('characters_minions')
-                .insertColumns(['lodestone_id', 'minion_id', 'other'])
-                .insertData(insertData)
-                .duplicate(['lodestone_id', 'minion_id', 'other']);
-
-            // run query
-            database.sql(database.QueryBuilder.get(), [], () => {
-                log.echo('--- Saved {total:blue} minions', {
-                    total: insertData.length
-                });
-            });
-        }
+        return data;
     }
 
     //
-    // Track minions
+    // convert mount data into known ids
     //
-    trackMounts(mounts)
+    convertMounts(mounts)
     {
         var nameToId = {},
-            insertData = [];
+            data = [];
 
         // sort mounts into name-to-id
         for (const [i, mount] of mounts.entries()) {
             nameToId[mount.name_en.toLowerCase()] = mount.id;
         }
 
-        // get insert data
+        //  get real ids
         for (const [i, mount] of this.View.newData.mounts.entries()) {
             var mountId = nameToId[mount.name.toLowerCase()];
 
             // if mount id, store that, otherwise store lodestone response.
             mountId
-                ? insertData.push([ this.View.lodestoneId, mountId, null ])
-                : insertData.push([ this.View.lodestoneId, null, JSON.stringify(mount) ]);
+                ? data.push([ mountId, null ])
+                : data.push([ null, mount ]);
         }
 
-        // if we have data
-        if (insertData && insertData.length > 1) {
-            database.QueryBuilder
-                .insert('characters_mounts')
-                .insertColumns(['lodestone_id', 'mount_id', 'other'])
-                .insertData(insertData)
-                .duplicate(['lodestone_id', 'mount_id', 'other']);
-
-            // run query
-            database.sql(database.QueryBuilder.get(), [], () => {
-                log.echo('--- Saved {total:blue} mounts', {
-                    total: insertData.length
-                });
-            });
-        }
+        return data;
     }
 }
 

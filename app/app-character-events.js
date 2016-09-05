@@ -15,39 +15,13 @@ class AppCharacterEventsClass
     constructor()
     {
         this.View = require('app/app-character-view');
+        this.Role = null;
 
         this.exp_table = {};
-        this.classjobs = {}
         this.eventsLevels = [];
         this.eventsExp = [];
-    }
 
-    //
-    // Get events for a specific character
-    //
-    get(id, callback)
-    {
-        database.QueryBuilder
-            .select()
-            .columns('*')
-            .from('events_exp_new')
-            .where('lodestone_id = ?');
-
-        database.sql(database.QueryBuilder.get(), [id], (expData) => {
-            database.QueryBuilder
-                .select()
-                .columns('*')
-                .from('events_lvs_new')
-                .where('lodestone_id = ?');
-
-            database.sql(database.QueryBuilder.get(), [id], (lvsData) => {
-                callback({
-                    exp: expData.length > 0 ? expData.rows : null,
-                    lvs: lvsData.length > 0 ? lvsData.rows : null,
-                })
-            });
-        });
-        return this;
+        this.callback = null;
     }
 
     //
@@ -56,7 +30,6 @@ class AppCharacterEventsClass
     reset()
     {
         this.exp_table = {};
-        this.classjobs = {};
         this.eventsLevels = [];
         this.eventsExp = [];
         return this;
@@ -65,21 +38,20 @@ class AppCharacterEventsClass
     //
     // Setup class
     //
-    init()
+    init(callback)
     {
         if (!config.settings.autoUpdateCharacters.enableProgressEvents) {
-            return;
+            return callback ? callback() : false;
         }
+
+        this.callback = callback;
 
         // need exp table and classjobs table
         XIVDBApi.get('exp_table', (type, exp_table) => {
-            XIVDBApi.get('classjobs', (type, classjobs) => {
-                // setup events and check
-                this.reset();
-                this.exp_table = exp_table;
-                this.classjobs = classjobs;
-                this.check();
-            });
+            // setup events and check
+            this.reset();
+            this.exp_table = exp_table;
+            this.check();
         });
     }
 
@@ -109,13 +81,13 @@ class AppCharacterEventsClass
         // loop through classes
         for(var classname in this.View.newData.classjobs) {
             var newRole = newClassJobData[classname],
-                oldRole = oldClassJobData[classname],
+                roleId = this.Role.getRoleId(newRole.name),
+                oldRole = oldClassJobData[roleId],
                 oldTotalExp = this.getTotalExp(oldRole.level, oldRole.exp.current),
-                newTotalExp = this.getTotalExp(newRole.level, newRole.exp.current),
-                jobclassId = this.getRoleId(newRole.name);
+                newTotalExp = this.getTotalExp(newRole.level, newRole.exp.current);
 
             // if id not found
-            if (!jobclassId) {
+            if (!roleId) {
                 log.echo('{error:red}', {
                     error: 'Role ID cannot be found for: '+ newRole.name,
                 });
@@ -160,7 +132,7 @@ class AppCharacterEventsClass
                     var newEvent = functions.objToArray({
                         lodestone_id: this.View.lodestoneId,
                         time: timeNow,
-                        jobclass: jobclassId,
+                        jobclass: roleId,
                         gained: levelsGained,
                         old: oldRole.level,
                         new: newRole.level,
@@ -187,7 +159,7 @@ class AppCharacterEventsClass
                     var newEvent = functions.objToArray({
                         lodestone_id: this.View.lodestoneId,
                         time: timeNow,
-                        jobclass: jobclassId,
+                        jobclass: roleId,
                         gained: expGained,
                         old: oldTotalExp,
                         new: newTotalExp,
@@ -206,6 +178,8 @@ class AppCharacterEventsClass
         // finish
         if (this.eventsLevels.length > 0 || this.eventsExp.length > 0) {
             this.insertNewEvents();
+        } else {
+            this.callback();
         }
     }
 
@@ -219,7 +193,7 @@ class AppCharacterEventsClass
         // if level events
         if (this.eventsLevels.length > 0) {
             database.QueryBuilder
-                .insert('events_lvs_new')
+                .insert('characters_events_lvs_new')
                 .insertColumns(insertColumns)
                 .insertData(this.eventsLevels)
                 .duplicate(['lodestone_id']);
@@ -229,23 +203,29 @@ class AppCharacterEventsClass
                 log.echo('--- Added {total:blue} levelling events', {
                     total: this.eventsLevels.length,
                 });
-            });
-        }
 
-        // if level events
-        if (this.eventsExp.length > 0) {
-            database.QueryBuilder
-                .insert('events_exp_new')
-                .insertColumns(insertColumns)
-                .insertData(this.eventsExp)
-                .duplicate(['lodestone_id']);
+                // if level events
+                if (this.eventsExp.length > 0) {
+                    database.QueryBuilder
+                        .insert('characters_events_exp_new')
+                        .insertColumns(insertColumns)
+                        .insertData(this.eventsExp)
+                        .duplicate(['lodestone_id']);
 
-            // run query
-            database.sql(database.QueryBuilder.get(), [], () => {
-                log.echo('--- Added {total:blue} experience points events', {
-                    total: this.eventsExp.length,
-                });
+                    // run query
+                    database.sql(database.QueryBuilder.get(), [], () => {
+                        log.echo('--- Added {total:blue} experience points events', {
+                            total: this.eventsExp.length,
+                        });
+
+                        this.callback();
+                    });
+                } else {
+                    this.callback();
+                }
             });
+        } else {
+            this.callback();
         }
     }
 
@@ -264,23 +244,6 @@ class AppCharacterEventsClass
         }
 
         return totalExpGained + currentExp;
-    }
-
-    //
-    // Get the real ClassJob ID for the role, this is matched by lowercasing the name
-    // and matching against the two names, returns false if no match, which will
-    // skip any event creation.
-    //
-    getRoleId(role)
-    {
-        for (const [i, row] of this.classjobs.entries()) {
-            if (row.name_en.toLowerCase() == role.toLowerCase()) {
-                return row.id;
-                break;
-            }
-        }
-
-        return false;
     }
 }
 

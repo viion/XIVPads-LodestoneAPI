@@ -53,8 +53,8 @@ class AppAchievementsTallyClass
                 // if obtained, add to insert data
                 if (achievement.obtained) {
                     insertData.push([
-                        this.View.lodestoneId,
-                        this.View.server,
+                        this.View.character.lodestone_id,
+                        this.View.character.server,
                         achievement.id,
                         achievement.points,
                         moment.unix(achievement.timestamp).format('YYYY-MM-DD HH:mm:ss')
@@ -72,26 +72,26 @@ class AppAchievementsTallyClass
             database.QueryBuilder
                 .insert('characters_achievements_possible')
                 .insertColumns(['lodestone_id', 'possible'])
-                .insertData([[ this.View.lodestoneId, JSON.stringify(insertPossible) ]])
+                .insertData([[ this.View.character.lodestone_id, JSON.stringify(insertPossible) ]])
                 .duplicate(['possible']);
 
             // run query
             database.sql(database.QueryBuilder.get(), [], () => {
-                log.echo('--- Saved all possible achievements');
+                log.echo('Saved all possible achievements');
             });
         }
 
         // if we have obtained achievements, lets insert them!
         if (insertData.length > 0) {
             database.QueryBuilder
-                .insert('characters_achievements')
+                .insert('characters_achievements_list')
                 .insertColumns(['lodestone_id', 'server', 'achievement_id', 'points', 'obtained'])
                 .insertData(insertData)
                 .duplicate(['lodestone_id', 'server', 'points', 'obtained']);
 
             // run query
             database.sql(database.QueryBuilder.get(), [], () => {
-                log.echo('--- Saved {total:blue} achievements', {
+                log.echo('Saved {total:blue} achievements', {
                     total: insertData.length
                 });
             });
@@ -108,9 +108,19 @@ class AppAchievementsTallyClass
                 .where('lodestone_id = ?');
 
             // run query
-            database.sql(database.QueryBuilder.get(), [this.View.lodestoneId], () => {
-                log.echo('--- Updated character achievements');
+            database.sql(database.QueryBuilder.get(), [ this.View.character.lodestone_id ], () => {
+                log.echo('Updated character achievements');
             });
+
+            if (insertTotal['reborn'] > this.View.character.achievements_score_reborn) {
+                database.QueryBuilder
+                    .update('characters')
+                    .set({ achievements_last_changed: moment().format('YYYY-MM-DD HH:mm:ss') })
+                    .where('lodestone_id = ?');
+
+                database.sql(database.QueryBuilder.get(), [ this.View.character.lodestone_id ]);
+                log.echo('Achievements last changed time updated.');
+            }
         }
     }
 }

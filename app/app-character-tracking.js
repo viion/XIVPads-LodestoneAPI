@@ -14,28 +14,28 @@ class AppCharacterTrackingClass
     constructor()
     {
         this.View = require('app/app-character-view');
-    }
+        this.callback = null;
 
-    //
-    // Get a character via a specific id
-    //
-    get(id, callback)
-    {
-        database.QueryBuilder
-            .select()
-            .columns('*')
-            .from('events_tracking')
-            .where('lodestone_id = ?');
-
-        database.sql(database.QueryBuilder.get(), [id], callback);
-        return this;
+        this.oldData = {};
+        this.newData = {};
     }
 
     //
     // Initialize tracking
     //
-    init()
+    init(callback)
     {
+        if (!config.settings.autoUpdateCharacters.enableProfileTracking) {
+            return callback ? callback() : false;
+        }
+
+        this.callback = callback;
+
+        // move memory position for data
+        this.oldData = this.View.oldData;
+        this.newData = this.View.newData;
+
+        // track basic fields
         for(const [i, field] of ['name', 'server', 'title', 'race', 'clan', 'gender', 'nameday'].entries()) {
             this.track(field);
         }
@@ -44,7 +44,18 @@ class AppCharacterTrackingClass
         this.track('city', 'city', 'name');
         this.track('grand_company_name', 'grand_company', 'name');
         this.track('grand_company_rank', 'grand_company', 'rank');
-        this.track('free_company', 'free_company', 'id');
+
+        // FC tracking
+        if (
+            this.oldData.free_compan
+            && this.newData.free_company
+            && typeof this.oldData.free_company.id !== 'undefined'
+            && typeof this.newData.free_company.id != 'undefined'
+        ) {
+            this.track('free_company', 'free_company', 'id');
+        }
+
+        this.callback();
     }
 
     //
@@ -54,13 +65,9 @@ class AppCharacterTrackingClass
     //
     track(type, depth, field)
     {
-        if (!config.settings.autoUpdateCharacters.enableProfileTracking) {
-            return false;
-        }
-
         // get old and new values
-        var oldValue = (depth && field) ? this.View.oldData[depth][field] : this.View.oldData[type],
-            newValue = (depth && field) ? this.View.newData[depth][field] : this.View.newData[type];
+        var oldValue = (depth && field) ? this.oldData[depth][field] : this.oldData[type],
+            newValue = (depth && field) ? this.newData[depth][field] : this.newData[type];
 
         if (!oldValue || !newValue) {
             return false;

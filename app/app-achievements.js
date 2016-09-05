@@ -27,7 +27,7 @@ class AppAchievementsClass
         database.QueryBuilder
             .select()
             .columns('*')
-            .from('characters_achievements')
+            .from('characters_achievements_list')
             .where('lodestone_id = ?');
 
         database.sql(database.QueryBuilder.get(), [id], callback);
@@ -48,11 +48,35 @@ class AppAchievementsClass
                 database.QueryBuilder
                     .select()
                     .columns(['lodestone_id', 'server', 'obtained'])
-                    .from('characters_achievements')
-                    .where('achievement_id = ?');
+                    .from('characters_achievements_list')
+                    .where('achievement_id = ?')
+                    .order('obtained', 'asc');
 
                 database.sql(database.QueryBuilder.get(), [id], data => {
-                    asyncCallback(null, data.length > 0 ? data.rows : null);
+                    data = data.length > 0 ? data.rows : null;
+
+                    if (data) {
+                        var first = data[0];
+
+                        database.QueryBuilder
+                            .select()
+                            .columns(['last_updated', 'name', 'server', 'avatar', 'portrait','achievements_score_legacy','achievements_score_reborn'])
+                            .from('characters')
+                            .where('lodestone_id = ?')
+                            .limit(0,1);
+
+                        database.sql(database.QueryBuilder.get(), [first.lodestone_id], character => {
+                            asyncCallback(null, {
+                                list: data,
+                                first: character.rows[0]
+                            });
+                        });
+                    } else {
+                        asyncCallback(null, {
+                            list: data,
+                            first: null
+                        });
+                    }
                 });
             },
 
@@ -71,8 +95,9 @@ class AppAchievementsClass
         // finish
         (error, data) => {
             callback({
-                list: data.getList,
-                obtained: data.getList.length,
+                list: data.getList.list,
+                first: data.getList.first,
+                obtained: data.getList.list.length,
                 eligable: data.getEligable[0].total,
             });
         });
