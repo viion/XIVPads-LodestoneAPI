@@ -38,15 +38,15 @@ var apiLodestone =
     // The topics page
     getTopics: function($) {
         var data = [];
-        $('.area_body .topics_list li').each(function() {
+        $('.news__content__list li').each(function() {
             $node = $(this);
 
             var topic = {
-                url: 'http://' + config.lodestoneUrl + $node.find('.topics_list_inner a').attr('href'),
-                title: $node.find('.topics_list_inner a').text(),
-                timestamp: parseInt($node.find('.topics_list_date').html().trim().split('(')[2].split(',')[0].trim()),
-                html: $node.find('.area_inner_cont').html().trim(),
-                banner: $node.find('.area_inner_cont img').eq(0).attr('src').trim(),
+                url: 'http://' + config.lodestoneUrl + $node.find('.news__content__list--header__title a').attr('href'),
+                title: $node.find('.news__content__list--header__title a').text(),
+                timestamp: parseInt($node.find('.news__content__list--header__datetime').html().trim().split('(')[2].split(',')[0].trim()),
+                html: $node.find('.news__content__list__topics--body').html().trim(),
+                banner: $node.find('.news__content__list__topics__link_banner img').eq(0).attr('src').trim(),
             };
 
             topic.html = topic.html.replace(new RegExp('/lodestone/topics/detail/', 'g'), 'http://'+ config.lodestoneUrl +'/lodestone/topics/detail/');
@@ -67,11 +67,11 @@ var apiLodestone =
     // The notices page
     getNotices: function($) {
         var data = [];
-        $('.area_body dl.news_list').each(function() {
+        $('.news__content__list li').each(function() {
             $node = $(this);
 
             post = {
-                timestamp: parseInt($node.find('dd script').html().trim().split('(')[2].split(',')[0].trim()),
+                timestamp: parseInt($node.find('.news__content__list--header__datetime script').html().trim().split('(')[2].split(',')[0].trim()),
                 icon: 'http://img.finalfantasyxiv.com/lds/pc/global/images/common/ic/news_info.png',
                 link: 'http://' + config.lodestoneUrl + $node.find('a').eq(0).attr('href').trim(),
                 name: $node.find('a').eq(0).text().trim(),
@@ -87,11 +87,11 @@ var apiLodestone =
     // The maintenance page
     getMaintenance: function($) {
         var data = [];
-        $('.area_body dl.news_list').each(function() {
+        $('.news__content__list li').each(function() {
             $node = $(this);
 
             post = {
-                timestamp: parseInt($node.find('dd script').html().trim().split('(')[2].split(',')[0].trim()),
+                timestamp: parseInt($node.find('.news__content__list--header__datetime script').html().trim().split('(')[2].split(',')[0].trim()),
                 icon: 'http://img.finalfantasyxiv.com/lds/pc/global/images/common/ic/news_maintenance.png',
                 link: 'http://' + config.lodestoneUrl + $node.find('a').eq(0).attr('href').trim(),
                 name: $node.find('a').eq(0).text().trim(),
@@ -108,11 +108,11 @@ var apiLodestone =
     // The updates page
     getUpdates: function($) {
         var data = [];
-        $('.area_body dl.news_list').each(function() {
+        $('.news__content__list li').each(function() {
             $node = $(this);
 
             post = {
-                timestamp: parseInt($node.find('dd script').html().trim().split('(')[2].split(',')[0].trim()),
+                timestamp: parseInt($node.find('.news__content__list--header__datetime script').html().trim().split('(')[2].split(',')[0].trim()),
                 icon: 'http://img.finalfantasyxiv.com/lds/pc/global/images/common/ic/news_update.png',
                 link: 'http://' + config.lodestoneUrl + $node.find('a').eq(0).attr('href').trim(),
                 name: $node.find('a').eq(0).text().trim(),
@@ -128,11 +128,11 @@ var apiLodestone =
     // The status page
     getStatus: function($) {
         var data = [];
-        $('.area_body dl.news_list').each(function() {
+        $('.news__content__list li').each(function() {
             $node = $(this);
 
             post = {
-                timestamp: parseInt($node.find('dd script').html().trim().split('(')[2].split(',')[0].trim()),
+                timestamp: parseInt($node.find('.news__content__list--header__datetime script').html().trim().split('(')[2].split(',')[0].trim()),
                 icon: 'http://img.finalfantasyxiv.com/lds/pc/global/images/common/ic/news_obstacle.png',
                 link: 'http://' + config.lodestoneUrl + $node.find('a').eq(0).attr('href').trim(),
                 name: $node.find('a').eq(0).text().trim(),
