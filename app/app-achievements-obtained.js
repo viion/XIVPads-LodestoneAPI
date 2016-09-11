@@ -95,10 +95,8 @@ class AppAchievementsTallyClass
                     total: insertData.length
                 });
             });
-        }
 
-        // update players totals
-        if (insertTotal.length > 0) {
+            // update totals
             database.QueryBuilder
                 .update('characters')
                 .set({
@@ -109,7 +107,7 @@ class AppAchievementsTallyClass
 
             // run query
             database.sql(database.QueryBuilder.get(), [ this.View.character.lodestone_id ], () => {
-                log.echo('Updated character achievements');
+                log.echo('Updated character achievements totals');
             });
 
             if (insertTotal['reborn'] > this.View.character.achievements_score_reborn) {

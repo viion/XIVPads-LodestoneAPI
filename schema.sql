@@ -26,7 +26,6 @@ CREATE TABLE `characters` (
   `lodestone_id` int(32) NOT NULL,
   `added` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'added to xivsync',
   `last_updated` timestamp NULL DEFAULT NULL COMMENT 'last auto updated',
-  `last_active` timestamp NULL DEFAULT NULL COMMENT 'handled by xivdb and the last_changed dates',
   `priority` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'update priority',
   `name` varchar(64) NOT NULL,
   `server` varchar(32) NOT NULL,

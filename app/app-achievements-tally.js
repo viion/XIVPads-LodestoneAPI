@@ -57,6 +57,7 @@ class AppAchievementsTallyClass
             database.QueryBuilder
                 .update('characters')
                 .set({
+                    last_updated: moment().format('YYYY-MM-DD HH:mm:ss'),
                     achievements_last_updated: moment().format('YYYY-MM-DD HH:mm:ss'),
                     achievements_score_reborn: reborn,
                     achievements_score_legacy: legacy,
