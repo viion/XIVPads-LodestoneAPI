@@ -140,7 +140,7 @@ class AppCharacterClass
                 .insert('characters')
                 .insertColumns(insertColumns)
                 .insertData([insertData])
-                .duplicate(['lodestone_id', 'name', 'server', 'avatar', 'portrait', 'data']);
+                .duplicate(['last_updated', 'lodestone_id', 'name', 'server', 'avatar', 'portrait', 'data']);
 
             // run query
             database.sql(database.QueryBuilder.get(), binds, (data) => {
