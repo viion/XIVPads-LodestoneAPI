@@ -15,7 +15,6 @@ class AppCharacterPetsClass
     constructor()
     {
         this.View = require('app/app-character-view');
-        this.callback = null;
     }
 
     //
@@ -27,12 +26,10 @@ class AppCharacterPetsClass
             return callback ? callback() : false;
         }
 
-        this.callback = callback;
-
         // need minions and mounts from xivdb!
         XIVDBApi.get('minions', (type, minions) => {
             XIVDBApi.get('mounts', (type, mounts) => {
-                this.callback(
+                callback(
                     this.convertMinions(minions),
                     this.convertMounts(mounts)
                 );

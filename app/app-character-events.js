@@ -20,8 +20,6 @@ class AppCharacterEventsClass
         this.exp_table = {};
         this.eventsLevels = [];
         this.eventsExp = [];
-
-        this.callback = null;
     }
 
     //
@@ -44,14 +42,14 @@ class AppCharacterEventsClass
             return callback ? callback() : false;
         }
 
-        this.callback = callback;
-
         // need exp table and classjobs table
         XIVDBApi.get('exp_table', (type, exp_table) => {
             // setup events and check
             this.reset();
             this.exp_table = exp_table;
-            this.check();
+            this.check(onComplete => {
+                callback();
+            });
         });
     }
 
@@ -65,7 +63,7 @@ class AppCharacterEventsClass
     // the database for retrival when the character data
     // is requested.
     //
-    check()
+    check(callback)
     {
         // Some some vars
         var timeNow = moment().format('YYYY-MM-DD HH:mm:ss'),
@@ -177,16 +175,16 @@ class AppCharacterEventsClass
 
         // finish
         if (this.eventsLevels.length > 0 || this.eventsExp.length > 0) {
-            this.insertNewEvents();
+            this.insertNewEvents(callback);
         } else {
-            this.callback();
+            callback();
         }
     }
 
     //
     // Insert new EXP or level events into the database.
     //
-    insertNewEvents()
+    insertNewEvents(callback)
     {
         var insertColumns = ['lodestone_id', 'time', 'jobclass', 'gained', 'old', 'new'];
 
@@ -218,14 +216,14 @@ class AppCharacterEventsClass
                             total: this.eventsExp.length,
                         });
 
-                        this.callback();
+                        callback();
                     });
                 } else {
-                    this.callback();
+                    callback();
                 }
             });
         } else {
-            this.callback();
+            callback();
         }
     }
 

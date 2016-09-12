@@ -15,7 +15,6 @@ class AppCharacterGrandCompanyClass
     constructor()
     {
         this.View = require('app/app-character-view');
-        this.callback = null;
     }
 
     //
@@ -27,8 +26,6 @@ class AppCharacterGrandCompanyClass
             return callback ? callback() : false;
         }
 
-        this.callback = callback;
-
         //
         // TODO: I need to make an ID system for grand company ranks,
         // there are 6 tables (3 companies with male and female) all
@@ -37,13 +34,15 @@ class AppCharacterGrandCompanyClass
         // XIVDBApi.get('grand_company', (type, grand_company) => {});
         //
 
-        this.trackGrandCompanies();
+        this.trackGrandCompanies(onComplete => {
+            callback();
+        });
     }
 
     //
     // Track minions
     //
-    trackGrandCompanies()
+    trackGrandCompanies(callback)
     {
         if (!this.View.newData.grand_company.name) {
             return;
@@ -66,7 +65,7 @@ class AppCharacterGrandCompanyClass
 
         // run query
         database.sql(database.QueryBuilder.get(), [], () => {
-            this.callback();
+            callback();
         });
     }
 }

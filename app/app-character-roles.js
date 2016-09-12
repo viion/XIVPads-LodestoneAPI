@@ -12,7 +12,6 @@ class AppCharacterRoleClass
     {
 		this.View = require('app/app-character-view');
         this.classjobs = {};
-        this.callback = null;
 	}
 
 
@@ -21,12 +20,10 @@ class AppCharacterRoleClass
     //
     init(callback)
     {
-        this.callback = callback;
-
         // We need items
         XIVDBApi.get('classjobs', (type, classjobs) => {
             this.classjobs = classjobs;
-			this.callback();
+			callback();
         });
     }
 

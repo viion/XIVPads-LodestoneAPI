@@ -45,7 +45,7 @@ class autoAddCharactersClass
                                 }
 
                                 // process a character add
-                                this.addCharacter(data);
+                                return this.addCharacter(data);
                             });
                         }
                     });
@@ -84,8 +84,8 @@ class autoAddCharactersClass
             roles: function(callback) {
                 // Save gear
                 log.echo('[ACTION] CLASSJOBS');
-                app.Character.Role.init(() => {
-                    callback(null, {
+                app.Character.Role.init(onComplete => {
+                    return callback(null, {
                         classjobs: app.Character.Role.handleClassJobs(),
                         active_class: app.Character.Role.handleActiveClassJob(),
                     });
@@ -100,7 +100,7 @@ class autoAddCharactersClass
                 log.echo('[ACTION] PETS');
                 app.Character.Pets.init((minions, mounts) => {
                     log.echo('[ACTION] PETS - COMPLETE');
-                    callback(null, {
+                    return callback(null, {
                         minions: minions,
                         mounts: mounts,
                     });

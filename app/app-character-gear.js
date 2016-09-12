@@ -18,7 +18,6 @@ class AppCharacterGearClass
         this.Role = null;
         this.classjobs = {};
         this.items = {};
-        this.callback = null;
     }
 
     //
@@ -30,19 +29,19 @@ class AppCharacterGearClass
             return callback ? callback() : false;
         }
 
-        this.callback = callback;
-
         // We need items
         XIVDBApi.get('items', (type, items) => {
             this.items = items;
-            this.trackGear();
+            this.trackGear(onComplete => {
+                callback();
+            });
         });
     }
 
     //
     // Track minions
     //
-    trackGear(items, classjobs)
+    trackGear(items, classjobs, callback)
     {
         var nameToId = {},
             gearsetData = [];
@@ -98,7 +97,7 @@ class AppCharacterGearClass
             });
 
             // finished
-            this.callback();
+            callback();
         });
     }
 }
