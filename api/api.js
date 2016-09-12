@@ -245,8 +245,8 @@ var api = {
 
     getCharacter: function(reply, options, callback) {
         api.get(apiCharacters.getUrl('character', options.id), function($) {
-            // Parse character data
-            var data = apiCharacters.getData($, options);
+            // parse character
+            var data = $ ?  apiCharacters.getData($, options) : false;
 
             // always send of reply first so the user
             // gets their response asap.
