@@ -102,6 +102,9 @@ var api = {
             response.on('end', function() {
                 callback(body);
             });
+        }).on('error', (e) => {
+            console.log(`Got error: ${e.message}`);
+            callback(false);
         });
     },
 

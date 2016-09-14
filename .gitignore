@@ -12,3 +12,4 @@ redis-stable.tar.gz
 analytics/*.txt
 logs/
 .npmrc
+npm-debug.log

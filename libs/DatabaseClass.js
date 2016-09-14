@@ -18,22 +18,11 @@ class DatabaseClass
         this.QueryBuilder = require('libs/QueryBuilderClass');
 
         // if persistent disabled, don't do anything
-        if (!config.persistent) {
+        if (!config.settings.persistent) {
             return;
         }
 
-        // Setup Server
-        this.connection = mysql.createPool(
-        {
-            host:       config.db.host,
-            user:       config.db.user,
-            password:   config.db.pass,
-            database:   config.db.table,
-            debug:      config.db.debug,
-            socketPath: config.db.socket,
-        });
-
-        this.cache = true;
+        this.cache = config.sqlCache;
     }
 
     noCache()
@@ -70,6 +59,18 @@ class DatabaseClass
     //
     execute(sql, binds, callback, key)
     {
+        // Setup Server
+        var connection = mysql.createConnection({
+            host:       config.db.host,
+            user:       config.db.user,
+            password:   config.db.pass,
+            database:   config.db.table,
+            debug:      config.db.debug,
+            socketPath: config.db.socket,
+        });
+
+        connection.connect();
+
         var randomId = functions.randomNumber(0, 99999);
 
         // if persistent disabled, don't do anything
@@ -77,72 +78,60 @@ class DatabaseClass
             return;
         }
 
-        // Get the connection
-        this.connection.getConnection(function(error, connection)
+        log.echo("[DB][{id:red}] SQL: {sql:purple}", {
+            id: randomId,
+            sql: config.settings.sqlStatementTruncate ? sql.substring(0, config.settings.sqlStatementTruncate) + '...' : sql
+        });
+
+        // Run the query
+        connection.query(sql, binds, function(error, rows, fields)
         {
             // If any errors, throw the exception
-            if (error) {
-                throw error;
-            }
-
-            log.echo("[DB][{id:red}] SQL: {sql:purple}", {
-                id: randomId,
-                sql: config.settings.sqlStatementTruncate ? sql.substring(0, config.settings.sqlStatementTruncate) + '...' : sql
-            });
-
-            // Run the query
-            connection.query(sql, binds, function(error, rows, fields)
+            if (error)
             {
-                // If any errors, throw the exception
-                if (error)
-                {
-                    log.echo("[DB][{id:red}] {arrow:green} {error:red}", {
-                        id: randomId,
-                        arrow: '>>',
-                        error: error
-                    });
+                log.echo("[DB][{id:red}] {arrow:green} {error:red}", {
+                    id: randomId,
+                    arrow: '>>',
+                    error: error
+                });
 
-                    // Return, if specific function exists, call that,
-                    // otherwise its an inline function and does not require
-                    // the client to be sent back
-                    if (typeof callback !== 'undefined')
-                    {
-                        callback(error);
-                    }
+                // Return, if specific function exists, call that,
+                // otherwise its an inline function and does not require
+                // the client to be sent back
+                if (typeof callback !== 'undefined') {
+                    callback(error);
                 }
-                else
-                {
-                    // Disconnect this query
-                    connection.release();
-                    log.echo("[DB][{id:red}] {arrow:green} Database query complete", {
-                        id: randomId,
-                        arrow: '>>'
-                    });
+            }
+            else
+            {
+                // Disconnect this query
+                log.echo("[DB][{id:red}] {arrow:green} Database query complete", {
+                    id: randomId,
+                    arrow: '>>'
+                });
 
-                    // Setup a return object
-                    var obj = {
-                        time: new Date(),
-                        length: rows.length,
-                        rows: rows,
-                    }
-
-                    // if storage key
-                    if (this.cache && key) {
-                        storage.set(key, obj, config.persistentTimeout);
-                    }
-
-                    // Return, if specific function exists, call that,
-                    // otherwise its an inline function and does not require
-                    // the client to be sent back
-                    if (typeof callback !== 'undefined')
-                    {
-                        callback(obj);
-                    }
-
-                    // reset cache status
-                    this.cache = true;
+                // Setup a return object
+                var obj = {
+                    time: new Date(),
+                    length: rows.length,
+                    rows: rows,
                 }
-            });
+
+                // if storage key
+                if (this.cache && key) {
+                    storage.set(key, obj, config.persistentTimeout);
+                }
+
+                // Return, if specific function exists, call that,
+                // otherwise its an inline function and does not require
+                // the client to be sent back
+                if (typeof callback !== 'undefined') {
+                    callback(obj);
+                }
+
+                // reset cache status
+                this.cache = config.settings.sqlCache;
+            }
         });
     }
 }
