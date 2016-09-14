@@ -2,8 +2,7 @@ var cheerio = require('cheerio'),
     http = require('follow-redirects').http,
     config = require('../config'),
     functions = require('../libs/functions'),
-    log = require('../libs/LoggingObject'),
-    request = require('request'),
+    log = require('../libs/LoggingObject');
 
     apiCharacters = require('./api-characters'),
     apiAchievements = require('./api-achievements'),
@@ -18,9 +17,10 @@ var cheerio = require('cheerio'),
     apiDatabaseDuty = require('./api-database-duty');
 
 var apiAgent = new http.Agent({
-        keepAlive: false,
-        maxSockets: 1000,
-        maxFreeSockets: 250,
+        keepAlive: true,
+        keepAliveMsecs: 3000,
+        maxSockets: 10000,
+        maxFreeSockets: 1000,
     });
 
 // - - - - - - - - - - - - - - - - - - - -
@@ -36,7 +36,8 @@ var api = {
      * @param url - url for options for http.get
      * @param reply - function to callback on
      */
-    get: function(url, callback) {
+    get: function(url, callback)
+    {
         // set language
         config.setLodestoneLanguage(api.language);
 
@@ -48,25 +49,23 @@ var api = {
         }
 
         // create path
-        var urlPath = url.replace(' ', '+');
+        var path = url.replace(' ', '+');
         if (config.settings.breakCacheOnHttpGet) {
-            urlPath = urlPath + '#' + Date.now();
+            path = path + '?cache=' + Date.now();
         }
 
         // get
-        var html = '',
-            start = +new Date(),
+        var start = +new Date(),
             memoryStart = functions.memory();
 
         log.echo('{method:green}: [{language:cyan}] --> {url:cyan}', {
             method: 'GET',
             language: api.language,
-            url: urlPath,
+            url: path,
         });
 
-        request(('http://' + host + urlPath), function (error, response, body) {
-
-            if (!error && response.statusCode == 200) {
+        this.request(host, path, function(body) {
+            if (body) {
                 // end time
                 var end = +new Date(),
                     duration = (end - parseInt(start)),
@@ -74,7 +73,7 @@ var api = {
 
                 log.echo('{arrows:green} {path:yellow} - Duration: {duration:cyan} ms | Memory: {start:cyan} to {finish:cyan}', {
                     arrows: '>>',
-                    path: urlPath,
+                    path: path,
                     duration: duration.toString(),
                     start: functions.memoryToHuman(memoryStart),
                     finish: functions.memoryToHuman(memoryFinish),
@@ -83,12 +82,26 @@ var api = {
                 // callback with a cheerio assigned html
                 callback(cheerio.load(body));
             } else {
-                log.echo('Could not fetch page, error: {error:red}, status code: {code:red}', {
-                    error: error,
-                    code: response.statusCode,
-                });
                 callback(false);
             }
+        });
+    },
+
+    request(host, path, callback)
+    {
+        return http.get({
+            host: host,
+            path: path,
+            agent: apiAgent,
+        }, function(response) {
+            // Continuously update stream with data
+            var body = '';
+            response.on('data', function(d) {
+                body += d;
+            });
+            response.on('end', function() {
+                callback(body);
+            });
         });
     },
 
