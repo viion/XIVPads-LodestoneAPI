@@ -12,14 +12,14 @@
 apps:
     - script: schedule.js
       instances: 4
-      exec_mode: cluster
+      exec_mode: fork
       name: 'autoAddCharacters'
       args:
         - '0'
         - 'autoAddCharacters'
     - script: schedule.js
       instances: 4
-      exec_mode: cluster
+      exec_mode: fork
       name: 'autoAddCharacters'
       args:
         - '1'
