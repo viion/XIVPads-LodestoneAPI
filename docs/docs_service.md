@@ -24,12 +24,12 @@ Features:
 
 To get started using the API, follow:
 
-- [API: Character](docs/api_characters.md)
-- [API: Free Company](docs/api_freecompany.md)
-- [API: Linkshells](docs/api_linkshells.md)
-- [API: Forums](docs/api_forums.md)
-- [API: Lodestone](docs/api_lodestone.md)
-- [API: Database](docs/api_database.md)
+- [API: Character](docs/docs/api_characters.md)
+- [API: Free Company](docs/docs/api_freecompany.md)
+- [API: Linkshells](docs/docs/api_linkshells.md)
+- [API: Forums](docs/docs/api_forums.md)
+- [API: Lodestone](docs/docs/api_lodestone.md)
+- [API: Database](docs/docs/api_database.md)
 
 ### API: Persistent Tracking
 
