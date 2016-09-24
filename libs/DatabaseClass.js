@@ -31,7 +31,6 @@ class DatabaseClass
             database:   config.db.table,
             debug:      config.db.debug,
             socketPath: config.db.socket,
-            connectionLimit: 500,
         });
 
         this.cache = config.settings.sqlCache;
@@ -114,6 +113,7 @@ class DatabaseClass
                 else
                 {
                     // Disconnect this query
+                    connection.release();
                     log.echo("[DB][{id:red}] {arrow:green} Database query complete", {
                         id: randomId,
                         arrow: '>>'
