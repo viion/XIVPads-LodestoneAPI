@@ -1,4 +1,4 @@
-# XIVSync
+# NodeJS Lodestone Parser for FFXIV
 
 Parsing characters from the [Final Fantasy XIV Lodestone](http://na.finalfantasyxiv.com/lodestone/).
 
