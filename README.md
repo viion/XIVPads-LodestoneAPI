@@ -4,7 +4,6 @@ Parsing characters from the [Final Fantasy XIV Lodestone](http://na.finalfantasy
 
 ## API
 
-- [Read about XIVSync Service](docs/docs_service.md)
 - [API: Character](docs/api_characters.md)
 - [API: Free Company](docs/api_freecompany.md)
 - [API: Linkshells](docs/api_linkshells.md)
