@@ -70,53 +70,6 @@ Get only the **name**, **server** and **title** for the character **730968**
 Ignore **minions** and **mounts** from the data for the character **730968**.
 > /characters/get/730968?ignore=minion,mounts
 
-
----
-
-## /persistent/characters/get/{id}
-
-Get persistent character data. This is data that is stored on XIVSync and avoids parsing. You will get some additional information using this command including the cache date.
-
-### GET Parameters
-
-n/a
-
-### Examples
-
-Get the data for the character **730968**
-> /persistent/characters/get/730968
-
-### Notes:
-
-The response includes character data in the attribute: `data`, the value has been compressed with zlib and base64 decoded. To extract it you can use the following techniques:
-
-> PHP
-
-```php
-$response = ... your query logic ...
-
-$response['data'] = base64_decode($response['data']);
-$response['data'] = gzuncompress($response['data']);
-// $data is now a json string.
-```
-
-> NodeJS v5 or higher
-
-```js
-var zlib = require('zlib');
-
-var response = ... your query logic ...
-var zlibData = Buffer.from(response.data, 'base64');
-zlib.inflate(zlibData, (error, buffer) => {
-    if (!error) {
-        var characterData = buffer.toString();
-    } else {
-        console.error('Error decompressing:', error);
-    }
-});
-```
-
-
 ---
 
 ## /characters/get/{id}/achievements/
