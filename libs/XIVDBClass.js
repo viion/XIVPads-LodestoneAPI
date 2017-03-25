@@ -2,7 +2,6 @@ var https = require('https'),
 
     // libs
     log = require('libs/LoggingObject'),
-    storage = require('libs/StorageClass.js'),
     functions = require('libs/functions');
 
 //
@@ -75,6 +74,8 @@ class XIVDBClass
     //
     getRecurrsion(type, callback, loops)
     {
+        return callback();
+        
         // Prevent crazy recurrsions
         loops = loops ? loops : 1;
         if (loops > 3) {
@@ -82,6 +83,13 @@ class XIVDBClass
                 type: type,
             });
         }
+        
+         // query xivdb
+                return this.query(this[type], (data) => {
+                    // set the data and then recurrsively call back
+                    storage.set(type, data);
+                    this.getRecurrsion(type, callback, loops++);
+                });
 
         // get data for [type] from storage
         storage.get(type, (data) => {
