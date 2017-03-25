@@ -1,5 +1,4 @@
-var redis = require('redis'),
-    log = require('./LoggingObject'),
+var log = require('./LoggingObject'),
     config = require('../config'),
     zlib = require('zlib');
 
@@ -14,13 +13,6 @@ class StorageClass
         if (!config.persistent) {
             return;
         }
-
-        this.client = redis.createClient();
-        this.client.on("error", function (err) {
-            log.echo('[REDIS] Error: {error:red}', {
-                error: err,
-            });
-        });
     }
 
     //
@@ -28,6 +20,8 @@ class StorageClass
     //
     set(key, value, expire)
     {
+        return this;
+        
         log.echo('[REDIS] {method:green}: {key:cyan}', {
             method: 'SET',
             key: key,
@@ -47,6 +41,8 @@ class StorageClass
     // Get some data
     //
     get(key, callback) {
+        return callback(false);
+        
         log.echo('[REDIS] {method:green}: {key:cyan}', {
             method: 'GET',
             key: key,
@@ -68,6 +64,8 @@ class StorageClass
     //
     compress(data, callback)
     {
+        return callback(data);
+        
         if (config.zlibStorage) {
             zlib.deflate(data, (error, buffer) => {
                 if (!error) {
@@ -88,6 +86,8 @@ class StorageClass
     //
     decompress(data, callback)
     {
+        return callback(data);
+        
         if (config.zlibStorage) {
             var data = Buffer.from(data, 'base64');
             zlib.inflate(data, (error, buffer) => {
