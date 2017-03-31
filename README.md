@@ -1,3 +1,7 @@
+# This is broken as of March 31st 2017 due to Lodestone updates http://eu.finalfantasyxiv.com/lodestone/special/update_log/
+
+---
+
 # NodeJS Lodestone Parser for FFXIV
 
 Parsing characters from the [Final Fantasy XIV Lodestone](http://na.finalfantasyxiv.com/lodestone/).
