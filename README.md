@@ -1,4 +1,12 @@
+# 12th April 2017
+- If you need a PHP API: https://github.com/viion/lodestone-php
+- If you just want rest actions https://github.com/xivdb/api (Characters only)
+
+I will at some point fix this library but it's not a priority, otherwise please do a PR!
+
 # This is broken as of March 31st 2017 due to Lodestone updates http://eu.finalfantasyxiv.com/lodestone/special/update_log/
+
+
 
 ---
 
